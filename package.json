@@ -17,13 +17,18 @@
         "laravel-mix": "^3.0.0",
         "lodash": "^4.17.15",
         "popper.js": "^1.12",
-        "vue": "^2.5.7"
+        "vue": "^2.5.7",
+        "@fortawesome/fontawesome-free": "^5.7.2",
+        "material-design-icons-iconfont": "^4.0.5"
     },
     "dependencies": {
         "chart.js": "^2.7.3",
         "element-ui": "^2.4.8",
         "moment": "^2.22.2",
         "node-sass": "^4.13.0",
+        "sass": "^1.26.5",
+        "vee-validate": "^2.1.7",
+        "vuetify": "^1.5.2",
         "vue-chartjs": "^3.4.0",
         "watch": "^1.0.2",
         "xml-js": "^1.6.11",

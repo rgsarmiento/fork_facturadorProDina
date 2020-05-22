@@ -68,7 +68,7 @@
 
                                     @if(in_array('new_document', $vc_module_levels))
 
-                                        <li class="{{ ($path[0] === 'documents' && $path[1] === 'create')?'nav-active':'' }}">
+                                        <li class="{{ ($path[0] === 'documents-co' && $path[1] === 'create')?'nav-active':'' }}">
                                             <a class="nav-link" href="{{route('tenant.documents-co.create')}}">
                                                 Nuevo comprobante colombia
                                             </a>

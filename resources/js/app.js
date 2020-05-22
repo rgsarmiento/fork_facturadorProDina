@@ -16,17 +16,94 @@ import lang from 'element-ui/lib/locale/lang/es'
 import locale from 'element-ui/lib/locale'
 locale.use(lang)
 
+
+//import colombia
+// import SnackbarNotificationQueue from './mixins/SnackbarNotificationQueue';
+import VeeValidate, { Validator } from 'vee-validate';
+// import v_es from 'vee-validate/dist/locale/es';
+import es from 'vuetify/es5/locale/es';
+// import ElementUI from 'element-ui';
+import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css'
+
+/**
+ * First we will load all of this project's JavaScript dependencies which
+ * includes Vue and other libraries. It is a great starting point when
+ * building robust, powerful web applications using Vue and Laravel.
+ */
+
+// require('./bootstrap');
+
+// window.Vue = require('vue');
+// window.EventBus = new Vue();
+
+
 //Vue.use(ElementUI)
 Vue.use(ElementUI, {size: 'small'})
 Vue.prototype.$eventHub = new Vue()
 Vue.prototype.$http = Axios
 
-// import VueCharts from 'vue-charts'
-// Vue.use(VueCharts);
-// import { TableComponent, TableColumn } from 'vue-table-component';
-//
-// Vue.component('table-component', TableComponent);
-// Vue.component('table-column', TableColumn);
+// Vuetify es
+Vue.use(Vuetify, {
+    lang: {
+        locales: {es},
+        current: 'es'
+    }
+});
+
+
+// require('./factcolombia');
+Vue.prototype.$setLaravelValidationErrorsFromResponse = function(errorResponse) {
+    if (!this.hasOwnProperty('$validator')) return;
+
+    this.$validator.errors.clear();
+
+    if (!errorResponse.hasOwnProperty('errors')) return;
+
+    let errorFields = Object.keys(errorResponse.errors);
+    let form_error = '';
+
+    if (errorFields.includes('form_error')) form_error += `${errorResponse.errors['form_error'].join()}.`;
+
+    for (let i = 0; i < errorFields.length; i++) {
+        let field = errorFields[i];
+        let errorString = errorResponse.errors[field].join(', ');
+
+        this.$validator.errors.add({
+            field: `${form_error}${field}`,
+            msg: errorString
+        });
+    }
+};
+
+// Add message request
+Vue.prototype.$setLaravelMessage = function(response) {
+   
+
+    if ((response.hasOwnProperty('success')) && (response.hasOwnProperty('message')) && (!response.success)) this.$root.$emit('addSnackbarNotification', {text: response.message, color: 'error'});
+
+    if ((response.hasOwnProperty('success')) && (response.hasOwnProperty('message')) && (response.success)) this.$root.$emit('addSnackbarNotification', {text: response.message, color: 'success'});
+
+    if (response.hasOwnProperty('message') && (!response.hasOwnProperty('success'))) this.$root.$emit('addSnackbarNotification', {text: response.message, color: 'info'});
+};
+
+// Add errors server
+Vue.prototype.$setLaravelErrors = function(errorResponse) {
+  
+
+    if ((errorResponse.hasOwnProperty('message')) && (errorResponse.message != '')) this.$root.$emit('addSnackbarNotification', {text: errorResponse.message, color: 'error'});
+
+    if ((errorResponse.hasOwnProperty('exception')) && (errorResponse.exception != '')) this.$root.$emit('addSnackbarNotification', {text: errorResponse.exception, color: 'error'});
+};
+
+Vue.component('tenant-document-form', require('@viewsModuleProColombia/tenant/configuration/Configuration.vue'));
+
+
+
+
+
+
+
 Vue.component('tenant-dashboard-index', require('../../modules/Dashboard/Resources/assets/js/views/index.vue'));
 
 Vue.component('x-graph', require('./components/graph/src/Graph.vue'));
@@ -234,6 +311,9 @@ Vue.component('tenant-account-configuration-index', require('./views/tenant/acco
 
 //auto update
 Vue.component('system-update', require('./views/system/update/index.vue'));
+
+
+
 
 const app = new Vue({
     el: '#main-wrapper'
