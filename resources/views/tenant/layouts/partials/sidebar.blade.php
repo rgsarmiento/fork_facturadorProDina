@@ -52,6 +52,9 @@
                         {{ ($path[0] === 'production-orders')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'technical-services')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'user-commissions')?'nav-active nav-expanded':'' }}
+
+                        {{ ($path[0] === 'documents-co')?'nav-active nav-expanded':'' }}
+
                         
                         ">
                         <a class="nav-link" href="#">
@@ -64,6 +67,13 @@
                                 @if(in_array('documents', $vc_modules))
 
                                     @if(in_array('new_document', $vc_module_levels))
+
+                                        <li class="{{ ($path[0] === 'documents' && $path[1] === 'create')?'nav-active':'' }}">
+                                            <a class="nav-link" href="{{route('tenant.documents-co.create')}}">
+                                                Nuevo comprobante colombia
+                                            </a>
+                                        </li>
+
                                         <li class="{{ ($path[0] === 'documents' && $path[1] === 'create')?'nav-active':'' }}">
                                             <a class="nav-link" href="{{route('tenant.documents.create')}}">
                                                 Nuevo comprobante electrónico
