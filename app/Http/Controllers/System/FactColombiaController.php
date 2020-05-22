@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
-use modules\Factcolombia1\app\Http\Controllers\System\LoginController;
+use Modules\Factcolombia1\app\Http\Controllers\System\LoginController;
 
 class FactColombiaController extends Controller
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\Factcolombia1\app\Http\Controllers\System;
+namespace Modules\Factcolombia1\app\Http\Controllers\System;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +39,7 @@ class LoginController extends Controller
     }
 
     public function showLoginForm() {
-        return view('auth.login');
+        return view('factcolombia1::auth.login');
     }
 
     protected function guard() {
