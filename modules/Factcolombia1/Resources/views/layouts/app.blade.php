@@ -7,7 +7,7 @@
         <title>{{env('APP_NAME', 'Bee')}}</title>
         <link rel="shortcut icon" href="{{asset('factcolombia\assets\images\favicon_dian.ico')}}">
         {{-- Styles --}}
-        <link href="{{asset('factcolombia\css\app.css')}}" rel="stylesheet">
+        <link href="{{asset('css\factcolombia1.css')}}" rel="stylesheet">
         <link href="{{asset('factcolombia\assets\css\main.css')}}" rel="stylesheet">
         <link href="{{asset('factcolombia\assets\css\custom.css')}}" rel="stylesheet">
         @yield('css')
@@ -39,7 +39,10 @@
         </div>
     </body>
     {{-- JavaScript --}}
-    <script src="{{asset('js/app.js')}}"></script>
-    <script src="{{asset('assets/js/app.js')}}"></script>
+    {{-- <script src="{{asset('js/app.js')}}"></script>
+    <script src="{{asset('assets/js/app.js')}}"></script> --}}
+    
+    <script src="{{asset('js/factcolombia1.js')}}"></script>
+
     @yield('js')
 </html>

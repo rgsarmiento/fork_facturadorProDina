@@ -1,5 +1,7 @@
 <?php
 
+$currentHostname = app(Hyn\Tenancy\Contracts\CurrentHostname::class);
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +13,17 @@
 |
 */
 
-Route::prefix('factcolombia1')->group(function() {
-    Route::get('/', 'Factcolombia1Controller@index');
-});
+if ($currentHostname) {
+    Route::domain($currentHostname->fqdn)->group(function() {
+        Route::get('/login', 'Tenant\LoginController@showLoginForm')->name('login');
+        Route::post('/logout', 'Tenant\LoginController@logout')->name('logout');
+        Route::post('/login', 'Tenant\LoginController@login');
+    });
+}
+else {
+    Route::domain(env('APP_URL_BASE', 'factura'))->group(function() {
+        Route::get('/login', 'System\LoginController@showLoginForm')->name('login');
+        Route::post('/logout', 'System\LoginController@logout')->name('logout');
+        Route::post('/login', 'System\LoginController@login');
+    });
+}
