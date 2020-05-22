@@ -493,6 +493,11 @@ if ($hostname) {
 } else {
     Route::domain(env('APP_URL_BASE'))->group(function() {
 
+//        Route::get('prueba', function(){ return view('factcolombia1::midemo'); });
+//        Route::get('prueba', '\modules\Factcolombia1\app\Http\Controllers\System\LoginController@showLoginForm')->name('prueba');
+//        Route::get('prueba', '\modules\Factcolombia1\Http\Controllers\Factcolombia1Controller@index')->name('prueba');
+        Route::get('prueba', 'System\FactColombiaController@ShowLoginForm')->name('prueba');
+
         Route::get('login', 'System\LoginController@showLoginForm')->name('login');
         Route::post('login', 'System\LoginController@login');
         Route::post('logout', 'System\LoginController@logout')->name('logout');
