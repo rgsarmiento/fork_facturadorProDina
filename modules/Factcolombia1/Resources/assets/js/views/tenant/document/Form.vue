@@ -21,7 +21,6 @@
                     <v-autocomplete
                       v-model="document.client_id"
                       v-validate="'required'"
-                      :error-messages="errors.collect('document.client_id')"
                       data-vv-name="client_id"
                       :counter="255"
                       :items="clients"
@@ -76,7 +75,6 @@
                       <v-autocomplete
                         v-model="document.type_document_id"
                         v-validate="'required'"
-                        :error-messages="errors.collect('document.type_document_id')"
                         data-vv-name="type_document_id"
                         :counter="255"
                         :items="typeNoteDocuments"
@@ -91,7 +89,6 @@
                       <v-autocomplete
                         v-model="document.note_concept_id"
                         v-validate="'required'"
-                        :error-messages="errors.collect('document.note_concept_id')"
                         data-vv-name="note_concept_id"
                         :counter="255"
                         :items="noteConcepts"
@@ -107,7 +104,6 @@
                       <v-autocomplete
                         v-model="document.type_invoice_id"
                         v-validate="'required'"
-                        :error-messages="errors.collect('document.type_invoice_id')"
                         data-vv-name="type_invoice_id"
                         :counter="255"
                         :items="typeInvoices"
@@ -122,7 +118,6 @@
                     <v-autocomplete
                       v-model="document.currency_id"
                       v-validate="'required'"
-                      :error-messages="errors.collect('document.currency_id')"
                       data-vv-name="currency_id"
                       :counter="255"
                       :items="currencies"
@@ -177,7 +172,6 @@
                     <v-autocomplete
                       v-model="document.payment_form_id"
                       v-validate="'required'"
-                      :error-messages="errors.collect('document.payment_form_id')"
                       data-vv-name="payment_form_id"
                       :counter="255"
                       :items="payment_forms"
@@ -191,7 +185,6 @@
                     <v-autocomplete
                       v-model="document.payment_method_id"
                       v-validate="'required'"
-                      :error-messages="errors.collect('document.payment_method_id')"
                       data-vv-name="payment_method_id"
                       :counter="255"
                       :items="payment_methods"
@@ -208,7 +201,6 @@
                     <v-textarea
                       v-model="document.observation"
                       v-validate="'max:255'"
-                      :error-messages="errors.collect('document.observation')"
                       data-vv-name="observation"
                       :counter="255"
                       auto-grow
@@ -233,7 +225,6 @@
                           <v-text-field
                             v-model="props.item.quantity"
                             v-validate="'decimal:2|max:6'"
-                            :error-messages="errors.collect('document.quantity')"
                             data-vv-name="quantity"
                             required
                           ></v-text-field>
@@ -244,7 +235,6 @@
                             v-model="props.item.price"
                             v-validate="'decimal:2|max:13'"
                             :prefix="currencySymbol"
-                            :error-messages="errors.collect('document.price')"
                             data-vv-name="price"
                             required
                           ></v-text-field>
@@ -266,7 +256,6 @@
                             v-model="props.item.discount"
                             v-validate="'decimal:2|max:13'"
                             :prefix="currencySymbol"
-                            :error-messages="errors.collect('document.discount')"
                             data-vv-name="discount"
                             :counter="13"
                             required
@@ -361,7 +350,6 @@
                       <v-autocomplete
                         v-model="add.item_id"
                         v-validate="'required'"
-                        :error-messages="errors.collect('add.item_id')"
                         data-vv-name="item_id"
                         :counter="255"
                         :items="items"
@@ -375,7 +363,6 @@
                       <v-text-field
                         v-model="add.quantity"
                         v-validate="'required|decimal:2|max:13'"
-                        :error-messages="errors.collect('add.quantity')"
                         data-vv-name="quantity"
                         :counter="13"
                         label="Cantidad *"
@@ -433,12 +420,16 @@
 <script>
 import Helper from "../../../mixins/Helper";
 import { all } from 'q';
+// import VeeValidate, { Validator } from 'vee-validate';
+window.Vue = require('vue');
+window.VeeValidate = require('vee-validate');
 
+window.Vue.use(window.VeeValidate);
 export default {
   mixins: [Helper],
   props: {
     route: {
-      required: true
+      // required: true
     }
   },
   data: () => ({

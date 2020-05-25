@@ -36,10 +36,15 @@ use Illuminate\Support\Facades\Mail;
 use DateTime;
 use Storage;
 
+// use App\Models\Tenant\Item as ItemP;
+use App\Models\Tenant\Person;
+use Modules\Inventory\Models\Warehouse as ModuleWarehouse;
+use Modules\Document\Traits\SearchTrait;
+
 
 class DocumentController extends Controller
 {
-    use DocumentTrait;
+    use DocumentTrait, SearchTrait;
 
     /**
      * Display a listing of the resource.
@@ -717,4 +722,306 @@ class DocumentController extends Controller
        // return response()->download(storage_path("app/invoice/invoice-{$correlativo}.xml"));
 
     }
+    
+    public function tables()
+    {
+
+        // return [
+        //     'payment_methods' => PaymentMethod::all(),
+        //     'payment_forms' => PaymentForm::all(),
+        //     'typeDocuments' => $typeDocuments = TypeDocument::query()
+        //         ->get()
+        //         ->each(function($typeDocument) {
+        //             $typeDocument->alert_range = (($typeDocument->to - 100) < (Document::query()
+        //                 ->hasPrefix($typeDocument->prefix)
+        //                 ->whereBetween('number', [$typeDocument->from, $typeDocument->to])
+        //                 ->max('number') ?? $typeDocument->from));
+
+        //             $typeDocument->alert_date = ($typeDocument->resolution_date_end == null) ? false : Carbon::parse($typeDocument->resolution_date_end)->subMonth(1)->lt(Carbon::now());
+        //         }),
+        //     'typeInvoices' => TypeInvoice::all(),
+        //     'documents' => Document::query()
+        //         ->with('state_document', 'currency', 'type_document', 'detail_documents', 'reference', 'log_documents')
+        //         ->get(),
+        //     'currencies' => Currency::all(),
+        //     'clients' => Client::all(),
+        //     'items' => Item::query()
+        //         ->with('typeUnit', 'tax')
+        //         ->get(),
+        //     'taxes' => Tax::all(),
+        //     'companyservice' => ServiceTenantCompany::first()
+        // ];
+
+        $customers = $this->table('customers');  
+
+        //modificar por tablas de bd
+        $payment_methods = [
+            [ "id" => 1, "name" => "Instrumento no definido", "code" => "1"]
+        ];
+
+        $payment_forms = [
+           [ "id" => 1, "name" => "Contado", "code" => "1"]
+        ];
+
+        $type_invoices = [
+           [ "id" => 1, "name" => "Factura de Venta", "code" => "1"]
+        ];
+
+        $currencies = [
+           [ "id" => 1, "name" => "Peso Colombiano", "code" => "COP", "symbol" => "$"]
+        ];
+
+        $taxes = ('[{"id":1,"name":"IVA","code":"01","rate":"19.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":1,"type_tax":{"id":1,"name":"IVA","description":"Impuesto de Valor Agregado","code":"01\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":2,"name":"IMPUESTO AL CONSUMO","code":"02","rate":"8.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":2,"type_tax":{"id":2,"name":"IC","description":"Impuesto al Consumo","code":"02\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":3,"name":"RETE.ICA","code":"03","rate":"7.70","conversion":"1000.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":7,"type_tax":{"id":7,"name":"ReteICA","description":"Retención sobre el ICA","code":"07\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":4,"name":"IMPUESTO NACIONAL AL CONSUMO","code":"04","rate":"4.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":4,"type_tax":{"id":4,"name":"INC","description":"Impuesto Nacional al Consumo","code":"04\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":5,"name":"RETE.FUENTE","code":"","rate":"2.50","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":6,"type_tax":{"id":6,"name":"ReteFuente","description":"Retención sobre Renta","code":"06\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":6,"name":"RETE.IVA","code":"","rate":"15.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":false,"in_tax":1,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:29","type_tax_id":5,"type_tax":{"id":5,"name":"ReteIVA","description":"Retención sobre el IVA","code":"05\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false}]');
+  
+        return compact('customers','payment_methods','payment_forms','type_invoices','currencies'
+                        , 'taxes');
+
+    }
+
+    public function item_tables()
+    {
+        $items = $this->table('items');
+        $taxes = ('[{"id":1,"name":"IVA","code":"01","rate":"19.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":1,"type_tax":{"id":1,"name":"IVA","description":"Impuesto de Valor Agregado","code":"01\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":2,"name":"IMPUESTO AL CONSUMO","code":"02","rate":"8.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":2,"type_tax":{"id":2,"name":"IC","description":"Impuesto al Consumo","code":"02\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":3,"name":"RETE.ICA","code":"03","rate":"7.70","conversion":"1000.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":7,"type_tax":{"id":7,"name":"ReteICA","description":"Retención sobre el ICA","code":"07\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":4,"name":"IMPUESTO NACIONAL AL CONSUMO","code":"04","rate":"4.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":4,"type_tax":{"id":4,"name":"INC","description":"Impuesto Nacional al Consumo","code":"04\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":5,"name":"RETE.FUENTE","code":"","rate":"2.50","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":6,"type_tax":{"id":6,"name":"ReteFuente","description":"Retención sobre Renta","code":"06\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":6,"name":"RETE.IVA","code":"","rate":"15.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":false,"in_tax":1,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:29","type_tax_id":5,"type_tax":{"id":5,"name":"ReteIVA","description":"Retención sobre el IVA","code":"05\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false}]');
+
+        return compact('items', 'taxes');
+    }
+
+    public function table($table)
+    {
+        if ($table === 'customers') {
+            $customers = Person::whereType('customers')->whereIsEnabled()->orderBy('name')->take(20)->get()->transform(function($row) {
+                return [
+                    'id' => $row->id,
+                    'description' => $row->number.' - '.$row->name,
+                    'name' => $row->name,
+                    'number' => $row->number,
+                    'identity_document_type_id' => $row->identity_document_type_id,
+                    'address' =>  $row->address,
+
+
+                ];
+            });
+            return $customers;
+        }
+ 
+        if ($table === 'items') {
+
+            $establishment_id = auth()->user()->establishment_id;
+            $warehouse = ModuleWarehouse::where('establishment_id', $establishment_id)->first();
+
+            $items_u = Item::whereWarehouse()->whereIsActive()->whereNotIsSet()->orderBy('description')->take(20)->get();
+            $items_s = Item::where('unit_type_id','ZZ')->whereIsActive()->orderBy('description')->take(10)->get();
+            $items = $items_u->merge($items_s);
+
+            return collect($items)->transform(function($row) use($warehouse){
+                $detail = $this->getFullDescription($row, $warehouse);
+                return [
+                    'id' => $row->id,
+                    'full_description' => $detail['full_description'],
+                    'brand' => $detail['brand'],
+                    'category' => $detail['category'],
+                    'stock' => $detail['stock'],
+                    'internal_id' => $row->internal_id,
+                    'description' => $row->description,
+                    'currency_type_id' => $row->currency_type_id,
+                    'currency_type_symbol' => $row->currency_type->symbol,
+                    'sale_unit_price' => round($row->sale_unit_price, 2),
+                    'purchase_unit_price' => $row->purchase_unit_price,
+                    'unit_type_id' => $row->unit_type_id,
+                    'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+                    'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
+                    'calculate_quantity' => (bool) $row->calculate_quantity,
+                    'has_igv' => (bool) $row->has_igv,
+                    'amount_plastic_bag_taxes' => $row->amount_plastic_bag_taxes,
+                    'item_unit_types' => collect($row->item_unit_types)->transform(function($row) {
+                        return [
+                            'id' => $row->id,
+                            'description' => "{$row->description}",
+                            'item_id' => $row->item_id,
+                            'unit_type_id' => $row->unit_type_id,
+                            'quantity_unit' => $row->quantity_unit,
+                            'price1' => $row->price1,
+                            'price2' => $row->price2,
+                            'price3' => $row->price3,
+                            'price_default' => $row->price_default,
+                        ];
+                    }),
+                    'warehouses' => collect($row->warehouses)->transform(function($row) use($warehouse){
+                        return [
+                            'warehouse_description' => $row->warehouse->description,
+                            'stock' => $row->stock,
+                            'warehouse_id' => $row->warehouse_id,
+                            'checked' => ($row->warehouse_id == $warehouse->id) ? true : false,
+                        ];
+                    }),
+                    'attributes' => $row->attributes ? $row->attributes : [],
+                    'lots_group' => collect($row->lots_group)->transform(function($row){
+                        return [
+                            'id'  => $row->id,
+                            'code' => $row->code,
+                            'quantity' => $row->quantity,
+                            'date_of_due' => $row->date_of_due,
+                            'checked'  => false
+                        ];
+                    }),
+                    'lots' => $row->item_lots->where('has_sale', false)->where('warehouse_id', $warehouse->id)->transform(function($row) {
+                        return [
+                            'id' => $row->id,
+                            'series' => $row->series,
+                            'date' => $row->date,
+                            'item_id' => $row->item_id,
+                            'warehouse_id' => $row->warehouse_id,
+                            'has_sale' => (bool)$row->has_sale,
+                            'lot_code' => ($row->item_loteable_type) ? (isset($row->item_loteable->lot_code) ? $row->item_loteable->lot_code:null):null
+                        ];
+                    }),
+                    'lots_enabled' => (bool) $row->lots_enabled,
+                    'series_enabled' => (bool) $row->series_enabled,
+                    'type_unit' => [
+                        "id" => 10,
+                        "code" => 70,
+                        "name" => "Unidades"
+                    ],
+
+                ];
+            });
+        }
+
+        return [];
+    }
+
+    
+    public function searchItems(Request $request)
+    {
+
+        // dd($request->all());
+        $establishment_id = auth()->user()->establishment_id;
+        $warehouse = ModuleWarehouse::where('establishment_id', $establishment_id)->first();
+
+        $items_not_services = $this->getItemsNotServices($request);
+        $items_services = $this->getItemsServices($request);
+        $all_items = $items_not_services->merge($items_services);
+
+        $items = collect($all_items)->transform(function($row) use($warehouse){
+
+                $detail = $this->getFullDescription($row, $warehouse);
+
+                return [
+                    'id' => $row->id,
+                    'full_description' => $detail['full_description'],
+                    'brand' => $detail['brand'],
+                    'category' => $detail['category'],
+                    'stock' => $detail['stock'],
+                    'internal_id' => $row->internal_id,
+                    'description' => $row->description,
+                    'currency_type_id' => $row->currency_type_id,
+                    'currency_type_symbol' => $row->currency_type->symbol,
+                    'sale_unit_price' => round($row->sale_unit_price, 2),
+                    'purchase_unit_price' => $row->purchase_unit_price,
+                    'unit_type_id' => $row->unit_type_id,
+                    'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+                    'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
+                    'calculate_quantity' => (bool) $row->calculate_quantity,
+                    'has_igv' => (bool) $row->has_igv,
+                    'amount_plastic_bag_taxes' => $row->amount_plastic_bag_taxes,
+                    'item_unit_types' => collect($row->item_unit_types)->transform(function($row) {
+                        return [
+                            'id' => $row->id,
+                            'description' => "{$row->description}",
+                            'item_id' => $row->item_id,
+                            'unit_type_id' => $row->unit_type_id,
+                            'quantity_unit' => $row->quantity_unit,
+                            'price1' => $row->price1,
+                            'price2' => $row->price2,
+                            'price3' => $row->price3,
+                            'price_default' => $row->price_default,
+                        ];
+                    }),
+                    'warehouses' => collect($row->warehouses)->transform(function($row) use($warehouse){
+                        return [
+                            'warehouse_description' => $row->warehouse->description,
+                            'stock' => $row->stock,
+                            'warehouse_id' => $row->warehouse_id,
+                            'checked' => ($row->warehouse_id == $warehouse->id) ? true : false,
+                        ];
+                    }),
+                    'attributes' => $row->attributes ? $row->attributes : [],
+                    'lots_group' => collect($row->lots_group)->transform(function($row){
+                        return [
+                            'id'  => $row->id,
+                            'code' => $row->code,
+                            'quantity' => $row->quantity,
+                            'date_of_due' => $row->date_of_due,
+                            'checked'  => false
+                        ];
+                    }),
+                    'lots' => $row->item_lots->where('has_sale', false)->where('warehouse_id', $warehouse->id)->transform(function($row) {
+                        return [
+                            'id' => $row->id,
+                            'series' => $row->series,
+                            'date' => $row->date,
+                            'item_id' => $row->item_id,
+                            'warehouse_id' => $row->warehouse_id,
+                            'has_sale' => (bool)$row->has_sale,
+                            'lot_code' => ($row->item_loteable_type) ? (isset($row->item_loteable->lot_code) ? $row->item_loteable->lot_code:null):null
+                        ];
+                    }),
+                    'lots_enabled' => (bool) $row->lots_enabled,
+                    'series_enabled' => (bool) $row->series_enabled,
+
+
+                ];
+            });
+
+        return compact('items');
+
+    }
+
+    public function searchCustomers(Request $request)
+    {
+
+        // $identity_document_type_id = $this->getIdentityDocumentTypeId($request->document_type_id, $request->operation_type_id);
+
+        $customers = Person::where('number','like', "%{$request->input}%")
+                            ->orWhere('name','like', "%{$request->input}%")
+                            ->whereType('customers')->orderBy('name')
+                            // ->whereIn('identity_document_type_id',$identity_document_type_id)
+                            ->whereIsEnabled()
+                            ->get()->transform(function($row) {
+                                return [
+                                    'id' => $row->id,
+                                    'description' => $row->number.' - '.$row->name,
+                                    'name' => $row->name,
+                                    'number' => $row->number,
+                                    'identity_document_type_id' => $row->identity_document_type_id,
+                                    'identity_document_type_code' => $row->identity_document_type->code,
+                                    'addresses' => $row->addresses,
+                                    'address' =>  $row->address
+                                ];
+                            });
+
+        return compact('customers');
+    }
+
+
+    public function searchCustomerById($id)
+    {
+
+        $customers = Person::whereType('customers')
+                    ->where('id',$id)
+                    ->get()->transform(function($row) {
+                        return [
+                            'id' => $row->id,
+                            'description' => $row->number.' - '.$row->name,
+                            'name' => $row->name,
+                            'number' => $row->number,
+                            'identity_document_type_id' => $row->identity_document_type_id,
+                            'identity_document_type_code' => $row->identity_document_type->code,
+                            'address' =>  $row->address
+                        ];
+                    });
+
+        return compact('customers');
+    }
+
 }
