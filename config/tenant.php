@@ -30,4 +30,6 @@ return [
     'delete_document_type_03' => env('DELETE_DOCUMENT_TYPE_03', false),
     'select_first_document_type_03' => env('SELECT_FIRST_DOCUMENT_TYPE_03', false),
 
+    'service_fact' => env('SERVICE_FACT'),
+
 ];

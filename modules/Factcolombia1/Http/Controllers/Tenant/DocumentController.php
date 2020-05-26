@@ -3,7 +3,7 @@
 namespace Modules\Factcolombia1\Http\Controllers\Tenant;
 
 use Facades\App\Models\Tenant\Document as FacadeDocument;
-use App\Http\Requests\Tenant\DocumentRequest;
+use Modules\Factcolombia1\Http\Requests\Tenant\DocumentRequest;
 use Modules\Factcolombia1\Traits\Tenant\DocumentTrait;
 use Modules\Factcolombia1\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -106,7 +106,7 @@ class DocumentController extends Controller
         try {
 
             //envio api ///
-
+            // dd($request->client_id);
             $response =  null;
             $response_status =  null;
             $correlative_api = $this->getCorrelativeInvoice(1);
@@ -123,17 +123,21 @@ class DocumentController extends Controller
             $service_invoice = $request->service_invoice;
             $service_invoice['number'] = $correlative_api;
 
-            $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
-            $company = ServiceTenantCompany::firstOrFail();
+            // $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
+            // $company = ServiceTenantCompany::firstOrFail();
 
 //            return json_encode($request->date_expiration);
 
             if(file_exists(storage_path('sendmail.api')))
                 $service_invoice['sendmail'] = true;
-            $service_invoice['ivaresponsable'] = $datoscompany->type_regime->name;
-            $service_invoice['nombretipodocid'] = $datoscompany->type_identity_document->name;
-            $service_invoice['tarifaica'] = $datoscompany->ica_rate;
-            $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;
+            // $service_invoice['ivaresponsable'] = $datoscompany->type_regime->name;
+            // $service_invoice['nombretipodocid'] = $datoscompany->type_identity_document->name;
+            // $service_invoice['tarifaica'] = $datoscompany->ica_rate;
+            // $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;
+            $service_invoice['ivaresponsable'] = "Simplificado";
+            $service_invoice['nombretipodocid'] = "No obligado a registrarse en el RUT PN";
+            $service_invoice['tarifaica'] = 10;
+            $service_invoice['actividadeconomica'] = "dedede";
             $service_invoice['notes'] = $request->observation;
             $service_invoice['date'] = date('Y-m-d');
             $service_invoice['time'] = date('H:i:s');
@@ -145,11 +149,12 @@ class DocumentController extends Controller
                 $service_invoice['payment_form']['payment_due_date'] = date('Y-m-d', strtotime($request->date_expiration));
             $service_invoice['payment_form']['duration_measure'] = $request->time_days_credit;
 
-            $id_test = $company->test_id;
-            $base_url = env("SERVICE_FACT", "");
-            if($company->type_environment_id == 2)
-                $ch = curl_init("{$base_url}ubl2.1/invoice/{$id_test}");
-            else
+            // $id_test = $company->test_id;
+            $id_test = "123123213123";
+            $base_url = config('tenant.service_fact');
+            // if($company->type_environment_id == 2)
+            //     $ch = curl_init("{$base_url}ubl2.1/invoice/{$id_test}");
+            // else
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
             $data_document = json_encode($service_invoice);
 
@@ -165,12 +170,13 @@ class DocumentController extends Controller
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
                 'Accept: application/json',
-                "Authorization: Bearer {$company->api_token}"
+                // "Authorization: Bearer {$company->api_token}"
+                "Authorization: Bearer 46e5855222d26d74aea44148734b693537c5f06b43ebc7db9e51ed0d638c328e"
             ));
             $response = curl_exec($ch);
             curl_close($ch);
 
-//            return $response;
+           return $response;
 
             $response_model = json_decode($response);
             $zip_key = null;
@@ -365,7 +371,7 @@ class DocumentController extends Controller
                     'message' => 'Error al obtener correlativo Api.'
                 ];
             }
-
+            
             //return $correlative_api;
 
             $note_service['number'] = $correlative_api;
@@ -389,7 +395,7 @@ class DocumentController extends Controller
             }
 
             $id_test = $company->test_id;
-            $base_url = env("SERVICE_FACT", "");
+            $base_url = config('tenant.service_fact');
             if($company->type_environment_id == 2)
                 $ch = curl_init("{$base_url}ubl2.1/{$url_name_note}/{$id_test}");
             else
@@ -412,6 +418,8 @@ class DocumentController extends Controller
             $response_model = json_decode($response);
             $zip_key = null;
             $invoice_status_api = null;
+
+            // return $response_model;
 
             if(array_key_exists('urlinvoicepdf', $response_model) && array_key_exists('urlinvoicexml', $response_model) )
             {
@@ -621,7 +629,7 @@ class DocumentController extends Controller
         $send= (object)['number'=> $number, 'email'=> $client->email];
         $data_send = json_encode($send);
 
-        $base_url = env("SERVICE_FACT", "");
+        $base_url = config('tenant.service_fact');
         $ch2 = curl_init("{$base_url}send_mail");
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "POST");
@@ -655,8 +663,9 @@ class DocumentController extends Controller
 
     public function getCorrelativeInvoice($type_service)
     {
-        $company = ServiceTenantCompany::firstOrFail();
-        $base_url = env("SERVICE_FACT", "");
+        // $company = ServiceTenantCompany::firstOrFail();
+        $base_url = config('tenant.service_fact');
+        // dd($base_url);
         $ch2 = curl_init("{$base_url}ubl2.1/invoice/current_number/{$type_service}");
 
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
@@ -664,7 +673,8 @@ class DocumentController extends Controller
         curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
-            "Authorization: Bearer {$company->api_token}"
+            // "Authorization: Bearer {$company->api_token}"
+            "Authorization: Bearer 46e5855222d26d74aea44148734b693537c5f06b43ebc7db9e51ed0d638c328e"
         ));
         $response_data = curl_exec($ch2);
         $err = curl_error($ch2);
@@ -681,7 +691,7 @@ class DocumentController extends Controller
     public function setStateDocument($type_service, $DocumentNumber)
     {
         $company = ServiceTenantCompany::firstOrFail();
-        $base_url = env("SERVICE_FACT", "");
+        $base_url = config('tenant.service_fact');
         $ch2 = curl_init("{$base_url}ubl2.1/invoice/state_document/{$type_service}/{$DocumentNumber}");
 
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
@@ -725,32 +735,6 @@ class DocumentController extends Controller
     
     public function tables()
     {
-
-        // return [
-        //     'payment_methods' => PaymentMethod::all(),
-        //     'payment_forms' => PaymentForm::all(),
-        //     'typeDocuments' => $typeDocuments = TypeDocument::query()
-        //         ->get()
-        //         ->each(function($typeDocument) {
-        //             $typeDocument->alert_range = (($typeDocument->to - 100) < (Document::query()
-        //                 ->hasPrefix($typeDocument->prefix)
-        //                 ->whereBetween('number', [$typeDocument->from, $typeDocument->to])
-        //                 ->max('number') ?? $typeDocument->from));
-
-        //             $typeDocument->alert_date = ($typeDocument->resolution_date_end == null) ? false : Carbon::parse($typeDocument->resolution_date_end)->subMonth(1)->lt(Carbon::now());
-        //         }),
-        //     'typeInvoices' => TypeInvoice::all(),
-        //     'documents' => Document::query()
-        //         ->with('state_document', 'currency', 'type_document', 'detail_documents', 'reference', 'log_documents')
-        //         ->get(),
-        //     'currencies' => Currency::all(),
-        //     'clients' => Client::all(),
-        //     'items' => Item::query()
-        //         ->with('typeUnit', 'tax')
-        //         ->get(),
-        //     'taxes' => Tax::all(),
-        //     'companyservice' => ServiceTenantCompany::first()
-        // ];
 
         $customers = $this->table('customers');  
 
@@ -797,11 +781,18 @@ class DocumentController extends Controller
                     'number' => $row->number,
                     'identity_document_type_id' => $row->identity_document_type_id,
                     'address' =>  $row->address,
+                    'email' =>  $row->email,
+                    'telephone' =>  $row->telephone,
 
 
                 ];
             });
             return $customers;
+        }
+ 
+        if ($table === 'taxes') {
+            $taxes = ('[{"id":1,"name":"IVA","code":"01","rate":"19.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":1,"type_tax":{"id":1,"name":"IVA","description":"Impuesto de Valor Agregado","code":"01\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":2,"name":"IMPUESTO AL CONSUMO","code":"02","rate":"8.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":2,"type_tax":{"id":2,"name":"IC","description":"Impuesto al Consumo","code":"02\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":3,"name":"RETE.ICA","code":"03","rate":"7.70","conversion":"1000.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":7,"type_tax":{"id":7,"name":"ReteICA","description":"Retención sobre el ICA","code":"07\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":4,"name":"IMPUESTO NACIONAL AL CONSUMO","code":"04","rate":"4.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":4,"type_tax":{"id":4,"name":"INC","description":"Impuesto Nacional al Consumo","code":"04\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":5,"name":"RETE.FUENTE","code":"","rate":"2.50","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":6,"type_tax":{"id":6,"name":"ReteFuente","description":"Retención sobre Renta","code":"06\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":6,"name":"RETE.IVA","code":"","rate":"15.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":false,"in_tax":1,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:29","type_tax_id":5,"type_tax":{"id":5,"name":"ReteIVA","description":"Retención sobre el IVA","code":"05\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false}]');
+            return $taxes;
         }
  
         if ($table === 'items') {
@@ -996,6 +987,8 @@ class DocumentController extends Controller
                                     'identity_document_type_id' => $row->identity_document_type_id,
                                     'identity_document_type_code' => $row->identity_document_type->code,
                                     'addresses' => $row->addresses,
+                                    'email' =>  $row->email,
+                                    'telephone' =>  $row->telephone,
                                     'address' =>  $row->address
                                 ];
                             });
@@ -1017,7 +1010,9 @@ class DocumentController extends Controller
                             'number' => $row->number,
                             'identity_document_type_id' => $row->identity_document_type_id,
                             'identity_document_type_code' => $row->identity_document_type->code,
-                            'address' =>  $row->address
+                            'address' =>  $row->address,
+                            'email' =>  $row->email,
+                            'telephone' =>  $row->telephone,
                         ];
                     });
 

@@ -3,7 +3,7 @@
 namespace Modules\Factcolombia1\Http\Requests\Tenant;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Traits\Tenant\RequestsTrait;
+use Modules\Factcolombia1\Traits\Tenant\RequestsTrait;
 
 class DocumentRequest extends FormRequest
 {
@@ -31,26 +31,26 @@ class DocumentRequest extends FormRequest
      */
     public function rules() {
         return [
-            'type_document_id' => 'required|exists:tenant.type_documents,id',
-            'type_invoice_id' => 'nullable|exists:tenant.type_invoices,id',
-            'client_id' => 'required|exists:tenant.clients,id',
-            'currency_id' => 'required|exists:tenant.currencies,id',
-            'date_issue' => 'required|date',
-            'date_expiration' => 'nullable|date',
-            'observation' => 'nullable|string|max:255',
-            'reference_id' => 'nullable|exists:tenant.documents,id',
-            'note_concept_id' => 'nullable|exists:tenant.note_concepts,id',
-            'sale' => 'required|numeric|between:0.00,9999999999.99',
-            'total_discount' => 'required|numeric|between:0.00,9999999999.99',
-            'taxes' => 'nullable|array',
-            'taxes.*.' => 'nullable|exists:tenant.taxes,id',
-            'total_tax' => 'required|numeric|between:0.00,9999999999.99',
-            'subtotal' => 'required|numeric|between:0.00,9999999999.99',
-            'total' => 'required|numeric|between:0.00,9999999999.99',
-            'items' => 'required|array',
-            'items.*.id' => 'required|exists:tenant.items,id',
-            'payment_form_id' => 'required',
-            'payment_method_id' => 'required',
+            // 'type_document_id' => 'required|exists:tenant.type_documents,id',
+            // 'type_invoice_id' => 'nullable|exists:tenant.type_invoices,id',
+            // 'client_id' => 'required|exists:tenant.clients,id',
+            // 'currency_id' => 'required|exists:tenant.currencies,id',
+            // 'date_issue' => 'required|date',
+            // 'date_expiration' => 'nullable|date',
+            // 'observation' => 'nullable|string|max:255',
+            // 'reference_id' => 'nullable|exists:tenant.documents,id',
+            // 'note_concept_id' => 'nullable|exists:tenant.note_concepts,id',
+            // 'sale' => 'required|numeric|between:0.00,9999999999.99',
+            // 'total_discount' => 'required|numeric|between:0.00,9999999999.99',
+            // 'taxes' => 'nullable|array',
+            // 'taxes.*.' => 'nullable|exists:tenant.taxes,id',
+            // 'total_tax' => 'required|numeric|between:0.00,9999999999.99',
+            // 'subtotal' => 'required|numeric|between:0.00,9999999999.99',
+            // 'total' => 'required|numeric|between:0.00,9999999999.99',
+            // 'items' => 'required|array',
+            // 'items.*.id' => 'required|exists:tenant.items,id',
+            // 'payment_form_id' => 'required',
+            // 'payment_method_id' => 'required',
         ];
     }
 }

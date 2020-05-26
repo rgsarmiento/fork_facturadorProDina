@@ -103,7 +103,7 @@
                         <div class="form-group" :class="{'has-danger': errors.price}">
                             <label class="control-label">Precio Unitario</label>
                             <el-input v-model="form.price" @input="calculateQuantity" :readonly="typeUser === ''">
-                                <template slot="prepend" v-if="form.item.currency_type_symbol">{{ form.item.currency_type_symbol }}</template>
+                                <template slot="prepend" v-if="currencyTypeSymbolActive">{{ currencyTypeSymbolActive }}</template>
                             </el-input>
                             <small class="form-control-feedback" v-if="errors.price" v-text="errors.unit_price[0]"></small>
                         </div>
@@ -123,12 +123,23 @@
                         <div class="form-group"  :class="{'has-danger': errors.total_item}">
                             <label class="control-label">Total venta producto</label>
                             <el-input v-model="total_item" @input="calculateQuantity" :min="0.01" ref="total_item">
-                                <template slot="prepend" v-if="form.item.currency_type_symbol">{{ form.item.currency_type_symbol }}</template>
+                                <template slot="prepend" v-if="currencyTypeSymbolActive">{{ currencyTypeSymbolActive }}</template>
                             </el-input>
                             <small class="form-control-feedback" v-if="errors.total_item" v-text="errors.total_item[0]"></small>
                         </div>
                     </div>
                     
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group"  :class="{'has-danger': errors.discount}">
+                            <label class="control-label">Descuento</label>
+                            <el-input v-model="form.discount" :min="0" >
+                                <template slot="prepend" v-if="currencyTypeSymbolActive">{{ currencyTypeSymbolActive }}</template>
+                            </el-input>
+                            <small class="form-control-feedback" v-if="errors.discount" v-text="errors.discount[0]"></small>
+                        </div>
+                    </div>
+
                     <!-- <template v-if="!is_client">
 
                         <div class="col-md-12"  v-if="form.item_unit_types.length > 0">
@@ -220,13 +231,13 @@
     // import ItemForm from '../../items/form.vue'
     // import LotsGroup from './lots_group.vue'
 
-    import {calculateRowItem} from '../../../../helpers/functions'
+    // import {calculateRowItem} from '../../../../helpers/functions'
     // import WarehousesDetail from './select_warehouses.vue'
     // import SelectLotsForm from './lots.vue'
 
 
     export default {
-        props: ['recordItem','showDialog', 'operationTypeId', 'currencyTypeIdActive', 'exchangeRateSale', 'typeUser', 'isEditItemNote', 'configuration'],
+        props: ['recordItem','showDialog', 'operationTypeId', 'currencyTypeIdActive', 'currencyTypeSymbolActive', 'exchangeRateSale', 'typeUser', 'isEditItemNote', 'configuration'],
         // components: {ItemForm, WarehousesDetail, LotsGroup, SelectLotsForm},
         data() {
             return {
@@ -403,24 +414,28 @@
                 // let operation_type = await _.find(this.operation_types, {id: this.operationTypeId})
                 // this.affectation_igv_types = await _.filter(this.all_affectation_igv_types, {exportation: operation_type.exportation})
 
-
                 if (this.recordItem) {
-                    // console.log(this.recordItem)
+
+                    console.log(this.recordItem)
+
                     this.form.item_id = await this.recordItem.item_id
                     await this.changeItem()
+
+                    this.form.tax_id = this.recordItem.tax_id
                     this.form.quantity = this.recordItem.quantity
-                    this.form.unit_price_value = this.recordItem.input_unit_price_value
-                    this.form.has_plastic_bag_taxes = (this.recordItem.total_plastic_bag_taxes > 0) ? true : false
+                    this.form.price = this.recordItem.price
+                    this.form.discount = this.recordItem.discount
+                    
                     this.form.warehouse_id = this.recordItem.warehouse_id
                     this.isUpdateWarehouseId = this.recordItem.warehouse_id
 
                     if(this.isEditItemNote){
                         this.form.item.currency_type_id = this.currencyTypeIdActive
-                        this.form.item.currency_type_symbol = (this.currencyTypeIdActive == 'PEN') ? 'S/':'$'
+                        // this.form.item.currency_type_symbol = (this.currencyTypeIdActive == 'PEN') ? 'S/':'$'
+                        this.form.item.currency_type_symbol = this.currencyTypeSymbolActive
                     }
-
-
                     this.calculateQuantity()
+
                 }else{
                     this.isUpdateWarehouseId = null
                 }
@@ -467,7 +482,7 @@
 
                 this.form.tax = _.find(this.taxes, {'id': this.form.tax_id})
                 this.form.type_unit = this.form.item.type_unit
-                console.log(this.form)
+                // console.log(this.form)
 
                 if (this.recordItem){
                     this.form.indexi = this.recordItem.indexi

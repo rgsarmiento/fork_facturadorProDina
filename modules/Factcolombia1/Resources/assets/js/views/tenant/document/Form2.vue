@@ -67,12 +67,12 @@
                             </div> 
 
                             <div class="col-lg-2">
-                                <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
+                                <div class="form-group" :class="{'has-danger': errors.currency_id}">
                                     <label class="control-label">Moneda</label>
-                                    <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
+                                    <el-select v-model="form.currency_id" @change="changeCurrencyType">
                                         <el-option v-for="option in currencies" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                     </el-select>
-                                    <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
+                                    <small class="form-control-feedback" v-if="errors.currency_id" v-text="errors.currency_id[0]"></small>
                                 </div>
                             </div>
                             <div class="col-lg-2">
@@ -162,19 +162,19 @@
                             <div class="col-lg-12 col-md-6 d-flex align-items-end">
                                 <div class="form-group">
                                     <button type="button" class="btn waves-effect waves-light btn-primary" @click.prevent="clickAddItemInvoice">+ Agregar Producto</button>
-                                    <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddItemInvoice">+ Agregar Retención</button>
+                                    <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddRetention">+ Agregar Retención</button>
                                 </div>
                             </div>
  
-                            <div class="col-md-12" style="display: flex; flex-direction: column; align-items: flex-end;">
+                            <div class="col-md-12" style="display: flex; flex-direction: column; align-items: flex-end;" v-if="form.items.length > 0">
                                 <table>
  
-                                    <tr v-if="form.sale > 0">
+                                    <tr>
                                         <td>TOTAL VENTA</td>
                                         <td>:</td>
                                         <td class="text-right">{{ratePrefix()}} {{ form.sale }}</td>
                                     </tr> 
-                                    <tr v-if="form.total_discount > 0">
+                                    <tr >
                                         <td>TOTAL DESCUENTO (-)</td>
                                         <td>:</td>
                                         <td class="text-right">{{ratePrefix()}} {{ form.total_discount }}</td>
@@ -188,16 +188,34 @@
                                             <td class="text-right">{{ratePrefix()}} {{Number(tax.total).toFixed(2)}}</td>
                                         </tr>
                                     </template>
-                                    <tr v-if="form.subtotal > 0">
+                                    <tr>
                                         <td>SUBTOTAL</td>
                                         <td>:</td>
                                         <td class="text-right">{{ratePrefix()}} {{ form.subtotal }}</td>
                                     </tr> 
+                                    
+                                    <template v-for="(tax, index) in form.taxes">
+                                        <tr v-if="((tax.is_retention) && (tax.apply))" :key="index">
+
+                                            <td>{{tax.name}}(-)</td>
+                                            <td>:</td>
+                                            <!-- <td class="text-right">
+                                                {{ratePrefix()}} {{Number(tax.retention).toFixed(2)}}
+                                            </td> -->
+                                            <td class="text-right" width=35%>
+                                                <el-input v-model="tax.retention" readonly >
+                                                    <span slot="prefix" class="c-m-top">{{ ratePrefix() }}</span>
+                                                    <i slot="suffix" class="el-input__icon el-icon-delete pointer"  @click="clickRemoveRetention(index)"></i>
+                                                    <!-- <el-button slot="suffix" icon="el-icon-delete" @click="clickRemoveRetention(index)"></el-button> -->
+                                                </el-input>
+                                            </td>
+                                        </tr>
+                                    </template>
 
                                 </table>
 
-                                <template v-if="form.total > 0">
-                                    <h3 class="text-right" v-if="form.total > 0"><b>TOTAL: </b>{{ratePrefix()}} {{ form.total }}</h3>
+                                <template>
+                                    <h3 class="text-right"><b>TOTAL: </b>{{ratePrefix()}} {{ form.total }}</h3>
                                 </template>
                             </div>
 
@@ -217,7 +235,8 @@
                            :recordItem="recordItem"
                            :isEditItemNote="false"
                            :operation-type-id="form.operation_type_id"
-                           :currency-type-id-active="form.currency_type_id"
+                           :currency-type-id-active="form.currency_id"
+                           :currency-type-symbol-active="ratePrefix()"
                            :exchange-rate-sale="form.exchange_rate_sale"
                            :typeUser="typeUser"
                            :configuration="configuration"
@@ -235,6 +254,8 @@
                           :showClose="false"></document-options> -->
 
  
+        <document-form-retention :showDialog.sync="showDialogAddRetention"
+                           @add="addRowRetention"></document-form-retention>
 
 
     </div>
@@ -242,6 +263,15 @@
 </template>
 
 <style>
+
+.c-m-top{
+    margin-top: 4.5px !important;
+}
+
+.pointer{
+    cursor: pointer;
+}
+
 .input-custom{
     width: 50% !important;
 }
@@ -250,9 +280,11 @@
     height: 65px !important;
     min-height: 65px !important;
 }
+
 </style>
 <script>
     import DocumentFormItem from './partials/item.vue'
+    import DocumentFormRetention from './partials/retention.vue'
     import PersonForm from '@views/persons/form.vue'
     // import DocumentOptions from '../documents/partials/options.vue'
     import {functions, exchangeRate} from '@mixins/functions'
@@ -260,7 +292,7 @@
 
     export default {
         props: ['typeUser', 'configuration'],
-        components: {PersonForm, DocumentFormItem},
+        components: {PersonForm, DocumentFormItem, DocumentFormRetention},
         mixins: [functions, exchangeRate],
         data() {
             return {
@@ -275,6 +307,7 @@
                 recordItem: null,
                 resource: 'documents-co',
                 showDialogAddItem: false,
+                showDialogAddRetention: false,
                 showDialogNewPerson: false,
                 showDialogOptions: false,
                 loading_submit: false,
@@ -309,7 +342,7 @@
                     this.currencies = response.data.currencies
                     this.payment_methods = response.data.payment_methods
                     this.payment_forms = response.data.payment_forms
-                    this.form.currency_type_id = (this.currencies.length > 0)?this.currencies[0].id:null;
+                    this.form.currency_id = (this.currencies.length > 0)?this.currencies[0].id:null;
                     this.form.type_document_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null;
                     this.form.payment_form_id = (this.payment_forms.length > 0)?this.payment_forms[0].id:null;
                     this.form.payment_method_id = (this.payment_methods.length > 0)?this.payment_methods[0].id:null;
@@ -322,6 +355,7 @@
                     // this.changeDocumentType()
                     // this.changeCurrencyType()
                 })
+
             this.loading_form = true
             this.$eventHub.$on('reloadDataPersons', (customer_id) => {
                 this.reloadDataCustomers(customer_id)
@@ -330,129 +364,7 @@
                 this.initInputPerson()
             })
         },
-        watch: {
-            // form: {
-            //     handler(val) {
-
-            //         // console.log(val)
-            //         val.taxes = JSON.parse(JSON.stringify(this.taxes));
-
-            //         val.items.forEach(item => {
-            //             item.tax = this.taxes.find(tax => tax.id == item.tax_id);
-
-            //             if (
-            //                 item.discount == null ||
-            //                 item.discount == "" ||
-            //                 item.discount > item.price * item.quantity
-            //             )
-            //                 this.$set(item, "discount", 0);
-
-            //             item.total_tax = 0;
-
-            //             if (item.tax != null) {
-            //                 let tax = val.taxes.find(tax => tax.id == item.tax.id);
-
-            //                 if (item.tax.is_fixed_value)
-
-            //                     item.total_tax = (
-            //                         item.tax.rate * item.quantity -
-            //                         (item.discount < item.price * item.quantity ? item.discount : 0)
-            //                     ).toFixed(2);
-
-            //                 if (item.tax.is_percentage)
-
-            //                     item.total_tax = (
-            //                         (item.price * item.quantity -
-            //                         (item.discount < item.price * item.quantity
-            //                             ? item.discount
-            //                             : 0)) *
-            //                         (item.tax.rate / item.tax.conversion)
-            //                     ).toFixed(2);
-
-            //                 if (!tax.hasOwnProperty("total")) 
-            //                     tax.total = Number(0).toFixed(2);
-
-            //                 tax.total = (Number(tax.total) + Number(item.total_tax)).toFixed(2);
-            //             }
-
-            //             item.subtotal = (
-            //                 Number(item.price * item.quantity) + Number(item.total_tax)
-            //             ).toFixed(2);
-
-            //             this.$set(
-            //                 item,
-            //                 "total",
-            //                 (Number(item.subtotal) - Number(item.discount)).toFixed(2)
-            //             );
-                        
-            //         });
-
-            //         val.subtotal = val.items
-            //             .reduce(
-            //                 (p, c) => Number(p) + (Number(c.subtotal) - Number(c.discount)),
-            //                 0
-            //             )
-            //             .toFixed(2);
-            //             val.sale = val.items
-            //             .reduce(
-            //                 (p, c) =>
-            //                 Number(p) + Number(c.price * c.quantity) - Number(c.discount),
-            //                 0
-            //             )
-            //             .toFixed(2);
-            //             val.total_discount = val.items
-            //             .reduce((p, c) => Number(p) + Number(c.discount), 0)
-            //             .toFixed(2);
-            //             val.total_tax = val.items
-            //             .reduce((p, c) => Number(p) + Number(c.total_tax), 0)
-            //             .toFixed(2);
-
-            //         let total = val.items
-            //             .reduce((p, c) => Number(p) + Number(c.total), 0)
-            //             .toFixed(2);
-
-            //         let totalRetentionBase = Number(0);
-
-            //         this.taxes.forEach(tax => {
-            //             if (tax.is_retention && tax.in_base && tax.apply) {
-            //                 tax.retention = (
-            //                 Number(val.sale) *
-            //                 (tax.rate / tax.conversion)
-            //                 ).toFixed(2);
-
-            //                 totalRetentionBase =
-            //                 Number(totalRetentionBase) + Number(tax.retention);
-
-            //                 if (Number(totalRetentionBase) >= Number(val.sale))
-            //                 this.$set(tax, "retention", Number(0).toFixed(2));
-
-            //                 total -= Number(tax.retention).toFixed(2);
-            //             }
-
-            //             if (
-            //                 tax.is_retention &&
-            //                 !tax.in_base &&
-            //                 tax.in_tax != null &&
-            //                 tax.apply
-            //             ) {
-            //                 let row = val.taxes.find(row => row.id == tax.in_tax);
-
-            //                 tax.retention = Number(
-            //                 Number(row.total) * (tax.rate / tax.conversion)
-            //                 ).toFixed(2);
-
-            //                 if (Number(tax.retention) > Number(row.total))
-            //                 this.$set(tax, "retention", Number(0).toFixed(2));
-
-            //                 row.retention = Number(tax.retention).toFixed(2);
-            //                 total -= Number(tax.retention).toFixed(2);
-            //             }
-            //         });
-
-            //         val.total = Number(total).toFixed(2);
-            //     },
-            //     deep: true
-            // },
+        watch: { 
             typeDocuments: {
                 // handler(val) {
                 //     val.forEach(row => {
@@ -505,6 +417,9 @@
                 this.recordItem = null
                 this.showDialogAddItem = true
             },
+            clickAddRetention(){
+                this.showDialogAddRetention = true
+            },
             getFormatUnitPriceRow(unit_price){
                 return _.round(unit_price, 6)
                 // return unit_price.toFixed(6)
@@ -519,8 +434,7 @@
             searchRemoteCustomers(input) {
 
                 if (input.length > 0) {
-                // if (input!="") {
-                    // console.log("a")
+                    
                     this.loading_search = true
                     let parameters = `input=${input}&type_document_id=${this.form.type_document_id}&operation_type_id=${this.form.operation_type_id}`
 
@@ -531,13 +445,11 @@
                                 this.input_person.number = null
 
                                 if(this.customers.length == 0){
-                                    // console.log("b")
                                     this.filterCustomers()
                                     this.input_person.number = input
                                 }
                             })
                 } else {
-                    // this.customers = []
                     this.filterCustomers()
                     this.input_person.number = null
                 }
@@ -556,9 +468,11 @@
                     watch: false,
                     subtotal: 0,
                     items: [],
+                    taxes: [],
                     total: 0,
                     sale: 0,
-                    time_days_credit: 0
+                    time_days_credit: 0,
+                    service_invoice: {}
                 }
 
                 this.errors = {}  
@@ -652,18 +566,47 @@
                 else{
                     this.form.items.push(JSON.parse(JSON.stringify(row)));
                 }
-                console.log(this.form)
+                // console.log(this.form)
                 this.calculateTotal();
+            },
+            async addRowRetention(row){
+
+                await this.taxes.forEach(tax => {
+                    if(tax.id == row.tax_id){
+                        tax.apply = true
+                    }
+                });
+                
+                await this.calculateTotal()
+
+            },
+            cleanTaxesRetention(tax_id){
+                
+                this.taxes.forEach(tax => {
+                    if(tax.id == tax_id){
+                        tax.apply = false
+                        tax.retention = 0
+                    }
+                })
+
+            },
+            async clickRemoveRetention(index){
+                // console.log(index, "w")
+                this.form.taxes[index].apply = false
+                this.form.taxes[index].retention = 0
+                await this.cleanTaxesRetention(this.form.taxes[index].id)
+                await this.calculateTotal()
+
             },
             clickRemoveItem(index) {
                 this.form.items.splice(index, 1)
                 this.calculateTotal()
             },
             changeCurrencyType() {
-                this.currency_type = _.find(this.currencies, {'id': this.form.currency_type_id})
+                this.currency_type = _.find(this.currencies, {'id': this.form.currency_id})
                 let items = []
                 this.form.items.forEach((row) => {
-                    items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale))
+                    items.push(calculateRowItem(row, this.form.currency_id, this.form.exchange_rate_sale))
                 });
                 this.form.items = items
                 this.calculateTotal()
@@ -755,7 +698,8 @@
 
                 let totalRetentionBase = Number(0);
 
-                this.taxes.forEach(tax => {
+                // this.taxes.forEach(tax => {
+                val.taxes.forEach(tax => {
                     if (tax.is_retention && tax.in_base && tax.apply) {
                         tax.retention = (
                         Number(val.sale) *
@@ -824,7 +768,204 @@
                     let address = _.find(this.customer_addresses, {'main' : 1});
                     this.form.customer_address_id = address.id;
                 }*/
+            },
+            async submit() {
+ 
+                this.form.service_invoice = await this.createInvoiceService();
+                // return
+
+                // this.loading_submit = true
+                this.$http.post(`/${this.resource}`, this.form).then(response => {
+                    if (response.data.success) {
+                        this.resetForm();
+                        this.documentNewId = response.data.data.id;
+                        this.showDialogOptions = true;
+                    }
+                    else {
+                        this.$message.error(response.data.message);
+                    }
+                }).catch(error => {
+
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data;
+                    }
+                    else {
+                        this.$message.error(error.response.data.message);
+                    }
+                }).then(() => {
+                    this.loading_submit = false;
+                });
+            },
+
+            async createInvoiceService() {
+                // let resol = this.resolution.resolution; //TODO
+                const invoice = {
+                    number: 0,
+                    type_document_id: 1
+                };
+
+                invoice.customer = await this.getCustomer();
+                invoice.tax_totals = await this.getTaxTotal();
+                invoice.legal_monetary_totals = await this.getLegacyMonetaryTotal();
+                invoice.allowance_charges = await this.createAllowanceCharge(invoice.legal_monetary_totals.allowance_total_amount, invoice.legal_monetary_totals.line_extension_amount );
+
+                invoice.invoice_lines = await this.getInvoiceLines();
+                invoice.with_holding_tax_total = await this.getWithHolding();
+
+                return invoice;
+            },
+            getCustomer() {
+
+                let customer = this.customers.find(x => x.id == this.form.customer_id);
+                let obj = {
+                    identification_number: customer.number,
+                    name: customer.name,
+                    phone: customer.telephone,
+                    address: customer.address,
+                    email: customer.email,
+                    merchant_registration: "000000"
+                };
+
+                this.form.client_id = customer.id
+
+                if (customer.type_person_id == 2) {
+                    obj.dv = customer.dv;
+                }
+
+                return obj;
+            },
+
+            getTaxTotal() {
+
+                let tax = [];
+                this.form.items.forEach(element => {
+                    let find = tax.find(x => x.tax_id == element.tax.type_tax_id && x.percent == element.tax.rate);
+                    if(find)
+                    {
+                        let indexobj = tax.findIndex(x => x.tax_id == element.tax.type_tax_id && x.percent == element.tax.rate);
+                        tax.splice(indexobj, 1);
+                        tax.push({
+                            tax_id: find.tax_id,
+                            tax_amount: this.cadenaDecimales(Number(find.tax_amount) + Number(element.total_tax)),
+                            percent: this.cadenaDecimales(find.percent),
+                            taxable_amount: this.cadenaDecimales(Number(find.taxable_amount) + Number(element.price) * Number(element.quantity)) - Number(element.discount)
+                        });
+                    }
+                    else {
+                        tax.push({
+                            tax_id: element.tax.type_tax_id,
+                            tax_amount: this.cadenaDecimales(Number(element.total_tax)),
+                            percent: this.cadenaDecimales(Number(element.tax.rate)),
+                            taxable_amount: this.cadenaDecimales((Number(element.price) * Number(element.quantity)) - Number(element.discount))
+                        });
+                    }
+                });
+            //      console.log(tax);
+                this.tax_amount_calculate = tax;
+                return tax;
+            },
+
+            getLegacyMonetaryTotal() {
+
+                let line_ext_am = 0;
+                let tax_incl_am = 0;
+                let allowance_total_amount = 0;
+                this.form.items.forEach(element => {
+                    line_ext_am += (Number(element.price) * Number(element.quantity)) - Number(element.discount);
+                    allowance_total_amount += Number(element.discount);
+                });
+
+                let total_tax_amount = 0;
+                this.tax_amount_calculate.forEach(element => {
+                    total_tax_amount += Number(element.tax_amount);
+                });
+
+                tax_incl_am = line_ext_am + total_tax_amount;
+
+                return {
+                    line_extension_amount: this.cadenaDecimales(line_ext_am),
+                    tax_exclusive_amount: this.cadenaDecimales(line_ext_am),
+                    tax_inclusive_amount: this.cadenaDecimales(tax_incl_am),
+                    allowance_total_amount: this.cadenaDecimales(allowance_total_amount),
+                    charge_total_amount: "0.00",
+                    payable_amount: this.cadenaDecimales(tax_incl_am - allowance_total_amount)
+                };
+
+            },
+
+            getInvoiceLines() {
+
+                let data = this.form.items.map(x => {
+                    return {
+
+                        unit_measure_id: x.type_unit.code, //codigo api dian de unidad
+                        invoiced_quantity: x.quantity,
+                        line_extension_amount: this.cadenaDecimales((Number(x.price) * Number(x.quantity)) - x.discount),
+                        free_of_charge_indicator: false,
+                                allowance_charges: [
+                            {
+                                        charge_indicator: false,
+                                        allowance_charge_reason: "DESCUENTO GENERAL",
+                                        amount: this.cadenaDecimales(x.discount),
+                                        base_amount: this.cadenaDecimales(Number(x.price) * Number(x.quantity))
+                                    }
+                        ],
+                        tax_totals: [
+                            {
+                                tax_id: x.tax.type_tax_id,
+                                tax_amount: this.cadenaDecimales(x.total_tax),
+                                taxable_amount: this.cadenaDecimales((Number(x.price) * Number(x.quantity)) - x.discount),
+                                percent: this.cadenaDecimales(x.tax.rate)
+                            }
+                        ],
+                        description: x.item.full_description,
+                        code: x.item.internal_id,
+                        type_item_identification_id: 4,
+                        price_amount: this.cadenaDecimales(x.price),
+                        base_quantity: x.quantity
+                    };
+
+                });
+
+                return data;
+            },
+
+            getWithHolding() {
+
+                let total = this.form.sale
+                let list = this.form.taxes.filter(function(x) {
+                    return x.is_retention && x.apply;
+                });
+
+                return list.map(x => {
+                    return {
+                        tax_id: x.type_tax_id,
+                        tax_amount: this.cadenaDecimales(x.retention),
+                        percent: this.cadenaDecimales(x.rate),
+                        taxable_amount: this.cadenaDecimales(total),
+                    };
+                });
+
+            },
+
+            createAllowanceCharge(amount, base) {
+                return [
+                    {
+                        discount_id: 1,
+                        charge_indicator: false,
+                        allowance_charge_reason: "DESCUENTO GENERAL",
+                        amount: this.cadenaDecimales(amount),
+                        base_amount: this.cadenaDecimales(base)
+                    }
+                ]
+            },
+            
+            cadenaDecimales(amount){
+                if(amount.toString().indexOf(".") != -1)
+                    return amount.toString();
+                else
+                    return amount.toString()+".00";
+                },
             }
-        }
     }
 </script>
