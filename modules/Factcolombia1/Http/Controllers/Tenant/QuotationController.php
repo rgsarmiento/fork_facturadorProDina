@@ -3,14 +3,14 @@
 namespace Modules\Factcolombia1\Http\Controllers\Tenant;
 
 use Facades\App\Models\Tenant\Document as FacadeDocument;
-use App\Traits\Tenant\DocumentTrait;
+use Modules\Factcolombia1\Traits\Tenant\DocumentTrait;
 use Modules\Factcolombia1\Http\Controllers\Controller;
-use App\Http\Requests\Tenant\{
+use Modules\Factcolombia1\Http\Requests\Tenant\{
     QuotationUpdateRequest,
     QuotationRequest
 };
 use Illuminate\Http\Request;
-use App\Models\Tenant\{
+use Modules\Factcolombia1\Models\Tenant\{
     TypeIdentityDocument,
     DetailQuotation,
     DetailDocument,
@@ -27,11 +27,11 @@ use App\Models\Tenant\{
 use Carbon\Carbon;
 use Mpdf\Mpdf;
 use DB;
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Company as TenantServiceCompany
 };
 
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Company as ServiceTenantCompany
 };
 use PDF;

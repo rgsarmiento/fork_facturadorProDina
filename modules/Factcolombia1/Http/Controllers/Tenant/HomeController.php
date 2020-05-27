@@ -4,7 +4,7 @@ namespace Modules\Factcolombia1\Http\Controllers\Tenant;
 
 use Modules\Factcolombia1\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Tenant\{
+use Modules\Factcolombia1\Models\Tenant\{
     Document,
     Client
 };

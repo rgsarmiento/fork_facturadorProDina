@@ -2,11 +2,11 @@
 
 namespace Modules\Factcolombia1\Http\Controllers\Tenant;
 
-use App\Http\Requests\Tenant\ReportTaxRequest;
+use Modules\Factcolombia1\Http\Requests\Tenant\ReportTaxRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Factcolombia1\Http\Controllers\Controller;
-use App\Exports\Tenant\ReportExport;
-use App\Models\Tenant\Document;
+use Modules\Factcolombia1\Exports\Tenant\ReportExport;
+use Modules\Factcolombia1\Models\Tenant\Document;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 

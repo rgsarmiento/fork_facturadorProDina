@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\TenantService;
+namespace Modules\Factcolombia1\Models\TenantService;
 
 use Hyn\Tenancy\Traits\UsesTenantConnection;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Tenant\{
+use  Modules\Factcolombia1\Models\Tenant\{
     typeregime as TypeRegimeDefault
 };
 

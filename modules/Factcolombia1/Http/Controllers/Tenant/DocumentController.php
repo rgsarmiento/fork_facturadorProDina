@@ -7,7 +7,7 @@ use Modules\Factcolombia1\Http\Requests\Tenant\DocumentRequest;
 use Modules\Factcolombia1\Traits\Tenant\DocumentTrait;
 use Modules\Factcolombia1\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Tenant\{
+use Modules\Factcolombia1\Models\Tenant\{
     TypeIdentityDocument,
     DetailDocument,
     TypeDocument,
@@ -25,13 +25,13 @@ use App\Models\Tenant\{
 use Carbon\Carbon;
 use Mpdf\Mpdf;
 use DB;
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Company as ServiceTenantCompany
 };
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Company as TenantServiceCompany
 };
-use App\Mail\Tenant\SendGraphicRepresentation;
+use Modules\Factcolombia1\Mail\Tenant\SendGraphicRepresentation;
 use Illuminate\Support\Facades\Mail;
 use DateTime;
 use Storage;

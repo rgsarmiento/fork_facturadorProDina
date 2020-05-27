@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail\Tenant;
+namespace Modules\Factcolombia1\Mail\Tenant;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;

@@ -4,18 +4,18 @@ namespace Modules\Factcolombia1\Http\Controllers\Tenant;
 
 use Modules\Factcolombia1\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\Tenant\ItemsImport;
-use App\Http\Requests\Tenant\{
+use Modules\Factcolombia1\Imports\Tenant\ItemsImport;
+use Modules\Factcolombia1\Http\Requests\Tenant\{
     ItemImportRequest,
     ItemUpdateRequest,
     ItemRequest
 };
 use Illuminate\Http\Request;
-use App\Exports\Tenant\{
+use Modules\Factcolombia1\Exports\Tenant\{
     ItemsFormatExport,
     ItemsExport
 };
-use App\Models\Tenant\{
+use Modules\Factcolombia1\Models\Tenant\{
     TypeUnit,
     Item,
     Tax

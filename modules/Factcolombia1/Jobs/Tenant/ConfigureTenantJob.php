@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Tenant;
+namespace Modules\Factcolombia1\Jobs\Tenant;
 
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;

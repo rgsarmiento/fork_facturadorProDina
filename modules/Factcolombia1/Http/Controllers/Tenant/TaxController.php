@@ -4,17 +4,17 @@ namespace Modules\Factcolombia1\Http\Controllers\Tenant;
 
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Factcolombia1\Http\Controllers\Controller;
-use App\Exports\Tenant\TaxesExport;
-use App\Http\Requests\Tenant\{
+use Modules\Factcolombia1\Exports\Tenant\TaxesExport;
+use Modules\Factcolombia1\Http\Requests\Tenant\{
     TaxUpdateRequest,
     TaxRequest
 };
 use Illuminate\Http\Request;
-use App\Models\Tenant\{
+use Modules\Factcolombia1\Models\Tenant\{
     Company,
     Tax
 };
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Tax as TypeTaxes
 };
 

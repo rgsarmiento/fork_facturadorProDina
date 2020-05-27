@@ -2,35 +2,35 @@
 
 namespace Modules\Factcolombia1\Http\Controllers\System;
 
-use App\Jobs\Tenant\ConfigureTenantJob;
+use Modules\Factcolombia1\Jobs\Tenant\ConfigureTenantJob;
 use Hyn\Tenancy\Contracts\Repositories\{
     HostnameRepository,
     WebsiteRepository
 };
 use Modules\Factcolombia1\Http\Controllers\Controller;
-use App\Http\Requests\System\{
+use Modules\Factcolombia1\Http\Requests\System\{
     CompanyUpdateRequest,
     CompanyRequest
 };
-use App\Models\System\Company;
+use Modules\Factcolombia1\Models\System\Company;
 use Illuminate\Http\Request;
 use Hyn\Tenancy\Environment;
 use Hyn\Tenancy\Models\{
     Hostname,
     Website
 };
-use App\Models\Tenant\{
+use Modules\Factcolombia1\Models\Tenant\{
     Company as TenantCompany,
     User
 };
 
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Company as TenantServiceCompany
 };
 use Carbon\Carbon;
 use DB;
 
-use App\Models\SystemService\{
+use Modules\Factcolombia1\Models\SystemService\{
     Country as ServiceCountry,
    // Department as ServiceDepartment,
     Language as ServiceLanguage,

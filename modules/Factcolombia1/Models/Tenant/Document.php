@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Tenant;
+namespace Modules\Factcolombia1\Models\Tenant;
 
 use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 use Illuminate\Database\Eloquent\SoftDeletes;

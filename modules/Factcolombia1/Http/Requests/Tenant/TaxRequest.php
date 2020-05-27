@@ -3,7 +3,7 @@
 namespace Modules\Factcolombia1\Http\Requests\Tenant;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Traits\Tenant\RequestsTrait;
+use Modules\Factcolombia1\Traits\Tenant\RequestsTrait;
 
 class TaxRequest extends FormRequest
 {

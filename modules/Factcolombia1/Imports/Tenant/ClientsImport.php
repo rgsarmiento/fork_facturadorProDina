@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Imports\Tenant;
+namespace Modules\Factcolombia1\Imports\Tenant;
 
 use Maatwebsite\Excel\Concerns\{
     WithChunkReading,

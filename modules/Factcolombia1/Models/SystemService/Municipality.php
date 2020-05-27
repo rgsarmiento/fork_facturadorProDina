@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\SystemService;
+namespace Modules\Factcolombia1\Models\SystemService;
 
 use Illuminate\Database\Eloquent\Model;
 use Hyn\Tenancy\Traits\UsesSystemConnection;

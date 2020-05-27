@@ -4,7 +4,7 @@ namespace Modules\Factcolombia1\Http\Controllers\Api\Tenant;
 
 use Illuminate\Contracts\Encryption\DecryptException;
 use Modules\Factcolombia1\Http\Controllers\Controller;
-use App\Models\Tenant\Document;
+use Modules\Factcolombia1\Models\Tenant\Document;
 use Illuminate\Http\Request;
 
 class DocumentReceivedController extends Controller

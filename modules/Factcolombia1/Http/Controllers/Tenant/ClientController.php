@@ -2,20 +2,20 @@
 
 namespace Modules\Factcolombia1\Http\Controllers\Tenant;
 
-use App\Imports\Tenant\ClientsImport;
+use Modules\Factcolombia1\Imports\Tenant\ClientsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Factcolombia1\Http\Controllers\Controller;
-use App\Http\Requests\Tenant\{
+use Modules\Factcolombia1\Http\Requests\Tenant\{
     ClientUpdateRequest,
     ClientImportRequest,
     ClientRequest
 };
 use Illuminate\Http\Request;
-use App\Exports\Tenant\{
+use Modules\Factcolombia1\Exports\Tenant\{
     ClientsFormatExport,
     ClientsExport
 };
-use App\Models\Tenant\{
+use Modules\Factcolombia1\Models\Tenant\{
     TypeIdentityDocument,
     TypePerson,
     TypeRegime,
@@ -23,7 +23,7 @@ use App\Models\Tenant\{
     Client
 };
 
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Company as ServiceCompany
 };
 
