@@ -17,7 +17,7 @@ class ItemRequest extends FormRequest
         $id = $this->input('id');
         return [
             'internal_id' => [
-                'nullable',
+                'required',
                 Rule::unique('tenant.items')->ignore($id),
             ],
             'description' => [

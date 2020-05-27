@@ -193,8 +193,8 @@
             </div>
         </form>
 
-        <!-- <item-form :showDialog.sync="showDialogNewItem"
-                   :external="true"></item-form> -->
+        <item-form :showDialog.sync="showDialogNewItem"
+                   :external="true"></item-form>
 
 
         <!-- <warehouses-detail
@@ -228,7 +228,7 @@
 
 <script>
 
-    // import ItemForm from '../../items/form.vue'
+    import ItemForm from '@views/items/form.vue'
     // import LotsGroup from './lots_group.vue'
 
     // import {calculateRowItem} from '../../../../helpers/functions'
@@ -238,7 +238,7 @@
 
     export default {
         props: ['recordItem','showDialog', 'operationTypeId', 'currencyTypeIdActive', 'currencyTypeSymbolActive', 'exchangeRateSale', 'typeUser', 'isEditItemNote', 'configuration'],
-        // components: {ItemForm, WarehousesDetail, LotsGroup, SelectLotsForm},
+        components: {ItemForm},
         data() {
             return {
                 loading_search:false,
