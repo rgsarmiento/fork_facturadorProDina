@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class TypeDocument extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_type_documents';
+    
     
     /**
      * The attributes that should be cast to native types.

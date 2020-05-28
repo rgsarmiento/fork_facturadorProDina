@@ -22,11 +22,11 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index() {
-        return view('app.system.home');
+        return view('factcolombia1::app.system.home');
     }
 
     public function indexDocument()
     {
-        return view('app.system.document');
+        return view('factcolombia1::app.system.document');
     }
 }

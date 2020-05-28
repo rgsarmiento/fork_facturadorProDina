@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class Ambient extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_ambients';
     
     /**
      * The attributes that are mass assignable.

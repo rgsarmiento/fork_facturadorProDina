@@ -7,8 +7,11 @@ use Hyn\Tenancy\Traits\UsesTenantConnection;
 
 class TypeEnvironment extends Model
 {
-     use  UsesTenantConnection;
-      protected $table = 'service_type_environments';
+
+    use  UsesTenantConnection;
+
+    protected $table = 'co_service_type_environments';
+    
     /**
      * The attributes that are mass assignable.
      *

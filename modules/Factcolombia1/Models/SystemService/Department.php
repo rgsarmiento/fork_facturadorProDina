@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 class Department extends Model
 {
      use UsesSystemConnection;
-    protected $table = 'service_departments';
+    protected $table = 'co_service_departments';
    /**
      * The attributes that are mass assignable.
      *

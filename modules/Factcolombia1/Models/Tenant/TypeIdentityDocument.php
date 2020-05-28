@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class TypeIdentityDocument extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_type_identity_documents';
+    
     
     /**
      * The attributes that are mass assignable.

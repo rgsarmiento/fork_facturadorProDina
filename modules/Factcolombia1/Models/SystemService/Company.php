@@ -9,7 +9,8 @@ class Company extends Model
 {
     
     use UsesSystemConnection;
-    protected $table = 'service_companies';
+    
+    protected $table = 'co_service_companies';
     /**
      * With default model.
      *

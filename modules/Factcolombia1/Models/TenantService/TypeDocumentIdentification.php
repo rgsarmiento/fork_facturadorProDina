@@ -7,8 +7,10 @@ use Hyn\Tenancy\Traits\UsesTenantConnection;
 
 class TypeDocumentIdentification extends Model
 {
-     use UsesTenantConnection;
-    protected $table = 'service_type_document_identifications';
+    
+    use UsesTenantConnection;
+
+    protected $table = 'co_service_type_document_identifications';
 
     /**
      * The attributes that are mass assignable.

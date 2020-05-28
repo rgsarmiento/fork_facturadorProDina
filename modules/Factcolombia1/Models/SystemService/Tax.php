@@ -9,7 +9,7 @@ class Tax extends Model
 {
     use UsesSystemConnection;
   
-    protected $table = 'service_taxes';
+    protected $table = 'co_service_taxes';
 
     /**
      * The attributes that are mass assignable.

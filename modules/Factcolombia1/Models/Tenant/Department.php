@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class Department extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_departments';
+    
     
     /**
      * The attributes that are mass assignable.

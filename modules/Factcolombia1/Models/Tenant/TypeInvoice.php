@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class TypeInvoice extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_type_invoices';
+    
     
     /**
      * The attributes that are mass assignable.

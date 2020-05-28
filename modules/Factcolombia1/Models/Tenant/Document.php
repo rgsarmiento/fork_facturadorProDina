@@ -12,6 +12,9 @@ class Document extends Model
 {
     use SoftDeletes, HasJsonRelationships, UsesTenantConnection;
 
+    protected $table = 'co_documents';
+    
+
     /**
      * The attributes that should be cast to native types.
      *

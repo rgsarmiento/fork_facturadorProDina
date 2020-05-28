@@ -20,9 +20,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\System\Configuration;
 use App\CoreFacturalo\Helpers\Certificate\GenerateCertificate;
+use Modules\Factcolombia1\Traits\System\CompanyTrait;
+
 
 class ClientController extends Controller
 {
+
+    use CompanyTrait;
+
     public function index()
     {
         return view('system.clients.index');
@@ -311,6 +316,8 @@ class ClientController extends Controller
             $client->plan_id = $request->input('plan_id');
             $client->locked_emission = $request->input('locked_emission');
             $client->save();
+
+            $this->createCompanyColombia($request);
 
             DB::connection('system')->commit();
         }

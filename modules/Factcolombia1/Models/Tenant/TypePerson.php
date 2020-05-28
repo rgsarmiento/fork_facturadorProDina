@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class TypePerson extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_type_persons';
+    
     
     /**
      * The attributes that are mass assignable.

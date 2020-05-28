@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class TypeObligation extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_type_obligations';
+    
     
     /**
      * The attributes that are mass assignable.

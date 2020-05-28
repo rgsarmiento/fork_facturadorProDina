@@ -5,7 +5,7 @@ namespace Modules\Factcolombia1\Models\Tenant;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Hyn\Tenancy\Traits\UsesTenantConnection;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Tax as TypeTax
 };
 
@@ -14,6 +14,8 @@ class Tax extends Model
 {
     use SoftDeletes, UsesTenantConnection;
     
+    protected $table = 'co_taxes';
+
     /**
      * The attributes that are mass assignable.
      *

@@ -11,6 +11,8 @@ class Company extends Model
 {
     use SoftDeletes, UsesSystemConnection;
     
+    protected $table = 'co_companies';
+
     /**
      * The attributes that are mass assignable.
      *

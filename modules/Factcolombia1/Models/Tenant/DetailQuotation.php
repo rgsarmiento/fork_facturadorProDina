@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class DetailQuotation extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_detail_quotations';
+    
     
     /**
      * The attributes that should be cast to native types.

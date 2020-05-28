@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class Currency extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_currencies';
+    
     
     /**
      * The attributes that are mass assignable.

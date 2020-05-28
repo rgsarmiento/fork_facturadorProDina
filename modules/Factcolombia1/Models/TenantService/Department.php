@@ -18,7 +18,7 @@ use Hyn\Tenancy\Traits\UsesTenantConnection;
 class Department extends Model
 {
     use  UsesTenantConnection;
-    protected $table = 'service_departments';
+    protected $table = 'co_service_departments';
    /**
      * The attributes that are mass assignable.
      *

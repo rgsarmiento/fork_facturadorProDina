@@ -12,7 +12,7 @@ class TypeCurrency extends Model
   
     use UsesSystemConnection;
 
-    protected $table = 'service_type_currencies';
+    protected $table = 'co_service_type_currencies';
 
     /**
      * The attributes that are mass assignable.

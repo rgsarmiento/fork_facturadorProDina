@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class NoteConcept extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_note_concepts';
+    
     
     /**
      * The attributes that are mass assignable.

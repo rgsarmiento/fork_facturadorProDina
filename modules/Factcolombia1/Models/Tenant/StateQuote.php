@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class StateQuote extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_state_quotes';
+    
     
     /**
      * The attributes that are mass assignable.

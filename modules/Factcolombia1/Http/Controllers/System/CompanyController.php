@@ -47,6 +47,7 @@ use Modules\Factcolombia1\Models\SystemService\{
     Company as ServiceCompany
 };
 
+use App\Models\System\Module;
 
 
 
@@ -521,17 +522,19 @@ class CompanyController extends Controller
         $department = ServiceDepartment::where('country_id', $id_country)->get();
         return [
             //'country' => ServiceCountry::all(),
-            'deparments' => $department,
+            'departments' => $department,
             'municipalities' => ServiceMunicipality::whereIn('department_id',  $department->pluck('id'))->get(),
          //   'language' => ServiceLanguage::all(),
           //  'tax' => ServiceTax::all(),
            // 'type_enviroment' => ServiceTypeEnvironment::all(),
           //  'type_operation' => ServiceTypeOperation::all(),
-            'type_documentation_identification' => ServiceTypeDocumentIdentification::all(),
+            'type_documentation_identifications' => ServiceTypeDocumentIdentification::all(),
           //  'type_currency' => ServiceTypeCurrency::all(),
-            'type_organization' => ServiceTypeOrganization::all(),
-            'type_regime' => ServiceTypeRegime::all(),
-          //  'type_liability' => ServiceTypeLiability::all()
+            'type_organizations' => ServiceTypeOrganization::all(),
+            'type_regimes' => ServiceTypeRegime::all(),
+            'modules' => Module::orderBy('description')->get(),
+            'url_base' => '.'.config('tenant.app_url_base'),
+        //  'type_liability' => ServiceTypeLiability::all()
           
         ];
     }

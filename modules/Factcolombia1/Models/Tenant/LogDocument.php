@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class LogDocument extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_log_documents';
+    
     
     /**
      * The attributes that are mass assignable.

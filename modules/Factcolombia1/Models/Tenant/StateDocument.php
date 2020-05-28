@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class StateDocument extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_state_documents';
+    
     
     /**
      * The attributes that are mass assignable.

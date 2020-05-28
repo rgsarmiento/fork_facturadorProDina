@@ -11,7 +11,7 @@ class TypeOrganization extends Model
       use UsesSystemConnection;
   
 
-    protected $table = 'service_type_organizations';
+    protected $table = 'co_service_type_organizations';
 
     /**
      * The attributes that are mass assignable.

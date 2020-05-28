@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class VersionUbl extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_version_ubls';
+    
     
     /**
      * The attributes that are mass assignable.

@@ -8,7 +8,7 @@ use Hyn\Tenancy\Traits\UsesSystemConnection;
 class Municipality extends Model
 {
     use UsesSystemConnection;
-    protected $table = 'service_municipalities';
+    protected $table = 'co_service_municipalities';
 
     /**
      * With default model.

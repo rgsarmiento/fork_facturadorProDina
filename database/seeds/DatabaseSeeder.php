@@ -35,5 +35,7 @@ class DatabaseSeeder extends Seeder
             'locked' => true
         ]);
 
+        $this->call( [DataServiceMasterSeeder::class]);
+
     }
 }

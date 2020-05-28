@@ -22,4 +22,25 @@ if($current_hostname) {
 
         });
     });
+
+
+} else {
+
+    Route::domain(config('tenant.app_url_base'))->group(function() {
+
+        Route::middleware('auth:admin')->group(function() {
+
+            Route::prefix('co-companies')->group(function () {
+
+                Route::get('', 'System\HomeController@index')->name('system.co-companies');
+                Route::get('tables', 'System\CompanyController@tables');
+ 
+            });
+
+            Route::post('/company', 'System\CompanyController@store')->name('system.company');
+
+        });
+    });
+
 }
+

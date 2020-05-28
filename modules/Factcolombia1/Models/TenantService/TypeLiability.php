@@ -8,7 +8,8 @@ use Hyn\Tenancy\Traits\UsesTenantConnection;
 class TypeLiability extends Model
 {
     use  UsesTenantConnection;
-      protected $table = 'service_type_liabilities';
+    
+    protected $table = 'co_service_type_liabilities';
 
     /**
      * The attributes that are mass assignable.

@@ -11,7 +11,8 @@ class TypeEnvironment extends Model
 {
    
       use UsesSystemConnection;
-      protected $table = 'service_type_environments';
+      
+      protected $table = 'co_service_type_environments';
     /**
      * The attributes that are mass assignable.
      *

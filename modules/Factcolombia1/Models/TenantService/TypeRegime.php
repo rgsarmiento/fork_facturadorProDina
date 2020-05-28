@@ -9,7 +9,7 @@ class TypeRegime extends Model
 {
     use  UsesTenantConnection;
 
-    protected $table = 'service_type_regimes';
+    protected $table = 'co_service_type_regimes';
 
     /**
      * The attributes that are mass assignable.

@@ -9,7 +9,7 @@ class Country extends Model
 {
     use  UsesTenantConnection;
 
-    protected $table = 'service_countries';
+    protected $table = 'co_service_countries';
     /**
      * The attributes that are mass assignable.
      *

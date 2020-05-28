@@ -10,6 +10,8 @@ class TypeUnit extends Model
 {
     use SoftDeletes, UsesTenantConnection;
     
+    protected $table = 'co_type_units';
+
     /**
      * The attributes that are mass assignable.
      *

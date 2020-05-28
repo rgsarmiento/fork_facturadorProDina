@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_cities';
+    
     
     /**
      * The attributes that are mass assignable.

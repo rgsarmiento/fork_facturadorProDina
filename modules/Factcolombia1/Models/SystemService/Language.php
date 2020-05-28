@@ -9,7 +9,7 @@ use Hyn\Tenancy\Traits\UsesSystemConnection;
 class Language extends Model
 {
     use UsesSystemConnection;
-    protected $table = 'service_languages';
+    protected $table = 'co_service_languages';
 
     /**
      * The attributes that are mass assignable.

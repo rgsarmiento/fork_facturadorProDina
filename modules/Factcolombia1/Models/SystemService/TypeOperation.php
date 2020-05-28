@@ -11,7 +11,7 @@ class TypeOperation extends Model
    
       use UsesSystemConnection;
 
-      protected $table = 'service_type_operations';
+      protected $table = 'co_service_type_operations';
 
     /**
      * The attributes that are mass assignable.

@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class Country extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_countries';
+    
     
     /**
      * The attributes that are mass assignable.

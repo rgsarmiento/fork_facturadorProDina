@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class TypeRegime extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_type_regimes';
+    
     
     /**
      * The attributes that are mass assignable.
