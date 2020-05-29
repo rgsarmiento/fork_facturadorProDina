@@ -2,7 +2,7 @@
 
 namespace Modules\Factcolombia1\Http\Controllers\Tenant;
 
-use Facades\App\Models\Tenant\Document as FacadeDocument;
+use Facades\Modules\Factcolombia1\Models\Tenant\Document as FacadeDocument;
 use Modules\Factcolombia1\Http\Requests\Tenant\DocumentRequest;
 use Modules\Factcolombia1\Traits\Tenant\DocumentTrait;
 use Modules\Factcolombia1\Http\Controllers\Controller;
@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Mail;
 use DateTime;
 use Storage;
 
-// use App\Models\Tenant\Item as ItemP;
+use App\Models\Tenant\Item as ItemP;
 use App\Models\Tenant\Person;
 use Modules\Inventory\Models\Warehouse as ModuleWarehouse;
 use Modules\Document\Traits\SearchTrait;
@@ -101,12 +101,13 @@ class DocumentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(DocumentRequest $request) {
+
         DB::connection('tenant')->beginTransaction();
 
         try {
 
             //envio api ///
-            // dd($request->client_id);
+
             $response =  null;
             $response_status =  null;
             $correlative_api = $this->getCorrelativeInvoice(1);
@@ -123,21 +124,17 @@ class DocumentController extends Controller
             $service_invoice = $request->service_invoice;
             $service_invoice['number'] = $correlative_api;
 
-            // $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
-            // $company = ServiceTenantCompany::firstOrFail();
+            $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
+            $company = ServiceTenantCompany::firstOrFail();
 
 //            return json_encode($request->date_expiration);
 
             if(file_exists(storage_path('sendmail.api')))
                 $service_invoice['sendmail'] = true;
-            // $service_invoice['ivaresponsable'] = $datoscompany->type_regime->name;
-            // $service_invoice['nombretipodocid'] = $datoscompany->type_identity_document->name;
-            // $service_invoice['tarifaica'] = $datoscompany->ica_rate;
-            // $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;
-            $service_invoice['ivaresponsable'] = "Simplificado";
-            $service_invoice['nombretipodocid'] = "No obligado a registrarse en el RUT PN";
-            $service_invoice['tarifaica'] = 10;
-            $service_invoice['actividadeconomica'] = "dedede";
+            $service_invoice['ivaresponsable'] = $datoscompany->type_regime->name;
+            $service_invoice['nombretipodocid'] = $datoscompany->type_identity_document->name;
+            $service_invoice['tarifaica'] = $datoscompany->ica_rate;
+            $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;
             $service_invoice['notes'] = $request->observation;
             $service_invoice['date'] = date('Y-m-d');
             $service_invoice['time'] = date('H:i:s');
@@ -149,13 +146,14 @@ class DocumentController extends Controller
                 $service_invoice['payment_form']['payment_due_date'] = date('Y-m-d', strtotime($request->date_expiration));
             $service_invoice['payment_form']['duration_measure'] = $request->time_days_credit;
 
-            // $id_test = $company->test_id;
-            $id_test = "123123213123";
+            $id_test = $company->test_id;
             $base_url = config('tenant.service_fact');
-            // if($company->type_environment_id == 2)
-            //     $ch = curl_init("{$base_url}ubl2.1/invoice/{$id_test}");
-            // else
+
+            if($company->type_environment_id == 2)
+                $ch = curl_init("{$base_url}ubl2.1/invoice/{$id_test}");
+            else
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
+                
             $data_document = json_encode($service_invoice);
 
 //                        $file = fopen("C:\\DEBUG.TXT", "w");
@@ -170,12 +168,11 @@ class DocumentController extends Controller
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
                 'Accept: application/json',
-                // "Authorization: Bearer {$company->api_token}"
-                "Authorization: Bearer ".config('tenant.api_token_service_fact')
+                "Authorization: Bearer {$company->api_token}"
             ));
             $response = curl_exec($ch);
             curl_close($ch);
-
+// dd($response);
            return $response;
 
             $response_model = json_decode($response);
@@ -344,6 +341,10 @@ class DocumentController extends Controller
            //'data' => $data_document
         ];
     }
+
+    
+
+
 
 
     public function storeNote(DocumentRequest $request) {
@@ -738,25 +739,16 @@ class DocumentController extends Controller
 
         $customers = $this->table('customers');  
 
-        //modificar por tablas de bd
-        $payment_methods = [
-            [ "id" => 1, "name" => "Instrumento no definido", "code" => "1"]
-        ];
+        $payment_methods = PaymentMethod::all();
 
-        $payment_forms = [
-           [ "id" => 1, "name" => "Contado", "code" => "1"]
-        ];
+        $payment_forms = PaymentForm::all();
 
-        $type_invoices = [
-           [ "id" => 1, "name" => "Factura de Venta", "code" => "1"]
-        ];
+        $type_invoices = TypeInvoice::all();
 
-        $currencies = [
-           [ "id" => 1, "name" => "Peso Colombiano", "code" => "COP", "symbol" => "$"]
-        ];
+        $currencies = Currency::all();
 
-        $taxes = ('[{"id":1,"name":"IVA","code":"01","rate":"19.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":1,"type_tax":{"id":1,"name":"IVA","description":"Impuesto de Valor Agregado","code":"01\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":2,"name":"IMPUESTO AL CONSUMO","code":"02","rate":"8.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":2,"type_tax":{"id":2,"name":"IC","description":"Impuesto al Consumo","code":"02\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":3,"name":"RETE.ICA","code":"03","rate":"7.70","conversion":"1000.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":7,"type_tax":{"id":7,"name":"ReteICA","description":"Retención sobre el ICA","code":"07\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":4,"name":"IMPUESTO NACIONAL AL CONSUMO","code":"04","rate":"4.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":4,"type_tax":{"id":4,"name":"INC","description":"Impuesto Nacional al Consumo","code":"04\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":5,"name":"RETE.FUENTE","code":"","rate":"2.50","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":6,"type_tax":{"id":6,"name":"ReteFuente","description":"Retención sobre Renta","code":"06\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":6,"name":"RETE.IVA","code":"","rate":"15.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":false,"in_tax":1,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:29","type_tax_id":5,"type_tax":{"id":5,"name":"ReteIVA","description":"Retención sobre el IVA","code":"05\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false}]');
-  
+        $taxes = Tax::all();
+
         return compact('customers','payment_methods','payment_forms','type_invoices','currencies'
                         , 'taxes');
 
@@ -765,7 +757,7 @@ class DocumentController extends Controller
     public function item_tables()
     {
         $items = $this->table('items');
-        $taxes = ('[{"id":1,"name":"IVA","code":"01","rate":"19.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":1,"type_tax":{"id":1,"name":"IVA","description":"Impuesto de Valor Agregado","code":"01\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":2,"name":"IMPUESTO AL CONSUMO","code":"02","rate":"8.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":2,"type_tax":{"id":2,"name":"IC","description":"Impuesto al Consumo","code":"02\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":3,"name":"RETE.ICA","code":"03","rate":"7.70","conversion":"1000.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":7,"type_tax":{"id":7,"name":"ReteICA","description":"Retención sobre el ICA","code":"07\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":4,"name":"IMPUESTO NACIONAL AL CONSUMO","code":"04","rate":"4.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":4,"type_tax":{"id":4,"name":"INC","description":"Impuesto Nacional al Consumo","code":"04\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":5,"name":"RETE.FUENTE","code":"","rate":"2.50","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":6,"type_tax":{"id":6,"name":"ReteFuente","description":"Retención sobre Renta","code":"06\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":6,"name":"RETE.IVA","code":"","rate":"15.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":false,"in_tax":1,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:29","type_tax_id":5,"type_tax":{"id":5,"name":"ReteIVA","description":"Retención sobre el IVA","code":"05\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false}]');
+        $taxes = Tax::all();
 
         return compact('items', 'taxes');
     }
@@ -791,17 +783,16 @@ class DocumentController extends Controller
         }
  
         if ($table === 'taxes') {
-            $taxes = ('[{"id":1,"name":"IVA","code":"01","rate":"19.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":1,"type_tax":{"id":1,"name":"IVA","description":"Impuesto de Valor Agregado","code":"01\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":2,"name":"IMPUESTO AL CONSUMO","code":"02","rate":"8.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":2,"type_tax":{"id":2,"name":"IC","description":"Impuesto al Consumo","code":"02\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":3,"name":"RETE.ICA","code":"03","rate":"7.70","conversion":"1000.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":7,"type_tax":{"id":7,"name":"ReteICA","description":"Retención sobre el ICA","code":"07\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":4,"name":"IMPUESTO NACIONAL AL CONSUMO","code":"04","rate":"4.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":false,"in_base":false,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":4,"type_tax":{"id":4,"name":"INC","description":"Impuesto Nacional al Consumo","code":"04\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":5,"name":"RETE.FUENTE","code":"","rate":"2.50","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":true,"in_tax":null,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:28","type_tax_id":6,"type_tax":{"id":6,"name":"ReteFuente","description":"Retención sobre Renta","code":"06\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false},{"id":6,"name":"RETE.IVA","code":"","rate":"15.00","conversion":"100.00","is_percentage":true,"is_fixed_value":false,"is_retention":true,"in_base":false,"in_tax":1,"deleted_at":null,"created_at":"2020-05-25 15:43:28","updated_at":"2020-05-25 15:43:29","type_tax_id":5,"type_tax":{"id":5,"name":"ReteIVA","description":"Retención sobre el IVA","code":"05\r","created_at":"2020-05-25 15:43:30","updated_at":"2020-05-25 15:43:30"},"retention":0,"total":0,"apply":false}]');
-            return $taxes;
+            return Tax::all();
         }
  
         if ($table === 'items') {
 
             $establishment_id = auth()->user()->establishment_id;
             $warehouse = ModuleWarehouse::where('establishment_id', $establishment_id)->first();
-
-            $items_u = Item::whereWarehouse()->whereIsActive()->whereNotIsSet()->orderBy('description')->take(20)->get();
-            $items_s = Item::where('unit_type_id','ZZ')->whereIsActive()->orderBy('description')->take(10)->get();
+            
+            $items_u = ItemP::whereWarehouse()->whereIsActive()->whereNotIsSet()->orderBy('description')->take(20)->get();
+            $items_s = ItemP::where('unit_type_id','ZZ')->whereIsActive()->orderBy('description')->take(10)->get();
             $items = $items_u->merge($items_s);
 
             return collect($items)->transform(function($row) use($warehouse){

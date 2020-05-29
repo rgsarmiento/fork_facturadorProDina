@@ -22,10 +22,11 @@ class CompanyRequest extends FormRequest
      */
     public function rules() {
         return [
-            'identification_number' => 'required|numeric|digits_between:1,15|unique:companies,identification_number',
+            'identification_number' => 'required|numeric|digits_between:1,15|unique:co_companies,identification_number',
             'name' => 'required|max:50',
-            'email' => 'required|email|max:50|unique:companies,email',
-            'subdomain' => 'required|alpha|max:10|unique:companies,subdomain',
+            'email' => 'required|email|max:50|unique:co_companies,email',
+            // 'subdomain' => 'required|alpha|max:10|unique:co_companies,subdomain',
+            'subdomain' => 'required|max:10|unique:co_companies,subdomain',
             'password' => 'required|confirmed|max:20',
             'limit_documents' => 'required|numeric|between:0,99999999999',
             //'language_id' => 'required',
@@ -44,6 +45,8 @@ class CompanyRequest extends FormRequest
             'address'=> 'required|string',
             'phone'=> 'required|numeric|digits_between:7,10',
             'dv' => 'required|numeric|digits_between:1,9|max:9',
+            'ica_rate'=> 'required',
+            'economic_activity_code'=> 'required',
         ];
     }
 }

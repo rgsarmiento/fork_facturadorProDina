@@ -38,7 +38,7 @@
             return {
                 titleAction: '',
                 titleDialog: '',
-                resource: 'documents-co',
+                resource: 'co-documents',
                 errors: {},
                 form: {},
                 taxes:[],

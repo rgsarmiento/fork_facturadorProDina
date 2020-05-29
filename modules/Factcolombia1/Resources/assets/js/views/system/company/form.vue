@@ -3,10 +3,13 @@
         <form autocomplete="off" @submit.prevent="submit">
             <div class="form-body">
                 <div class="row">
+                    <div class="col-md-12 mb-2">
+                        <h4><b>Datos de la empresa</b></h4>
+                    </div>
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.identification_number}">
                             <label class="control-label">Número de identificación</label>
-                            <el-input  v-model="form.identification_number" :maxlength="15">
+                            <el-input  v-model="form.identification_number" :maxlength="15" :disabled="form.is_update">
                             </el-input>
                             <small class="form-control-feedback" v-if="errors.identification_number" v-text="errors.identification_number[0]"></small>
                         </div>
@@ -14,14 +17,14 @@
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.dv}">
                             <label class="control-label">Dv</label>
-                            <el-input  v-model="form.dv" ></el-input>
+                            <el-input  v-model="form.dv" :disabled="form.is_update"></el-input>
                             <small class="form-control-feedback" v-if="errors.dv" v-text="errors.dv[0]"></small>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.name}">
                             <label class="control-label">Nombre de la Empresa</label>
-                            <el-input  v-model="form.name" ></el-input>
+                            <el-input  v-model="form.name" :disabled="form.is_update"></el-input>
                             <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
                         </div>
                     </div>
@@ -29,17 +32,26 @@
 
                         <div class="form-group" :class="{'has-danger': (errors.subdomain || errors.uuid)}">
                             <label class="control-label">Nombre de Subdominio</label>
-                            <el-input v-model="form.subdomain" dusk="subdomain">
+                            <el-input v-model="form.subdomain" :disabled="form.is_update">
                                 <template slot="append">{{ url_base }}</template>
                             </el-input>
                             <small class="form-control-feedback" v-if="errors.subdomain" v-text="errors.subdomain[0]"></small>
                             <small class="form-control-feedback" v-if="errors.uuid" v-text="errors.uuid[0]"></small>
                         </div>
                     </div>
+
+
+                </div>
+                    
+                <div class="row">
+                    
+                    <div class="col-md-12 mb-2">
+                        <h4><b>Datos usuario</b></h4>
+                    </div>
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.email}">
                             <label class="control-label">Correo de Acceso</label>
-                            <el-input  v-model="form.email" dusk="email"></el-input>
+                            <el-input  v-model="form.email" :disabled="form.is_update"></el-input>
                             <small class="form-control-feedback" v-if="errors.email" v-text="errors.email[0]"></small>
                         </div>
                     </div>
@@ -58,8 +70,14 @@
                         </div>
                     </div>
                 </div>
+
  
                 <div class="row">
+                    
+                    <div class="col-md-12 mb-2">
+                        <h4><b>Datos generales</b></h4>
+                    </div>
+
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': (errors.limit_documents)}">
                             <label class="control-label">Límite de documentos</label>
@@ -86,19 +104,19 @@
 
 
                     <div class="col-md-6">
-                        <div  class="form-group" :class="{'has-danger': errors.type_documentation_identification}">
+                        <div  class="form-group" :class="{'has-danger': errors.type_document_identification_id}">
                             <label class="control-label">Seleccionar Tipo Documentación</label>
-                            <el-select filterable  v-model="form.type_documentation_identification">
-                                <el-option v-for="option in type_documentation_identifications" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            <el-select filterable  v-model="form.type_document_identification_id">
+                                <el-option v-for="option in type_document_identifications" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
-                            <small class="form-control-feedback" v-if="errors.type_documentation_identification" v-text="errors.type_documentation_identification[0]"></small>
+                            <small class="form-control-feedback" v-if="errors.type_document_identification_id" v-text="errors.type_document_identification_id[0]"></small>
                         </div>
                     </div> 
 
                     <div class="col-md-6">
                         <div  class="form-group" :class="{'has-danger': errors.department_id}">
                             <label class="control-label">Seleccionar Departamento</label>
-                            <el-select filterable  v-model="form.department_id">
+                            <el-select filterable  v-model="form.department_id" @change="cascade">
                                 <el-option v-for="option in departments" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.department_id" v-text="errors.department_id[0]"></small>
@@ -196,60 +214,74 @@
                 url_base: null,
                 departments:[],
                 municipalities:[],
-                type_documentation_identifications: [],
+                all_municipalities:[],
+                type_document_identifications: [],
                 type_organizations: [],
                 modules: [],
                 type_regimes: [],
                 toggle: false,
-                certificate_admin: '',
-                soap_username:  null,
-                soap_password:  null
 
             }
         },
         async created() {
+
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     this.modules = response.data.modules 
                     this.departments = response.data.departments 
-                    this.municipalities = response.data.municipalities 
-                    this.type_documentation_identifications = response.data.type_documentation_identifications 
+                    this.all_municipalities = response.data.municipalities 
+                    this.type_document_identifications = response.data.type_document_identifications 
                     this.type_organizations = response.data.type_organizations 
                     this.type_regimes = response.data.type_regimes 
                     this.url_base = response.data.url_base 
                 })
 
             await this.initForm()
-        
-            this.form.soap_username = this.soap_username
-            this.form.soap_password = this.soap_password
-
 
         },
         methods: {
+            cascade() {
+                this.form.municipality_id = null
+                this.municipalities = this.all_municipalities.filter(
+                    x => x.department_id == this.form.department_id
+                )
+            },
+            filterMunicipalities() {
+                this.municipalities = this.all_municipalities.filter(
+                    x => x.department_id == this.form.department_id
+                )
+            },
             initForm() {
+
                 this.errors = {}
                 this.form = {
+                    
                     id: null,
+                    is_update: false,
+                    identification_number: null,
                     name: null,
+                    subdomain: null,
                     email: null,
-                    identity_document_type_id: '6',
-                    number: '',
-                    password:null,
-                    plan_id:null,
-                    locked_emission:false,
-                    type:null,
-                    is_update:false,
-                    modules: [],
-                    config_system_env: true,
-                    soap_send_id: '01',
-                    soap_type_id: '01',
-                    soap_username: null,
-                    soap_password: null,
-                    soap_url: null,
-                    password_certificate: null,
-                    certificate: null,
-                    temp_path: null,
+                    password: null,
+                    password_confirmation: null,
+                    
+                    department_id: null,
+                    municipality_id: null,
+                    type_organization_id: null,
+                    type_regime_id: null,
+                    merchant_registration: null,
+                    address: null,
+                    phone: null,
+                    economic_activity_code: null,
+                    ica_rate: null, 
+                    limit_documents: null,
+                    type_document_identification_id: null,
+                    dv: 1,
+                    language_id: 79,
+                    country_id: 46,
+                    type_liability_id: 19,
+                    id_service: null,
+                    modules: []
                 }
 
                 this.modules.forEach(module => {
@@ -261,12 +293,13 @@
                 })
             },
             create() {
-                this.titleDialog = (this.recordId)? 'Editar Cliente':'Nuevo Cliente'
+                this.titleDialog = (this.recordId)? 'Editar compañia':'Nuevo compañia'
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
                                 this.form = response.data.data
                                 this.form.is_update = true
+                                this.filterMunicipalities()
                             })
                 }
             },
@@ -283,28 +316,17 @@
 
             },
             async submit() {
+
                 // console.log(this.form)
-                let has_modules = await this.hasModules()
-                if(!has_modules)
-                    return this.$message.error('Debe seleccionar al menos un módulo')
 
-
-                if(!this.form.is_update)
-                {
-                    if(this.form.certificate && !this.form.password_certificate)
-                    {
-                     return this.$message.error('Si carga un certificado, es necesario ingresar el password del certificado')
-                    }
-                }else
-                {
-                    if(this.form.temp_path && !this.form.password_certificate){
-                         return this.$message.error('Si carga un certificado, es necesario ingresar el password del certificado')
-                    }
+                if(!this.form.is_update){
+                    let has_modules = await this.hasModules()
+                    if(!has_modules)
+                        return this.$message.error('Debe seleccionar al menos un módulo')
                 }
 
 
-
-                this.button_text = (this.form.is_update) ? 'Actualizando cliente...':'Creando base de datos...'
+                this.button_text = (this.form.is_update) ? 'Actualizando compañia...':'Creando base de datos...'
                 this.loading_submit = true
                 await this.$http.post(`${this.resource}${(this.form.is_update ? '/update' : '')}`, this.form)
                     .then(response => {
@@ -333,9 +355,6 @@
             close() {
                 this.$emit('update:showDialog', false)
                 this.initForm()
-            },
-            searchSunat() {
-                this.searchServiceNumber()
             },
             errorUpload(r)
             {

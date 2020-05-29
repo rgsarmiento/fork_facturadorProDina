@@ -69,7 +69,7 @@
     </div> -->
 
     <div class="card" id="client-list">
-      <div class="card-header bg-info">Listado de Clientes</div>
+      <div class="card-header bg-info">Listado de compañias</div>
       <div class="card-body">
         <div class="row">
           <div class="col">
@@ -87,13 +87,13 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>Hostname</th>
-                <th>Nombre</th>
-                <th>RUC</th>
-                <!-- <th>Plan</th> -->
+                <th>N° Identificación</th>
+                <th>Empresa</th>
                 <th>Correo</th>
-                <th class="text-center">Comprobantes</th>
-                <th class="text-center">Usuarios</th>
+                <th>Subdominio</th>
+                <!-- <th>Plan</th> -->
+                <th class="text-center">Limite de documentos</th>
+                <!-- <th class="text-center">Usuarios</th> -->
                 <!-- <th class="text-center">F.Creación</th> -->
 
                 <!-- <th class="text-center">Bloquear cuenta</th> -->
@@ -111,12 +111,13 @@
             <tbody>
               <tr v-for="(row, index) in records" :key="index">
                 <td>{{ index + 1 }}</td>
-                <td>{{ row.hostname }}</td>
+                <td>{{ row.identification_number }}</td>
                 <td>{{ row.name }}</td>
-                <td>{{ row.number }}</td>
-                <!-- <td>{{ row.plan }}</td> -->
                 <td>{{ row.email }}</td>
-                <td class="text-center">
+                <td>{{ row.hostname }}</td>
+                <!-- <td>{{ row.plan }}</td> -->
+                <td class="text-center">{{ row.limit_documents }}</td>
+                <!-- <td class="text-center">
                   <template v-if="row.max_documents !== 0 && row.count_doc > row.max_documents">
                     <el-popover
                       placement="top-start"
@@ -167,7 +168,7 @@
                   <template v-else>
                     <strong>{{ row.max_users }}</strong>
                   </template>
-                </td>
+                </td> -->
                 <!-- <td class="text-center">{{ row.created_at }}</td> -->
 
                 <!-- <td class="text-center">
@@ -203,11 +204,11 @@
                       class="btn waves-effect waves-light btn-xs btn-primary m-1__2"
                       @click.prevent="clickEdit(row.id)"
                     >Editar</button>
-                    <button
+                    <!-- <button
                       type="button"
                       class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                       @click.prevent="clickPassword(row.id)"
-                    >Resetear clave</button>
+                    >Resetear clave</button> -->
                     <button
                       type="button"
                       class="btn waves-effect waves-light btn-xs btn-danger m-1__2"
@@ -293,7 +294,7 @@ export default {
       showDialog: false,
       showDialogPayments: false,
       showDialogAccountStatus: false,
-      resource: "clients",
+      resource: "co-companies",
       recordId: null,
       records: [],
       text_limit_doc: null,
@@ -315,14 +316,14 @@ export default {
   },
   async mounted() {
     this.loaded = false;
-    await this.$http.get(`/${this.resource}/charts`).then(response => {
-      let line = response.data.line;
-      this.dataChartLine.labels = line.labels;
-      this.dataChartLine.datasets[0].data = line.data;
-      this.total_documents = response.data.total_documents;
-      // console.log(response.data)
-      // this.records = response.data.data
-    });
+    
+    // await this.$http.get(`/${this.resource}/charts`).then(response => {
+    //   let line = response.data.line;
+    //   this.dataChartLine.labels = line.labels;
+    //   this.dataChartLine.datasets[0].data = line.data;
+    //   this.total_documents = response.data.total_documents;
+    // });
+
     this.loaded = true;
   },
   created() {

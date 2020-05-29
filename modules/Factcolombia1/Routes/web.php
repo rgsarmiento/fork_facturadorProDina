@@ -6,9 +6,9 @@ if($current_hostname) {
     Route::domain($current_hostname->fqdn)->group(function () {
         Route::middleware(['auth'])->group(function () {
 
-            Route::prefix('documents-co')->group(function () {
+            Route::prefix('co-documents')->group(function () {
 
-                Route::get('', 'Tenant\DocumentController@create')->name('tenant.documents-co.create');
+                Route::get('', 'Tenant\DocumentController@create')->name('tenant.co-documents.create');
                 Route::get('search/customers', 'Tenant\DocumentController@searchCustomers');
                 Route::get('search/customer/{id}', 'Tenant\DocumentController@searchCustomerById');
                 Route::get('tables', 'Tenant\DocumentController@tables');
@@ -30,14 +30,22 @@ if($current_hostname) {
 
         Route::middleware('auth:admin')->group(function() {
 
+            Route::get('/', function () {
+                return redirect()->route('system.co-companies');
+            });
+
             Route::prefix('co-companies')->group(function () {
 
                 Route::get('', 'System\HomeController@index')->name('system.co-companies');
                 Route::get('tables', 'System\CompanyController@tables');
+                Route::post('', 'System\CompanyController@store')->name('system.company');
+                Route::post('update', 'System\CompanyController@update');
+                Route::get('records', 'System\CompanyController@records');
+                Route::get('record/{id}', 'System\CompanyController@record');
+                Route::delete('{company}', 'System\CompanyController@destroy');
  
             });
 
-            Route::post('/company', 'System\CompanyController@store')->name('system.company');
 
         });
     });

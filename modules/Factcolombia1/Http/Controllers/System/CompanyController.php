@@ -48,56 +48,25 @@ use Modules\Factcolombia1\Models\SystemService\{
 };
 
 use App\Models\System\Module;
-
-
+use Modules\Factcolombia1\Traits\System\CompanyTrait;
+use Exception;
+use Modules\Factcolombia1\Http\Resources\System\{
+    CompanyCollection,
+    CompanyResource
+};
 
 
 class CompanyController extends Controller
 {
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
+    use CompanyTrait;
+
+
     public function store(CompanyRequest $request) {
 
-        $base_url = env("SERVICE_FACT", "");
-        $number = $request->identification_number;
-        $dv = $request->dv;
-        $ch = curl_init("{$base_url}ubl2.1/config/{$number}/{$dv}");
-        $bodyContent = [
-            'type_document_identification_id'=> $request->type_document_identification_id,
-            'type_organization_id'=> $request->type_organization_id,
-            'type_regime_id'=> $request->type_regime_id,
-            'type_liability_id'=> $request->type_liability_id,
-            'business_name'=> $request->name,
-            'merchant_registration'=> $request->merchant_registration,
-            'municipality_id'=> $request->municipality_id,
-            'address'=> $request->address,
-            'phone'=> $request->phone,
-            'email'=> $request->email,
-            'language_id'=> $request->language_id,
-            'tax_id'=> $request->tax_id,
-            'type_environment_id'=> $request->type_environment_id,
-            'type_operation_id'=> $request->type_operation_id,
-            'country_id'=> $request->country_id,
-            'type_currency_id'=> $request->type_currency_id
-        ];
-        $data_companiee = json_encode($bodyContent);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS,($data_companiee));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Accept: application/json',
-        ));
-        $response = curl_exec($ch);
-        curl_close($ch);
-        $respuesta = json_decode($response);
+        $response = $this->createCompanyApiDian($request);
 
-        if( !property_exists( $respuesta, 'password' ) || !property_exists( $respuesta, 'token' )  )
-        {
+        if(!property_exists( $response, 'password' ) || !property_exists( $response, 'token' )){
             return [
                 'message' => "Error al registrar Compañía en ApiDian",
                 'response' => $response,
@@ -109,265 +78,58 @@ class CompanyController extends Controller
         DB::connection('system')->beginTransaction();
         
         try {
+            
+            $subDom = strtolower($request->input('subdomain'));
+            $uuid = config('tenant.prefix_database').'_'.$subDom;
+            $fqdn = $subDom.'.'.config('tenant.app_url_base');
+
             // Website
             $website = new Website;
-            $website->uuid = env('DB_DATABASE', 'factura')."_{$request->subdomain}";
+            $website->uuid = $uuid;
+
+            $this->validateWebsite($uuid, $website);
             
-            app(WebsiteRepository::class)
-                ->create($website);
+            app(WebsiteRepository::class)->create($website);
             
             // Hostname
             $hostname = new Hostname;
-            $hostname->fqdn = "{$request->subdomain}.".env('APP_URL_BASE', 'factura');
-            $hostname = app(HostnameRepository::class)
-                ->create($hostname);
+            $hostname->fqdn = $fqdn;
+            $hostname = app(HostnameRepository::class)->create($hostname);
             
-            app(HostnameRepository::class)
-                ->attach($hostname, $website);
+            app(HostnameRepository::class)->attach($hostname, $website);
             
-            $company = Company::create([
-                'identification_number' => $request->identification_number,
-                'name' => $request->name,
-                'email' => $request->email,
-                'subdomain' => $request->subdomain,
-                'limit_documents' => $request->limit_documents,
-                'hostname_id' => $hostname->id,
-                'economic_activity_code' => $request->economic_activity_code,
-                'ica_rate' => $request->ica_rate
-
-            ]);
-
-            $companyservice = ServiceCompany::create([
-                'user_id' => 1, //por default
-                'identification_number' => $request->identification_number,
-                'dv' => $request->dv, //por default
-
-                'language_id' =>79,
-                'tax_id' => 1,
-                'type_environment_id' =>  2,
-                
-                'type_operation_id' =>  10,
-                'type_document_identification_id' => $request->type_document_identification_id,
-                'country_id' => 46,
-                'department_id' => $request->department_id,
-                'type_currency_id' =>  35,
-                'type_organization_id' => $request->type_organization_id,
-                'type_regime_id' => $request->type_regime_id,
-                'type_liability_id' => 19,
-                'municipality_id' => $request->municipality_id,
-                'merchant_registration' => $request->merchant_registration,
-                'address' => $request->address,
-                'phone' => $request->phone,
-            ]);
+            $company = $this->createSystemCompany($request, $hostname);
             
             // Switch
             $tenancy = app(Environment::class);
             $tenancy->tenant($website);
             
             DB::connection('tenant')->beginTransaction();
+
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
+
             DB::connection('system')->rollBack();
             
             return [
                 'success' => false,
                 'message' => $e->getMessage()
             ];
+
         }
         
         try {
 
-            //lleno la data maestra
-            \Artisan::call('db:seed', array('--class' => 'DataMasterTenantSeeder'));
-            //lleno data mestra del servicio
-            \Artisan::call('db:seed', array('--class' => 'DataServiceMasterTenantSeeder'));
+            $this->runTenantPeruSeeder($request);
+            $this->runTenantSeeder($request, $response, $company);
 
-        
-            DB::connection('tenant')
-                ->table('users')
-                ->insert([
-                    'name' => 'Administrador',
-                    'email' => $request->email,
-                    'password' => bcrypt($request->password),
-                    'api_token' => str_random(60),
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ]);
-
-
-            DB::connection('tenant')
-                ->table('companies')
-                ->insert([
-                    'identification_number' => $company->identification_number,
-                    'name' => $company->name,
-                    'email' => $company->email,
-                    'subdomain' => $company->subdomain,
-                    'limit_documents' => $company->limit_documents,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                    'version_ubl_id' => 1,
-                    'ambient_id' => 1,
-                    'type_identity_document_id' => 1,
-                    'type_regime_id' => 1, // estos valores son por default
-                    'currency_id' => 170, //// estos valores son por default
-                    'economic_activity_code' => $request->economic_activity_code,
-                    'ica_rate' => $request->ica_rate
-                ]);
-
-                //aqui ingreso la data por q es igual a la data q guarda la api
-            DB::connection('tenant')
-                   ->table('service_companies')
-                   ->insert([
-                        'response_data_api' => json_encode($respuesta),
-                        'message' => $respuesta->message,
-                        'password' => $respuesta->password,
-                        'api_token' => $respuesta->token,
-                        'user_id' => 1, //por default
-                        'identification_number' => $request->identification_number,
-                        'dv' => $dv, //por default
-                        'language_id' => 79,
-                        'tax_id' => 1,
-                        'type_environment_id' => 2,
-                        'type_operation_id' => 10,
-                        'type_document_identification_id' => $request->type_document_identification_id,
-                        'country_id' =>46,
-                        'department_id' => $request->department_id,
-                        'type_currency_id' => 35,
-                        'type_organization_id' => $request->type_organization_id,
-                        'type_regime_id' => $request->type_regime_id,
-                        'type_liability_id' => 19,
-                        'municipality_id' => $request->municipality_id,
-                        'merchant_registration' => $request->merchant_registration,
-                        'address' => $request->address,
-                        'phone' => $request->phone,
-
-                    ]);
-
-
-                    //actualixo los type_tax_id en taxes tenant
-                    DB::connection('tenant')
-                        ->table('taxes')
-                        ->where('id', 1)
-                        ->update([
-                            'type_tax_id' => 1
-                        ]);
-                    DB::connection('tenant')
-                        ->table('taxes')
-                        ->where('id', 2)
-                        ->update([
-                            'type_tax_id' => 2
-                        ]);
-                    DB::connection('tenant')
-                        ->table('taxes')
-                        ->where('id', 3)
-                        ->update([
-                            'type_tax_id' => 7
-                        ]);
-                    DB::connection('tenant')
-                        ->table('taxes')
-                        ->where('id', 4)
-                        ->update([
-                            'type_tax_id' => 4
-                        ]);
-                    DB::connection('tenant')
-                        ->table('taxes')
-                        ->where('id', 5)
-                        ->update([
-                            'type_tax_id' => 6
-                        ]);
-                    DB::connection('tenant')
-                        ->table('taxes')
-                        ->where('id', 6)
-                        ->update([
-                            'type_tax_id' => 5
-                        ]);
-
-
-                        //ACTULIZO TYPE UNITS CON EL CODE DE LA API
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 1)
-                        ->update([
-                            'code' => 70
-                        ]);
-
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 2)
-                        ->update([
-                            'code' => 359
-                        ]);
-
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 3)
-                        ->update([
-                            'code' => 70
-                        ]);
-
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 4)
-                        ->update([
-                            'code' => 44
-                        ]);
-
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 5)
-                        ->update([
-                            'code' => 640
-                        ]);
-
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 6)
-                        ->update([
-                            'code' => 821
-                        ]);
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 7)
-                        ->update([
-                            'code' => 813
-                        ]);
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 8)
-                        ->update([
-                            'code' => 808
-                        ]);
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 9)
-                        ->update([
-                            'code' => 770
-                        ]);
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 10)
-                        ->update([
-                            'code' => 70
-                        ]);
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 11)
-                        ->update([
-                            'code' => 825
-                        ]);
-
-                        DB::connection('tenant')
-                        ->table('type_units')
-                        ->where('id', 12)
-                        ->update([
-                            'code' => 730
-                        ]);
-                            
             
             DB::connection('system')->commit();
             DB::connection('tenant')->commit();
+
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
+
             DB::connection('system')->rollBack();
             DB::connection('tenant')->rollBack();
             
@@ -375,6 +137,7 @@ class CompanyController extends Controller
                 'success' => false,
                 'message' => $e->getMessage()
             ];
+
         }
         
         // Switch
@@ -390,8 +153,38 @@ class CompanyController extends Controller
             'company' => $company,
             'success' => true
         ];
+
     }
+
+
+    public function validateWebsite($uuid, $website){
+
+        $exists = $website::where('uuid', $uuid)->first();
+
+        if($exists){
+            throw new Exception("El subdominio ya se encuentra registrado");
+        }
+
+    }
+
     
+    public function records()
+    {
+
+        $records = Company::latest()->get();
+ 
+        return new CompanyCollection($records);
+    }
+
+    
+    public function record($id)
+    {
+        $company = Company::findOrFail($id);
+        
+        return new CompanyResource($company);
+    }
+
+
     /**
      * All
      * @return \Illuminate\Http\Response
@@ -409,7 +202,10 @@ class CompanyController extends Controller
      * @param  \App\Http\Requests\System\CompanyUpdateRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Company $company, CompanyUpdateRequest $request) {
+    public function update(CompanyUpdateRequest $request) {
+
+        $company = Company::findOrFail($request->id);
+
         $company->update([
             'limit_documents' => $request->limit_documents,
             'economic_activity_code' => $request->economic_activity_code,
@@ -417,19 +213,19 @@ class CompanyController extends Controller
 
         ]);
 
-        ServiceCompany::find($request->id_service)
-        ->update(
-            [
-                'type_document_identification_id' => $request->type_document_identification_id,
-                'department_id' => $request->department_id,
-                'type_organization_id' => $request->type_organization_id,
-                'type_regime_id' => $request->type_regime_id,
-                'municipality_id' => $request->municipality_id,
-                'merchant_registration' => $request->merchant_registration,
-                'address' => $request->address,
-                'phone' => $request->phone,
-            ]
-        );
+        ServiceCompany::where('identification_number', $company->identification_number)->first()
+            ->update(
+                [
+                    'type_document_identification_id' => $request->type_document_identification_id,
+                    'department_id' => $request->department_id,
+                    'type_organization_id' => $request->type_organization_id,
+                    'type_regime_id' => $request->type_regime_id,
+                    'municipality_id' => $request->municipality_id,
+                    'merchant_registration' => $request->merchant_registration,
+                    'address' => $request->address,
+                    'phone' => $request->phone,
+                ]
+            );
 
         
         app(Environment::class)
@@ -451,24 +247,25 @@ class CompanyController extends Controller
 
 
         TenantServiceCompany::firstOrFail()
-        ->update(
-            [
-                'type_document_identification_id' => $request->type_document_identification_id,
-                'department_id' => $request->department_id,
-                'type_organization_id' => $request->type_organization_id,
-                'type_regime_id' => $request->type_regime_id,
-                'municipality_id' => $request->municipality_id,
-                'merchant_registration' => $request->merchant_registration,
-                'address' => $request->address,
-                'phone' => $request->phone,
-            ]
-        );
+            ->update(
+                [
+                    'type_document_identification_id' => $request->type_document_identification_id,
+                    'department_id' => $request->department_id,
+                    'type_organization_id' => $request->type_organization_id,
+                    'type_regime_id' => $request->type_regime_id,
+                    'municipality_id' => $request->municipality_id,
+                    'merchant_registration' => $request->merchant_registration,
+                    'address' => $request->address,
+                    'phone' => $request->phone,
+                ]
+            );
         
 
         return [
             'message' => "Se actualizo con éxito la compañía {$company->name}.",
             'success' => true
         ];
+
     }
     
     /**
@@ -478,6 +275,7 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Company $company) {
+
         $hostname = Hostname::findOrFail($company->hostname_id);
         $website = Website::findOrFail($hostname->website_id);
         
@@ -487,20 +285,21 @@ class CompanyController extends Controller
         app(WebsiteRepository::class)
             ->delete($website, true);
         
-        DB::table('service_companies')->where('identification_number', $company->identification_number)->delete();
+        DB::table('co_service_companies')->where('identification_number', $company->identification_number)->delete();
         Company::destroy($company->id);
 
         $this->deleteApi($company);
 
         return [
             'success' => true,
-            'message' => "Se elimino compañía {$company->name}."
+            'message' => "Se elimino la compañía {$company->name}."
         ];
+
     }
 
     public function deleteApi($company)
     {
-        $base_url = env("SERVICE_FACT", "");
+        $base_url = config('tenant.service_fact');
         $number = $company->identification_number;
         $email = $company->email;
         $ch = curl_init("{$base_url}ubl2.1/config/delete/{$number}/{$email}");
@@ -515,6 +314,7 @@ class CompanyController extends Controller
         $respuesta = json_decode($response);
     }
 
+
     public function tables()
     {
 
@@ -528,7 +328,7 @@ class CompanyController extends Controller
           //  'tax' => ServiceTax::all(),
            // 'type_enviroment' => ServiceTypeEnvironment::all(),
           //  'type_operation' => ServiceTypeOperation::all(),
-            'type_documentation_identifications' => ServiceTypeDocumentIdentification::all(),
+            'type_document_identifications' => ServiceTypeDocumentIdentification::all(),
           //  'type_currency' => ServiceTypeCurrency::all(),
             'type_organizations' => ServiceTypeOrganization::all(),
             'type_regimes' => ServiceTypeRegime::all(),
@@ -538,6 +338,8 @@ class CompanyController extends Controller
           
         ];
     }
+
+
     public function cascade(Request $request)
     {
       $name = $request->name;
@@ -556,9 +358,10 @@ class CompanyController extends Controller
       return $data;
     }
 
+
     public function getInformationDocument($nit, $desde = NULL, $hasta = NULL)
     {
-        $base_url = env("SERVICE_FACT", "");
+        $base_url = config('tenant.service_fact');
         $ch2 = curl_init("{$base_url}information/{$nit}/{$desde}/{$hasta}");
 
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
@@ -582,4 +385,5 @@ class CompanyController extends Controller
         }
 
     }
+
 }

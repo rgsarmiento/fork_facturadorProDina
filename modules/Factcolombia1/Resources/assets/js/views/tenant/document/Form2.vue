@@ -69,7 +69,7 @@
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.currency_id}">
                                     <label class="control-label">Moneda</label>
-                                    <el-select v-model="form.currency_id" @change="changeCurrencyType">
+                                    <el-select v-model="form.currency_id" @change="changeCurrencyType" filterable>
                                         <el-option v-for="option in currencies" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.currency_id" v-text="errors.currency_id[0]"></small>
@@ -78,16 +78,16 @@
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.payment_form_id}">
                                     <label class="control-label">Forma de pago</label>
-                                    <el-select v-model="form.payment_form_id" >
+                                    <el-select v-model="form.payment_form_id" filterable>
                                         <el-option v-for="option in payment_forms" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.payment_form_id" v-text="errors.payment_form_id[0]"></small>
                                 </div>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-lg-4">
                                 <div class="form-group" :class="{'has-danger': errors.payment_method_id}">
                                     <label class="control-label">Medio de pago</label>
-                                    <el-select v-model="form.payment_method_id" >
+                                    <el-select v-model="form.payment_method_id" filterable>
                                         <el-option v-for="option in payment_methods" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.payment_method_id" v-text="errors.payment_method_id[0]"></small>
@@ -305,7 +305,7 @@
                 company:{},
                 is_client:false,
                 recordItem: null,
-                resource: 'documents-co',
+                resource: 'co-documents',
                 showDialogAddItem: false,
                 showDialogAddRetention: false,
                 showDialogNewPerson: false,
@@ -336,7 +336,7 @@
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     this.all_customers = response.data.customers;
-                    this.taxes = JSON.parse(response.data.taxes);
+                    this.taxes = response.data.taxes
                     // console.log(this.taxes)
                     this.type_invoices = response.data.type_invoices;
                     this.currencies = response.data.currencies
@@ -603,13 +603,13 @@
                 this.calculateTotal()
             },
             changeCurrencyType() {
-                this.currency_type = _.find(this.currencies, {'id': this.form.currency_id})
-                let items = []
-                this.form.items.forEach((row) => {
-                    items.push(calculateRowItem(row, this.form.currency_id, this.form.exchange_rate_sale))
-                });
-                this.form.items = items
-                this.calculateTotal()
+                // this.currency_type = _.find(this.currencies, {'id': this.form.currency_id})
+                // let items = []
+                // this.form.items.forEach((row) => {
+                //     items.push(calculateRowItem(row, this.form.currency_id, this.form.exchange_rate_sale))
+                // });
+                // this.form.items = items
+                // this.calculateTotal()
             },
             calculateTotal() {
                 
@@ -774,7 +774,7 @@
                 this.form.service_invoice = await this.createInvoiceService();
                 // return
 
-                this.loading_submit = true
+                // this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                     if (response.data.success) {
                         this.resetForm();

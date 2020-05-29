@@ -245,7 +245,7 @@
                 titleAction: '',
                 is_client:false,
                 titleDialog: '',
-                resource: 'documents-co',
+                resource: 'co-documents',
                 showDialogNewItem: false,
                 has_list_prices: false,
                 errors: {},
@@ -302,7 +302,7 @@
             this.initForm()
             this.$http.get(`/${this.resource}/item/tables`).then(response => {
                // console.log('tablas new edit')
-                this.taxes = JSON.parse(response.data.taxes);
+                this.taxes = response.data.taxes;
                 this.all_items = response.data.items
                 this.filterItems()
 

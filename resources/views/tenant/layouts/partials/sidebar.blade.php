@@ -53,7 +53,7 @@
                         {{ ($path[0] === 'technical-services')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'user-commissions')?'nav-active nav-expanded':'' }}
 
-                        {{ ($path[0] === 'documents-co')?'nav-active nav-expanded':'' }}
+                        {{ ($path[0] === 'co-documents')?'nav-active nav-expanded':'' }}
 
                         
                         ">
@@ -68,8 +68,8 @@
 
                                     @if(in_array('new_document', $vc_module_levels))
 
-                                        <li class="{{ ($path[0] === 'documents-co' && $path[1] === 'create')?'nav-active':'' }}">
-                                            <a class="nav-link" href="{{route('tenant.documents-co.create')}}">
+                                        <li class="{{ ($path[0] === 'co-documents' )?'nav-active':'' }}">
+                                            <a class="nav-link" href="{{route('tenant.co-documents.create')}}">
                                                 Nuevo comprobante colombia
                                             </a>
                                         </li>
