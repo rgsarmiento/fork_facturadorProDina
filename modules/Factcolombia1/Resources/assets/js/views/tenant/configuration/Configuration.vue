@@ -287,7 +287,7 @@
                         <div class="row mt-4">
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label class="control-label">Id Software *</label>
+                                    <label class="control-label">Tipo de Documento *</label>
                                     <el-select v-model="type_document_id" filterable remote class="border-left rounded-left border-info" popper-class="el-select-type-document"
                                         dusk="type_document_id"
                                         placeholder="Seleccione el tipo de documento."
@@ -296,7 +296,7 @@
                                         :loading="loading_search"
                                         @change="changeCustomer">
 
-                                        <el-option v-for="option in customers" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                        <el-option v-for="option in typeDocuments" :key="option.id" :value="option.id" :label="option.name"></el-option>
 
                                     </el-select>
                                 </div>
@@ -321,6 +321,26 @@
                                         placeholder="Digite el numero de resolucion."
                                         :disabled="false">
                                     </el-input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label class="control-label">Fecha Resolucion</label>
+                                    <el-date-picker v-model="date_resolution" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue" :picker-options="datEmision"></el-date-picker>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label class="control-label">Fecha Desde</label>
+                                    <el-date-picker v-model="date_from" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue" :picker-options="datDesde"></el-date-picker>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label class="control-label">Fecha Hasta</label>
+                                    <el-date-picker v-model="date_to" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue" :picker-options="datHasta"></el-date-picker>
                                 </div>
                             </div>
                         </div>
@@ -373,17 +393,10 @@
                 { id: 5, name: "Nota Débito" },
                 { id: 6, name: "ZIP" }
             ],
+            type_document_id: '',
             errors: {
 
             },
-            typeDocuments: [
-                { id: 1, name: "Factura de Venta Nacional" },
-                { id: 2, name: "Factura de Exportación" },
-                { id: 3, name: "Factura de Contingencia" },
-                { id: 4, name: "Nota Crédito" },
-                { id: 5, name: "Nota Débito" },
-                { id: 6, name: "ZIP" }
-            ],
             fileCertificado: "",
             typeIdentityDocuments: [],
             loadingCompany: false,
