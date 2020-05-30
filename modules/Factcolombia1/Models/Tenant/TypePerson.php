@@ -10,7 +10,7 @@ class TypePerson extends Model
 {
     use SoftDeletes, UsesTenantConnection;
 
-    protected $table = 'co_type_persons';
+    protected $table = 'co_type_people';
     
     
     /**

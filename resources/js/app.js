@@ -29,6 +29,8 @@ Vue.prototype.$http = Axios
 
 Vue.component('tenant-document-form', require('@viewsModuleProColombia/tenant/document/Form2.vue'));
 Vue.component('system-company-company', require('@viewsModuleProColombia/system/company/index.vue'));
+Vue.component('tenant-item-item', require('@viewsModuleProColombia/tenant/item/index.vue'));
+Vue.component('tenant-client-client', require('@viewsModuleProColombia/tenant/client/index.vue'));
 
 
 //components colombia

@@ -20,6 +20,38 @@ if($current_hostname) {
     
             });
 
+            Route::prefix('co-items')->group(function () {
+            
+                Route::get('', 'Tenant\ItemController@index')->name('tenant.co-items.index');
+                Route::get('columns', 'Tenant\ItemController@columns');
+                Route::get('records', 'Tenant\ItemController@records');
+                Route::get('record/{id}', 'Tenant\ItemController@record');
+                Route::get('tables', 'Tenant\ItemController@tables');
+                Route::post('', 'Tenant\ItemController@store');
+                Route::delete('{item}', 'Tenant\ItemController@destroy');
+
+            });
+
+
+            Route::post('/countries', 'Tenant\ConfigurationController@countries');
+            Route::post('/departments/{country}', 'Tenant\ConfigurationController@departments');
+            Route::post('/cities/{department}', 'Tenant\ConfigurationController@cities');
+
+
+            Route::prefix('co-clients')->group(function () {
+
+                Route::get('', 'Tenant\ClientController@index')->name('tenant.co-clients.index');
+                Route::get('columns', 'Tenant\ClientController@columns');
+                Route::get('records', 'Tenant\ClientController@records');
+                Route::get('record/{id}', 'Tenant\ClientController@record');
+                Route::get('tables', 'Tenant\ClientController@tables');
+                Route::post('', 'Tenant\ClientController@store');
+                Route::put('{client}', 'Tenant\ClientController@update');
+
+                Route::post('/clientsAll', 'Tenant\ClientController@all');
+                Route::delete('{client}', 'Tenant\ClientController@destroy');
+
+            });
         });
     });
 

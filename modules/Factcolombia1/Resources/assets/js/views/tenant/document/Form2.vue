@@ -10,7 +10,18 @@
                         <div class="row">
                         </div>
                         <div class="row mt-4">
+                            
                             <div class="col-lg-6 pb-2">
+                                <div class="form-group" :class="{'has-danger': errors.customer_id}">
+                                    <label class="control-label">Cliente</label>
+                                    <el-select v-model="form.customer_id" filterable @change="changeCustomer" popper-class="el-select-document_type" dusk="customer_id" class="border-left rounded-left border-info">
+                                        <el-option v-for="option in customers" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
+                                </div>
+                            </div> 
+
+                            <!-- <div class="col-lg-6 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.customer_id}">
                                     <label class="control-label font-weight-bold text-info">
                                         Cliente
@@ -29,7 +40,7 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
                                 </div> 
-                            </div> 
+                            </div>  -->
                         
                             <div class="col-lg-4 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.type_document_id}">
@@ -131,12 +142,12 @@
                                         <tbody v-if="form.items.length > 0">
                                             <tr v-for="(row, index) in form.items" :key="index">
                                                 <td>{{index + 1}}</td>
-                                                <td>{{row.item.full_description}} 
+                                                <td>{{row.item.name}} 
                                                     <!-- {{row.item.presentation.hasOwnProperty('description') ? row.item.presentation.description : ''}} -->
                                                     <br/>
                                                     <small>{{row.tax.name}}</small>
                                                 </td>
-                                                <td class="text-center">{{row.item.unit_type_id}}</td>
+                                                <td class="text-center">{{row.item.type_unit.name}}</td>
 
                                                 <td class="text-right">{{row.quantity}}</td>
                                                 <!--<td class="text-right" v-else ><el-input-number :min="0.01" v-model="row.quantity"></el-input-number> </td> -->
@@ -818,9 +829,9 @@
 
                 let customer = this.customers.find(x => x.id == this.form.customer_id);
                 let obj = {
-                    identification_number: customer.number,
+                    identification_number: customer.identification_number,
                     name: customer.name,
-                    phone: customer.telephone,
+                    phone: customer.phone,
                     address: customer.address,
                     email: customer.email,
                     merchant_registration: "000000"
@@ -918,8 +929,8 @@
                                 percent: this.cadenaDecimales(x.tax.rate)
                             }
                         ],
-                        description: x.item.full_description,
-                        code: x.item.internal_id,
+                        description: x.item.name,
+                        code: x.item.code,
                         type_item_identification_id: 4,
                         price_amount: this.cadenaDecimales(x.price),
                         base_quantity: x.quantity

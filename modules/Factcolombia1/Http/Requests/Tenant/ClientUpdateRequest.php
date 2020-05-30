@@ -31,12 +31,12 @@ class ClientUpdateRequest extends FormRequest
      */
     public function rules() {
         return [
-            'type_person_id' => 'nullable|exists:tenant.type_people,id',
-            'type_regime_id' => 'nullable|exists:tenant.type_regimes,id',
+            'type_person_id' => 'nullable|exists:tenant.co_type_people,id',
+            'type_regime_id' => 'nullable|exists:tenant.co_type_regimes,id',
             'name' => 'required|max:50',
-            'country_id' => 'nullable|exists:tenant.countries,id',
-            'department_id' => 'nullable|exists:tenant.departments,id',
-            'city_id' => 'nullable|exists:tenant.cities,id',
+            'country_id' => 'nullable|exists:tenant.co_countries,id',
+            'department_id' => 'nullable|exists:tenant.co_departments,id',
+            'city_id' => 'nullable|exists:tenant.co_cities,id',
             'address' => 'nullable|max:50',
             'phone' => 'nullable|integer|digits_between:7,10',
             'email' => 'nullable|email|max:50'

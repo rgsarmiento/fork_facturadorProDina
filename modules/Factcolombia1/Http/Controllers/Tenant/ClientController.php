@@ -26,6 +26,7 @@ use Modules\Factcolombia1\Models\Tenant\{
 use Modules\Factcolombia1\Models\TenantService\{
     Company as ServiceCompany
 };
+use Modules\Factcolombia1\Http\Resources\Tenant\ClientCollection;
 
 
 
@@ -90,9 +91,41 @@ class ClientController extends Controller
             return ( $response);*/
             
 
-           return view('client.tenant.index');
+           return view('factcolombia1::client.tenant.index');
     }
     
+    
+    
+    public function columns()
+    {
+        return [
+            'name' => 'Nombre',
+        ];
+    }
+
+    public function records(Request $request)
+    {
+        $records = Client::where($request->column, 'like', "%{$request->value}%");
+
+        return new ClientCollection($records->paginate(config('tenant.items_per_page')));
+    }
+
+    public function record($id)
+    {
+        $record = Client::findOrFail($id);
+
+        return $record;
+    }
+
+    public function tables() {
+        return [
+            'typeIdentityDocuments' => TypeIdentityDocument::all(),
+            'typeRegimes' => TypeRegime::all(),
+            'typePeople' => TypePerson::all(),
+            'countries' => Country::all(),
+        ];
+    }
+
     /**
      * All
      * @return \Illuminate\Http\Response
@@ -115,6 +148,7 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(ClientRequest $request) {
+        
         $client = Client::create([
             'type_person_id' => $request->type_person_id,
             'type_regime_id' => $request->type_regime_id,

@@ -31,18 +31,18 @@ class ClientRequest extends FormRequest
      */
     public function rules() {
         return [
-            'type_person_id' => 'nullable|exists:tenant.type_people,id',
-            'type_regime_id' => 'nullable|exists:tenant.type_regimes,id',
-            'type_identity_document_id' => 'required|exists:tenant.type_identity_documents,id',
-            'identification_number' => "required|numeric|digits_between:1,15|unique:tenant.clients,identification_number,null,null,type_identity_document_id,{$this->type_identity_document_id}",
+            'type_person_id' => 'nullable|exists:tenant.co_type_people,id',
+            'type_regime_id' => 'nullable|exists:tenant.co_type_regimes,id',
+            'type_identity_document_id' => 'required|exists:tenant.co_type_identity_documents,id',
+            'identification_number' => "required|numeric|digits_between:1,15|unique:tenant.co_clients,identification_number,null,null,type_identity_document_id,{$this->type_identity_document_id}",
             'name' => 'required|max:50',
-            'country_id' => 'nullable|exists:tenant.countries,id',
-            'department_id' => 'nullable|exists:tenant.departments,id',
-            'city_id' => 'nullable|exists:tenant.cities,id',
+            'country_id' => 'nullable|exists:tenant.co_countries,id',
+            'department_id' => 'nullable|exists:tenant.co_departments,id',
+            'city_id' => 'nullable|exists:tenant.co_cities,id',
             'address' => 'nullable|max:50',
             'phone' => 'nullable|min:7|max:10',
             'email' => 'nullable|email|max:50',
-            'code' => 'required|unique:tenant.clients,code|alpha_dash|max:11',
+            'code' => 'required|unique:tenant.co_clients,code|alpha_dash|max:11',
             'dv' => 'required|max:1',
         ];
     }

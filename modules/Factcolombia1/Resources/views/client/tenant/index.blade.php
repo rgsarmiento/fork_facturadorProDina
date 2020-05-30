@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('tenant.layouts.app')
 
 @section('content')
-    <tenant-client-client route="{{route('tenant.client')}}"></tenant-client-client>
+    <tenant-client-client ></tenant-client-client>
 @endsection

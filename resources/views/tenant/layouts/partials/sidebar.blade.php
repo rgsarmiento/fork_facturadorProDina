@@ -54,6 +54,8 @@
                         {{ ($path[0] === 'user-commissions')?'nav-active nav-expanded':'' }}
 
                         {{ ($path[0] === 'co-documents')?'nav-active nav-expanded':'' }}
+                        {{ ($path[0] === 'co-items')?'nav-active nav-expanded':'' }}
+                        {{ ($path[0] === 'co-clients')?'nav-active nav-expanded':'' }}
 
                         
                         ">
@@ -123,6 +125,8 @@
 
                                     <li class="nav-parent
                                         {{ ($path[0] === 'items')?'nav-active nav-expanded':'' }}
+                                        {{ ($path[0] === 'co-items')?'nav-active nav-expanded':'' }}
+                                        {{ ($path[0] === 'co-clients')?'nav-active nav-expanded':'' }}
                                         {{ ($path[0] === 'categories')?'nav-active nav-expanded':'' }}
                                         {{ ($path[0] === 'brands')?'nav-active nav-expanded':'' }}
                                         {{ ($path[0] === 'person-types')?'nav-active nav-expanded':'' }}
@@ -133,6 +137,17 @@
                                         </a>
                                         <ul class="nav nav-children">
 
+                                            <li class="{{ ($path[0] === 'co-items')?'nav-active':'' }}">
+                                                <a class="nav-link" href="{{route('tenant.co-items.index')}}">
+                                                    Productos colombia
+                                                </a>
+                                            </li>
+
+                                            <li class="{{ ($path[0] === 'co-clients')?'nav-active':'' }}">
+                                                <a class="nav-link" href="{{route('tenant.co-clients.index')}}">
+                                                    Clientes colombia
+                                                </a>
+                                            </li>
                                             <li class="{{ ($path[0] === 'items')?'nav-active':'' }}">
                                                 <a class="nav-link" href="{{route('tenant.items.index')}}">
                                                     Productos

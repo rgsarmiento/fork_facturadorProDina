@@ -20,6 +20,8 @@ use Modules\Factcolombia1\Models\Tenant\{
     Item,
     Tax
 };
+use Modules\Factcolombia1\Http\Resources\Tenant\ItemCollection;
+
 
 class ItemController extends Controller
 {
@@ -29,9 +31,41 @@ class ItemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        return view('item.tenant.index');
+        return view('factcolombia1::item.tenant.index');
     }
     
+    
+    public function columns()
+    {
+        return [
+            'name' => 'Nombre',
+            'code' => 'Código',
+        ];
+    }
+
+    public function records(Request $request)
+    {
+        $records = Item::where($request->column, 'like', "%{$request->value}%");
+
+        return new ItemCollection($records->paginate(config('tenant.items_per_page')));
+    }
+
+    public function record($id)
+    {
+        $record = Item::findOrFail($id);
+
+        return $record;
+    }
+
+    public function tables() {
+        return [
+            'typeUnits' => TypeUnit::all(),
+            'taxes' => Tax::query()
+                ->where('is_retention', false)
+                ->get(),
+        ];
+    }
+
     /**
      * All
      * @return \Illuminate\Http\Response
@@ -55,18 +89,26 @@ class ItemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(ItemRequest $request) {
-        $item = Item::create([
+        
+        $id = $request->input('id');
+        $item = Item::firstOrNew(['id' => $id]);
+
+        $data = [
             'name' => mb_strtoupper($request->name),
             'code' => mb_strtoupper($request->code),
             'type_unit_id' => $request->type_unit_id,
             'price' => $request->price,
             'tax_id' => $request->tax_id
-        ]);
+        ];
+
+        $item->fill($data);
+        $item->save();
         
         return [
             'success' => true,
-            'message' => "Se registro con éxito el producto {$item->name}."
+            'message' => ($id)?'Producto editado con éxito':'Producto registrado con éxito',
         ];
+        
     }
     
     /**

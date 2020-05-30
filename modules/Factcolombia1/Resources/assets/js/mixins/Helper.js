@@ -22,19 +22,19 @@ export default {
         }
     }),
     mounted() {
-        axios.post(`/company`).then(response => {
-            //this.$setLaravelMessage(response.data);
+        // axios.post(`/company`).then(response => {
+        //     //this.$setLaravelMessage(response.data);
             
-            this.company = response.data;
-            this.api_download = `${this.api}download/${this.company.identification_number}/`
+        //     this.company = response.data;
+        //     this.api_download = `${this.api}download/${this.company.identification_number}/`
             
            
             
-            //if (this.hasOwnProperty('document')) this.document.currency_id = this.company.currency_id;
-        }).catch(error => {
-            this.$setLaravelValidationErrorsFromResponse(error.response.data);
-            this.$setLaravelErrors(error.response.data);
-        }).then(() => {});
+        //     //if (this.hasOwnProperty('document')) this.document.currency_id = this.company.currency_id;
+        // }).catch(error => {
+        //     this.$setLaravelValidationErrorsFromResponse(error.response.data);
+        //     this.$setLaravelErrors(error.response.data);
+        // }).then(() => {});
     },
     computed: {
         currencySymbol() {
@@ -55,32 +55,32 @@ export default {
     methods: {
         getDepartment(val) {
             return axios.post(`/departments/${val}`).then(response => {
-                this.$setLaravelMessage(response.data);
+                // this.$setLaravelMessage(response.data);
                 
                 return response.data;
             }).catch(error => {
-                this.$setLaravelValidationErrorsFromResponse(error.response.data);
-                this.$setLaravelErrors(error.response.data);
+                // this.$setLaravelValidationErrorsFromResponse(error.response.data);
+                // this.$setLaravelErrors(error.response.data);
             });
         },
         getCities(val) {
             return axios.post(`/cities/${val}`).then(response => {
-                this.$setLaravelMessage(response.data);
+                // this.$setLaravelMessage(response.data);
                 
                 return response.data;
             }).catch(error => {
-                this.$setLaravelValidationErrorsFromResponse(error.response.data);
-                this.$setLaravelErrors(error.response.data);
+                // this.$setLaravelValidationErrorsFromResponse(error.response.data);
+                // this.$setLaravelErrors(error.response.data);
             });
         },
         getConcepts(val) {
             return axios.post(`/concepts/${val}`).then(response => {
-                this.$setLaravelMessage(response.data);
+                // this.$setLaravelMessage(response.data);
                 
                 return response.data;
             }).catch(error => {
-                this.$setLaravelValidationErrorsFromResponse(error.response.data);
-                this.$setLaravelErrors(error.response.data);
+                // this.$setLaravelValidationErrorsFromResponse(error.response.data);
+                // this.$setLaravelErrors(error.response.data);
             });
         },
         showColumn(columns, col){
