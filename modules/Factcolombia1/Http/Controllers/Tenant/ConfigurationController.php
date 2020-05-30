@@ -2,7 +2,7 @@
 
 namespace Modules\Factcolombia1\Http\Controllers\Tenant;
 
-use App\Traits\Tenant\DocumentTrait;
+use Modules\Factcolombia1\Traits\Tenant\DocumentTrait;
 use Modules\Factcolombia1\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\{
     ConfigurationTypeDocumentRequest,
@@ -42,20 +42,20 @@ use App\Models\TenantService\{
 class ConfigurationController extends Controller
 {
     use DocumentTrait;
-    
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        return view('configuration.tenant.index');
+        return view('factcolombia1::configuration.tenant.index');
     }
-    
+
     public function document() {
         return view('configuration.tenant.documents');
     }
-    
+
     /**
      * All
      * @return \Illuminate\Http\Response
@@ -72,7 +72,7 @@ class ConfigurationController extends Controller
             'ambients' => Ambient::all()
         ];
     }
-    
+
     /**
      * Company
      * @return \Illuminate\Http\Response
@@ -83,14 +83,14 @@ class ConfigurationController extends Controller
             ->firstOrFail();*/
         $company = ServiceCompany::first();
         $company->alert_certificate = Carbon::parse($company->certificate_date_end)->subMonth(1)->lt(Carbon::now());
-        
+
         $company['resolution_date'] = date("Y-m-d");
         $company['date_from'] =date("Y-m-d");
         $company['date_to'] = date("Y-m-d", strtotime("+2 days"));
 
         return $company;
     }
-    
+
     /**
      * Countries
      * @return \Illuminate\Http\Response
@@ -109,7 +109,7 @@ class ConfigurationController extends Controller
             ->where('country_id', $country->id)
             ->get();
     }
-    
+
     /**
      * Cities
      * @param  \App\Models\Tenant\Department $department
@@ -120,7 +120,7 @@ class ConfigurationController extends Controller
             ->where('department_id', $department->id)
             ->get();
     }
-    
+
     /**
      * Concepts
      * @param  \App\Models\Tenant\TypeDocument $typeDocument
@@ -131,7 +131,7 @@ class ConfigurationController extends Controller
             ->where('type_document_id', $typeDocument->id)
             ->get();
     }
-    
+
     /**
      * Update company
      * @param  \App\Http\Requests\Tenant\ConfigurationCompanyRequest $request
@@ -140,7 +140,7 @@ class ConfigurationController extends Controller
      */
     public function updateCompany(ConfigurationCompanyRequest $request, Company $company) {
         if ($request->hasFile('certificate')) $this->uploadCertificate($request->certificate);
-        
+
         $company->update([
             'type_identity_document_id' => $request->type_identity_document_id,
             'short_name' => $request->short_name,
@@ -164,12 +164,12 @@ class ConfigurationController extends Controller
             'certificate_password' => $request->certificate_password,
             'certificate_date_end' => $request->certificate_date_end
         ]);
-        
+
         return [
             'success' => true
         ];
     }
-    
+
     /**
      * Update type document
      * @param  \App\Http\Requests\Tenant\ConfigurationTypeDocumentRequest $request
@@ -186,12 +186,12 @@ class ConfigurationController extends Controller
             'from' => $request->from,
             'to' => $request->to
         ]);
-        
+
         return [
             'success' => true
         ];
     }
-    
+
     /**
      * Upload logo
      * @param  \App\Http\Requests\Tenant\ConfigurationUploadLogoRequest $request
@@ -199,15 +199,15 @@ class ConfigurationController extends Controller
      */
     public function uploadLogo(ConfigurationUploadLogoRequest $request) {
         $base_url = env("SERVICE_FACT", "");
-        
+
         $company = Company::firstOrFail();
         $servicecompany = ServiceCompany::firstOrFail();
         $file = $request->file('file');
-        
+
         $name = "logo_.{$company->identification_number}.{$file->getClientOriginalExtension()}";
-        
+
         $file->storeAs('public/uploads/logos', $name);
-        
+
         $company->logo = $name;
         $company->save();
 
@@ -216,7 +216,7 @@ class ConfigurationController extends Controller
 //        $file = fopen("C:\\DEBUG.txt", "w");
 //        fwrite($file, storage_path('app/public/uploads/logos/'.$name));
 //        fwrite($file, base64_encode(file_get_contents(storage_path('app/public/uploads/logos/'.$name))));
-//        fclose($file);        
+//        fclose($file);
 
         $ch = curl_init("{$base_url}ubl2.1/config/logo");
         $data = [
@@ -237,7 +237,7 @@ class ConfigurationController extends Controller
         $respuesta = json_decode($response_logo);
 
         if($err)
-        {   
+        {
             return [
                 'message' => "Error en peticion Api.",
                 'success' => false,
@@ -288,7 +288,7 @@ class ConfigurationController extends Controller
         ));
         $response_software = curl_exec($ch);
         $company->response_software = $response_software;
-      
+
         //----------------------
 
         //--------send cerificate------------------
@@ -323,7 +323,7 @@ class ConfigurationController extends Controller
             "technical_key"=> $request->technical_key,
             "from"=> $request->from,
             "to"=> $request->to,
-            'date_from' => $request->date_from, 
+            'date_from' => $request->date_from,
             'date_to' => $request->date_to
         ];
         $data_resolution = json_encode($data);
@@ -377,7 +377,7 @@ class ConfigurationController extends Controller
         $respuesta = json_decode($response_software);
 
         if($err)
-        {   
+        {
             return [
                 'message' => "Error en peticion Api.",
                 'success' => false,
@@ -430,13 +430,13 @@ class ConfigurationController extends Controller
             'Accept: application/json',
             "Authorization: Bearer {$company->api_token}"
         ));
-        
+
         $response_certificate = curl_exec($ch2);
         $err = curl_error($ch2);
         $respuesta = json_decode($response_certificate);
 
         if($err)
-        {   
+        {
             return [
                 'message' => "Error en peticion Api.",
                 'success' => false,
@@ -477,7 +477,7 @@ class ConfigurationController extends Controller
             $data = [
                 "type_environment_id" => 2,
             ];
-        else    
+        else
             $data = [
                 "type_environment_id" => 1,
             ];
@@ -492,13 +492,13 @@ class ConfigurationController extends Controller
             'Accept: application/json',
             "Authorization: Bearer {$company->api_token}"
         ));
-        
+
         $response_environment = curl_exec($ch2);
         $err = curl_error($ch2);
         $respuesta = json_decode($response_environment);
 
         if($err)
-        {   
+        {
             return [
                 'message' => "Error en peticion Api.",
                 'success' => false,
@@ -543,7 +543,7 @@ class ConfigurationController extends Controller
                 "technical_key"=> $request->technical_key,
                 "from"=> $request->from,
                 "to"=> $request->to,
-                'date_from' => $request->date_from, 
+                'date_from' => $request->date_from,
                 'date_to' => $request->date_to
             ];
             $data_resolution = json_encode($data);
@@ -562,14 +562,14 @@ class ConfigurationController extends Controller
             $respuesta = json_decode($response_resolution);
 
             if($err)
-            {   
+            {
                 return [
                     'message' => "Error en peticion Api Resolution.",
                     'success' => false,
                     'resolution' => ''
                 ];
             }
-        
+
 
             if(property_exists( $respuesta, 'success'))
             {
@@ -587,16 +587,16 @@ class ConfigurationController extends Controller
                     'from' => $request->from,
                     'to' => $request->to
                 ]);
-    
+
                 $this->storeResolutionNote();
 
 //                $file = fopen("C:\\DEBUG.TXT", "w");
 //                fwrite($file, $request->prefix.PHP_EOL);
-//                fclose($file);        
+//                fclose($file);
 
                 if ($request->prefix == 'SETP')
                     $this->changeEnvironment('HABILITACION');
-                else 
+                else
                     $this->changeEnvironment('PRODUCCION');
 
                 return [
@@ -620,7 +620,7 @@ class ConfigurationController extends Controller
                 'success' => false,
                 'message' => $e->getMessage()
             ];
-        }        
+        }
     }
 
 
@@ -634,7 +634,7 @@ class ConfigurationController extends Controller
         //envio 60 facturas
         $json_invoice = '{"number":994688605,"type_document_id":1,"customer":{"identification_number":"323232323","name":"peres","phone":"3232323","address":"sdsdsdsdsd","email":"peres@mail.com","merchant_registration":"No tiene"},"tax_totals":[{"tax_id":1,"percent":"19.00","tax_amount":"57000.00","taxable_amount":"300000.00"}],"legal_monetary_totals":{"line_extension_amount":"300000.00","tax_exclusive_amount":"300000.00","tax_inclusive_amount":"357000.00","allowance_total_amount":"0.00","charge_total_amount":"0.00","payable_amount":"357000.00"},"invoice_lines":[{"unit_measure_id":642,"invoiced_quantity":"1","line_extension_amount":"300000.00","free_of_charge_indicator":false,"tax_totals":[{"tax_id":1,"tax_amount":"57000.00","taxable_amount":"300000.00","percent":"19.00"}],"description":"POLO","code":"2323","type_item_identification_id":3,"price_amount":"13.09","base_quantity":"1.000000"}]}';
         $response_invoice = array();
-       // for ($i=1; $i <=60 ; $i++) { 
+       // for ($i=1; $i <=60 ; $i++) {
             $ch = curl_init("{$base_url}ubl2.1/invoice/{$id_test}");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -647,13 +647,13 @@ class ConfigurationController extends Controller
 
             $response = curl_exec($ch);
             array_push($response_invoice, $response);
-            
+
        // }
 
         /*//envio 20 notas de credito
         $json_credit_note = '';
         $response_credit_note = array();
-        for ($i=1; $i <=20 ; $i++) { 
+        for ($i=1; $i <=20 ; $i++) {
             $ch = curl_init("{$base_url}ubl2.1/credit-note/{$id_test}");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -666,14 +666,14 @@ class ConfigurationController extends Controller
 
             $response = curl_exec($ch);
             array_push($response_credit_note, $response);
-            
+
         }
 
-        
+
         //envio 20 notas de debito
         $json_debit_note = '';
         $response_debit_note = array();
-        for ($i=1; $i <=20 ; $i++) { 
+        for ($i=1; $i <=20 ; $i++) {
             $ch = curl_init("{$base_url}ubl2.1/debit-note/{$id_test}");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -686,7 +686,7 @@ class ConfigurationController extends Controller
 
             $response = curl_exec($ch);
             array_push($response_debit_note, $response);
-            
+
         }*/
 
 
@@ -772,15 +772,15 @@ class ConfigurationController extends Controller
         }
         catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
-            
+
             return [
                 'success' => false,
                 'message' => $e->getMessage()
             ];
         }
-        
+
         DB::connection('tenant')->commit();
-        
+
         return [
             'success' => true,
             'message' => "Se registraron con éxito las resoluciones para notas contables.",

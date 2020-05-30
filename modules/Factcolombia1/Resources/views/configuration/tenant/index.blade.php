@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('tenant.layouts.app')
 
 @section('content')
     <tenant-configuration-configuration route="{{route('tenant.configuration')}}"></tenant-configuration-configuration>

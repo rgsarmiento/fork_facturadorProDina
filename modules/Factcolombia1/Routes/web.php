@@ -12,13 +12,17 @@ if($current_hostname) {
                 Route::get('search/customers', 'Tenant\DocumentController@searchCustomers');
                 Route::get('search/customer/{id}', 'Tenant\DocumentController@searchCustomerById');
                 Route::get('tables', 'Tenant\DocumentController@tables');
-                Route::post('', 'Tenant\DocumentController@store'); 
+                Route::post('', 'Tenant\DocumentController@store');
                 Route::get('item/tables', 'Tenant\DocumentController@item_tables');
                 Route::get('table/{table}', 'Tenant\DocumentController@table');
                 Route::get('search-items', 'Tenant\DocumentController@searchItems');
                 Route::get('search/item/{item}', 'Tenant\DocumentController@searchItemById');
-    
+
             });
+
+            Route::get('/co-configuration', 'Tenant\ConfigurationController@index')->name('tenant.configuration');
+
+
 
         });
     });

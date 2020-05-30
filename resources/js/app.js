@@ -81,7 +81,7 @@ Vue.prototype.$http = Axios
 
 // // Add message request
 // Vue.prototype.$setLaravelMessage = function(response) {
-   
+
 
 //     if ((response.hasOwnProperty('success')) && (response.hasOwnProperty('message')) && (!response.success)) this.$root.$emit('addSnackbarNotification', {text: response.message, color: 'error'});
 
@@ -92,7 +92,7 @@ Vue.prototype.$http = Axios
 
 // // Add errors server
 // Vue.prototype.$setLaravelErrors = function(errorResponse) {
-  
+
 
 //     if ((errorResponse.hasOwnProperty('message')) && (errorResponse.message != '')) this.$root.$emit('addSnackbarNotification', {text: errorResponse.message, color: 'error'});
 
@@ -101,12 +101,13 @@ Vue.prototype.$http = Axios
 
 // Vue.component('tenant-document-form', require('@viewsModuleProColombia/tenant/configuration/Configuration.vue'));
 // Vue.component('tenant-document-form', require('@viewsModuleProColombia/tenant/document/Form.vue'));
+
+//colombia
 Vue.component('tenant-document-form', require('@viewsModuleProColombia/tenant/document/Form2.vue'));
+Vue.component('tenant-configuration-configuration', require('@viewsModuleProColombia/tenant/configuration/Configuration.vue'));
 
 
-
-
-
+//colombia
 
 
 Vue.component('tenant-dashboard-index', require('../../modules/Dashboard/Resources/assets/js/views/index.vue'));

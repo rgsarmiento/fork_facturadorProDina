@@ -55,7 +55,7 @@
 
                         {{ ($path[0] === 'documents-co')?'nav-active nav-expanded':'' }}
 
-                        
+
                         ">
                         <a class="nav-link" href="#">
                             <i class="fas fa-file-invoice" aria-hidden="true"></i>
@@ -552,7 +552,7 @@
                             </li>
 
                             <li class="nav-parent {{  ($path[0] === 'reports' &&
-                                    in_array($path[1], ['sales','customers','items','quotations', 'sale-notes', 'document-detractions', 
+                                    in_array($path[1], ['sales','customers','items','quotations', 'sale-notes', 'document-detractions',
                                     'commissions',  'general-items','sales-consolidated', 'user-commissions'])) ? 'nav-active nav-expanded' : ''}}">
 
                                 <a class="nav-link" href="#">
@@ -599,7 +599,7 @@
                                     </li>
                                     @endif
 
-                                    
+
                                     <li class="nav-parent
                                         {{ (($path[0] === 'reports') && ($path[1] == 'commissions')) ?'nav-active nav-expanded':'' }}
                                         {{ (($path[0] === 'reports') && ($path[1] == 'user-commissions')) ?'nav-active nav-expanded':'' }}
@@ -608,18 +608,18 @@
                                             Comisiones
                                         </a>
                                         <ul class="nav nav-children">
-                                            
+
                                             <li class="{{(($path[0] === 'reports') && ($path[1] == 'user-commissions')) ? 'nav-active' : ''}}">
                                                 <a class="nav-link" href="{{route('tenant.reports.user_commissions.index')}}">
                                                     Utilidad ventas
                                                 </a>
                                             </li>
-                                            
+
                                             <li class="{{(($path[0] === 'reports') && ($path[1] == 'commissions')) ? 'nav-active' : ''}}">
                                                 <a class="nav-link" href="{{route('tenant.reports.commissions.index')}}">
                                                     Ventas
                                                 </a>
-                                            </li> 
+                                            </li>
                                         </ul>
                                     </li>
 
@@ -718,7 +718,7 @@
 
                     <li class="nav-parent {{$path[0] === 'finances' && in_array($path[1], [
                                                 'global-payments', 'balance','payment-method-types', 'unpaid', 'to-pay', 'income'
-                                            ]) 
+                                            ])
                                             ? 'nav-active nav-expanded' : ''}}">
 
                         <a class="nav-link" href="#">
@@ -751,23 +751,28 @@
                                 <a class="nav-link" href="{{route('tenant.finances.to_pay.index')}}">
                                     Cuentas por pagar
                                 </a>
-                            </li> 
+                            </li>
                             <li class="{{(($path[0] === 'finances') && ($path[1] == 'income')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.finances.income.index')}}">
                                     Ingresos
                                 </a>
-                            </li> 
+                            </li>
                         </ul>
                     </li>
                     @endif
 
                     @if(in_array('configuration', $vc_modules))
-                    <li class="nav-parent {{in_array($path[0], ['companies', 'catalogs', 'advanced', 'tasks', 'inventories','company_accounts','bussiness_turns','offline-configurations','series-configurations','configurations']) ? 'nav-active nav-expanded' : ''}}">
+                    <li class="nav-parent {{in_array($path[0], ['co-configuration','companies', 'catalogs', 'advanced', 'tasks', 'inventories','company_accounts','bussiness_turns','offline-configurations','series-configurations','configurations']) ? 'nav-active nav-expanded' : ''}}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-cogs" aria-hidden="true"></i>
                             <span>Configuración</span>
                         </a>
                         <ul class="nav nav-children" style="">
+                            <li class="{{($path[0] === 'co-configuration') ? 'nav-active': ''}}">
+                                <a class="nav-link" href="{{route('tenant.configuration')}}">
+                                    Empresa colombia
+                                </a>
+                            </li>
                             <li class="{{($path[0] === 'companies') ? 'nav-active': ''}}">
                                 <a class="nav-link" href="{{route('tenant.companies.create')}}">
                                     Empresa
