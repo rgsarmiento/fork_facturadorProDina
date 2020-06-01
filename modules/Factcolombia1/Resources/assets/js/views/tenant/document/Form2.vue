@@ -504,6 +504,8 @@
                 this.form.currency_id = (this.currencies.length > 0)?this.currencies[0].id:null
                 // this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
                 this.form.type_document_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null
+                this.form.payment_form_id = (this.payment_forms.length > 0)?this.payment_forms[0].id:null;
+                this.form.payment_method_id = (this.payment_methods.length > 0)?this.payment_methods[0].id:null;
                 // this.form.operation_type_id = (this.operation_types.length > 0)?this.operation_types[0].id:null
                 // this.selectDocumentType()
                 // this.changeEstablishment()
@@ -781,7 +783,11 @@
                 }*/
             },
             async submit() {
- 
+                
+                if(!this.form.customer_id){
+                    return this.$message.error('Debe seleccionar un cliente')
+                }
+
                 this.form.service_invoice = await this.createInvoiceService();
                 // return
 
@@ -789,7 +795,8 @@
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                     if (response.data.success) {
                         this.resetForm();
-                        this.documentNewId = response.data.data.id;
+                        // this.documentNewId = response.data.data.id;
+                        this.$message.success(response.data.message);
                         this.showDialogOptions = true;
                     }
                     else {

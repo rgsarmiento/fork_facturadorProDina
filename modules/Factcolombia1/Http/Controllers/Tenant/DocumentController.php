@@ -40,6 +40,7 @@ use App\Models\Tenant\Item as ItemP;
 use App\Models\Tenant\Person;
 use Modules\Inventory\Models\Warehouse as ModuleWarehouse;
 use Modules\Document\Traits\SearchTrait;
+use Modules\Factcolombia1\Http\Resources\Tenant\DocumentCollection;
 
 
 class DocumentController extends Controller
@@ -54,6 +55,24 @@ class DocumentController extends Controller
     public function index() {
         return view('factcolombia1::document.tenant.index');
     }
+
+    
+    public function columns()
+    {
+        return [
+            'number' => 'Número',
+            'date_issue' => 'Fecha de emisión'
+        ];
+    }
+
+    public function records(Request $request)
+    {
+
+        $records =  Document::where($request->column, 'like', '%' . $request->value . '%')->latest();
+
+        return new DocumentCollection($records->paginate(config('tenant.items_per_page')));
+    }
+
 
     public function create() {
 /*        $company = Company::with('type_regime', 'type_identity_document')->firstOrFail();
@@ -148,7 +167,7 @@ class DocumentController extends Controller
 
             $id_test = $company->test_id;
             $base_url = config('tenant.service_fact');
-
+            
             if($company->type_environment_id == 2)
                 $ch = curl_init("{$base_url}ubl2.1/invoice/{$id_test}");
             else
@@ -161,6 +180,7 @@ class DocumentController extends Controller
 //                        fclose($file);
 //            return $data_document;
 //return json_encode(array("sendmail" => true));
+            // dd($data_document);
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -173,7 +193,7 @@ class DocumentController extends Controller
             $response = curl_exec($ch);
             curl_close($ch);
 // dd($response);
-           return $response;
+        //    return $response;
 
             $response_model = json_decode($response);
             $zip_key = null;
@@ -192,10 +212,10 @@ class DocumentController extends Controller
                     {
                         if($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->Success == 'false')
                         {
-                            // return [
-                            //     'success' => false,
-                            //     'message' => $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->ProcessedMessage
-                            // ];
+                            return [
+                                'success' => false,
+                                'message' => $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->ProcessedMessage
+                            ];
                         }
                     }
                 }
@@ -205,60 +225,61 @@ class DocumentController extends Controller
                         $zip_key = $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey;
                     }
             }
-
+// dd($zip_key);
             //return $zip_key;
 
             //declaro variuable response status en null
             $response_status = null;
             //compruebo zip_key para ejecutar servicio de status document
 
-//             if($zip_key)
-//             {
-//                 //espero 3 segundos para ejecutar sevcio de status document
-//                 sleep(3);
+            if($zip_key)
+            {
+                //espero 3 segundos para ejecutar sevcio de status document
+                sleep(3);
 
-//                 $ch2 = curl_init("{$base_url}ubl2.1/status/zip/{$zip_key}");
-//                 curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-//                 curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "POST");
+                $ch2 = curl_init("{$base_url}ubl2.1/status/zip/{$zip_key}");
+                curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "POST");
 
-//                 if(file_exists(storage_path('sendmail.api'))){
-//                     curl_setopt($ch2, CURLOPT_POSTFIELDS, json_encode(array("sendmail" => true)));
-//                 }
-//                 curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
-//                     'Content-Type: application/json',
-//                     'Accept: application/json',
-//                     "Authorization: Bearer {$company->api_token}"
-//                 ));
-//                 $response_status = curl_exec($ch2);
-//                 curl_close($ch2);
-//                 $response_status_decoded = json_decode($response_status);
+                if(file_exists(storage_path('sendmail.api'))){
+                    curl_setopt($ch2, CURLOPT_POSTFIELDS, json_encode(array("sendmail" => true)));
+                }
+                curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    "Authorization: Bearer {$company->api_token}"
+                ));
+                $response_status = curl_exec($ch2);
+                curl_close($ch2);
+                $response_status_decoded = json_decode($response_status);
+                // dd($response_status_decoded, $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage);
 
-//                 if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == "true")
-//                     $this->setStateDocument(1, $correlative_api);
-//                 else
-//                 {
-//                     if(is_array($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string))
-//                         $mensajeerror = implode(",", $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string);
-//                     else
-//                         $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string;
-//                     if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == 'false')
-//                     {
-// //                        $file = fopen("C:\\DEBUG.TXT", "w");
-// //                        fwrite($file, $response_status);
-// //                        fclose($file);
+                if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == "true")
+                    $this->setStateDocument(1, $correlative_api);
+                else
+                {
+                    if(is_array($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string))
+                        $mensajeerror = implode(",", $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string);
+                    else
+                        $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string;
+                    if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == 'false')
+                    {
+//                        $file = fopen("C:\\DEBUG.TXT", "w");
+//                        fwrite($file, $response_status);
+//                        fclose($file);
 
-//                         return [
-//                             'success' => false,
-//                             'message' => "Error al Validar Factura Nro: {$correlative_api} Errores: ".$mensajeerror
-//                         ];
-//                     }
-//                 }
-//             }
-//             else
-//                 return [
-//                     'success' => false,
-//                     'message' => "Error de ZipKey."
-//                 ];
+                        return [
+                            'success' => false,
+                            'message' => "Error al Validar Factura Nro: {$correlative_api} Errores: ".$mensajeerror
+                        ];
+                    }
+                }
+            }
+            else
+                return [
+                    'success' => false,
+                    'message' => "Error de ZipKey."
+                ];
 
             ///-------------------------------
 
@@ -662,11 +683,11 @@ class DocumentController extends Controller
         }
     }
 
+
     public function getCorrelativeInvoice($type_service)
     {
-        // $company = ServiceTenantCompany::firstOrFail();
+        $company = ServiceTenantCompany::firstOrFail();
         $base_url = config('tenant.service_fact');
-        // dd($base_url);
         $ch2 = curl_init("{$base_url}ubl2.1/invoice/current_number/{$type_service}");
 
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
@@ -674,8 +695,7 @@ class DocumentController extends Controller
         curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
-            // "Authorization: Bearer {$company->api_token}"
-            "Authorization: Bearer ".config('tenant.api_token_service_fact')
+            "Authorization: Bearer {$company->api_token}"
         ));
         $response_data = curl_exec($ch2);
         $err = curl_error($ch2);
@@ -688,6 +708,7 @@ class DocumentController extends Controller
             return $response_encode->number;
         }
     }
+
 
     public function setStateDocument($type_service, $DocumentNumber)
     {

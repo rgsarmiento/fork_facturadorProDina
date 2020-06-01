@@ -8,7 +8,10 @@ if($current_hostname) {
 
             Route::prefix('co-documents')->group(function () {
 
-                Route::get('', 'Tenant\DocumentController@create')->name('tenant.co-documents.create');
+                Route::get('', 'Tenant\DocumentController@index')->name('tenant.co-documents.index');
+                Route::get('records', 'Tenant\DocumentController@records');
+                Route::get('columns', 'Tenant\DocumentController@columns');
+                Route::get('create', 'Tenant\DocumentController@create')->name('tenant.co-documents.create');
                 Route::get('search/customers', 'Tenant\DocumentController@searchCustomers');
                 Route::get('search/customer/{id}', 'Tenant\DocumentController@searchCustomerById');
                 Route::get('tables', 'Tenant\DocumentController@tables');

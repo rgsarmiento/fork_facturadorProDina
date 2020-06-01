@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c12a56f0fa03eeca8fd4bc14654a2a4",
+    "content-hash": "89260d285ac442d684324fb0613940f3",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1364,6 +1364,7 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "abandoned": "php-parallel-lint/php-console-color",
             "time": "2018-09-29T17:23:10+00:00"
         },
         {
@@ -1410,6 +1411,7 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
@@ -4004,6 +4006,48 @@
                 "pdf"
             ],
             "time": "2019-01-30T14:11:19+00:00"
+        },
+        {
+            "name": "staudenmeir/eloquent-json-relations",
+            "version": "v1.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/staudenmeir/eloquent-json-relations.git",
+                "reference": "b3f34490c6f6439b75c32fab284f0efbb9ffa9d7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/staudenmeir/eloquent-json-relations/zipball/b3f34490c6f6439b75c32fab284f0efbb9ffa9d7",
+                "reference": "b3f34490c6f6439b75c32fab284f0efbb9ffa9d7",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.5.29|5.6.*|5.7.*",
+                "illuminate/support": "^5.5.14",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "laravel/homestead": "^7.18",
+                "phpunit/phpunit": "~6.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Staudenmeir\\EloquentJsonRelations\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonas Staudenmeir",
+                    "email": "mail@jonas-staudenmeir.de"
+                }
+            ],
+            "description": "Laravel Eloquent relationships with JSON keys",
+            "time": "2019-09-16T15:17:23+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

@@ -7,7 +7,7 @@
                     <div class="col-lg-7 pb-2">
                         <div class="form-group" :class="{'has-danger': errors.customer_id}">
                             <label class="control-label">Producto/Servicio</label>
-                            <el-select v-model="form.item_id" filterable @change="changeItem" popper-class="el-select-document_type" dusk="item_id" class="border-left rounded-left border-info">
+                            <el-select v-model="form.item_id" filterable @change="changeItem" :disabled="recordItem != null" popper-class="el-select-document_type" dusk="item_id" class="border-left rounded-left border-info">
                                 <el-option v-for="option in items" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.item_id" v-text="errors.item_id[0]"></small>
@@ -458,6 +458,8 @@
             async changeItem() {
 
                 this.form.item = _.find(this.items, {'id': this.form.item_id});
+                this.form.id = this.form.item_id
+                this.form.type_unit_id = this.form.item.type_unit_id
 
                 this.form.tax_id = (this.taxes.length > 0) ? this.taxes[0].id:null
 

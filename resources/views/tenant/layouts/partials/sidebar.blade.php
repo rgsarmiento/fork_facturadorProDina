@@ -70,12 +70,17 @@
 
                                     @if(in_array('new_document', $vc_module_levels))
 
-                                        <li class="{{ ($path[0] === 'co-documents' )?'nav-active':'' }}">
+                                        <li class="{{ ($path[0] === 'co-documents'  && $path[1] === 'create')?'nav-active':'' }}">
                                             <a class="nav-link" href="{{route('tenant.co-documents.create')}}">
                                                 Nuevo comprobante colombia
                                             </a>
                                         </li>
 
+                                        <li class="{{ ($path[0] === 'co-documents'  && $path[1] != 'create'  )?'nav-active':'' }}">
+                                            <a class="nav-link" href="{{route('tenant.co-documents.index')}}">
+                                                Listado de comprobantes colombia
+                                            </a>
+                                        </li>
                                         <li class="{{ ($path[0] === 'documents' && $path[1] === 'create')?'nav-active':'' }}">
                                             <a class="nav-link" href="{{route('tenant.documents.create')}}">
                                                 Nuevo comprobante electrónico
