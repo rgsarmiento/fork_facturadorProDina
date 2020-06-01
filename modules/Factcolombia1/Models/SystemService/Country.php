@@ -10,7 +10,7 @@ class Country extends Model
 {
     
     use UsesSystemConnection;
-    protected $table = 'service_countries';
+    protected $table = 'co_service_countries';
     /**
      * The attributes that are mass assignable.
      *

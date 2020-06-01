@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Tenant;
+namespace Modules\Factcolombia1\Models\Tenant;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Hyn\Tenancy\Traits\UsesTenantConnection;
@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_items';
+    
     
     /**
      * The attributes that are mass assignable.

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\TenantService;
+namespace Modules\Factcolombia1\Models\TenantService;
 
 use Hyn\Tenancy\Traits\UsesTenantConnection;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Tenant\{
-    typeregime as TypeRegimeDefault
+use  Modules\Factcolombia1\Models\Tenant\{
+    TypeRegime as TypeRegimeDefault
 };
 
 use DateTime;
@@ -15,7 +15,7 @@ class Company extends Model
 {
     
     use  UsesTenantConnection;
-    protected $table = 'service_companies';
+    protected $table = 'co_service_companies';
     /**
      * With default model.
      *

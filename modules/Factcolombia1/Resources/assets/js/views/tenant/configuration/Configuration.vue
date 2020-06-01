@@ -13,7 +13,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Numero de Identificacion</label>
                                     <el-input
-                                        v-model="identification_number"
+                                        v-model="form.identification_number"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -23,7 +23,7 @@
                                 <div class="form-group">
                                     <label class="control-label">DV</label>
                                     <el-input
-                                        v-model="dv"
+                                        v-model="form.dv"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -33,7 +33,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Registro Mercantil</label>
                                     <el-input
-                                        v-model="merchant_registration"
+                                        v-model="form.merchant_registration"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -43,7 +43,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Direccion</label>
                                     <el-input
-                                        v-model="address"
+                                        v-model="form.address"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -55,7 +55,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Telefono</label>
                                     <el-input
-                                        v-model="phone"
+                                        v-model="form.phone"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -65,7 +65,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Lenguaje</label>
                                     <el-input
-                                        v-model="languaje"
+                                        v-model="form.language.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -75,7 +75,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Impuesto</label>
                                     <el-input
-                                        v-model="tax_profile"
+                                        v-model="form.tax.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -87,7 +87,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Pais</label>
                                     <el-input
-                                        v-model="country"
+                                        v-model="form.country.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -97,7 +97,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Tipo de Documento</label>
                                     <el-input
-                                        v-model="type_document"
+                                        v-model="form.type_document_identification.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -107,7 +107,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Tipo de Operacion</label>
                                     <el-input
-                                        v-model="type_operation"
+                                        v-model="form.type_operation.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -119,7 +119,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Tipo Entorno</label>
                                     <el-input
-                                        v-model="type_environmet"
+                                        v-model="form.type_environment.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -129,7 +129,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Tipo Moneda</label>
                                     <el-input
-                                        v-model="type_currency"
+                                        v-model="form.type_currency.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -139,7 +139,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Tipo de Organizacion</label>
                                     <el-input
-                                        v-model="type_organization"
+                                        v-model="form.type_organization.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -151,7 +151,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Municipio</label>
                                     <el-input
-                                        v-model="municipality"
+                                        v-model="form.municipality.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -161,7 +161,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Tipo Responsabilidad</label>
                                     <el-input
-                                        v-model="type_liability"
+                                        v-model="form.type_liability.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -171,7 +171,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Tipo de Regimen</label>
                                     <el-input
-                                        v-model="type_regime"
+                                        v-model="form.type_regime.name"
                                         :disabled="true">
                                     </el-input>
                                 </div>
@@ -182,20 +182,22 @@
             </div>
         </div>
 
-        <div class="tab-content">
+        <div class="form">
             <div class="software">
                 <form autocomplete="off">
                     <div class="form-body">
                         <h3 class="my-0">Software</h3>
                         <div class="row mt-4">
                             <div class="col-lg-4">
-                                <div class="form-group">
+                                <div class="form-group" :class="{'has-danger': errors.id_software}">
                                     <label class="control-label">Id Software *</label>
                                     <el-input
-                                        v-model="id_software"
+                                        v-model="software.id_software"
                                         placeholder="Introduzca el Id Software asignado por la DIAN."
-                                        :disabled="false">
+                                        :disabled="false"
+                                        autofocus>
                                     </el-input>
+                                    <small class="form-control-feedback" v-if="errors.id_software" v-text="errors.id_software[0]"></small>
                                 </div>
                             </div>
 
@@ -203,9 +205,11 @@
                                 <div class="form-group">
                                     <label class="control-label">Pin Software *</label>
                                     <el-input
-                                        v-model="pin_software"
+                                        v-model="software.pin_software"
                                         placeholder="Digite el pin del Software"
-                                        :disabled="false">
+                                        :disabled="false"
+                                        maxlength="5"
+                                        show-word-limit>
                                     </el-input>
                                 </div>
                             </div>
@@ -214,7 +218,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Test Set ID *</label>
                                     <el-input
-                                        v-model="test_set_id"
+                                        v-model="software.test_set_id"
                                         placeholder="Introduzca el codigo del Set de Pruebas para habilitacion."
                                         :disabled="false">
                                     </el-input>
@@ -222,7 +226,12 @@
                             </div>
                         </div>
                         <div class="form-actions text-right mt-4">
-                            <el-button class="submit" type="primary" native-type="submit">Guardar</el-button>
+                            <el-button
+                                class="submit"
+                                type="primary"
+                                :loading="loadingSoftware"
+                                @click="validateSoftware('software')"
+                                native-type="submit">Guardar</el-button>
                         </div>
                     </div>
                 </form>
@@ -264,7 +273,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Password Certificado *</label>
                                     <el-input
-                                        v-model="id_software"
+                                        v-model="form.password_certificado"
                                         placeholder="Introduzca el password del certificado digital."
                                         :disabled="false">
                                     </el-input>
@@ -288,7 +297,7 @@
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     <label class="control-label">Tipo de Documento *</label>
-                                    <el-select v-model="type_document_id" filterable remote class="border-left rounded-left border-info" popper-class="el-select-type-document"
+                                    <el-select v-model="form.type_document_id" filterable remote class="border-left rounded-left border-info" popper-class="el-select-type-document"
                                         dusk="type_document_id"
                                         placeholder="Seleccione el tipo de documento."
                                         :remote-method="searchRemoteCustomers"
@@ -306,7 +315,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Prefijo *</label>
                                     <el-input
-                                        v-model="prefix"
+                                        v-model="form.prefix"
                                         placeholder="Digite el prefijo de la resolucion"
                                         :disabled="false">
                                     </el-input>
@@ -317,7 +326,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Nro Resolucion *</label>
                                     <el-input
-                                        v-model="test_set_id"
+                                        v-model="form.nro_resolution"
                                         placeholder="Digite el numero de resolucion."
                                         :disabled="false">
                                     </el-input>
@@ -328,19 +337,19 @@
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     <label class="control-label">Fecha Resolucion</label>
-                                    <el-date-picker v-model="date_resolution" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue" :picker-options="datEmision"></el-date-picker>
+                                    <el-date-picker v-model="form.date_resolution" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue" :picker-options="datEmision"></el-date-picker>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     <label class="control-label">Fecha Desde</label>
-                                    <el-date-picker v-model="date_from" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue" :picker-options="datDesde"></el-date-picker>
+                                    <el-date-picker v-model="form.date_from" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue" :picker-options="datDesde"></el-date-picker>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     <label class="control-label">Fecha Hasta</label>
-                                    <el-date-picker v-model="date_to" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue" :picker-options="datHasta"></el-date-picker>
+                                    <el-date-picker v-model="form.date_to" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue" :picker-options="datHasta"></el-date-picker>
                                 </div>
                             </div>
                         </div>
@@ -366,25 +375,6 @@
         },
 
         data: () => ({
-            identification_number: '900166483',
-            dv: '1',
-            merchant_registration: '00000-00',
-            address: 'CRA 25 NRO 41-65 LC 2',
-            phone: '7423171',
-            languaje: 'Spanish; Castillian',
-            tax_profile: 'IVA',
-            country: 'Colombia',
-            type_document: 'NIT',
-            type_operation: 'Estandar',
-            type_environmet: 'Pruebas',
-            type_currency: 'Peso colombiano',
-            type_organization: 'Persona Juridica',
-            municipality: 'Calarca',
-            type_liability: 'Obligado a Facturar Electrónicamente Modelo 2242',
-            type_regime: 'Régimen Simple',
-            id_software: '',
-            pin_software: '',
-            test_set_id: '',
             typeDocuments: [
                 { id: 1, name: "Factura de Venta Nacional" },
                 { id: 2, name: "Factura de Exportación" },
@@ -393,27 +383,37 @@
                 { id: 5, name: "Nota Débito" },
                 { id: 6, name: "ZIP" }
             ],
-            type_document_id: '',
             errors: {
-
             },
             fileCertificado: "",
-            typeIdentityDocuments: [],
-            loadingCompany: false,
+            typeIdentityDocuments: [
+            ],
+            loadingSoftware: false,
             loadingOther: false,
             loading_form: true,
-            typeObligations: [],
-            type_documents: {},
-            versionUbls: [],
-            typeRegimes: [],
-            departments: [],
-            currencies: [],
-            countries: [],
-            ambients: [],
-            cities: []
+            typeObligations: [
+            ],
+            type_documents: {
+            },
+            versionUbls: [
+            ],
+            typeRegimes: [
+            ],
+            departments: [
+            ],
+            currencies: [
+            ],
+            countries: [
+            ],
+            ambients: [
+            ],
+            cities: [
+            ]
         }),
 
         mounted() {
+            this.errors = {
+            }
             if (window.File && window.FileReader && window.FileList && window.Blob)
                 console.log("ok.");
             else
@@ -421,7 +421,7 @@
         },
 
         methods: {
-            pickFile() {
+/*            pickFile() {
                 this.$refs.certificate.click();
             },
 
@@ -498,29 +498,31 @@
                             });
                     }
                 });
-            },
+            },  */
 
             validateSoftware(scope, model = null, models = null, modelObject = null) {
-                this.$validator.validateAll(scope).then(valid => {
-                    if (valid) {
-                        this.loadingCompany = true;
-                        axios
-                            .post(`${this.route}/storeServiceCompanieSoftware`, this.software)
-                            .then(response => {
-                                this.$setLaravelMessage(response.data);
-                            })
-                            .catch(error => {
-                                this.$setLaravelValidationErrorsFromResponse(error.response.data);
-                                this.$setLaravelErrors(error.response.data);
-                            })
-                            .then(() => {
-                                this.loadingCompany = false;
-                            });
-                    }
-                });
+                this.$http.post(`/client/configuration/storeServiceCompanieSoftware`, this.software)
+                    .then(response => {
+                        if (response.data.success) {
+                            this.$message.success(response.data.message)
+                        } else {
+                            this.$message.error(response.data.message)
+                        }
+                    })
+                    .catch(error => {
+                        if (error.response.status === 422) {
+                            alert(JSON.stringify(errors.response.data.errors));
+                            this.errors = error.response.data.errors
+                        } else {
+                            console.log(error)
+                        }
+                    })
+                    .then(() => {
+                        this.loadingSoftware = false
+                    })
             },
 
-            validateCertificate(scope, model = null, models = null, modelObject = null) {
+/*            validateCertificate(scope, model = null, models = null, modelObject = null) {
                 this.$validator.validateAll(scope).then(valid => {
                     if (valid) {
                         this.certificate.certificate64 = document.getElementById("base64").value;
@@ -577,7 +579,7 @@
 
             contructSendObject() {
                 return {};
-            }
+            }   */
         }
     };
 </script>

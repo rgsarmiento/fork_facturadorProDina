@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Tenant;
+namespace Modules\Factcolombia1\Models\Tenant;
 
 use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class DetailDocument extends Model
 {
     use SoftDeletes, HasJsonRelationships, UsesTenantConnection;
+
+    protected $table = 'co_detail_documents';
+    
     
     /**
      * The attributes that should be cast to native types.

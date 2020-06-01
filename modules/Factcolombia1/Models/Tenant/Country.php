@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Tenant;
+namespace Modules\Factcolombia1\Models\Tenant;
 
 
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class Country extends Model
 {
     use SoftDeletes, UsesTenantConnection;
+
+    protected $table = 'co_countries';
+    
     
     /**
      * The attributes that are mass assignable.

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\TenantService;
+namespace Modules\Factcolombia1\Models\TenantService;
 
 use Illuminate\Database\Eloquent\Model;
 use Hyn\Tenancy\Traits\UsesTenantConnection;
@@ -18,7 +18,7 @@ use Hyn\Tenancy\Traits\UsesTenantConnection;
 class Department extends Model
 {
     use  UsesTenantConnection;
-    protected $table = 'service_departments';
+    protected $table = 'co_service_departments';
    /**
      * The attributes that are mass assignable.
      *

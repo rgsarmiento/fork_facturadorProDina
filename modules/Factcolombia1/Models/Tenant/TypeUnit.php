@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Tenant;
+namespace Modules\Factcolombia1\Models\Tenant;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Hyn\Tenancy\Traits\UsesTenantConnection;
@@ -10,6 +10,8 @@ class TypeUnit extends Model
 {
     use SoftDeletes, UsesTenantConnection;
     
+    protected $table = 'co_type_units';
+
     /**
      * The attributes that are mass assignable.
      *

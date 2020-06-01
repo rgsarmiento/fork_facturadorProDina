@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\TenantService;
+namespace Modules\Factcolombia1\Models\TenantService;
 
 use Illuminate\Database\Eloquent\Model;
 use Hyn\Tenancy\Traits\UsesTenantConnection;
@@ -8,7 +8,7 @@ use Hyn\Tenancy\Traits\UsesTenantConnection;
 class Language extends Model
 {
     use  UsesTenantConnection;
-    protected $table = 'service_languages';
+    protected $table = 'co_service_languages';
 
     /**
      * The attributes that are mass assignable.

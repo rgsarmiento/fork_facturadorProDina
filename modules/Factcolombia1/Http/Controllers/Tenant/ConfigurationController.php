@@ -4,7 +4,7 @@ namespace Modules\Factcolombia1\Http\Controllers\Tenant;
 
 use Modules\Factcolombia1\Traits\Tenant\DocumentTrait;
 use Modules\Factcolombia1\Http\Controllers\Controller;
-use App\Http\Requests\Tenant\{
+use Modules\Factcolombia1\Http\Requests\Tenant\{
     ConfigurationTypeDocumentRequest,
     ConfigurationUploadLogoRequest,
     ConfigurationCompanyRequest,
@@ -17,7 +17,7 @@ use App\Http\Requests\Tenant\{
 use Illuminate\Http\Request;
 use App\Configuration;
 use DB;
-use App\Models\Tenant\{
+use Modules\Factcolombia1\Models\Tenant\{
     TypeIdentityDocument,
     TypeObligation,
     TypeDocument,
@@ -31,11 +31,11 @@ use App\Models\Tenant\{
     Country,
     City
 };
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Company as ServiceCompany
 };
 use Carbon\Carbon;
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Company as ServiceTenantCompany
 };
 
@@ -81,7 +81,13 @@ class ConfigurationController extends Controller
         /*$company = Company::query()
             ->with('currency')
             ->firstOrFail();*/
+
         $company = ServiceCompany::first();
+
+//        $file = fopen("C:\\DEBUG.TXT", "w");
+//        fwrite($file, json_encode($company));
+//        fclose($file);
+
         $company->alert_certificate = Carbon::parse($company->certificate_date_end)->subMonth(1)->lt(Carbon::now());
 
         $company['resolution_date'] = date("Y-m-d");
@@ -355,7 +361,11 @@ class ConfigurationController extends Controller
 
     public function storeServiceSoftware(ConfigurationServiceSoftwareCompanyRequest $request)
     {
+        $file = fopen("C:\\DEBUG.TXT", "w");
+        fwrite($file, "Prueba");
+        fclose($file);
         $company = ServiceCompany::firstOrFail();
+
         $base_url = env("SERVICE_FACT", "");
         $ch = curl_init("{$base_url}ubl2.1/config/software");
         $data = [

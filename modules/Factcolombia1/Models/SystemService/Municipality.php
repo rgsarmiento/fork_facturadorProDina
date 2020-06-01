@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\SystemService;
+namespace Modules\Factcolombia1\Models\SystemService;
 
 use Illuminate\Database\Eloquent\Model;
 use Hyn\Tenancy\Traits\UsesSystemConnection;
@@ -8,7 +8,7 @@ use Hyn\Tenancy\Traits\UsesSystemConnection;
 class Municipality extends Model
 {
     use UsesSystemConnection;
-    protected $table = 'service_municipalities';
+    protected $table = 'co_service_municipalities';
 
     /**
      * With default model.

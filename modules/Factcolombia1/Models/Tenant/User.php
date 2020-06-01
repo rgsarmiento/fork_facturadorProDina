@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Tenant;
+namespace Modules\Factcolombia1\Models\Tenant;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;

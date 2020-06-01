@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\TenantService;
+namespace Modules\Factcolombia1\Models\TenantService;
 
 use Illuminate\Database\Eloquent\Model;
 use Hyn\Tenancy\Traits\UsesTenantConnection;
@@ -9,7 +9,7 @@ class TypeOperation extends Model
 {
     use UsesTenantConnection;
 
-      protected $table = 'service_type_operations';
+    protected $table = 'co_service_type_operations';
 
     /**
      * The attributes that are mass assignable.
