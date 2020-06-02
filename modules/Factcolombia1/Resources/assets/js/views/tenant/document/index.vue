@@ -6,6 +6,10 @@
                 <li class="active"><span>Listado de documentos</span> </li>
                 <!-- <li><span class="text-muted">Facturas - Notas <small>(crédito y débito)</small> - Boletas - Anulaciones</span></li> -->
             </ol> 
+            <div class="right-wrapper pull-right" v-if="typeUser != 'integrator'">
+                
+                <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
+            </div>
         </div>
         <div class="card mb-0">
             <div class="data-table-visible-columns">
@@ -36,6 +40,7 @@
                         <th class="text-right">T.Impuestos</th>
                         <th class="text-right">Subtotal</th>
                         <th class="text-right">Total</th>
+                        <th class="text-right">Descargas</th>
                         <th class="text-right">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }" >
@@ -62,6 +67,13 @@
                             <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickDownload(row.download_pdf)"
                                    >PDF</button>
+ 
+                        </td>
+                        <td class="text-right" > 
+                                   
+                            <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2"
+                               >Nota</a>
+
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickOptions(row.id)">Opciones</button>
  
@@ -70,6 +82,9 @@
                 </data-table>
             </div>
  
+            <document-options :showDialog.sync="showDialogOptions"
+                              :recordId="recordId"
+                              :showClose="true"></document-options>
         </div>
     </div>
 </template>
@@ -77,9 +92,10 @@
 <script>
  
     import DataTable from '@components/DataTable.vue'
+    import DocumentOptions from './partials/options.vue'
 
     export default {
-        components: {DataTable},
+        components: {DataTable, DocumentOptions},
         data() {
             return {
                 showDialogReportPayment:false,

@@ -233,4 +233,11 @@ class Document extends Model
     }
 
     protected $appends = ['plazo', 'response_api_invoice', 'response_api_invoice_status', 'response_api_invoice_status_date_valid', 'response_api_cufe'];
+
+
+    public function getNumberFullAttribute()
+    {
+        return $this->prefix.'-'.$this->number;
+    }
+
 }

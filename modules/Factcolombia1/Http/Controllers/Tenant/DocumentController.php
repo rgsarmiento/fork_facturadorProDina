@@ -41,6 +41,7 @@ use App\Models\Tenant\Person;
 use Modules\Inventory\Models\Warehouse as ModuleWarehouse;
 use Modules\Document\Traits\SearchTrait;
 use Modules\Factcolombia1\Http\Resources\Tenant\DocumentCollection;
+use Modules\Factcolombia1\Http\Resources\Tenant\DocumentResource;
 
 
 class DocumentController extends Controller
@@ -74,12 +75,29 @@ class DocumentController extends Controller
     }
 
 
+    public function record($id)
+    {
+        $record = new DocumentResource(Document::findOrFail($id));
+
+        return $record;
+    }
+
+
     public function create() {
 /*        $company = Company::with('type_regime', 'type_identity_document')->firstOrFail();
         return json_encode($company);   */
 
         return view('factcolombia1::document.tenant.create');
     }
+
+    public function note($id) {
+
+        $note = Document::findOrFail($id);
+
+        return view('factcolombia1::document.tenant.note', compact('note'));
+
+    }
+
 
     /**
      * All
@@ -371,7 +389,7 @@ class DocumentController extends Controller
     public function storeNote(DocumentRequest $request) {
         DB::connection('tenant')->beginTransaction();
         try {
-
+            // return json_encode( $request->all());
             // return $correlative_api;
             $note_service = $request->note_service;
             $url_name_note = '';
@@ -436,6 +454,7 @@ class DocumentController extends Controller
             ));
             $response = curl_exec($ch);
             curl_close($ch);
+            // return $response;
 
             $response_model = json_decode($response);
             $zip_key = null;
@@ -467,6 +486,7 @@ class DocumentController extends Controller
                 }
             }
 
+            // dd($response_model, $zip_key);
             //declaro variuable response status en null
             $response_status = null;
             //compruebo zip_key para ejecutar servicio de status document
@@ -632,6 +652,47 @@ class DocumentController extends Controller
         }
     }
 
+
+    public function sendEmailCoDocument(Request $request)
+    {
+        $company = ServiceTenantCompany::firstOrFail();
+
+        $send= (object)['number'=> $request->number, 'email'=> $request->email];
+        $data_send = json_encode($send);
+
+        $base_url = config('tenant.service_fact');
+        $ch2 = curl_init("{$base_url}ubl2.1/send_mail");
+        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch2, CURLOPT_POSTFIELDS,($data_send));
+        curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            "Authorization: Bearer {$company->api_token}"
+        ));
+
+        $response = curl_exec($ch2);
+        $respuesta = json_decode($response);
+        curl_close($ch2);
+
+        if(property_exists($respuesta, 'success'))
+        {
+            return [
+                'success' => $respuesta->success,
+                'message' => $respuesta->message
+            ];
+        }
+        else{
+
+            return [
+                'success' => false,
+                'message' => 'No se pudo enviar el correo.'
+            ];
+
+        }
+    }
+
+
     public function sendEmail($number, $client)
     {
         /*$company = Company::firstOrFail();
@@ -761,6 +822,18 @@ class DocumentController extends Controller
         // $customers = $this->table('customers');  
         $customers = Client::all();  
 
+        
+        $type_documents = TypeDocument::query()
+                            ->get()
+                            ->each(function($typeDocument) {
+                                $typeDocument->alert_range = (($typeDocument->to - 100) < (Document::query()
+                                    ->hasPrefix($typeDocument->prefix)
+                                    ->whereBetween('number', [$typeDocument->from, $typeDocument->to])
+                                    ->max('number') ?? $typeDocument->from));
+
+                                $typeDocument->alert_date = ($typeDocument->resolution_date_end == null) ? false : Carbon::parse($typeDocument->resolution_date_end)->subMonth(1)->lt(Carbon::now());
+                            });
+
         $payment_methods = PaymentMethod::all();
 
         $payment_forms = PaymentForm::all();
@@ -772,7 +845,7 @@ class DocumentController extends Controller
         $taxes = Tax::all();
 
         return compact('customers','payment_methods','payment_forms','type_invoices','currencies'
-                        , 'taxes');
+                        , 'taxes', 'type_documents');
 
     }
 

@@ -6,13 +6,13 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailable;
 use Illuminate\Bus\Queueable;
-use App\Models\Tenant\{
+use Modules\Factcolombia1\Models\Tenant\{
     TypeIdentityDocument,
     Document,
     Company
 };
 
-use App\Models\TenantService\{
+use Modules\Factcolombia1\Models\TenantService\{
     Company as TenantServiceCompany
 };
 use Mpdf\Mpdf;

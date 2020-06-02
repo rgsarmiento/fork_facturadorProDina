@@ -10,6 +10,8 @@ if($current_hostname) {
 
                 Route::get('', 'Tenant\DocumentController@index')->name('tenant.co-documents.index');
                 Route::get('records', 'Tenant\DocumentController@records');
+                Route::get('note/{id}', 'Tenant\DocumentController@note');
+                Route::get('record/{id}', 'Tenant\DocumentController@record');
                 Route::get('columns', 'Tenant\DocumentController@columns');
                 Route::get('create', 'Tenant\DocumentController@create')->name('tenant.co-documents.create');
                 Route::get('search/customers', 'Tenant\DocumentController@searchCustomers');
@@ -20,6 +22,9 @@ if($current_hostname) {
                 Route::get('table/{table}', 'Tenant\DocumentController@table');
                 Route::get('search-items', 'Tenant\DocumentController@searchItems');
                 Route::get('search/item/{item}', 'Tenant\DocumentController@searchItemById');
+                Route::get('download/{type}/{document}', 'Tenant\DocumentController@download');
+                Route::post('sendEmail', 'Tenant\DocumentController@sendEmailCoDocument');
+                Route::post('note', 'Tenant\DocumentController@storeNote');
     
             });
 
@@ -39,6 +44,7 @@ if($current_hostname) {
             Route::post('/countries', 'Tenant\ConfigurationController@countries');
             Route::post('/departments/{country}', 'Tenant\ConfigurationController@departments');
             Route::post('/cities/{department}', 'Tenant\ConfigurationController@cities');
+            Route::post('/concepts/{type_document}', 'Tenant\ConfigurationController@concepts');
 
 
             Route::prefix('co-clients')->group(function () {

@@ -2,9 +2,9 @@
 
 namespace Modules\Factcolombia1\Traits\Tenant;
 
-use App\Mail\Tenant\SendGraphicRepresentation;
+use Modules\Factcolombia1\Mail\Tenant\SendGraphicRepresentation;
 use Illuminate\Support\Facades\Mail;
-use App\Models\Tenant\{
+use Modules\Factcolombia1\Models\Tenant\{
     LogDocument,
     Document,
     Company,
