@@ -749,6 +749,10 @@
                     return this.$message.error('Debe seleccionar un cliente')
                 }
 
+                if(!this.form.note_concept_id){
+                    return this.$message.error('Debe seleccionar un concepto')
+                }
+
                 await this.generateNoteService();
                 this.form.note_service = this.noteService;
                 // return
@@ -898,6 +902,7 @@
                     allowance_total_amount: this.cadenaDecimales(allowance_total_amount),
                     charge_total_amount: "0.00",
                     payable_amount: this.cadenaDecimales(tax_incl_am - allowance_total_amount)
+                    // payable_amount: _.round(tax_incl_am - allowance_total_amount, 2)
                 };
 
             },
@@ -941,7 +946,7 @@
 
             getWithHolding() {
 
-                let total = this.form.sale
+                let total = this.form.total
                 let list = this.form.taxes.filter(function(x) {
                     return x.is_retention && x.apply;
                 });

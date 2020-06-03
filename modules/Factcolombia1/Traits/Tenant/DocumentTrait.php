@@ -23,13 +23,13 @@ trait DocumentTrait
 {
     /**
      * Document
-     * @var \App\Models\Tenant\Document
+     * @var \Modules\Factcolombia1\Models\Tenant\Document
      */
     public $document;
     
     /**
      * Company
-     * @var \App\Models\Tenant\Company
+     * @var \Modules\Factcolombia1\Models\Tenant\Company
      */
     public $company;
     

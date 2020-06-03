@@ -192,6 +192,7 @@ class DocumentController extends Controller
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
                 
             $data_document = json_encode($service_invoice);
+            // dd($data_document);
 
 //                        $file = fopen("C:\\DEBUG.TXT", "w");
 //                        fwrite($file, json_encode(array("sendmail" => true)));
@@ -389,6 +390,7 @@ class DocumentController extends Controller
     public function storeNote(DocumentRequest $request) {
         DB::connection('tenant')->beginTransaction();
         try {
+            // dd($request->all());
             // return json_encode( $request->all());
             // return $correlative_api;
             $note_service = $request->note_service;
@@ -441,6 +443,7 @@ class DocumentController extends Controller
             else
                 $ch = curl_init("{$base_url}ubl2.1/{$url_name_note}");
             $data_document = json_encode($note_service);
+            dd($data_document);
 
 //            return $data_document;
 
@@ -534,7 +537,7 @@ class DocumentController extends Controller
                 ];
 
             ///-------------------------------
-
+            // dd($response_status, $response_model);
             $nextConsecutive = FacadeDocument::nextConsecutive($request->type_document_id);
 
             $this->company = Company::query()
@@ -601,7 +604,9 @@ class DocumentController extends Controller
 
             return [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace(),
             ];
         }
 
@@ -842,7 +847,7 @@ class DocumentController extends Controller
 
         $currencies = Currency::all();
 
-        $taxes = Tax::all();
+        $taxes = $this->table('taxes');
 
         return compact('customers','payment_methods','payment_forms','type_invoices','currencies'
                         , 'taxes', 'type_documents');
@@ -856,7 +861,7 @@ class DocumentController extends Controller
             ->with('typeUnit', 'tax')
             ->get();
 
-        $taxes = Tax::all();
+        $taxes = $this->table('taxes');
 
         return compact('items', 'taxes');
     }
@@ -882,7 +887,24 @@ class DocumentController extends Controller
         }
  
         if ($table === 'taxes') {
-            return Tax::all();
+            return Tax::all()->transform(function($row) {
+                return [
+                    'id' => $row->id,
+                    'name' => $row->name,
+                    'code' => $row->code,
+                    'rate' =>  $row->rate,
+                    'conversion' =>  $row->conversion,
+                    'is_percentage' =>  $row->is_percentage,
+                    'is_fixed_value' =>  $row->is_fixed_value,
+                    'is_retention' =>  $row->is_retention,
+                    'in_base' =>  $row->in_base,
+                    'in_tax' =>  $row->in_tax,
+                    'type_tax_id' =>  $row->type_tax_id,
+                    'type_tax' =>  $row->type_tax,
+                    'retention' =>  0,
+                    'total' =>  0,
+                ];
+            });
         }
  
         if ($table === 'items') {
