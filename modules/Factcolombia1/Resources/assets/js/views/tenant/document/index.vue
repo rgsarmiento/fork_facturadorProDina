@@ -6,7 +6,7 @@
                 <li class="active"><span>Listado de documentos</span> </li>
                 <!-- <li><span class="text-muted">Facturas - Notas <small>(crédito y débito)</small> - Boletas - Anulaciones</span></li> -->
             </ol> 
-            <div class="right-wrapper pull-right" v-if="typeUser != 'integrator'">
+            <div class="right-wrapper pull-right" >
                 
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
             </div>
@@ -83,6 +83,7 @@
             </div>
  
             <document-options :showDialog.sync="showDialogOptions"
+                              :showDownload="false"
                               :recordId="recordId"
                               :showClose="true"></document-options>
         </div>

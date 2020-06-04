@@ -13,13 +13,27 @@ class DocumentResource extends JsonResource
 
     public function toArray($request) {
 
+        $company = ServiceTenantCompany::firstOrFail();
+        $base_url_api = config('tenant.service_fact');
+        $download_xml = "{$base_url_api}download/{$company->identification_number}/{$this->response_api_invoice->urlinvoicexml}";
+        $download_pdf = "{$base_url_api}download/{$company->identification_number}/{$this->response_api_invoice->urlinvoicepdf}";
+
+        $response_api_message = null;
+
+        if($this->response_api){
+            $response = json_decode($this->response_api);
+            $response_api_message = isset($response->message) ? $response->message:null;
+        }
+
         return [
             'id' => $this->id, 
             'correlative_api' => $this->correlative_api, 
             'number_full' => $this->number_full, 
             'client_email' => $this->client->email, 
             'client_phone' => $this->client->phone, 
-
+            'response_api_message' => $response_api_message,
+            'download_xml' => $download_xml,
+            'download_pdf' => $download_pdf,
         ];
             
     }

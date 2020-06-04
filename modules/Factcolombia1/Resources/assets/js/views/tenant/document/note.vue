@@ -214,13 +214,12 @@
                        :external="true"
                        :input_person="input_person"
                        :type_document_id = form.type_document_id></person-form>
-
-        <!-- <document-options :showDialog.sync="showDialogOptions"
-                          :recordId="documentNewId"
-                          :isContingency="is_contingency"
-                          :showClose="false"></document-options> -->
-
  
+        <document-options :showDialog.sync="showDialogOptions"
+                            :recordId="documentNewId"
+                            :showDownload="true"
+                            :showClose="false"></document-options>
+
         <document-form-retention :showDialog.sync="showDialogAddRetention"
                            @add="addRowRetention"></document-form-retention>
 
@@ -257,10 +256,11 @@
     // import {functions, exchangeRate} from '@mixins/functions'
     // import {calculateRowItem} from '../../../helpers/functions' 
     import Helper from "../../../mixins/Helper";
+    import DocumentOptions from './partials/options.vue'
 
     export default {
         props: ['typeUser', 'note'],
-        components: {PersonForm, DocumentFormItem, DocumentFormRetention},
+        components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions},
         mixins: [Helper],
         data() {
             return {
@@ -761,8 +761,8 @@
                 this.$http.post(`/${this.resource}/note`, this.form).then(response => {
                     if (response.data.success) {
                         this.resetForm();
-                        // this.documentNewId = response.data.data.id;
-                        this.$message.success(response.data.message);
+                        this.documentNewId = response.data.data.id;
+                        // this.$message.success(response.data.message);
                         this.showDialogOptions = true;
                     }
                     else {
@@ -818,11 +818,18 @@
                 {
                     this.noteService.legal_monetary_totals = await this.getLegacyMonetaryTotal();
                     this.noteService.credit_note_lines = await this.getCreditNoteLines();
+                    this.noteService.allowance_charges = await this.createAllowanceCharge(
+                        this.noteService.legal_monetary_totals.allowance_total_amount, this.noteService.legal_monetary_totals.line_extension_amount 
+                    );
                 }
                 else if(this.noteService.type_document_id == 5)
                 {
                     this.noteService.requested_monetary_totals = await this.getLegacyMonetaryTotal();
                     this.noteService.debit_note_lines = await this.getCreditNoteLines();
+
+                    this.noteService.allowance_charges = await this.createAllowanceCharge(
+                        this.noteService.requested_monetary_totals.allowance_total_amount, this.noteService.requested_monetary_totals.line_extension_amount 
+                    );
                 }
 
             }, 
@@ -907,6 +914,18 @@
 
             },
 
+            createAllowanceCharge(amount, base) {
+                return [
+                    {
+                        discount_id: 1,
+                        charge_indicator: false,
+                        allowance_charge_reason: "DESCUENTO GENERAL",
+                        amount: this.cadenaDecimales(amount),
+                        base_amount: this.cadenaDecimales(base)
+                    }
+                ]
+            },
+            
             getCreditNoteLines() {
 
                 let data = this.form.items.map(x => {

@@ -259,11 +259,10 @@
                        :input_person="input_person"
                        :type_document_id = form.type_document_id></person-form>
 
-        <!-- <document-options :showDialog.sync="showDialogOptions"
-                          :recordId="documentNewId"
-                          :isContingency="is_contingency"
-                          :showClose="false"></document-options> -->
-
+        <document-options :showDialog.sync="showDialogOptions"
+                            :recordId="documentNewId"
+                            :showDownload="true"
+                            :showClose="false"></document-options>
  
         <document-form-retention :showDialog.sync="showDialogAddRetention"
                            @add="addRowRetention"></document-form-retention>
@@ -300,10 +299,11 @@
     // import DocumentOptions from '../documents/partials/options.vue'
     import {functions, exchangeRate} from '@mixins/functions'
     // import {calculateRowItem} from '../../../helpers/functions' 
+    import DocumentOptions from './partials/options.vue'
 
     export default {
         props: ['typeUser', 'configuration'],
-        components: {PersonForm, DocumentFormItem, DocumentFormRetention},
+        components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions},
         mixins: [functions, exchangeRate],
         data() {
             return {
@@ -791,12 +791,13 @@
                 this.form.service_invoice = await this.createInvoiceService();
                 // return
 
-                // this.loading_submit = true
+                this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                     if (response.data.success) {
                         this.resetForm();
-                        // this.documentNewId = response.data.data.id;
-                        this.$message.success(response.data.message);
+                        // console.log(response)
+                        this.documentNewId = response.data.data.id;
+                        // this.$message.success(response.data.message);
                         this.showDialogOptions = true;
                     }
                     else {

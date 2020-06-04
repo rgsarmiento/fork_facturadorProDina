@@ -1,23 +1,33 @@
 <template>
     <el-dialog :title="titleDialog" :visible="showDialog" @open="create" width="30%" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false" append-to-body>
-             
-        <!-- <div class="row">
- 
-            <div class="col-lg-3 col-md-3 col-sm-12 text-center font-weight-bold mt-3">
-                <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickPrint('a4')">
-                    <i class="fa fa-file-alt"></i>
-                </button>
-                <p>Imprimir A4</p>
+       
+        <div class="row mb-4" v-if="form.response_api_message">
+            <div class="col-md-12">
+                <el-alert
+                    :title="form.response_api_message"
+                    type="success"
+                    show-icon>
+                </el-alert>
             </div>
-             <div class="col-lg-3 col-md-3 col-sm-12 text-center font-weight-bold mt-3">
+        </div>   
+
+        <div class="row" v-if="showDownload">
+ 
+            <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold mt-3">
+                <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickDownload(form.download_pdf)">
+                    <i class="fa fa-file-pdf"></i>
+                </button>
+                <p>Descargar PDF</p>
+            </div>
+             <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold mt-3">
                
-                <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickPrint('ticket')">
-                    <i class="fa fa-receipt"></i>
+                <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickDownload(form.download_xml)">
+                    <i class="fa fa-file-excel"></i>
                 </button>
-                 <p>Imprimir Ticket 80MM</p>
+                 <p>Descargar XML</p>
             </div>
  
-        </div>  -->
+        </div> 
         <div class="row mt-3">
             <div class="col-md-12">
                 <el-input v-model="form.client_email">
@@ -53,7 +63,7 @@
 
 <script>
     export default {
-        props: ['showDialog', 'recordId', 'showClose'],
+        props: ['showDialog', 'recordId', 'showClose', 'showDownload'],
         data() {
             return {
                 titleDialog: null,
@@ -75,6 +85,9 @@
                 })
         },
         methods: {
+            clickDownload(download) {
+                window.open(download, '_blank');
+            }, 
             clickSendWhatsapp() {
                 
                 if(!this.form.client_phone){
@@ -92,7 +105,10 @@
                     client_email:null,
                     client_phone:null,
                     correlative_api:null,
-                    message_text: null
+                    message_text: null,
+                    response_api_message: null,
+                    download_pdf: null,
+                    download_xml: null,
                 };
             },
             async create() {
@@ -104,10 +120,7 @@
             },
             clickPrint(format){
                 window.open(`/print/document/${this.form.external_id}/${format}`, '_blank');
-            }, 
-            clickDownload(format) {
-                window.open(`${this.form.download_pdf}/${format}`, '_blank');
-            },
+            },  
             clickSendEmail() {
                 this.loading = true
                 this.$http.post(`/${this.resource}/sendEmail`, {

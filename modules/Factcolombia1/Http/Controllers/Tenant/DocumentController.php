@@ -378,6 +378,9 @@ class DocumentController extends Controller
         return [
             'success' => true,
             'message' => "Se registro con éxito el documento #{$this->document->prefix}{$nextConsecutive->number}.",
+            'data' => [
+                'id' => $this->document->id
+            ]
            //'data' => $data_document
         ];
     }
@@ -443,7 +446,7 @@ class DocumentController extends Controller
             else
                 $ch = curl_init("{$base_url}ubl2.1/{$url_name_note}");
             $data_document = json_encode($note_service);
-            dd($data_document);
+            // dd($data_document);
 
 //            return $data_document;
 
@@ -615,6 +618,9 @@ class DocumentController extends Controller
         return [
             'success' => true,
             'message' => "Se registro con éxito el documento #{$this->document->prefix}{$this->document->number}.",
+            'data' => [
+                'id' => $this->document->id
+            ]
            //'data' => $data_document
         ];
     }
