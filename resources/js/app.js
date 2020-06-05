@@ -104,7 +104,9 @@ Vue.prototype.$http = Axios
 
 //colombia
 Vue.component('tenant-document-form', require('@viewsModuleProColombia/tenant/document/Form2.vue'));
-Vue.component('tenant-configuration-configuration', require('@viewsModuleProColombia/tenant/configuration/Configuration.vue'));
+//Vue.component('tenant-configuration-configuration', require('@viewsModuleProColombia/tenant/configuration/Configuration.vue'));
+Vue.component('tenant-configuration-general-data', require('@viewsModuleProColombia/tenant/configuration/GeneralData.vue'));
+Vue.component('tenant-configuration-software', require('@viewsModuleProColombia/tenant/configuration/Software.vue'));
 
 
 //colombia

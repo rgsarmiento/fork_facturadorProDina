@@ -361,12 +361,9 @@ class ConfigurationController extends Controller
 
     public function storeServiceSoftware(ConfigurationServiceSoftwareCompanyRequest $request)
     {
-        $file = fopen("C:\\DEBUG.TXT", "w");
-        fwrite($file, "Prueba");
-        fclose($file);
         $company = ServiceCompany::firstOrFail();
 
-        $base_url = env("SERVICE_FACT", "");
+        $base_url = config("tenant.service_fact", "");
         $ch = curl_init("{$base_url}ubl2.1/config/software");
         $data = [
             "id"=> $request->id_software,
@@ -374,6 +371,7 @@ class ConfigurationController extends Controller
             //"url" => $request->url_software,
         ];
         $data_software = json_encode($data);
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS,($data_software));
@@ -384,6 +382,11 @@ class ConfigurationController extends Controller
         ));
         $response_software = curl_exec($ch);
         $err = curl_error($ch);
+
+//        $file = fopen("C:\\FRS\\DEBUG.TXT", "w");
+//        fwrite($file, $response_software);
+//        fclose($file);
+
         $respuesta = json_decode($response_software);
 
         if($err)
@@ -395,30 +398,32 @@ class ConfigurationController extends Controller
             ];
         }
         else{
-
-            if(property_exists( $respuesta, 'success'))
+            if(property_exists($respuesta, 'success'))
             {
                 $company->response_software = $response_software;
                 $company->test_id = $request->test_id;
                 $company->save();
-                return [
-                    'message' => "Se guardaron los cambios.",
-                    'success' => true,
-                    'software' => $response_software
-                ];
+                if($respuesta->success)
+                   return [
+                        'message' => "Se guardaron los cambios.",
+                        'success' => true,
+                        'software' => $response_software
+                    ];
+                else
+                    return [
+                        'message' => "Error en validacion de datos API",
+                        'success' => false,
+                        'software' => $response_software
+                    ];
             }
             else{
-
                 return [
-                    'message' => "Error en validacion de datos Api.",
+                    'message' => "Error en validacion de datos API",
                     'success' => false,
                     'software' => ''
                 ];
             }
-
-
         }
-
     }
 
     public function storeServiceCertificate(ConfigurationServiceCertificateCompanyRequest $request)

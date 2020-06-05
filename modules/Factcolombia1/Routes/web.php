@@ -5,7 +5,7 @@ $current_hostname = app(Hyn\Tenancy\Contracts\CurrentHostname::class);
 if($current_hostname) {
     Route::domain($current_hostname->fqdn)->group(function () {
         Route::middleware(['auth'])->group(function () {
-            Route::post('/client/configuration/storeServiceCompanieSoftware', 'Tenant\ConfigurationController@storeServiceSoftware');
+//            Route::post('/client/configuration/storeServiceCompanieSoftware', 'Tenant\ConfigurationController@storeServiceSoftware');
 
             Route::prefix('documents-co')->group(function () {
                 Route::get('', 'Tenant\DocumentController@create')->name('tenant.documents-co.create');
@@ -21,6 +21,7 @@ if($current_hostname) {
 
             Route::get('/co-configuration', 'Tenant\ConfigurationController@index')->name('tenant.configuration');
             Route::post('/company', 'Tenant\ConfigurationController@company');
+            Route::post('/storeServiceCompanieSoftware', 'Tenant\ConfigurationController@storeServiceSoftware');
         });
     });
 }

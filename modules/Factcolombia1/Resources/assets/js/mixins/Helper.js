@@ -40,7 +40,7 @@ export default {
             .post(`/company`).then(response => {
                 //this.$setLaravelMessage(response.data);
                 this.form = response.data;
-                this.api_download = `${this.api}download/${this.company.identification_number}/`
+                //this.api_download = `${this.api}download/${this.company.identification_number}/`
                 //if (this.hasOwnProperty('document')) this.document.currency_id = this.company.currency_id;
             })
             .catch(error => {
