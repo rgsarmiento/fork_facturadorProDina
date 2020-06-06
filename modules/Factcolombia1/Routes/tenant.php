@@ -37,8 +37,8 @@ if ($currentHostname) {
 //                Route::post('/configuration/storeServiceCompanie', 'Tenant\ConfigurationController@storeServiceCompanie');
 
 //                Route::post('/configuration/storeServiceCompanieSoftware', 'Tenant\ConfigurationController@storeServiceSoftware');
-                Route::post('/configuration/storeServiceCompanieCertificate', 'Tenant\ConfigurationController@storeServiceCertificate');
-                Route::post('/configuration/storeServiceCompanieResolution', 'Tenant\ConfigurationController@storeServiceResolution');
+//                Route::post('/configuration/storeServiceCompanieCertificate', 'Tenant\ConfigurationController@storeServiceCertificate');
+//                Route::post('/configuration/storeServiceCompanieResolution', 'Tenant\ConfigurationController@storeServiceResolution');
 
 
                 Route::get('/configurationAll', 'Tenant\ConfigurationController@all');

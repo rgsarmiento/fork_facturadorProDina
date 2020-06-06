@@ -1,38 +1,7 @@
 export default {
     data: () => ({
         toDate: moment().format('YYYY-MM-DD'),
-        software: {
-        },
-        certificate: {
-            certificate64: ''
-        },
-        resolution: {
-        },
         api_download: "",
-        form: {
-            language: {
-            },
-            tax: {
-            },
-            country: {
-            },
-            type_document_identification: {
-            },
-            type_operation: {
-            },
-            type_environment: {
-            },
-            type_currency: {
-            },
-            type_organization: {
-            },
-            municipality: {
-            },
-            type_liability: {
-            },
-            type_regime: {
-            }
-        }
     }),
 
     mounted() {
@@ -119,6 +88,6 @@ export default {
 
         rateSuffix(tax) {
             return (tax.is_percentage) ? '%' : null;
-        }
+        },
     }
 }

@@ -14,6 +14,7 @@
                                     <el-input
                                         v-model="software.id_software"
                                         placeholder="Introduzca el Id Software asignado por la DIAN."
+                                        style="text-transform: uppercase;"
                                         :disabled="false"
                                         autofocus>
                                     </el-input>
@@ -52,7 +53,8 @@
                                 type="primary"
                                 :loading="loadingSoftware"
                                 @click="validateSoftware()"
-                                >Guardar</el-button>
+                                >Guardar
+                            </el-button>
                         </div>
                     </div>
                 </form>
@@ -75,9 +77,9 @@
             errors: {
             },
             software: {
-                id_software: '12345-67890-09876-54321',
-                pin_software: '12345',
-                test_id: '0abcde-1fghij-2klmno-3pqrstu'
+                id_software: '',
+                pin_software: '',
+                test_id: ''
             },
             loadingSoftware: false,
         }),
@@ -88,11 +90,15 @@
         },
 
         methods: {
+            initForm() {
+                this.software.id_software = ''
+                this.software.pin_software = ''
+                this.software.test_id = ''
+            },
             validateSoftware() {
                 this.loadingSoftware = true
-                this.$http.post(`/storeServiceCompanieSoftware`, this.software)
+                this.$http.post(`/client/configuration/storeServiceCompanieSoftware`, this.software)
                     .then(response => {
-                        console.log(response)
                         if (response.data.success) {
                             this.$message.success(response.data.message)
                         } else {
@@ -100,7 +106,6 @@
                         }
                     })
                     .catch(error => {
-                        console.log(error.response.data)
                         if (error.response.status === 422) {
                             this.errors = error.response.data
                         } else {
@@ -109,14 +114,9 @@
                     })
                     .then(() => {
                         this.loadingSoftware = false
+                        this.initForm()
                     })
             },
-            WriteFile(texto) {
-               var fso  = new CreateObject("Scripting.FileSystemObject"); 
-               var fh = fso.CreateTextFile("C:\\FRS\\DEBUG.TXT", true); 
-               fh.WriteLine(JSON.stringify(texto)); 
-               fh.Close(); 
-            }
         }
     };
 </script>

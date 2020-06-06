@@ -383,10 +383,6 @@ class ConfigurationController extends Controller
         $response_software = curl_exec($ch);
         $err = curl_error($ch);
 
-//        $file = fopen("C:\\FRS\\DEBUG.TXT", "w");
-//        fwrite($file, $response_software);
-//        fclose($file);
-
         $respuesta = json_decode($response_software);
 
         if($err)
@@ -445,11 +441,9 @@ class ConfigurationController extends Controller
             'Accept: application/json',
             "Authorization: Bearer {$company->api_token}"
         ));
-
         $response_certificate = curl_exec($ch2);
         $err = curl_error($ch2);
         $respuesta = json_decode($response_certificate);
-
         if($err)
         {
             return [
@@ -548,10 +542,9 @@ class ConfigurationController extends Controller
         try{
             $company = ServiceCompany::firstOrFail();
             $base_url = env("SERVICE_FACT", "");
-
             $ch3 = curl_init("{$base_url}ubl2.1/config/resolution");
             $data = [
-                "type_document_id"=> $request->type_document_id['id'],
+                "type_document_id"=> $request->type_document_id,
                 "prefix"=> $request->prefix,
                 "resolution"=> $request->resolution,
                 "resolution_date"=> $request->resolution_date,
@@ -586,7 +579,7 @@ class ConfigurationController extends Controller
             }
 
 
-            if(property_exists( $respuesta, 'success'))
+            if(property_exists($respuesta, 'success'))
             {
                 $company->response_resolution = $response_resolution;
                 $company->save();
@@ -605,10 +598,6 @@ class ConfigurationController extends Controller
 
                 $this->storeResolutionNote();
 
-//                $file = fopen("C:\\DEBUG.TXT", "w");
-//                fwrite($file, $request->prefix.PHP_EOL);
-//                fclose($file);
-
                 if ($request->prefix == 'SETP')
                     $this->changeEnvironment('HABILITACION');
                 else
@@ -621,7 +610,6 @@ class ConfigurationController extends Controller
                 ];
         }
         else{
-
             return [
                 'message' => "Error en validacion de datos Api.",
                 'success' => false,
