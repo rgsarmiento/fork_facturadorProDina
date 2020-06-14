@@ -3,14 +3,14 @@
         <form autocomplete="off" @submit.prevent="submit">
             <div class="form-body">
                 <div class="row">
- 
+
                      <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.name}">
                             <label class="control-label">Nombre  <span class="text-danger">*</span></label>
                             <el-input v-model="form.name" ></el-input>
                             <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.code}">
@@ -22,7 +22,7 @@
                             <el-input v-model="form.code" dusk="code"></el-input>
                             <small class="form-control-feedback" v-if="errors.code" v-text="errors.code[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.type_unit_id}">
@@ -32,7 +32,7 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.type_unit_id" v-text="errors.type_unit_id[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.price}">
@@ -51,10 +51,8 @@
                             <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
                         </div>
                     </div>
- 
+
                 </div>
-  
- 
             </div>
             <div class="form-actions text-right pt-2">
                 <el-button @click.prevent="close()">Cancelar</el-button>
@@ -106,10 +104,10 @@
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     this.type_units = response.data.typeUnits
-                    this.taxes = response.data.taxes 
+                    this.taxes = response.data.taxes
                     this.form.tax_id = (this.taxes.length > 0)?this.taxes[0].id:null
                 })
- 
+
 
             this.$eventHub.$on('reloadTables', ()=>{
                 this.reloadTables()
@@ -125,10 +123,10 @@
                 await this.$http.get(`/${this.resource}/tables`)
                     .then(response => {
                         this.type_units = response.data.typeUnits
-                        this.taxes = response.data.taxes 
+                        this.taxes = response.data.taxes
                         this.form.tax_id = (this.taxes.length > 0)?this.taxes[0].id:null
                     })
- 
+
             },
             changeLotsEnabled(){
 
@@ -163,7 +161,7 @@
                     type_unit_id: 10,
                     description: null,
                     price: 0,
-                    tax_id: null, 
+                    tax_id: null,
                 }
             },
             resetForm() {

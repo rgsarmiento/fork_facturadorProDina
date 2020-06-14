@@ -3,7 +3,7 @@
 namespace Modules\Factcolombia1\Exports\Tenant;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
-use App\Models\Tenant\Client;
+use Modules\Factcolombia1\Models\Tenant\Client;
 
 class ClientsExport implements FromCollection
 {

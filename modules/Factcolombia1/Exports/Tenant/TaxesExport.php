@@ -3,7 +3,7 @@
 namespace Modules\Factcolombia1\Exports\Tenant;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
-use App\Models\Tenant\Tax;
+use Modules\Factcolombia1\Models\Tenant\Tax;
 
 class TaxesExport implements FromCollection
 {

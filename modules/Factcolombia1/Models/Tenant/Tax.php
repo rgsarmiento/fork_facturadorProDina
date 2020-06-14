@@ -9,11 +9,10 @@ use Modules\Factcolombia1\Models\TenantService\{
     Tax as TypeTax
 };
 
-
 class Tax extends Model
 {
     use SoftDeletes, UsesTenantConnection;
-    
+
     protected $table = 'co_taxes';
 
     /**
@@ -22,14 +21,14 @@ class Tax extends Model
      * @var array
      */
     protected $fillable = ['name', 'code', 'rate', 'conversion', 'is_percentage', 'is_fixed_value', 'is_retention', 'in_base', 'in_tax', 'type_tax_id'];
-    
+
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = ['deleted_at'];
-    
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -41,7 +40,7 @@ class Tax extends Model
         'is_retention' => 'boolean',
         'in_base' => 'boolean'
     ];
-    
+
     protected $with = ['type_tax'];
 
     /**

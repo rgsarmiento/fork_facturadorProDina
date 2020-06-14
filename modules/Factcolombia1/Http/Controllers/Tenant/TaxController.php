@@ -18,6 +18,8 @@ use Modules\Factcolombia1\Models\TenantService\{
     Tax as TypeTaxes
 };
 
+use Modules\Factcolombia1\Http\Resources\Tenant\TaxCollection;
+
 class TaxController extends Controller
 {
     /**
@@ -26,9 +28,38 @@ class TaxController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        return view('tax.tenant.index');
+        return view('factcolombia1::tax.tenant.index');
     }
-    
+
+    public function columns()
+    {
+        return [
+            'name' => 'Nombre',
+            'type_tax_id_name' => 'Tipo Impuesto',
+        ];
+    }
+
+    public function records(Request $request)
+    {
+        $records = Tax::where($request->column, 'like', "%{$request->value}%");
+
+        return new TaxCollection($records->paginate(config('tenant.items_per_page')));
+    }
+
+    public function record($id)
+    {
+        $record = Tax::findOrFail($id);
+
+        return $record;
+    }
+
+    public function tables() {
+        return [
+            'type_taxes' => TypeTaxes::all(),
+            'taxes_in_tax' => Tax::all()
+        ];
+    }
+
     /**
      * All
      * @return \Illuminate\Http\Response
@@ -44,7 +75,7 @@ class TaxController extends Controller
             'type_taxes' => TypeTaxes::all()
         ];
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -64,13 +95,13 @@ class TaxController extends Controller
             'in_tax' => $request->in_tax,
             'type_tax_id' => $request->type_tax_id
         ]);
-        
+
         return [
             'success' => true,
             'message' => "Se registro con éxito el impuesto {$tax->name}."
         ];
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -89,15 +120,15 @@ class TaxController extends Controller
         $tax->in_base = $request->in_base;
         $tax->in_tax = $request->in_tax;
         $tax->type_tax_id = $request->type_tax_id;
-        
+
         $tax->save();
-        
+
         return [
             'success' => true,
             'message' => "Se actualizo con éxito el impuesto {$tax->name}."
         ];
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -106,13 +137,13 @@ class TaxController extends Controller
      */
     public function destroy(Tax $tax) {
         $tax->forceDelete();
-        
+
         return [
             'success' => true,
             'message' => "Se elimino con éxito el impuesto {$tax->name}."
         ];
     }
-    
+
     /**
      * Export
      * @return \Illuminate\Http\Response

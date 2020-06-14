@@ -17,19 +17,18 @@ export default {
             municipality: {},
             type_liability: {},
             type_regime: {}
-            
-            
         }
     }),
+
     mounted() {
         // axios.post(`/company`).then(response => {
         //     //this.$setLaravelMessage(response.data);
-            
+
         //     this.company = response.data;
         //     this.api_download = `${this.api}download/${this.company.identification_number}/`
-            
-           
-            
+
+
+
         //     //if (this.hasOwnProperty('document')) this.document.currency_id = this.company.currency_id;
         // }).catch(error => {
         //     this.$setLaravelValidationErrorsFromResponse(error.response.data);
@@ -56,7 +55,7 @@ export default {
         getDepartment(val) {
             return axios.post(`/departments/${val}`).then(response => {
                 // this.$setLaravelMessage(response.data);
-                
+
                 return response.data;
             }).catch(error => {
                 // this.$setLaravelValidationErrorsFromResponse(error.response.data);
@@ -66,7 +65,7 @@ export default {
         getCities(val) {
             return axios.post(`/cities/${val}`).then(response => {
                 // this.$setLaravelMessage(response.data);
-                
+
                 return response.data;
             }).catch(error => {
                 // this.$setLaravelValidationErrorsFromResponse(error.response.data);
@@ -76,7 +75,7 @@ export default {
         getConcepts(val) {
             return axios.post(`/concepts/${val}`).then(response => {
                 // this.$setLaravelMessage(response.data);
-                
+
                 return response.data;
             }).catch(error => {
                 // this.$setLaravelValidationErrorsFromResponse(error.response.data);
@@ -88,7 +87,7 @@ export default {
         },
         ratePrefix(tax = null) {
             if ((tax != null) && (!tax.is_fixed_value)) return null;
-            
+
             return (this.company.currency != null) ? this.company.currency.symbol : '$';
         },
         rateSuffix(tax) {
