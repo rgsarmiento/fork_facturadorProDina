@@ -12,7 +12,6 @@ use Modules\Factcolombia1\Models\TenantService\{
 class Tax extends Model
 {
     use SoftDeletes, UsesTenantConnection;
-
     protected $table = 'co_taxes';
 
     /**

@@ -1,16 +1,13 @@
 <template>
     <div class="card mb-0 pt-2 pt-md-0">
-        <!-- <div class="card-header bg-info">
-            <h3 class="my-0">Nuevo Comprobante</h3>
-        </div> -->
         <div class="tab-content" v-if="loading_form">
-            <div class="invoice"> 
+            <div class="invoice">
                 <form autocomplete="off" @submit.prevent="submit">
                     <div class="form-body">
                         <div class="row">
                         </div>
                         <div class="row mt-4">
-                            
+
                             <div class="col-lg-6 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.customer_id}">
                                     <label class="control-label">Cliente</label>
@@ -19,7 +16,7 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
                                 </div>
-                            </div> 
+                            </div>
 
                             <!-- <div class="col-lg-6 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.customer_id}">
@@ -39,9 +36,9 @@
 
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
-                                </div> 
+                                </div>
                             </div>  -->
-                        
+
                             <div class="col-lg-4 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.type_document_id}">
                                     <label class="control-label">Tipo de factura</label>
@@ -50,7 +47,7 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.type_document_id" v-text="errors.type_document_id[0]"></small>
                                 </div>
-                            </div> 
+                            </div>
 
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.date_issue}">
@@ -59,23 +56,23 @@
                                     <small class="form-control-feedback" v-if="errors.date_issue" v-text="errors.date_issue[0]"></small>
                                 </div>
                             </div>
-                            
+
                             <div class="col-lg-2">
-                                <div class="form-group" :class="{'has-danger': errors.date_expiration}"> 
+                                <div class="form-group" :class="{'has-danger': errors.date_expiration}">
                                     <label class="control-label">Fec. Vencimiento</label>
                                     <el-date-picker v-model="form.date_expiration" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
                                     <small class="form-control-feedback" v-if="errors.date_expiration" v-text="errors.date_expiration[0]"></small>
                                 </div>
                             </div>
-                            
-                            
+
+
                             <div class="col-lg-2" v-show="form.payment_form_id == 2">
-                                <div class="form-group" :class="{'has-danger': errors.time_days_credit}"> 
+                                <div class="form-group" :class="{'has-danger': errors.time_days_credit}">
                                     <label class="control-label">Plazo Credito</label>
                                     <el-input v-model="form.time_days_credit"></el-input>
                                     <small class="form-control-feedback" v-if="errors.time_days_credit" v-text="errors.time_days_credit[0]"></small>
                                 </div>
-                            </div> 
+                            </div>
 
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.currency_id}">
@@ -103,11 +100,11 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.payment_method_id" v-text="errors.payment_method_id[0]"></small>
                                 </div>
-                            </div>  
+                            </div>
                         </div>
 
                         <div class="row mt-2">
- 
+
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="control-label">Observaciones</label>
@@ -118,10 +115,10 @@
                                             v-model="form.additional_information">
                                     </el-input>
                                 </div>
-                            </div> 
+                            </div>
 
                         </div>
-  
+
                         <div class="row mt-4">
                             <div class="col-md-12">
                                 <div class="table-responsive">
@@ -142,7 +139,7 @@
                                         <tbody v-if="form.items.length > 0">
                                             <tr v-for="(row, index) in form.items" :key="index">
                                                 <td>{{index + 1}}</td>
-                                                <td>{{row.item.name}} 
+                                                <td>{{row.item.name}}
                                                     <!-- {{row.item.presentation.hasOwnProperty('description') ? row.item.presentation.description : ''}} -->
                                                     <br/>
                                                     <small>{{row.tax.name}}</small>
@@ -176,15 +173,15 @@
                                     <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddRetention">+ Agregar Retención</button>
                                 </div>
                             </div>
- 
+
                             <div class="col-md-12" style="display: flex; flex-direction: column; align-items: flex-end;" v-if="form.items.length > 0">
                                 <table>
- 
+
                                     <tr>
                                         <td>TOTAL VENTA</td>
                                         <td>:</td>
                                         <td class="text-right">{{ratePrefix()}} {{ form.sale }}</td>
-                                    </tr> 
+                                    </tr>
                                     <tr >
                                         <td>TOTAL DESCUENTO (-)</td>
                                         <td>:</td>
@@ -203,8 +200,8 @@
                                         <td>SUBTOTAL</td>
                                         <td>:</td>
                                         <td class="text-right">{{ratePrefix()}} {{ form.subtotal }}</td>
-                                    </tr> 
-                                    
+                                    </tr>
+
                                     <template v-for="(tax, index) in form.taxes">
                                         <tr v-if="((tax.is_retention) && (tax.apply))" :key="index">
 
@@ -263,12 +260,12 @@
                             :recordId="documentNewId"
                             :showDownload="true"
                             :showClose="false"></document-options>
- 
+
         <document-form-retention :showDialog.sync="showDialogAddRetention"
                            @add="addRowRetention"></document-form-retention>
 
 
-    </div>
+        </div>
     </div>
 </template>
 
@@ -298,7 +295,7 @@
     import PersonForm from '@views/persons/form.vue'
     // import DocumentOptions from '../documents/partials/options.vue'
     import {functions, exchangeRate} from '@mixins/functions'
-    // import {calculateRowItem} from '../../../helpers/functions' 
+    // import {calculateRowItem} from '../../../helpers/functions'
     import DocumentOptions from './partials/options.vue'
 
     export default {
@@ -375,7 +372,7 @@
                 this.initInputPerson()
             })
         },
-        watch: { 
+        watch: {
             typeDocuments: {
                 // handler(val) {
                 //     val.forEach(row => {
@@ -394,10 +391,10 @@
                 // deep: true
             }
         },
-        methods: {   
+        methods: {
             ratePrefix(tax = null) {
                 if ((tax != null) && (!tax.is_fixed_value)) return null;
-                
+
                 return (this.company.currency != null) ? this.company.currency.symbol : '$';
             },
             keyupCustomer(){
@@ -423,7 +420,7 @@
                         }
                     }
                 }
-            }, 
+            },
             clickAddItemInvoice(){
                 this.recordItem = null
                 this.showDialogAddItem = true
@@ -434,7 +431,7 @@
             getFormatUnitPriceRow(unit_price){
                 return _.round(unit_price, 6)
                 // return unit_price.toFixed(6)
-            },  
+            },
             ediItem(row, index)
             {
                 row.indexi = index
@@ -445,7 +442,7 @@
             searchRemoteCustomers(input) {
 
                 if (input.length > 0) {
-                    
+
                     this.loading_search = true
                     let parameters = `input=${input}&type_document_id=${this.form.type_document_id}&operation_type_id=${this.form.operation_type_id}`
 
@@ -467,7 +464,7 @@
 
             },
             initForm() {
-                
+
                 this.form = {
                     type_document_id: null,
                     currency_id: null,
@@ -486,7 +483,7 @@
                     service_invoice: {}
                 }
 
-                this.errors = {}  
+                this.errors = {}
                 this.$eventHub.$emit('eventInitForm')
 
                 this.initInputPerson()
@@ -516,7 +513,7 @@
             async changeOperationType() {
                 await this.filterCustomers();
                 await this.setDataDetraction();
-            }, 
+            },
             changeEstablishment() {
                 this.establishment = _.find(this.establishments, {'id': this.form.establishment_id})
                 this.filterSeries()
@@ -568,7 +565,7 @@
                 // } else {
                     this.customers = this.all_customers
                 // }
-            }, 
+            },
             addRow(row) {
                 if(this.recordItem)
                 {
@@ -589,12 +586,12 @@
                         tax.apply = true
                     }
                 });
-                
+
                 await this.calculateTotal()
 
             },
             cleanTaxesRetention(tax_id){
-                
+
                 this.taxes.forEach(tax => {
                     if(tax.id == tax_id){
                         tax.apply = false
@@ -625,10 +622,10 @@
                 // this.calculateTotal()
             },
             calculateTotal() {
-                
-                this.setDataTotals() 
 
-            }, 
+                this.setDataTotals()
+
+            },
             setDataTotals() {
 
                 // console.log(val)
@@ -667,7 +664,7 @@
                                 (item.tax.rate / item.tax.conversion)
                             ).toFixed(2);
 
-                        if (!tax.hasOwnProperty("total")) 
+                        if (!tax.hasOwnProperty("total"))
                             tax.total = Number(0).toFixed(2);
 
                         tax.total = (Number(tax.total) + Number(item.total_tax)).toFixed(2);
@@ -682,7 +679,7 @@
                         "total",
                         (Number(item.subtotal) - Number(item.discount)).toFixed(2)
                     );
-                    
+
                 });
 
                 val.subtotal = val.items
@@ -783,7 +780,7 @@
                 }*/
             },
             async submit() {
-                
+
                 if(!this.form.customer_id){
                     return this.$message.error('Debe seleccionar un cliente')
                 }
@@ -978,7 +975,7 @@
                     }
                 ]
             },
-            
+
             cadenaDecimales(amount){
                 if(amount.toString().indexOf(".") != -1)
                     return amount.toString();

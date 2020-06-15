@@ -44,7 +44,7 @@ if ($hostname) {
             Route::get('statusOrder/records', 'Tenant\StatusOrdersController@records');
 
             //Company
-            Route::get('companies/create', 'Tenant\CompanyController@create')->name('tenant.companies.create');
+            Route::get('', 'Tenant\CompanyController@create')->name('tenant.companies.create');
             Route::get('companies/tables', 'Tenant\CompanyController@tables');
             Route::get('companies/record', 'Tenant\CompanyController@record');
             Route::post('companies', 'Tenant\CompanyController@store');
@@ -496,8 +496,6 @@ if ($hostname) {
     });
 } else {
     Route::domain(env('APP_URL_BASE'))->group(function() {
-        Route::get('prueba', 'System\FactColombiaController@ShowLoginForm')->name('prueba');
-
         Route::get('login', 'System\LoginController@showLoginForm')->name('login');
         Route::post('login', 'System\LoginController@login');
         Route::post('logout', 'System\LoginController@logout')->name('logout');
