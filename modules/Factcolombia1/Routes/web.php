@@ -17,7 +17,7 @@ if($current_hostname) {
                 Route::get('search/customers', 'Tenant\DocumentController@searchCustomers');
                 Route::get('search/customer/{id}', 'Tenant\DocumentController@searchCustomerById');
                 Route::get('tables', 'Tenant\DocumentController@tables');
-                Route::post('', 'Tenant\DocumentController@store'); 
+                Route::post('', 'Tenant\DocumentController@store');
                 Route::get('item/tables', 'Tenant\DocumentController@item_tables');
                 Route::get('table/{table}', 'Tenant\DocumentController@table');
                 Route::get('search-items', 'Tenant\DocumentController@searchItems');
@@ -25,11 +25,11 @@ if($current_hostname) {
                 Route::get('download/{type}/{document}', 'Tenant\DocumentController@download');
                 Route::post('sendEmail', 'Tenant\DocumentController@sendEmailCoDocument');
                 Route::post('note', 'Tenant\DocumentController@storeNote');
-    
+
             });
 
             Route::prefix('co-items')->group(function () {
-            
+                Route::get('/items', 'Tenant\ItemController@index')->name('tenant.co-items.items');
                 Route::get('', 'Tenant\ItemController@index')->name('tenant.co-items.index');
                 Route::get('columns', 'Tenant\ItemController@columns');
                 Route::get('records', 'Tenant\ItemController@records');
@@ -37,6 +37,9 @@ if($current_hostname) {
                 Route::get('tables', 'Tenant\ItemController@tables');
                 Route::post('', 'Tenant\ItemController@store');
                 Route::delete('{item}', 'Tenant\ItemController@destroy');
+                Route::get('/items/formatImport', 'Tenant\ItemController@formatImport')->name('tenant.items.import');
+                Route::put('/items/import/excel', 'Tenant\ItemController@import');
+                Route::get('/items/export', 'Tenant\ItemController@export')->name('tenant.items.export');
 
             });
 
@@ -48,7 +51,7 @@ if($current_hostname) {
 
 
             Route::prefix('co-clients')->group(function () {
-
+                Route::get('/clients', 'Tenant\ClientController@index')->name('tenant.co-clients.clients');
                 Route::get('', 'Tenant\ClientController@index')->name('tenant.co-clients.index');
                 Route::get('columns', 'Tenant\ClientController@columns');
                 Route::get('records', 'Tenant\ClientController@records');
@@ -56,9 +59,27 @@ if($current_hostname) {
                 Route::get('tables', 'Tenant\ClientController@tables');
                 Route::post('', 'Tenant\ClientController@store');
                 Route::put('{client}', 'Tenant\ClientController@update');
-
                 Route::post('/clientsAll', 'Tenant\ClientController@all');
                 Route::delete('{client}', 'Tenant\ClientController@destroy');
+                Route::get('/clients/export', 'Tenant\ClientController@export')->name('tenant.clients.export');
+                Route::get('/clients/formatImport', 'Tenant\ClientController@formatImport');
+                Route::put('/clients/import/excel', 'Tenant\ClientController@import');
+
+            });
+
+
+            Route::prefix('co-taxes')->group(function () {
+                Route::get('/taxes', 'Tenant\TaxController@index')->name('tenant.co-taxes.taxes');
+                Route::get('', 'Tenant\TaxController@index')->name('tenant.co-taxes.index');
+                Route::get('columns', 'Tenant\TaxController@columns');
+                Route::get('records', 'Tenant\TaxController@records');
+                Route::get('record/{id}', 'Tenant\TaxController@record');
+                Route::get('tables', 'Tenant\TaxController@tables');
+                Route::post('', 'Tenant\TaxController@store');
+                Route::put('{tax}', 'Tenant\TaxController@update');
+//                Route::post('/taxesAll', 'Tenant\TaxController@all');
+                Route::delete('{tax}', 'Tenant\TaxController@destroy');
+                Route::get('/taxes/export', 'Tenant\TaxController@export')->name('tenant.taxes.export');
 
             });
         });
@@ -84,7 +105,7 @@ if($current_hostname) {
                 Route::get('records', 'System\CompanyController@records');
                 Route::get('record/{id}', 'System\CompanyController@record');
                 Route::delete('{company}', 'System\CompanyController@destroy');
- 
+
             });
 
 

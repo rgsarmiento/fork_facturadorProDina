@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('tenant.layouts.app')
 
 @section('content')
-    <tenant-tax-tax route="{{route('tenant.tax')}}"></tenant-tax-tax>
+    <tenant-tax-tax-co route="{{route('tenant.co-taxes.taxes')}}"></tenant-tax-tax-co>
 @endsection

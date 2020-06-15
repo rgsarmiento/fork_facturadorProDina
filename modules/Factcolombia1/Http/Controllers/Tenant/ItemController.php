@@ -33,8 +33,8 @@ class ItemController extends Controller
     public function index() {
         return view('factcolombia1::item.tenant.index');
     }
-    
-    
+
+
     public function columns()
     {
         return [
@@ -81,7 +81,7 @@ class ItemController extends Controller
                 ->get()
         ];
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -89,7 +89,7 @@ class ItemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(ItemRequest $request) {
-        
+
         $id = $request->input('id');
         $item = Item::firstOrNew(['id' => $id]);
 
@@ -103,14 +103,14 @@ class ItemController extends Controller
 
         $item->fill($data);
         $item->save();
-        
+
         return [
             'success' => true,
             'message' => ($id)?'Producto editado con éxito':'Producto registrado con éxito',
         ];
-        
+
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -124,9 +124,9 @@ class ItemController extends Controller
         $item->type_unit_id = $request->type_unit_id;
         $item->price = $request->price;
         $item->tax_id = $request->tax_id;
-        
+
         $item->save();
-        
+
         return [
             'success' => true,
             'message' => "Se actualizo con éxito el producto {$item->name}."
@@ -141,13 +141,13 @@ class ItemController extends Controller
      */
     public function destroy(Item $item) {
         $item->forceDelete();
-        
+
         return [
             'success' => true,
             'message' => "Se elimino con éxito el producto {$item->name}."
         ];
     }
-    
+
     /**
      * Format import
      * @return \Illuminate\Http\Response
@@ -155,7 +155,7 @@ class ItemController extends Controller
     public function formatImport() {
         return Excel::download(new ItemsFormatExport, 'Formato productos.xlsx');
     }
-    
+
     /**
      * Import
      * @param  \App\Http\Requests\Tenant\ItemImportRequest $request
@@ -165,23 +165,25 @@ class ItemController extends Controller
         try {
             if ($request->hasFile('file')) Excel::import(new ItemsImport, $request->file('file'));
         }
+
         catch (\Exception $e) {
             return [
                 'success' => false,
                 'message' => $e->getMessage()
             ];
         }
-        
+
         return [
             'success' => true,
             'message' => 'Importación exítosa.'
         ];
     }
-    
+
     /**
      * Export
      * @return \Illuminate\Http\Response
      */
+
     public function export() {
         return Excel::download(new ItemsExport, 'productos.xlsx');
     }

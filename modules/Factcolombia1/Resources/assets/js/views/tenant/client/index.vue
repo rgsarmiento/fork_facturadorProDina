@@ -11,6 +11,8 @@
                     <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickImport()"><i class="fa fa-upload"></i> Importar</button>
                 </template> -->
                 <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickCreate()"><i class="fa fa-plus-circle"></i> Nuevo</button>
+                <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click="clickImport()"><i class="fas fa-file-import"></i> Importar</button>
+                <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click="downloadExport"><i class="fas fa-file-download"></i> Exportar</button>
             </div>
         </div>
         <div class="card mb-0">
@@ -18,7 +20,7 @@
                 <h3 class="my-0">Listado de clientes</h3>
             </div>
             <div class="card-body">
-                <data-table :resource="resource">
+                <data-table :resource="resource" :loading="loadDataTable">
                     <tr slot="heading" width="100%">
                         <th>#</th>
                         <th>T. Doc. Identidad</th>
@@ -28,7 +30,7 @@
                     <tr>
                     <tr slot-scope="{ index, row }">
                         <td>{{ index }}</td>
-                        <td>{{ row.type_identity_document_name }}</td> 
+                        <td>{{ row.type_identity_document_name }}</td>
                         <td>{{ row.identification_number }}</td>
                         <td>{{ row.name }}</td>
                         <td class="text-right">
@@ -38,20 +40,9 @@
                     </tr>
                 </data-table>
             </div>
-
-            <items-form :showDialog.sync="showDialog"
-                        :recordId="recordId"></items-form>
-
-            <!-- <items-import :showDialog.sync="showImportDialog"></items-import> -->
-
-            <!-- <warehouses-detail
-                :showDialog.sync="showWarehousesDetail"
-                :warehouses="warehousesDetail">
-            </warehouses-detail>
-
-            <items-import-list-price :showDialog.sync="showImportListPriceDialog"></items-import-list-price> -->
-
+            <items-form :showDialog.sync="showDialog" :recordId="recordId"></items-form>
         </div>
+        <tenant-import-import title="Importar clientes" :route="route" :dialogImport.sync="showImportDialog" @refresh="refreshData"></tenant-import-import>
     </div>
 </template>
 <script>
@@ -64,7 +55,11 @@
     import {deletable} from '@mixins/deletable'
 
     export default {
-        props:['typeUser'],
+        props: {
+            route: {
+                required: true
+            },
+        },
         mixins: [deletable],
         components: {ItemsForm, DataTable},
         // components: {ItemsForm, ItemsImport, DataTable, WarehousesDetail, ItemsImportListPrice},
@@ -74,6 +69,7 @@
                 showImportDialog: false,
                 showImportListPriceDialog: false,
                 showWarehousesDetail: false,
+                loadDataTable: false,
                 resource: 'co-clients',
                 recordId: null,
                 warehousesDetail:[],
@@ -139,7 +135,17 @@
                 }
 
                 window.open(`/${this.resource}/barcode/${row.id}`)
-            }
+            },
+
+            downloadExport() {
+                window.open(`${this.route}/export`, '_blank');
+            },
+
+            refreshData() {
+                this.loadDataTable = true;
+                this.$eventHub.$emit('reloadData')
+                this.loadDataTable = false;
+            },
         }
     }
 </script>

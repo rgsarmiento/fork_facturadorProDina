@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\{
     WithHeadings,
     WithTitle
 };
-use App\Models\Tenant\Item;
+use Modules\Factcolombia1\Models\Tenant\Item;
 
 class ItemsFormatExport implements FromCollection, WithHeadings, WithTitle
 {
@@ -20,11 +20,11 @@ class ItemsFormatExport implements FromCollection, WithHeadings, WithTitle
             'Código del impuesto'
         ];
     }
-    
+
     public function title(): string {
         return 'Formato';
     }
-    
+
     /**
     * @return \Illuminate\Support\Collection
     */

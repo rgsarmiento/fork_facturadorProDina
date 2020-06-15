@@ -1,35 +1,33 @@
 <template>
-    <v-app id="client_form" style="height: 0px;">
-        <v-layout row justify-center>
-            <v-dialog v-model="dialogImport" persistent max-width="700" transition="dialog-bottom-transition">
-                <v-card>
-                    <v-card-title>
-                        <span class="headline">{{title}}</span>
-                    </v-card-title>
-                    <v-list three-line subheader>
-                        <v-form data-vv-scope="form">
-                            <v-container>
-                                <v-layout row wrap>
-                                    <v-flex xs12 sm12 md12 lg12>
-                                        <a :href="`${route}/formatImport`" class="grey lighten-2 btn btn-sm"><i class="fa fa-cloud-download-alt"></i> Descargar Formato</a>
-                                    </v-flex>
-                                    <v-flex class="text-xs-center text-sm-center text-md-center text-lg-center" xs12 sm12 md12 lg12>
-                                        <v-text-field v-model="form.file" v-validate="'required|max:50'" :error-messages="errors.collect('form.file')" data-vv-name="file" :counter="50" prepend-icon="attach_file" label="Seleccione el archivo *" @click="pickFile"></v-text-field>
-                                        <input type="file" style="display: none" ref="file" accept=".xlsx,.xls" @change="onFilePicked">
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="warning" flat @click="close">Cerrar</v-btn>
-                                <v-btn color="bee" flat :loading="loading" @click="validate('form')" class="text-white">Importar</v-btn>
-                            </v-card-actions>
-                        </v-form>
-                    </v-list>
-                </v-card>
-            </v-dialog>
-        </v-layout>
-    </v-app>
+    <el-dialog width="50%" :title="title" :visible="dialogImport" :close-on-click-modal="false" append-to-body top="7vh">
+        <form autocomplete="off" @submit.prevent="submit">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col">
+            <div class="form-actions text-left pt-2">
+                <el-upload
+                    class="upload-file"
+                    ref="upload"
+                    action="''"
+                    :auto-upload="false"
+                    :limit="1">
+                    <el-button slot="trigger" size="small" type="primary">Selecciona un archivo</el-button>
+                    <el-button style="margin-left: 10px;" size="small" type="primary" :loading="loading" @click="validate">Importar</el-button>
+                    <div slot="tip" class="el-upload__tip">Solo archivos de tipo EXCEL segun plantilla descargada</div>
+                    <el-button @click.prevent="close()">Cerrar</el-button>
+                </el-upload>
+            </div>
+                    </div>
+                    <div class="col-md-12 text-right" >
+                        <a :href="`${route}/formatImport`" class="grey lighten-2 btn btn-sm">
+                            <i class="fa fa-cloud-download-alt">
+                            </i> Descargar Formato
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </el-dialog>
 </template>
 
 <script>
@@ -45,64 +43,44 @@
                 required: true
             }
         },
+
         data: () => ({
             loading: false,
-            form: {}
+            form: {
+            }
         }),
+
         methods: {
-            cleanForm() {
-                this.$set(this.form, 'file', '');
-                
-                this.$validator.reset();
-            },
             close() {
-                this.cleanForm();
-                
-                this.$refs.file.value = '';
-                
+                this.$refs.upload.clearFiles();
                 this.$emit('update:dialogImport', false);
             },
-            pickFile () {
-                this.$refs.file.click();
-            },
-            onFilePicked(e) {
-                let files = e.target.files;
-                
-                if (files[0] !== undefined) {
-                    this.$set(this.form, 'file', files[0].name);
-                    
-                    return;
+
+            validate() {
+                let Data = new FormData(this.company);
+                if (this.$refs.upload.uploadFiles.length > 0){
+                    this.loading = true;
+                    Data.append('file', this.$refs.upload.uploadFiles[0].raw, this.$refs.upload.uploadFiles[0].name);
+                    Data.append('_method', 'PUT');
+                    axios
+                        .post(`${this.route}/import/excel`, Data)
+                            .then(response => {
+                                if (response.data.success) {
+                                    this.$message.success(response.data.message)
+                                    console.log(response.data.message);
+                                    this.$emit('refresh');
+                                    this.close();
+                                };
+                            })
+                            .catch(error => {
+                                this.$message.error(error.resp.data.message);
+                            })
+                            .then(() => {
+                                this.loading = false;
+                            });
                 }
-                
-                this.$set(this.form, 'file', '');
-            },
-            validate(scope) {
-                this.$validator.validateAll(scope).then(valid => {
-                    if (valid) {
-                        this.loading = true;
-                        
-                        let Data = new FormData(this.company);
-                        
-                        if (this.$refs.file.files.length > 0) Data.append('file', this.$refs.file.files[0], this.$refs.file.files[0].name);
-                        
-                        Data.append('_method', 'PUT');
-                        
-                        axios.post(`${this.route}/import/excel`, Data).then(response => {
-                            this.$setLaravelMessage(response.data);
-                            
-                            if (response.data.success) {
-                                this.$emit('refresh');
-                                
-                                this.close();
-                            };
-                        }).catch(error => {
-                            this.$setLaravelValidationErrorsFromResponse(error.response.data);
-                            this.$setLaravelErrors(error.response.data);
-                        }).then(() => {
-                            this.loading = false;
-                        });
-                    }
-                });
+                else
+                    this.$message.error('Debe seleccionar un archivo de tipo EXCEL para realizar la importacion.');
             }
         }
     }

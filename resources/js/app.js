@@ -16,14 +16,14 @@ import lang from 'element-ui/lib/locale/lang/es'
 import locale from 'element-ui/lib/locale'
 locale.use(lang)
 
- 
+
 
 
 //Vue.use(ElementUI)
 Vue.use(ElementUI, {size: 'small'})
 Vue.prototype.$eventHub = new Vue()
 Vue.prototype.$http = Axios
- 
+
 
 //components colombia
 
@@ -32,7 +32,10 @@ Vue.component('tenant-document-form', require('@viewsModuleProColombia/tenant/do
 Vue.component('tenant-document-index', require('@viewsModuleProColombia/tenant/document/index.vue'));
 Vue.component('system-company-company', require('@viewsModuleProColombia/system/company/index.vue'));
 Vue.component('tenant-item-item', require('@viewsModuleProColombia/tenant/item/index.vue'));
+Vue.component('tenant-tax-tax-co', require('@viewsModuleProColombia/tenant/tax/index.vue'));
+Vue.component('tenant-taxes-form', require('@viewsModuleProColombia/tenant/tax/form.vue'));
 Vue.component('tenant-client-client', require('@viewsModuleProColombia/tenant/client/index.vue'));
+Vue.component('tenant-import-import', require('@viewsModuleProColombia/tenant/import/Import.vue'));
 
 
 //components colombia
