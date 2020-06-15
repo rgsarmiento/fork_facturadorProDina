@@ -24,6 +24,58 @@ Vue.use(ElementUI, {size: 'small'})
 Vue.prototype.$eventHub = new Vue()
 Vue.prototype.$http = Axios
 
+// Vuetify es
+// Vue.use(Vuetify, {
+//     lang: {
+//         locales: {es},
+//         current: 'es'
+//     }
+// });
+
+
+// Vue.use(VeeValidate);
+
+
+// require('./factcolombia');
+// Vue.prototype.$setLaravelValidationErrorsFromResponse = function(errorResponse) {
+//     if (!this.hasOwnProperty('$validator')) return;
+
+//     this.$validator.errors.clear();
+
+//     if (!errorResponse.hasOwnProperty('errors')) return;
+
+//     let errorFields = Object.keys(errorResponse.errors);
+//     let form_error = '';
+
+//     if (errorFields.includes('form_error')) form_error += `${errorResponse.errors['form_error'].join()}.`;
+
+//     for (let i = 0; i < errorFields.length; i++) {
+//         let field = errorFields[i];
+//         let errorString = errorResponse.errors[field].join(', ');
+
+//         this.$validator.errors.add({
+//             field: `${form_error}${field}`,
+//             msg: errorString
+//         });
+//     }
+// };
+
+// // Add message request
+// Vue.prototype.$setLaravelMessage = function(response) {
+
+
+//     if ((response.hasOwnProperty('success')) && (response.hasOwnProperty('message')) && (!response.success)) this.$root.$emit('addSnackbarNotification', {text: response.message, color: 'error'});
+
+//     if ((response.hasOwnProperty('success')) && (response.hasOwnProperty('message')) && (response.success)) this.$root.$emit('addSnackbarNotification', {text: response.message, color: 'success'});
+
+//     if (response.hasOwnProperty('message') && (!response.hasOwnProperty('success'))) this.$root.$emit('addSnackbarNotification', {text: response.message, color: 'info'});
+// };
+
+// // Add errors server
+// Vue.prototype.$setLaravelErrors = function(errorResponse) {
+
+
+//     if ((errorResponse.hasOwnProperty('message')) && (errorResponse.message != '')) this.$root.$emit('addSnackbarNotification', {text: errorResponse.message, color: 'error'});
 
 //components colombia
 
@@ -39,9 +91,19 @@ Vue.component('tenant-import-import', require('@viewsModuleProColombia/tenant/im
 
 
 //components colombia
+// Vue.component('tenant-document-form', require('@viewsModuleProColombia/tenant/configuration/Configuration.vue'));
+// Vue.component('tenant-document-form', require('@viewsModuleProColombia/tenant/document/Form.vue'));
+
+//colombia
+Vue.component('tenant-document-form', require('@viewsModuleProColombia/tenant/document/Form2.vue'));
+//Vue.component('tenant-configuration-configuration', require('@viewsModuleProColombia/tenant/configuration/Configuration.vue'));
+Vue.component('tenant-configuration-general-data', require('@viewsModuleProColombia/tenant/configuration/GeneralData.vue'));
+Vue.component('tenant-configuration-software', require('@viewsModuleProColombia/tenant/configuration/Software.vue'));
+Vue.component('tenant-configuration-certificate', require('@viewsModuleProColombia/tenant/configuration/Certificate.vue'));
+Vue.component('tenant-configuration-resolution', require('@viewsModuleProColombia/tenant/configuration/Resolution.vue'));
 
 
-
+//colombia
 
 
 Vue.component('tenant-dashboard-index', require('../../modules/Dashboard/Resources/assets/js/views/index.vue'));

@@ -22,7 +22,7 @@ if ($currentHostname) {
 
             Route::get('/test_api_dian', 'Tenant\ConfigurationController@testApiDian');
 
-            Route::post('/company', 'Tenant\ConfigurationController@company');
+//            Route::post('/company', 'Tenant\ConfigurationController@company');
             Route::post('/countries', 'Tenant\ConfigurationController@countries');
             Route::post('/departments/{country}', 'Tenant\ConfigurationController@departments');
             Route::post('/cities/{department}', 'Tenant\ConfigurationController@cities');
@@ -34,11 +34,11 @@ if ($currentHostname) {
                 Route::get('/configuration', 'Tenant\ConfigurationController@index')->name('tenant.configuration');
                 Route::get('/configuration/documents', 'Tenant\ConfigurationController@document')->name('tenant.configuration.documents');
                 Route::post('/configurationAll', 'Tenant\ConfigurationController@all');
-                Route::post('/configuration/storeServiceCompanie', 'Tenant\ConfigurationController@storeServiceCompanie');
+//                Route::post('/configuration/storeServiceCompanie', 'Tenant\ConfigurationController@storeServiceCompanie');
 
-                Route::post('/configuration/storeServiceCompanieSoftware', 'Tenant\ConfigurationController@storeServiceSoftware');
-                Route::post('/configuration/storeServiceCompanieCertificate', 'Tenant\ConfigurationController@storeServiceCertificate');
-                Route::post('/configuration/storeServiceCompanieResolution', 'Tenant\ConfigurationController@storeServiceResolution');
+//                Route::post('/configuration/storeServiceCompanieSoftware', 'Tenant\ConfigurationController@storeServiceSoftware');
+//                Route::post('/configuration/storeServiceCompanieCertificate', 'Tenant\ConfigurationController@storeServiceCertificate');
+//                Route::post('/configuration/storeServiceCompanieResolution', 'Tenant\ConfigurationController@storeServiceResolution');
 
 
                 Route::get('/configurationAll', 'Tenant\ConfigurationController@all');

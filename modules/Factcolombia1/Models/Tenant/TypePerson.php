@@ -11,15 +11,15 @@ class TypePerson extends Model
     use SoftDeletes, UsesTenantConnection;
 
     protected $table = 'co_type_people';
-    
-    
+
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['name'];
-    
+
     /**
      * The attributes that should be mutated to dates.
      *
