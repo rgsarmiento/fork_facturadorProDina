@@ -1,44 +1,8 @@
 <template>
     <el-dialog :title="titleDialog" :visible="showDialog" @close="close" @open="create" @opened="opened" :close-on-click-modal="false">
         <form autocomplete="off" @submit.prevent="submit">
-            <div class="form-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group" :class="{'has-danger': errors.identity_document_type_id}">
-                            <label class="control-label">Tipo Doc. Identidad <span class="text-danger">*</span></label>
-                            <el-select v-model="form.identity_document_type_id" filterable  popper-class="el-select-identity_document_type" dusk="identity_document_type_id" @change="changeIdentityDocType">
-                                <el-option v-for="option in identity_document_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.identity_document_type_id" v-text="errors.identity_document_type_id[0]"></small>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group" :class="{'has-danger': errors.number}">
-                            <label class="control-label">Número <span class="text-danger">*</span></label>
-
-                            <div v-if="api_service_token != false">
-                                <x-input-service :identity_document_type_id="form.identity_document_type_id" v-model="form.number" @search="searchNumber"></x-input-service>
-                            </div>
-                            <div v-else>
-                                <el-input v-model="form.number" :maxlength="maxLength" dusk="number">
-                                    <template v-if="form.identity_document_type_id === '6' || form.identity_document_type_id === '1'">
-                                        <el-button type="primary" slot="append" :loading="loading_search" icon="el-icon-search" @click.prevent="searchCustomer">
-                                            <template v-if="form.identity_document_type_id === '6'">
-                                                SUNAT
-                                            </template>
-                                            <template v-if="form.identity_document_type_id === '1'">
-                                                RENIEC
-                                            </template>
-                                        </el-button>
-                                    </template>
-                                </el-input>
-                            </div>
-
-                            <small class="form-control-feedback" v-if="errors.number" v-text="errors.number[0]"></small>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
+            <div class="form-body"> 
+                <!-- <div class="row">
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.name}">
                             <label class="control-label">Nombre <span class="text-danger">*</span></label>
@@ -49,11 +13,11 @@
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.trade_name}">
                             <label class="control-label">Nombre comercial</label>
-                            <el-input v-model="form.trade_name" dusk="trade_name"></el-input>
+                            <el-input v-model="form.trade_name" ></el-input>
                             <small class="form-control-feedback" v-if="errors.trade_name" v-text="errors.trade_name[0]"></small>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- <div class="row" v-if="type === 'customers'">
                     <div class="col-md-4">
@@ -72,71 +36,8 @@
                         </div>
                     </div>
                 </div> -->
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group" :class="{'has-danger': errors.country_id}">
-                            <label class="control-label">País</label>
-                            <el-select v-model="form.country_id" filterable dusk="country_id">
-                                <el-option v-for="option in countries" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.country_id" v-text="errors.country_id[0]"></small>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group" :class="{'has-danger': errors.department_id}">
-                            <label class="control-label">Departamento</label>
-                            <el-select v-model="form.department_id" filterable @change="filterProvince" popper-class="el-select-departments" dusk="department_id">
-                                <el-option v-for="option in all_departments" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.department_id" v-text="errors.department_id[0]"></small>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group" :class="{'has-danger': errors.province_id}">
-                            <label class="control-label">Provincia</label>
-                            <el-select v-model="form.province_id" filterable @change="filterDistrict" popper-class="el-select-provinces" dusk="province_id">
-                                <el-option v-for="option in provinces" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.province_id" v-text="errors.province_id[0]"></small>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group" :class="{'has-danger': errors.province_id}">
-                            <label class="control-label">Distrito</label>
-                            <el-select v-model="form.district_id" filterable popper-class="el-select-districts" dusk="district_id">
-                                <el-option v-for="option in districts" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.district_id" v-text="errors.district_id[0]"></small>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="form-group" :class="{'has-danger': errors.address}">
-                            <label class="control-label">Dirección</label>
-                            <el-input v-model="form.address" dusk="address"></el-input>
-                            <small class="form-control-feedback" v-if="errors.address" v-text="errors.address[0]"></small>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group" :class="{'has-danger': errors.telephone}">
-                            <label class="control-label">Teléfono</label>
-                            <el-input v-model="form.telephone" dusk="telephone"></el-input>
-                            <small class="form-control-feedback" v-if="errors.telephone" v-text="errors.telephone[0]"></small>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group" :class="{'has-danger': errors.email}">
-                            <label class="control-label">Correo electrónico</label>
-                            <el-input v-model="form.email" dusk="email"></el-input>
-                            <small class="form-control-feedback" v-if="errors.email" v-text="errors.email[0]"></small>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
+  
+                <!-- <div class="row">
                     <div class="col-md-6" v-if="form.state">
                         <div class="form-group" >
                             <label class="control-label">Estado del Contribuyente</label>
@@ -161,7 +62,7 @@
                         </div>
 
                     </div>
-                </div>
+                </div> -->
                 <div class="row mt-2" v-if="type === 'suppliers'">
                     <div class="col-md-6 center-el-checkbox">
                         <div class="form-group" :class="{'has-danger': errors.perception_agent}">
@@ -177,12 +78,130 @@
                         </div>
                     </div>
                 </div>
-                <div class="row m-t-10">
+
+                <div class="row">
+ 
+                    <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.type_person_id}">
+                            <label class="control-label">Tipo de persona</label>
+                            <el-select v-model="form.type_person_id" filterable>
+                                <el-option v-for="option in type_persons" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.type_person_id" v-text="errors.type_person_id[0]"></small>
+                        </div>
+                    </div> 
+
+                    <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.type_regime_id}">
+                            <label class="control-label">Tipo de régimen</label>
+                            <el-select v-model="form.type_regime_id" filterable>
+                                <el-option v-for="option in type_regimes" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.type_regime_id" v-text="errors.type_regime_id[0]"></small>
+                        </div>
+                    </div> 
+
+                    <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.identity_document_type_id}">
+                            <label class="control-label">Tipo de identificación</label>
+                            <el-select v-model="form.identity_document_type_id"  filterable>
+                                <el-option v-for="option in identity_document_types" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.identity_document_type_id" v-text="errors.identity_document_type_id[0]"></small>
+                        </div>
+                    </div> 
+
+                     <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.dv}">
+                            <label class="control-label">Dv  </label>
+                            <el-input v-model="form.dv" ></el-input>
+                            <small class="form-control-feedback" v-if="errors.dv" v-text="errors.dv[0]"></small>
+                        </div>
+                    </div> 
+
+                     <div class="col-md-4">
+                        <div class="form-group" :class="{'has-danger': errors.number}">
+                            <label class="control-label">N° Identificación  </label>
+                            <el-input v-model="form.number" ></el-input>
+                            <small class="form-control-feedback" v-if="errors.number" v-text="errors.number[0]"></small>
+                        </div>
+                    </div> 
+
+                     <div class="col-md-8">
+                        <div class="form-group" :class="{'has-danger': errors.name}">
+                            <label class="control-label">Nombre  </label>
+                            <el-input v-model="form.name" ></el-input>
+                            <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
+                        </div>
+                    </div> 
+
+                    <div class="col-md-4">
+                        <div class="form-group" :class="{'has-danger': errors.country_id}">
+                            <label class="control-label">País</label>
+                            <el-select v-model="form.country_id" filterable @change="departmentss()">
+                                <el-option v-for="option in countries" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.country_id" v-text="errors.country_id[0]"></small>
+                        </div>
+                    </div>
+ 
+                    <div class="col-md-4">
+                        <div class="form-group" :class="{'has-danger': errors.department_id}">
+                            <label class="control-label">Departamento</label>
+                            <el-select v-model="form.department_id" filterable @change="citiess()">
+                                <el-option v-for="option in departments" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.department_id" v-text="errors.department_id[0]"></small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group" :class="{'has-danger': errors.city_id}">
+                            <label class="control-label">Ciudad</label>
+                            <el-select v-model="form.city_id" filterable >
+                                <el-option v-for="option in cities" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.city_id" v-text="errors.city_id[0]"></small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group" :class="{'has-danger': errors.telephone}">
+                            <label class="control-label">Teléfono</label>
+                            <el-input v-model="form.telephone"></el-input>
+                            <small class="form-control-feedback" v-if="errors.telephone" v-text="errors.telephone[0]"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" :class="{'has-danger': errors.email}">
+                            <label class="control-label">Correo electrónico</label>
+                            <el-input v-model="form.email" dusk="email"></el-input>
+                            <small class="form-control-feedback" v-if="errors.email" v-text="errors.email[0]"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" :class="{'has-danger': errors.address}">
+                            <label class="control-label">Dirección</label>
+                            <el-input v-model="form.address" dusk="address"></el-input>
+                            <small class="form-control-feedback" v-if="errors.address" v-text="errors.address[0]"></small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        
+                        <div class="form-group" :class="{'has-danger': errors.code}">
+                            <label class="control-label">Código interno  </label>
+                            <el-input v-model="form.code" ></el-input>
+                            <small class="form-control-feedback" v-if="errors.code" v-text="errors.code[0]"></small>
+                        </div>
+                    </div> 
+                </div>
+                <!-- <div class="row m-t-10">
                     <div class="col-md-12 text-center">
                         <el-button size="mini" icon="el-icon-plus" @click.prevent="clickAddAddress()">Agregar dirección</el-button>
                     </div>
-                </div>
-                <div class="row m-t-10" v-for="(row, index) in form.addresses">
+                </div> -->
+                <!-- <div class="row m-t-10" v-for="(row, index) in form.addresses">
                     <div class="col-md-12">
                         <label class="control-label" v-if="index === 0">
                             Dirección principal
@@ -229,7 +248,7 @@
                             <small class="form-control-feedback" v-if="errors.email" v-text="errors.email[0]"></small>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="form-actions text-right mt-4">
                 <el-button @click.prevent="close()">Cancelar</el-button>
@@ -241,10 +260,10 @@
 
 <script>
 
-    import {serviceNumber} from '../../../mixins/functions'
+    // import Helper from '@assetsModuleProColombia/mixins/Helper';
 
     export default {
-        mixins: [serviceNumber],
+        // mixins: [Helper],
         props: ['showDialog', 'type', 'recordId', 'external', 'document_type_id','input_person'],
         data() {
             return {
@@ -262,7 +281,12 @@
                 districts: [],
                 locations: [],
                 person_types: [],
-                identity_document_types: []
+                identity_document_types: [],
+                type_persons: [],
+                type_regimes: [],
+                countries: [],
+                departments: [],
+                cities: [],
             }
         },
         async created() {
@@ -279,6 +303,12 @@
                     this.identity_document_types = response.data.identity_document_types;
                     this.locations = response.data.locations;
                     this.person_types = response.data.person_types;
+                    
+                    this.type_persons = response.data.typePeople
+                    this.type_regimes = response.data.typeRegimes
+                    this.identity_document_types = response.data.typeIdentityDocuments
+                    this.countries = response.data.countries
+
                 })
 
         },
@@ -293,16 +323,34 @@
             }
         },
         methods: {
+            getDepartment(val) {
+                return axios
+                            .post(`/departments/${val}`).then(response => {
+                                return response.data;
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            });
+            },
+
+            getCities(val) {
+                return axios
+                            .post(`/cities/${val}`).then(response => {
+                                return response.data;
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            });
+            },
             initForm() {
                 this.errors = {}
                 this.form = {
                     id: null,
                     type: this.type,
-                    identity_document_type_id: '6',
                     number: '',
                     name: null,
                     trade_name: null,
-                    country_id: 'PE',
+                    country_id: null,
                     department_id: null,
                     province_id: null,
                     district_id: null,
@@ -315,8 +363,37 @@
                     percentage_perception:0,
                     person_type_id:null,
                     comment:null,
-                    addresses: []
+                    type_person_id: null,
+                    type_regime_id: null,
+                    identity_document_type_id: null,
+                    addresses: [],
+                    city_id: null, 
+                    code: null, 
+                    dv: null, 
                 }
+                
+                this.departmentss();
+                this.citiess();
+                
+            },
+            departmentss(edit = false) {
+                if (!edit) {
+                    // console.log("s")
+                    this.form.department_id = null;
+                    this.form.city_id = null;
+                    this.departments = [];
+                    this.cities = [];
+                }
+
+                if (this.form.country_id != null) this.getDepartment(this.form.country_id).then(rows => this.departments = rows);
+            },
+            citiess(edit = false) {
+                if (!edit) {
+                    this.form.city_id = null;
+                    this.cities = [];
+                }
+
+                if (this.form.department_id != null) this.getCities(this.form.department_id).then(rows => this.cities = rows);
             },
             async opened() {
 
@@ -356,8 +433,12 @@
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
                             this.form = response.data.data
-                            this.filterProvinces()
-                            this.filterDistricts()
+                            // this.filterProvinces()
+                            // this.filterDistricts()
+                            
+                            this.departmentss(true);
+                            this.citiess(true);
+
                         })
                 }
             },

@@ -29,6 +29,11 @@ class ItemRequest extends FormRequest
             // 'second_name' => [                
             //     'required',
             // ],
+            'name' => [
+                // 'required|unique:tenant.co_items,name|max:50'
+                'required',
+                Rule::unique('tenant.items')->ignore($id),
+            ],
             'unit_type_id' => [
                 'required',
             ],
@@ -63,6 +68,7 @@ class ItemRequest extends FormRequest
             // 'brand_id' => [
             //     'required_if:is_set,false',
             // ],
+            'tax_id' => 'required|exists:tenant.co_taxes,id'
             
         ];
     }
@@ -70,7 +76,7 @@ class ItemRequest extends FormRequest
     public function messages()
     {
         return [
-            'description.required' => 'El campo nombre es obligatorio.',
+            // 'description.required' => 'El campo nombre es obligatorio.',
             'sale_unit_price.gt' => 'El precio unitario de venta debe ser mayor que 0.',
         ];
     }

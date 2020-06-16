@@ -2,13 +2,21 @@
 
 namespace App\Models\Tenant;
 
-use App\Models\Tenant\Catalogs\Country;
-use App\Models\Tenant\Catalogs\Department;
+// use App\Models\Tenant\Catalogs\Country;
+// use App\Models\Tenant\Catalogs\Department;
 use App\Models\Tenant\Catalogs\District;
-use App\Models\Tenant\Catalogs\IdentityDocumentType;
+// use App\Models\Tenant\Catalogs\IdentityDocumentType;
 use App\Models\Tenant\Catalogs\Province;
 use Illuminate\Database\Eloquent\Builder;
 
+use Modules\Factcolombia1\Models\Tenant\{
+    TypePerson,
+    TypeRegime,
+    TypeIdentityDocument,
+    Country,
+    Department,
+    City,
+};
 
 class Person extends ModelTenant
 {
@@ -35,6 +43,13 @@ class Person extends ModelTenant
         'comment',
         'enabled',
 
+        'type_person_id',
+        'type_regime_id',
+        'city_id',
+        'code',
+        'dv',
+
+
     ];
 
     // protected static function boot()
@@ -46,13 +61,35 @@ class Person extends ModelTenant
     //     });
     // }
     
+    public function typePerson() {
+        return $this->belongsTo(TypePerson::class);
+    }
+    
+    public function typeRegime() {
+        return $this->belongsTo(TypeRegime::class);
+    }
+    
+    public function identity_document_type()
+    {
+        return $this->belongsTo(TypeIdentityDocument::class, 'identity_document_type_id');
+    }
+    
+    public function country() {
+        return $this->belongsTo(Country::class);
+    }
+    
+    public function department() {
+        return $this->belongsTo(Department::class);
+    }
+    
+    public function city() {
+        return $this->belongsTo(City::class);
+    }
+
+    
     public function addresses()
     {
         return $this->hasMany(PersonAddress::class);
-    }
-    public function identity_document_type()
-    {
-        return $this->belongsTo(IdentityDocumentType::class, 'identity_document_type_id');
     }
 
     public function documents()
@@ -60,15 +97,15 @@ class Person extends ModelTenant
         return $this->hasMany(Document::class, 'customer_id');
     }
 
-    public function country()
-    {
-        return $this->belongsTo(Country::class);
-    }
+    // public function country()
+    // {
+    //     return $this->belongsTo(Country::class);
+    // }
 
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
+    // public function department()
+    // {
+    //     return $this->belongsTo(Department::class);
+    // }
 
     public function province()
     {

@@ -27,6 +27,7 @@ mix.webpackConfig({
             '@viewsModulePurchase': path.resolve(__dirname, 'modules/Purchase/Resources/assets/js/views'),
             '@viewsModuleExpense': path.resolve(__dirname, 'modules/Expense/Resources/assets/js/views'),
             '@viewsModuleProColombia': path.resolve(__dirname, 'modules/Factcolombia1/Resources/assets/js/views'),
+            '@assetsModuleProColombia': path.resolve(__dirname, 'modules/Factcolombia1/Resources/assets/js'),
         }
     }
 }).sourceMaps()

@@ -12,10 +12,10 @@
                         </div>
                     </div> -->
                     <div class="col-md-6">
-                        <div class="form-group" :class="{'has-danger': errors.description}">
+                        <div class="form-group" :class="{'has-danger': errors.name}">
                             <label class="control-label">Nombre<span class="text-danger">*</span></label>
-                            <el-input v-model="form.description" dusk="description"></el-input>
-                            <small class="form-control-feedback" v-if="errors.description" v-text="errors.description[0]"></small>
+                            <el-input v-model="form.name" dusk="name"></el-input>
+                            <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
                         </div>
                     </div>
 
@@ -36,10 +36,10 @@
                         </div>
                     </div> -->
                      <div class="col-md-9">
-                        <div class="form-group" :class="{'has-danger': errors.name}">
+                        <div class="form-group" :class="{'has-danger': errors.description}">
                             <label class="control-label">Descripción</label>
-                            <el-input v-model="form.name" dusk="name"></el-input>
-                            <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
+                            <el-input v-model="form.description" dusk="description"></el-input>
+                            <small class="form-control-feedback" v-if="errors.description" v-text="errors.description[0]"></small>
                         </div>
                     </div>
 
@@ -49,11 +49,12 @@
                         <div class="form-group" :class="{'has-danger': errors.unit_type_id}">
                             <label class="control-label">Unidad</label>
                             <el-select v-model="form.unit_type_id" dusk="unit_type_id">
-                                <el-option v-for="option in unit_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                <el-option v-for="option in unit_types" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.unit_type_id" v-text="errors.unit_type_id[0]"></small>
                         </div>
                     </div>
+
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
                             <label class="control-label">Moneda</label>
@@ -70,6 +71,17 @@
                             <small class="form-control-feedback" v-if="errors.sale_unit_price" v-text="errors.sale_unit_price[0]"></small>
                         </div>
                     </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group" :class="{'has-danger': errors.tax_id}">
+                            <label class="control-label">Impuesto</label>
+                            <el-select v-model="form.tax_id" >
+                                <el-option v-for="option in taxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
+                        </div>
+                    </div>
+
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.sale_affectation_igv_type_id}">
                             <label class="control-label">Tipo de afectación (Venta)</label>
@@ -523,6 +535,7 @@
                 form: {},
                 configuration: {},
                 unit_types: [],
+                taxes: [],
                 currency_types: [],
                 system_isc_types: [],
                 affectation_igv_types: [],
@@ -548,6 +561,7 @@
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
+                    this.taxes = response.data.taxes
                     this.unit_types = response.data.unit_types
                     this.accounts = response.data.accounts
                     this.currency_types = response.data.currency_types
@@ -687,7 +701,7 @@
                     description: null,
                     name: null,
                     second_name: null,
-                    unit_type_id: 'NIU',
+                    unit_type_id: 10,
                     currency_type_id: 'PEN',
                     sale_unit_price: 0,
                     purchase_unit_price: 0,
@@ -718,6 +732,7 @@
                     lots:[],
                     attributes: [],
                     series_enabled: false,
+                    tax_id: 1,
                 }
                 this.show_has_igv = true
                 this.enabled_percentage_of_profit = false

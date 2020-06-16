@@ -12,6 +12,9 @@ use Modules\Item\Models\Brand;
 use Modules\Item\Models\ItemLot;
 use Modules\Item\Models\ItemLotsGroup;
 
+use Modules\Factcolombia1\Models\Tenant\TypeUnit;
+use Modules\Factcolombia1\Models\Tenant\Tax;
+
 
 class Item extends ModelTenant
 {
@@ -61,7 +64,8 @@ class Item extends ModelTenant
         'lot_code',
         'lots_enabled',
         'active',
-        'series_enabled'
+        'series_enabled',
+        'tax_id',
         // 'warehouse_id'
     ];
 
@@ -93,10 +97,25 @@ class Item extends ModelTenant
         return $this->belongsTo(ItemType::class);
     }
 
+    // public function unit_type()
+    // {
+    //     return $this->belongsTo(UnitType::class, 'unit_type_id');
+    // }
+    
+    //colombia
+    
     public function unit_type()
     {
-        return $this->belongsTo(UnitType::class, 'unit_type_id');
+        return $this->belongsTo(TypeUnit::class, 'unit_type_id');
     }
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class);
+    }
+    
+    //colombia
+
 
     public function currency_type()
     {

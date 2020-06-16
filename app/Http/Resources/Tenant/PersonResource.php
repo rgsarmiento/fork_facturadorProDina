@@ -46,6 +46,11 @@ class PersonResource extends JsonResource
                     'main' => (bool)$row->main,
                 ];
             }),
+            'type_person_id' => $this->type_person_id,
+            'type_regime_id' => $this->type_regime_id,
+            'city_id' => $this->city_id,
+            'code' => $this->code,
+            'dv' => $this->dv,
 
             // 'more_address' =>  $this->more_address,
         ];

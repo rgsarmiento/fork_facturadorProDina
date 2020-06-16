@@ -17,6 +17,14 @@ use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Excel;
 
+use Modules\Factcolombia1\Models\Tenant\{
+    TypeIdentityDocument,
+    TypePerson,
+    TypeRegime,
+    Country as CoCountry,
+};
+
+
 class PersonController extends Controller
 {
     public function index($type)
@@ -50,7 +58,7 @@ class PersonController extends Controller
 
     public function tables()
     {
-        $countries = Country::whereActive()->orderByDescription()->get();
+        // $countries = Country::whereActive()->orderByDescription()->get();
         $departments = Department::whereActive()->orderByDescription()->get();
         $provinces = Province::whereActive()->orderByDescription()->get();
         $districts = District::whereActive()->orderByDescription()->get();
@@ -59,7 +67,14 @@ class PersonController extends Controller
         $locations = $this->getLocationCascade();
         $api_service_token = config('configuration.api_service_token');
 
-        return compact('countries', 'departments', 'provinces', 'districts', 'identity_document_types', 'locations','person_types','api_service_token');
+        $typeIdentityDocuments = TypeIdentityDocument::all();
+        $typeRegimes = TypeRegime::all();
+        $typePeople = TypePerson::all();
+        $countries = CoCountry::all();
+
+        return compact('countries', 'departments', 'provinces', 'districts', 'identity_document_types',
+                        'locations','person_types','api_service_token', 'typeIdentityDocuments', 'typeRegimes',
+                        'typePeople');
     }
 
     public function record($id)

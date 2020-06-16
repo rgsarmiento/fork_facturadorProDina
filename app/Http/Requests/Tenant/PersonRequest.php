@@ -19,6 +19,8 @@ class PersonRequest extends FormRequest
         return [
             'number' => [
                 'required',
+                'numeric',
+                'digits_between:1,15',
                 Rule::unique('tenant.persons')->where(function ($query) use($id, $type) {
                     return $query->where('type', $type)
                                  ->where('id', '<>' ,$id);
@@ -55,7 +57,9 @@ class PersonRequest extends FormRequest
             'email' => [
                 'nullable',
                 'email',
-            ]
+            ],
+            'code' => 'required|unique:tenant.co_clients,code|alpha_dash|max:11',
+            'dv' => 'required|max:1',
         ];
     }
 }

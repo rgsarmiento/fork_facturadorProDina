@@ -71,14 +71,10 @@ class ItemResource extends JsonResource
                 ];
             }),
             'commission_type' => $this->commission_type ?? 'amount',
-            'attributes' => $this->attributes ? $this->attributes : []
+            'attributes' => $this->attributes ? $this->attributes : [],
 
-            // 'warehouses' => collect($this->warehouses)->transform(function($row) {
-            //     return [
-            //         'warehouse_description' => $row->warehouse->description,
-            //         'stock' => $row->stock,
-            //     ];
-            // })
+            'tax_id' => $this->tax_id,
+        
         ];
     }
 }
