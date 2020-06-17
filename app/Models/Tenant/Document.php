@@ -7,8 +7,27 @@ use App\Models\Tenant\Catalogs\DocumentType;
 use Modules\BusinessTurn\Models\DocumentHotel;
 use Modules\BusinessTurn\Models\DocumentTransport;
 
+use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+use Modules\Factcolombia1\Models\Tenant\{
+    TypeDocument,
+    StateDocument,
+    DetailDocument,
+    Currency,
+    Country,
+    Department,
+    City,
+    LogDocument,
+    PaymentForm,
+    PaymentMethod,
+};
+use DateTime;
+
+
 class Document extends ModelTenant
 {
+
+    use HasJsonRelationships;
+
     protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'invoice', 'note', 'payments'];
 
     protected $fillable = [
@@ -79,11 +98,195 @@ class Document extends ModelTenant
         'order_note_id',
         'soap_shipping_response',
 
+        //co
+        'state_document_id',
+        'type_document_id',
+        'prefix',
+        'acknowledgment_received',
+        'cufe',
+        'xml',
+        'type_invoice_id',
+        'currency_id',
+        'date_expiration',
+        'observation',
+        'reference_id',
+        'note_concept_id',
+        'sale',
+        'taxes',
+        'total_tax',
+        'subtotal',
+        'version_ubl_id',
+        'ambient_id',
+        'response_api',
+        'payment_form_id',
+        'payment_method_id',
+        'time_days_credit',
+        'correlative_api',
+        'response_api_status',
+
+
     ];
 
     protected $casts = [
         'date_of_issue' => 'date',
+        'taxes' => 'object',
     ];
+
+    //co
+
+    public function nextConsecutive($type_document_id) {
+        $typeDocument = TypeDocument::findOrFail($type_document_id);
+        $typeDocument->number = $typeDocument->from;
+
+        $number = Document::query()
+            ->select('number')
+            ->where('type_document_id', $type_document_id)
+            ->hasPrefix($typeDocument->prefix)
+            ->whereBetween('number', [$typeDocument->from, $typeDocument->to])
+            ->max('number');
+
+        if (!is_null($number))
+        {
+            $typeDocument->number = ($number + 1);
+        }
+        else{
+            $typeDocument->number = $typeDocument->from;
+        }
+
+        return $typeDocument;
+    }
+
+    public function scopeHasPrefix($query, $prefix = null) {
+        if ($prefix == null) return $query;
+
+        return $query->where('prefix', $prefix);
+    }
+
+    public function state_document() {
+        return $this->belongsTo(StateDocument::class);
+    }
+
+    public function detail_documents() {
+        return $this->hasMany(DetailDocument::class);
+    }
+
+    public function currency() {
+        return $this->belongsTo(Currency::class);
+    }
+
+    public function reference() {
+        return $this->belongsTo(Document::class, 'reference_id');
+    }
+
+    public function type_document() {
+        return $this->belongsTo(TypeDocument::class);
+    }
+
+    public function country_client() {
+        return $this->belongsTo(Country::class, 'customer->country_id');
+    }
+
+    public function departament_client() {
+        return $this->belongsTo(Department::class, 'customer->department_id');
+    }
+
+    public function city_client() {
+        return $this->belongsTo(City::class, 'customer->city_id');
+    }
+
+    public function log_documents() {
+        return $this->hasMany(LogDocument::class)->latest();
+    }
+
+    public function getTaxesCollectAttribute() {
+        return collect($this->taxes);
+    }
+
+    public function payment_form()
+    {
+         return $this->belongsTo(PaymentForm::class);
+    }
+
+    public function payment_method()
+    {
+        return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function getPlazoAttribute()
+    {
+        $ini = $this->created_at;
+        $fin  = new DateTime($this->date_expiration);
+        $dif =  $ini->diff($fin);
+        return $dif->days;
+    }
+
+    public function getResponseApiInvoiceAttribute()
+    {
+        if(!$this->response_api)
+        {
+            return (object)[
+                'message' => '',
+                'urlinvoicepdf' => '',
+                'urlinvoicexml' => '',
+            ];
+        }
+
+        $model = json_decode($this->response_api);
+        if(array_key_exists('urlinvoicepdf', $model))
+            return (object)[
+                'message' => $model->message,
+                'urlinvoicepdf' => $model->urlinvoicepdf,
+                'urlinvoicexml' => $model->urlinvoicexml,
+            ];
+        else
+            return (object)[
+                'message' => '',
+                'urlinvoicepdf' => '',
+                'urlinvoicexml' => '',
+            ];
+    }
+
+    public function getResponseApiInvoiceStatusAttribute()
+    {
+        $model = json_decode($this->response_api_status);
+        return $model;
+    }
+
+    public function getResponseApiInvoiceStatusDateValidAttribute()
+    {
+        $date_valid = '';
+        if($this->response_api_status)
+        {
+            $model = json_decode($this->response_api_status);
+            $status =  (bool)$model->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid;
+            if($status)
+            {
+                $date_valid = $this->created_at;
+            }
+        }
+
+        return $date_valid;
+    }
+
+    public function getResponseApiCufeAttribute()
+    {
+        $model = json_decode($this->response_api);
+        return $model->cufe ?? '';
+    }
+
+    protected $appends = ['plazo', 'response_api_invoice', 'response_api_invoice_status', 'response_api_invoice_status_date_valid', 'response_api_cufe'];
+
+
+    public function getNumberFullAttribute()
+    {
+        return $this->prefix.'-'.$this->number;
+    }
+
+    public function getSeriesAttribute()
+    {
+        return $this->prefix;
+    }
+    //co
 
     public function getEstablishmentAttribute($value)
     {
@@ -303,10 +506,10 @@ class Document extends ModelTenant
         return $this->hasOne(DocumentTransport::class);
     }
 
-    public function getNumberFullAttribute()
-    {
-        return $this->series.'-'.$this->number;
-    }
+    // public function getNumberFullAttribute()
+    // {
+    //     return $this->series.'-'.$this->number;
+    // }
 
     public function getNumberToLetterAttribute()
     {
@@ -337,9 +540,15 @@ class Document extends ModelTenant
         return ($user->type == 'seller') ? $query->where('user_id', $user->id) : null;
     }
 
+    // public function getStateTypeIdAttribute()
+    // {
+    //     return '01';
+    // }
+
+
     public function scopeWhereNotSent($query)
     {
-        return  $query->whereIn('state_type_id', ['01','03'])->where('date_of_issue','<=',date('Y-m-d'));
+        // return  $query->whereIn('state_type_id', ['01','03'])->where('date_of_issue','<=',date('Y-m-d'));
     }
 
     public function affected_documents()

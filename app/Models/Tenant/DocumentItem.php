@@ -48,8 +48,22 @@ class DocumentItem extends ModelTenant
         'total_plastic_bag_taxes',
         'warehouse_id',
         'name_product_pdf',
-        'additional_information'
+        'additional_information',
+
+        //co
+        'type_unit_id',
+        'tax_id',
+        'tax',
+        'total_tax',
+        'subtotal',
+        'discount',
     ];
+
+
+    protected $casts = [
+        'tax' => 'object'
+    ];
+
 
     public function getItemAttribute($value)
     {

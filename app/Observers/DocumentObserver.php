@@ -16,14 +16,14 @@ class DocumentObserver
      */
     public function creating(Document $document)
     {
-        $company = Company::active();
-        $number = Functions::newNumber($document->soap_type_id,
-                                       $document->document_type_id,
-                                       $document->series,
-                                       $document->number, Document::class);
-        $document->number = $number;
+        // $company = Company::active();
+        // $number = Functions::newNumber($document->soap_type_id,
+        //                                $document->document_type_id,
+        //                                $document->series,
+        //                                $document->number, Document::class);
+        // $document->number = $number;
 
-        $document->filename = Functions::filename($company, $document->document_type_id, $document->series, $number);
+        // $document->filename = Functions::filename($company, $document->document_type_id, $document->series, $number);
 
     }
 

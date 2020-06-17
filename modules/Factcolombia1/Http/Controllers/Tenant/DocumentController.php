@@ -43,6 +43,8 @@ use Modules\Document\Traits\SearchTrait;
 use Modules\Factcolombia1\Http\Resources\Tenant\DocumentCollection;
 use Modules\Factcolombia1\Http\Resources\Tenant\DocumentResource;
 
+use Modules\Factcolombia1\Helpers\DocumentHelper;
+
 
 class DocumentController extends Controller
 {
@@ -342,6 +344,8 @@ class DocumentController extends Controller
 
             ]);
 
+            DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
+
             /*$this->document->update([
                 'xml' => $this->getFileName(),
                 'cufe' => $this->getCufe()
@@ -369,7 +373,9 @@ class DocumentController extends Controller
 
             return [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace(),
             ];
         }
 
