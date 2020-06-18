@@ -69,7 +69,7 @@ class DocumentHelper{
             $json_item = [
                 'description' => $record_item->description,
                 'internal_id' => $record_item->internal_id,
-                'unit_type_id' => (key_exists('item', $item))?$item['item']['type_unit_id']:$record_item->unit_type_id,
+                'unit_type_id' => (key_exists('item', $item))?$item['item']['unit_type_id']:$record_item->unit_type_id,
                 'presentation' => (key_exists('item', $item)) ? (isset($item['item']['presentation']) ? $item['item']['presentation']:[]):[],
                 'amount_plastic_bag_taxes' => $record_item->amount_plastic_bag_taxes,
                 'is_set' => $record_item->is_set,
@@ -80,7 +80,7 @@ class DocumentHelper{
             $document->items()->create([
                 'item_id' => $item['id'],
                 'item' => array_merge($item, $json_item),
-                'type_unit_id' => $item['type_unit_id'],
+                'unit_type_id' => $item['unit_type_id'],
                 'quantity' => $item['quantity'],
                 'unit_price' => $item['price'],
                 'tax_id' => $item['tax_id'],

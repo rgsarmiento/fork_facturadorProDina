@@ -59,12 +59,12 @@ class PersonController extends Controller
     public function tables()
     {
         // $countries = Country::whereActive()->orderByDescription()->get();
-        $departments = Department::whereActive()->orderByDescription()->get();
-        $provinces = Province::whereActive()->orderByDescription()->get();
-        $districts = District::whereActive()->orderByDescription()->get();
+        // $departments = Department::whereActive()->orderByDescription()->get();
+        // $provinces = Province::whereActive()->orderByDescription()->get();
+        // $districts = District::whereActive()->orderByDescription()->get();
         $identity_document_types = IdentityDocumentType::whereActive()->get();
         $person_types = PersonType::get();
-        $locations = $this->getLocationCascade();
+        // $locations = $this->getLocationCascade();
         $api_service_token = config('configuration.api_service_token');
 
         $typeIdentityDocuments = TypeIdentityDocument::all();
@@ -72,8 +72,7 @@ class PersonController extends Controller
         $typePeople = TypePerson::all();
         $countries = CoCountry::all();
 
-        return compact('countries', 'departments', 'provinces', 'districts', 'identity_document_types',
-                        'locations','person_types','api_service_token', 'typeIdentityDocuments', 'typeRegimes',
+        return compact('countries', 'identity_document_types','person_types','api_service_token', 'typeIdentityDocuments', 'typeRegimes',
                         'typePeople');
     }
 

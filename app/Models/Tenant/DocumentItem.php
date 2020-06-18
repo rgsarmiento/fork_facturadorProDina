@@ -6,10 +6,11 @@ use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\PriceType;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use Illuminate\Support\Facades\DB;
+use Modules\Factcolombia1\Models\Tenant\TypeUnit;
 
 class DocumentItem extends ModelTenant
 {
-    protected $with = ['affectation_igv_type', 'system_isc_type', 'price_type'];
+    // protected $with = ['affectation_igv_type', 'system_isc_type', 'price_type'];
     public $timestamps = false;
 
     protected $fillable = [
@@ -17,41 +18,41 @@ class DocumentItem extends ModelTenant
         'item_id',
         'item',
         'quantity',
-        'unit_value',
+        // 'unit_value',
 
-        'affectation_igv_type_id',
-        'total_base_igv',
-        'percentage_igv',
-        'total_igv',
+        // 'affectation_igv_type_id',
+        // 'total_base_igv',
+        // 'percentage_igv',
+        // 'total_igv',
 
-        'system_isc_type_id',
-        'total_base_isc',
-        'percentage_isc',
-        'total_isc',
+        // 'system_isc_type_id',
+        // 'total_base_isc',
+        // 'percentage_isc',
+        // 'total_isc',
 
-        'total_base_other_taxes',
-        'percentage_other_taxes',
-        'total_other_taxes',
-        'total_taxes',
+        // 'total_base_other_taxes',
+        // 'percentage_other_taxes',
+        // 'total_other_taxes',
+        // 'total_taxes',
 
-        'price_type_id',
+        // 'price_type_id',
         'unit_price',
 
-        'total_value',
-        'total_charge',
-        'total_discount',
+        // 'total_value',
+        // 'total_charge',
+        // 'total_discount',
         'total',
 
-        'attributes',
-        'charges',
-        'discounts',
+        // 'attributes',
+        // 'charges',
+        // 'discounts',
         'total_plastic_bag_taxes',
         'warehouse_id',
-        'name_product_pdf',
-        'additional_information',
+        // 'name_product_pdf',
+        // 'additional_information',
 
         //co
-        'type_unit_id',
+        'unit_type_id',
         'tax_id',
         'tax',
         'total_tax',
@@ -64,6 +65,11 @@ class DocumentItem extends ModelTenant
         'tax' => 'object'
     ];
 
+    
+    public function unit_type()
+    {
+        return $this->belongsTo(TypeUnit::class, 'unit_type_id');
+    }
 
     public function getItemAttribute($value)
     {
@@ -75,50 +81,21 @@ class DocumentItem extends ModelTenant
         $this->attributes['item'] = (is_null($value))?null:json_encode($value);
     }
 
-    public function getAttributesAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
 
-    public function setAttributesAttribute($value)
-    {
-        $this->attributes['attributes'] = (is_null($value))?null:json_encode($value);
-    }
+    // public function affectation_igv_type()
+    // {
+    //     return $this->belongsTo(AffectationIgvType::class, 'affectation_igv_type_id');
+    // }
 
-    public function getChargesAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
+    // public function system_isc_type()
+    // {
+    //     return $this->belongsTo(SystemIscType::class, 'system_isc_type_id');
+    // }
 
-    public function setChargesAttribute($value)
-    {
-        $this->attributes['charges'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getDiscountsAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setDiscountsAttribute($value)
-    {
-        $this->attributes['discounts'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function affectation_igv_type()
-    {
-        return $this->belongsTo(AffectationIgvType::class, 'affectation_igv_type_id');
-    }
-
-    public function system_isc_type()
-    {
-        return $this->belongsTo(SystemIscType::class, 'system_isc_type_id');
-    }
-
-    public function price_type()
-    {
-        return $this->belongsTo(PriceType::class, 'price_type_id');
-    }
+    // public function price_type()
+    // {
+    //     return $this->belongsTo(PriceType::class, 'price_type_id');
+    // }
 
     public function m_item()
     {
@@ -135,16 +112,6 @@ class DocumentItem extends ModelTenant
         return $this->belongsTo(Item::class, 'item_id');
     }
     
-    public function getAdditionalInformationAttribute($value)
-    {
-        // if($value){
-            $arr = explode('|', $value);
-            return $arr;
-        // }
-
-        // return null;
-
-    }
 
 
     public function scopeWhereDefaultDocumentType($query, $params)

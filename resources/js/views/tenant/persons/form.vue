@@ -63,21 +63,6 @@
 
                     </div>
                 </div> -->
-                <div class="row mt-2" v-if="type === 'suppliers'">
-                    <div class="col-md-6 center-el-checkbox">
-                        <div class="form-group" :class="{'has-danger': errors.perception_agent}">
-                            <el-checkbox v-model="form.perception_agent">¿Es agente de percepción?</el-checkbox><br>
-                            <small class="form-control-feedback" v-if="errors.perception_agent" v-text="errors.perception_agent[0]"></small>
-                        </div>
-                    </div>
-                    <div class="col-md-6" v-if="type === 'suppliers'" v-show="form.perception_agent">
-                        <div class="form-group"  >
-                            <label class="control-label">Porcentaje de percepción</label>
-
-                            <el-input v-model="form.percentage_perception"></el-input>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="row">
  
@@ -196,6 +181,22 @@
                         </div>
                     </div> 
                 </div>
+                
+                <div class="row mt-2" v-if="type === 'suppliers'">
+                    <div class="col-md-6 center-el-checkbox">
+                        <div class="form-group" :class="{'has-danger': errors.perception_agent}">
+                            <el-checkbox v-model="form.perception_agent">¿Es agente de percepción?</el-checkbox><br>
+                            <small class="form-control-feedback" v-if="errors.perception_agent" v-text="errors.perception_agent[0]"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6" v-if="type === 'suppliers'" v-show="form.perception_agent">
+                        <div class="form-group"  >
+                            <label class="control-label">Porcentaje de percepción</label>
+
+                            <el-input v-model="form.percentage_perception"></el-input>
+                        </div>
+                    </div>
+                </div>
                 <!-- <div class="row m-t-10">
                     <div class="col-md-12 text-center">
                         <el-button size="mini" icon="el-icon-plus" @click.prevent="clickAddAddress()">Agregar dirección</el-button>
@@ -297,17 +298,17 @@
                     // console.log(this.api_service_token)
 
                     this.countries = response.data.countries
-                    this.all_departments = response.data.departments;
-                    this.all_provinces = response.data.provinces;
-                    this.all_districts = response.data.districts;
+                    // this.all_departments = response.data.departments;
+                    // this.all_provinces = response.data.provinces;
+                    // this.all_districts = response.data.districts;
                     this.identity_document_types = response.data.identity_document_types;
-                    this.locations = response.data.locations;
+                    // this.locations = response.data.locations;
                     this.person_types = response.data.person_types;
                     
                     this.type_persons = response.data.typePeople
                     this.type_regimes = response.data.typeRegimes
                     this.identity_document_types = response.data.typeIdentityDocuments
-                    this.countries = response.data.countries
+                    // this.countries = response.data.countries
 
                 })
 
@@ -352,12 +353,12 @@
                     trade_name: null,
                     country_id: null,
                     department_id: null,
-                    province_id: null,
-                    district_id: null,
+                    // province_id: null,
+                    // district_id: null,
                     address: null,
                     telephone: null,
-                    condition: null,
-                    state: null,
+                    // condition: null,
+                    // state: null,
                     email: null,
                     perception_agent: false,
                     percentage_perception:0,

@@ -6,10 +6,13 @@ use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\UnitType;
+use Modules\Factcolombia1\Models\Tenant\TypeUnit;
 
 class ItemUnitType extends ModelTenant
 {
-     protected $with = ['unit_type'];
+
+    protected $with = ['unit_type'];
+
     public $timestamps = false;
     
     protected $fillable = [
@@ -24,7 +27,7 @@ class ItemUnitType extends ModelTenant
     ];
     
     public function unit_type() {
-        return $this->belongsTo(UnitType::class, 'unit_type_id');
+        return $this->belongsTo(TypeUnit::class, 'unit_type_id');
     }
     
     public function item() {

@@ -31,7 +31,7 @@ class TenantReestructureColumnsToPersons extends Migration
             $table->unsignedInteger('city_id')->nullable()->after('department_id');
             $table->foreign('city_id')->references('id')->on('co_cities');
 
-            $table->string('code')->after('type')->unique();
+            $table->string('code')->after('type');
             $table->char('dv', 2)->after('type')->nullable();
 
         });

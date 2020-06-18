@@ -21,7 +21,8 @@ use Modules\Factcolombia1\Models\Tenant\{
 class Person extends ModelTenant
 {
     protected $table = 'persons';
-    protected $with = ['identity_document_type', 'country', 'department', 'province', 'district'];
+    // protected $with = ['identity_document_type', 'country', 'department', 'province', 'district'];
+
     protected $fillable = [
         'type',
         'identity_document_type_id',
@@ -30,14 +31,14 @@ class Person extends ModelTenant
         'trade_name',
         'country_id',
         'department_id',
-        'province_id',
-        'district_id',
+        // 'province_id',
+        // 'district_id',
         'address',
         'email',
         'telephone',
         'perception_agent',
-        'state',
-        'condition',
+        // 'state',
+        // 'condition',
         'percentage_perception',
         'person_type_id',
         'comment',
@@ -107,15 +108,15 @@ class Person extends ModelTenant
     //     return $this->belongsTo(Department::class);
     // }
 
-    public function province()
-    {
-        return $this->belongsTo(Province::class);
-    }
+    // public function province()
+    // {
+    //     return $this->belongsTo(Province::class);
+    // }
 
-    public function district()
-    {
-        return $this->belongsTo(District::class);
-    }
+    // public function district()
+    // {
+    //     return $this->belongsTo(District::class);
+    // }
 
     public function scopeWhereType($query, $type)
     {

@@ -45,12 +45,12 @@ class PersonRequest extends FormRequest
             'department_id' => [
                 'required_if:identity_document_type_id,"066"',
             ],
-            'province_id' => [
-                'required_if:identity_document_type_id,"066"',
-            ],
-            'district_id' => [
-                'required_if:identity_document_type_id,"066"',
-            ],
+            // 'province_id' => [
+            //     'required_if:identity_document_type_id,"066"',
+            // ],
+            // 'district_id' => [
+            //     'required_if:identity_document_type_id,"066"',
+            // ],
             'address' => [
                 'required_if:identity_document_type_id,"066"',
             ],
@@ -58,7 +58,14 @@ class PersonRequest extends FormRequest
                 'nullable',
                 'email',
             ],
-            'code' => 'required|unique:tenant.co_clients,code|alpha_dash|max:11',
+            'code' => [
+                'required',
+                Rule::unique('tenant.persons')->where(function ($query) use($id, $type) {
+                    return $query->where('type', $type)
+                                 ->where('id', '<>' ,$id);
+                })
+            ],
+            // 'code' => 'required|unique:tenant.persons,code|alpha_dash|max:11',
             'dv' => 'required|max:1',
         ];
     }

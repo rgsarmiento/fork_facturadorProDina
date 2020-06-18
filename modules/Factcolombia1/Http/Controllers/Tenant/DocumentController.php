@@ -246,6 +246,7 @@ class DocumentController extends Controller
                         $zip_key = $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey;
                     }
             }
+            // dd($response_model, $zip_key);
 // dd($zip_key);
             //return $zip_key;
 
@@ -356,7 +357,8 @@ class DocumentController extends Controller
                     'document_id' => $this->document->id,
                     'item_id' => $item['id'],
                     'item' => $item,
-                    'type_unit_id' => $item['type_unit_id'],
+                    'type_unit_id' => $item['unit_type_id'],
+                    // 'type_unit_id' => $item['type_unit_id'],
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
                     'tax_id' => $item['tax_id'],
@@ -836,8 +838,8 @@ class DocumentController extends Controller
     public function tables()
     {
 
-        // $customers = $this->table('customers');  
-        $customers = Client::all();  
+        $customers = $this->table('customers');  
+        // $customers = Client::all();  
 
         
         $type_documents = TypeDocument::query()
@@ -868,10 +870,10 @@ class DocumentController extends Controller
 
     public function item_tables()
     {
-        // $items = $this->table('items');
-        $items =  Item::query()
-            ->with('typeUnit', 'tax')
-            ->get();
+        $items = $this->table('items');
+        // $items =  Item::query()
+        //     ->with('typeUnit', 'tax')
+        //     ->get();
 
         $taxes = $this->table('taxes');
 
@@ -932,6 +934,7 @@ class DocumentController extends Controller
                 $detail = $this->getFullDescription($row, $warehouse);
                 return [
                     'id' => $row->id,
+                    'name' => $detail['full_description'],
                     'full_description' => $detail['full_description'],
                     'brand' => $detail['brand'],
                     'category' => $detail['category'],
@@ -992,12 +995,8 @@ class DocumentController extends Controller
                     }),
                     'lots_enabled' => (bool) $row->lots_enabled,
                     'series_enabled' => (bool) $row->series_enabled,
-                    'type_unit' => [
-                        "id" => 10,
-                        "code" => 70,
-                        "name" => "Unidades"
-                    ],
-
+                    'unit_type' => $row->unit_type,
+                    'tax' => $row->tax,
                 ];
             });
         }
@@ -1023,6 +1022,7 @@ class DocumentController extends Controller
 
                 return [
                     'id' => $row->id,
+                    'name' => $detail['full_description'],
                     'full_description' => $detail['full_description'],
                     'brand' => $detail['brand'],
                     'category' => $detail['category'],
@@ -1083,12 +1083,8 @@ class DocumentController extends Controller
                     }),
                     'lots_enabled' => (bool) $row->lots_enabled,
                     'series_enabled' => (bool) $row->series_enabled,
-                    'type_unit' => [
-                        "id" => 10,
-                        "code" => 70,
-                        "name" => "Unidades"
-                    ],
-
+                    'unit_type' => $row->unit_type,
+                    'tax' => $row->tax,
                 ];
             });
 
@@ -1166,6 +1162,7 @@ class DocumentController extends Controller
 
             return [
                 'id' => $row->id,
+                'name' => $detail['full_description'],
                 'full_description' => $detail['full_description'],
                 'brand' => $detail['brand'],
                 'category' => $detail['category'],
@@ -1226,11 +1223,8 @@ class DocumentController extends Controller
                 }),
                 'lots_enabled' => (bool) $row->lots_enabled,
                 'series_enabled' => (bool) $row->series_enabled,
-                'type_unit' => [
-                    "id" => 10,
-                    "code" => 70,
-                    "name" => "Unidades"
-                ],
+                'unit_type' => $row->unit_type,
+                'tax' => $row->tax,
 
             ];
         });

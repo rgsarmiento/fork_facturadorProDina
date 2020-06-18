@@ -36,6 +36,7 @@ use Modules\Item\Models\ItemLotsGroup;
 
 use Modules\Factcolombia1\Models\Tenant\{
     TypeUnit,
+    Currency,
     Tax,
 };
 
@@ -56,7 +57,7 @@ class ItemController extends Controller
     public function columns()
     {
         return [
-            'description' => 'Nombre',
+            'name' => 'Nombre',
             'internal_id' => 'Código interno',
             'brand' => 'Marca',
             'date_of_due' => 'Fecha vencimiento',
@@ -121,11 +122,12 @@ class ItemController extends Controller
         // $unit_types = UnitType::whereActive()->orderByDescription()->get();
         $unit_types = TypeUnit::get();
         $taxes = Tax::query()->where('is_retention', false)->get();
+        $currency_types = Currency::get();
 
-        $currency_types = CurrencyType::whereActive()->orderByDescription()->get();
+        // $currency_types = CurrencyType::whereActive()->orderByDescription()->get();
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
-        $system_isc_types = SystemIscType::whereActive()->orderByDescription()->get();
-        $affectation_igv_types = AffectationIgvType::whereActive()->get();
+        // $system_isc_types = SystemIscType::whereActive()->orderByDescription()->get();
+        // $affectation_igv_types = AffectationIgvType::whereActive()->get();
         // $warehouse = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();
         $warehouses = Warehouse::all();
         $accounts = Account::all();
@@ -134,9 +136,8 @@ class ItemController extends Controller
         $brands = Brand::all();
         $configuration = Configuration::select('affectation_igv_type_id')->firstOrFail();
 
-        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types',
-                        'affectation_igv_types','warehouses', 'accounts', 'tags', 'categories', 'brands',
-                        'configuration', 'taxes');
+        return compact('unit_types', 'attribute_types','warehouses', 'accounts', 'tags', 'categories', 'brands',
+                        'configuration', 'taxes', 'currency_types');
     }
 
     public function record($id)
@@ -457,6 +458,8 @@ class ItemController extends Controller
        // return $request->id;
        $obj = Item::find($request->id);
        $new = $obj->replicate();
+       $new->name = date('His').'-'.$obj->name;
+       $new->internal_id = date('His').'-'.$obj->internal_id;
        $new->save();
 
         return [

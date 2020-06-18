@@ -20,9 +20,9 @@ class ItemRequest extends FormRequest
                 'required',
                 Rule::unique('tenant.items')->ignore($id),
             ],
-            'description' => [
-                'required',
-            ],
+            // 'description' => [
+            //     'required',
+            // ],
             // 'name' => [                
             //     'required',
             // ],
@@ -56,19 +56,20 @@ class ItemRequest extends FormRequest
                 'required',
                 // 'gt:0'
             ],
-            'sale_affectation_igv_type_id' => [
-                'required'
-            ],
-            'purchase_affectation_igv_type_id' => [
-                'required'
-            ],
+            // 'sale_affectation_igv_type_id' => [
+            //     'required'
+            // ],
+            // 'purchase_affectation_igv_type_id' => [
+            //     'required'
+            // ],
             // 'category_id' => [
             //     'required_if:is_set,false',
             // ],
             // 'brand_id' => [
             //     'required_if:is_set,false',
             // ],
-            'tax_id' => 'required|exists:tenant.co_taxes,id'
+            'tax_id' => 'required|exists:tenant.co_taxes,id',
+            'purchase_tax_id' => 'required|exists:tenant.co_taxes,id',
             
         ];
     }

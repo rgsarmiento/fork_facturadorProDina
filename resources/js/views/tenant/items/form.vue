@@ -58,8 +58,8 @@
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
                             <label class="control-label">Moneda</label>
-                            <el-select v-model="form.currency_type_id" dusk="currency_type_id">
-                                <el-option v-for="option in currency_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                            <el-select v-model="form.currency_type_id" dusk="currency_type_id" filterable>
+                                <el-option v-for="option in currency_types" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
                         </div>
@@ -74,7 +74,7 @@
 
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.tax_id}">
-                            <label class="control-label">Impuesto</label>
+                            <label class="control-label">Impuesto (Venta)</label>
                             <el-select v-model="form.tax_id" >
                                 <el-option v-for="option in taxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
@@ -82,7 +82,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.sale_affectation_igv_type_id}">
                             <label class="control-label">Tipo de afectación (Venta)</label>
                             <el-select v-model="form.sale_affectation_igv_type_id" @change="changeAffectationIgvType">
@@ -90,7 +90,7 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.sale_affectation_igv_type_id" v-text="errors.sale_affectation_igv_type_id[0]"></small>
                         </div>
-                    </div>
+                    </div> -->
 
 
                     <div class="col-md-3">
@@ -131,18 +131,19 @@
 
 
 
-                    <div v-show="form.unit_type_id !='ZZ'" class="col-md-3 center-el-checkbox">
+                    <div v-show="form.unit_type_id !=1" class="col-md-3 center-el-checkbox">
                         <div class="form-group" :class="{'has-danger': errors.calculate_quantity}">
                             <el-checkbox v-model="form.calculate_quantity">Calcular cantidad por precio</el-checkbox><br>
                             <small class="form-control-feedback" v-if="errors.calculate_quantity" v-text="errors.calculate_quantity[0]"></small>
                         </div>
                     </div>
-                    <div class="col-md-3 center-el-checkbox" v-show="show_has_igv">
+                    <!-- <div class="col-md-3 center-el-checkbox" v-show="show_has_igv">
                         <div class="form-group" :class="{'has-danger': errors.has_igv}">
                             <el-checkbox v-model="form.has_igv">Incluye Igv {{configuration.include_igv}}</el-checkbox><br>
                             <small class="form-control-feedback" v-if="errors.has_igv" v-text="errors.has_igv[0]"></small>
                         </div>
-                    </div>
+                    </div> -->
+
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.internal_id}">
                             <label class="control-label">Código Interno
@@ -154,7 +155,7 @@
                             <small class="form-control-feedback" v-if="errors.internal_id" v-text="errors.internal_id[0]"></small>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.item_code}">
                             <label class="control-label">Código Sunat
                                 <el-tooltip class="item" effect="dark" content="Código proporcionado por SUNAT, campo obligatorio para exportaciones" placement="top">
@@ -164,8 +165,8 @@
                             <el-input v-model="form.item_code" dusk="item_code"></el-input>
                             <small class="form-control-feedback" v-if="errors.item_code" v-text="errors.item_code[0]"></small>
                         </div>
-                    </div>
-                    <div class="col-md-3" v-show="recordId==null && form.unit_type_id !='ZZ'">
+                    </div> -->
+                    <div class="col-md-3" v-show="recordId==null && form.unit_type_id !=1">
                         <div class="form-group" :class="{'has-danger': errors.stock}">
                             <label class="control-label">Stock Inicial</label>
                             <el-input v-model="form.stock" ></el-input>
@@ -173,7 +174,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3" v-show="form.unit_type_id !='ZZ'">
+                    <div class="col-md-3" v-show="form.unit_type_id !=1">
                         <div class="form-group" :class="{'has-danger': errors.stock_min}">
                             <label class="control-label">Stock Mínimo</label>
                             <el-input v-model="form.stock_min"></el-input>
@@ -181,12 +182,12 @@
                         </div>
                     </div>
 
-                    <div  v-show="form.unit_type_id !='ZZ'" class="col-md-3 center-el-checkbox" >
+                    <div  v-show="form.unit_type_id !=1" class="col-md-3 center-el-checkbox" >
                         <div class="form-group"  >
                             <el-checkbox v-model="form.lots_enabled" @change="changeLotsEnabled">¿Maneja lotes?</el-checkbox><br>
                         </div>
                     </div>
-                    <div class="col-md-3" v-show="form.unit_type_id !='ZZ' && form.lots_enabled">
+                    <div class="col-md-3" v-show="form.unit_type_id !=1 && form.lots_enabled">
                         <div class="form-group" :class="{'has-danger': errors.lot_code}">
                             <label class="control-label">
                                 <!-- <el-checkbox v-model="enabled_lots"  @change="changeEnabledPercentageOfProfit">Código lote</el-checkbox> -->
@@ -199,12 +200,12 @@
                         </div>
                     </div>
 
-                     <div  v-show="form.unit_type_id !='ZZ'" class="col-md-3 center-el-checkbox" >
+                     <div  v-show="form.unit_type_id !=1" class="col-md-3 center-el-checkbox" >
                         <div class="form-group"  >
                             <el-checkbox v-model="form.series_enabled" @change="changeLotsEnabled">¿Maneja series?</el-checkbox><br>
                         </div>
                     </div>
-                    <div class="col-md-3" v-show="form.unit_type_id !='ZZ' && form.series_enabled">
+                    <div class="col-md-3" v-show="form.unit_type_id !=1 && form.series_enabled">
                         <div class="form-group" :class="{'has-danger': errors.lot_code}">
                             <label class="control-label">
                                 <!-- <el-checkbox v-model="enabled_lots"  @change="changeEnabledPercentageOfProfit">Código lote</el-checkbox> -->
@@ -230,7 +231,7 @@
                             <el-input v-model="form.percentage_perception"></el-input>
                         </div>
                     </div>
-                    <div  class="col-md-3" v-show="recordId==null" v-if="form.unit_type_id !='ZZ'">
+                    <div  class="col-md-3" v-show="recordId==null" v-if="form.unit_type_id !=1">
                         <div class="form-group" :class="{'has-danger': errors.warehouse_id}">
                             <label class="control-label">
                                 Almacén
@@ -245,7 +246,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3" v-show="form.unit_type_id !='ZZ'">
+                    <div class="col-md-3" v-show="form.unit_type_id !=1">
                         <div class="form-group" :class="{'has-danger': errors.date_of_due}">
                             <label class="control-label">Fec. Vencimiento</label>
                             <el-date-picker v-model="form.date_of_due" type="date" value-format="yyyy-MM-dd" :clearable="true"></el-date-picker>
@@ -266,7 +267,7 @@
                             <small class="form-control-feedback" v-if="errors.account_id" v-text="errors.account_id[0]"></small>
                         </div>
                     </div> -->
-                    <div v-show="form.unit_type_id !='ZZ'" class="col-md-12">
+                    <div v-show="form.unit_type_id !=1" class="col-md-12">
                         <h5 class="separator-title ">
                             Listado de precios
                             <el-tooltip class="item" effect="dark" content="Aplica para realizar compra/venta en presentacion de diferentes precios y/o cantidades" placement="top">
@@ -276,7 +277,7 @@
                         </h5>
                     </div>
 
-                    <div v-show="form.unit_type_id !='ZZ'" class="col-md-12" v-if="form.item_unit_types.length > 0">
+                    <div v-show="form.unit_type_id !=1" class="col-md-12" v-if="form.item_unit_types.length > 0">
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -297,9 +298,9 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="(row, index) in form.item_unit_types">
+                                <tr v-for="(row, index) in form.item_unit_types" :key="index">
                                     <template v-if="row.id">
-                                        <td class="text-center">{{row.unit_type_id}}</td>
+                                        <td class="text-center">{{row.unit_type.name}}</td>
                                         <td class="text-center">{{row.description}}</td>
                                         <td class="text-center">{{row.quantity_unit}}</td>
                                         <td class="text-center"><el-input v-model="row.price1"></el-input></td>
@@ -316,7 +317,7 @@
                                         <td>
                                             <div class="form-group"  >
                                                 <el-select v-model="row.unit_type_id" dusk="item_unit_type.unit_type_id">
-                                                    <el-option v-for="option in unit_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                                    <el-option v-for="option in unit_types" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                                 </el-select>
                                                 <!-- <small class="form-control-feedback" v-if="errors.unit_type_id" v-text="errors.unit_type_id[0]"></small> -->
                                             </div>
@@ -396,7 +397,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="(row, index) in form.attributes">
+                                <tr v-for="(row, index) in form.attributes" :key="index">
                                     <td>
                                         <el-select v-model="row.attribute_type_id" filterable @change="changeAttributeType(index)">
                                             <el-option v-for="option in attribute_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
@@ -437,6 +438,16 @@
                             <div class="row">
 
                                 <div class="short-div col-md-8">
+                                    <div class="form-group" :class="{'has-danger': errors.purchase_tax_id}">
+                                        <label class="control-label">Impuesto (Compra)</label>
+                                        <el-select v-model="form.purchase_tax_id" >
+                                            <el-option v-for="option in taxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                        </el-select>
+                                        <small class="form-control-feedback" v-if="errors.purchase_tax_id" v-text="errors.purchase_tax_id[0]"></small>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="short-div col-md-8">
                                     <div class="form-group" :class="{'has-danger': errors.purchase_affectation_igv_type_id}">
                                         <label class="control-label">Tipo de afectación (Compra)</label>
                                         <el-select v-model="form.purchase_affectation_igv_type_id">
@@ -444,7 +455,7 @@
                                         </el-select>
                                         <small class="form-control-feedback" v-if="errors.purchase_affectation_igv_type_id" v-text="errors.purchase_affectation_igv_type_id[0]"></small>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div class="short-div col-md-4">
                                     <div class="form-group" :class="{'has-danger': errors.purchase_unit_price}">
@@ -545,13 +556,13 @@
                 show_has_igv:true,
                 have_account:false,
                 item_unit_type:{
-                        id:null,
-                        unit_type_id:null,
-                        quantity_unit:0,
-                        price1:0,
-                        price2:0,
-                        price3:0,
-                        price_default:2,
+                    id:null,
+                    unit_type_id:null,
+                    quantity_unit:0,
+                    price1:0,
+                    price2:0,
+                    price3:0,
+                    price_default:2,
 
                 },
                 attribute_types:  []
@@ -565,16 +576,16 @@
                     this.unit_types = response.data.unit_types
                     this.accounts = response.data.accounts
                     this.currency_types = response.data.currency_types
-                    this.system_isc_types = response.data.system_isc_types
-                    this.affectation_igv_types = response.data.affectation_igv_types
+                    // this.system_isc_types = response.data.system_isc_types
+                    // this.affectation_igv_types = response.data.affectation_igv_types
                     this.warehouses = response.data.warehouses
                     this.categories = response.data.categories
                     this.brands = response.data.brands
                     this.attribute_types = response.data.attribute_types
                     this.configuration = response.data.configuration
 
-                    this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
-                    this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
+                    // this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
+                    // this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
                 })
 
             this.$eventHub.$on('submitPercentagePerception', (data)=>{
@@ -621,8 +632,8 @@
                         this.categories = response.data.categories
                         this.brands = response.data.brands
 
-                        this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
-                        this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
+                        // this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
+                        // this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
                     })
             },
             changeLotsEnabled(){
@@ -676,7 +687,7 @@
                 this.form.item_unit_types.push({
                     id: null,
                     description: null,
-                    unit_type_id: 'NIU',
+                    unit_type_id: 10,
                     quantity_unit: 0,
                     price1: 0,
                     price2: 0,
@@ -696,25 +707,25 @@
                     id: null,
                     item_type_id: '01',
                     internal_id: null,
-                    item_code: null,
-                    item_code_gs1: null,
+                    // item_code: null,
+                    // item_code_gs1: null,
                     description: null,
                     name: null,
                     second_name: null,
                     unit_type_id: 10,
-                    currency_type_id: 'PEN',
+                    // currency_type_id: 'PEN',
                     sale_unit_price: 0,
                     purchase_unit_price: 0,
-                    has_isc: false,
-                    system_isc_type_id: null,
-                    percentage_isc: 0,
-                    suggested_price: 0,
-                    sale_affectation_igv_type_id: null,
-                    purchase_affectation_igv_type_id: null,
+                    // has_isc: false,
+                    // system_isc_type_id: null,
+                    // percentage_isc: 0,
+                    // suggested_price: 0,
+                    // sale_affectation_igv_type_id: null,
+                    // purchase_affectation_igv_type_id: null,
                     calculate_quantity: false,
                     stock: 0,
                     stock_min: 1,
-                    has_igv: true,
+                    // has_igv: true,
                     has_perception: false,
                     item_unit_types:[],
                     percentage_of_profit: 0,
@@ -733,6 +744,8 @@
                     attributes: [],
                     series_enabled: false,
                     tax_id: 1,
+                    purchase_tax_id: 1,
+                    currency_type_id: 170,
                 }
                 this.show_has_igv = true
                 this.enabled_percentage_of_profit = false
@@ -768,14 +781,13 @@
             create() {
 
 
-
                 this.titleDialog = (this.recordId)? 'Editar Producto':'Nuevo Producto'
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
                             this.form = response.data.data
                             this.has_percentage_perception = (this.form.percentage_perception) ? true : false
-                            this.changeAffectationIgvType()
+                            // this.changeAffectationIgvType()
                         })
                 }
 
@@ -785,7 +797,7 @@
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
                             this.form = response.data.data
-                            this.changeAffectationIgvType()
+                            // this.changeAffectationIgvType()
                         })
                 }
             },

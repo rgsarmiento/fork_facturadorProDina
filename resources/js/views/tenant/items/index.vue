@@ -25,20 +25,20 @@
                         <th>Unidad</th>
                         <th>Nombre</th>
                         <th>Descripción</th>
-                        <th>Cód. SUNAT</th>
+                        <!-- <th>Cód. SUNAT</th> -->
                         <th  class="text-left">Stock</th>
                         <th  class="text-right">P.Unitario (Venta)</th>
                         <th v-if="typeUser != 'seller'" class="text-right">P.Unitario (Compra)</th>
-                        <th class="text-center">Tiene Igv</th>
+                        <!-- <th class="text-center">Tiene Igv</th> -->
                         <th class="text-right">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }" :class="{ disable_color : !row.active}">
                         <td>{{ index }}</td>
                         <td>{{ row.internal_id }}</td>
                         <td>{{ row.unit_type_id }}</td>
-                        <td>{{ row.description }}</td>
                         <td>{{ row.name }}</td>
-                        <td>{{ row.item_code }}</td>
+                        <td>{{ row.description }}</td>
+                        <!-- <td>{{ row.item_code }}</td> -->
                         <td>
                             <div v-if="config.product_only_location == true">
                                 {{ row.stock }}
@@ -58,7 +58,7 @@
                         </td>
                         <td class="text-right">{{ row.sale_unit_price }}</td>
                         <td v-if="typeUser != 'seller'" class="text-right">{{ row.purchase_unit_price }}</td>
-                        <td class="text-center">{{ row.has_igv_description }}</td>
+                        <!-- <td class="text-center">{{ row.has_igv_description }}</td> -->
                         <td class="text-right">
                             <template v-if="typeUser === 'admin'">
                                 <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>

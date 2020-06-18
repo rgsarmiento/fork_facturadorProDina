@@ -8,7 +8,7 @@
                         </div>
                         <div class="row mt-4">
 
-                            <div class="col-lg-6 pb-2">
+                            <!-- <div class="col-lg-6 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.customer_id}">
                                     <label class="control-label">Cliente</label>
                                     <el-select v-model="form.customer_id" filterable @change="changeCustomer" popper-class="el-select-document_type" dusk="customer_id" class="border-left rounded-left border-info">
@@ -16,9 +16,9 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
                                 </div>
-                            </div>
+                            </div> -->
 
-                            <!-- <div class="col-lg-6 pb-2">
+                            <div class="col-lg-6 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.customer_id}">
                                     <label class="control-label font-weight-bold text-info">
                                         Cliente
@@ -37,7 +37,7 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
                                 </div>
-                            </div>  -->
+                            </div> 
 
                             <div class="col-lg-4 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.type_document_id}">
@@ -144,7 +144,7 @@
                                                     <br/>
                                                     <small>{{row.tax.name}}</small>
                                                 </td>
-                                                <td class="text-center">{{row.item.type_unit.name}}</td>
+                                                <td class="text-center">{{row.item.unit_type.name}}</td>
 
                                                 <td class="text-right">{{row.quantity}}</td>
                                                 <!--<td class="text-right" v-else ><el-input-number :min="0.01" v-model="row.quantity"></el-input-number> </td> -->
@@ -834,9 +834,9 @@
 
                 let customer = this.customers.find(x => x.id == this.form.customer_id);
                 let obj = {
-                    identification_number: customer.identification_number,
+                    identification_number: customer.number,
                     name: customer.name,
-                    phone: customer.phone,
+                    phone: customer.telephone,
                     address: customer.address,
                     email: customer.email,
                     merchant_registration: "000000"
@@ -914,7 +914,7 @@
                 let data = this.form.items.map(x => {
                     return {
 
-                        unit_measure_id: x.type_unit.code, //codigo api dian de unidad
+                        unit_measure_id: x.item.unit_type.code, //codigo api dian de unidad
                         invoiced_quantity: x.quantity,
                         line_extension_amount: this.cadenaDecimales((Number(x.price) * Number(x.quantity)) - x.discount),
                         free_of_charge_indicator: false,
@@ -935,7 +935,7 @@
                             }
                         ],
                         description: x.item.name,
-                        code: x.item.code,
+                        code: x.item.internal_id,
                         type_item_identification_id: 4,
                         price_amount: this.cadenaDecimales(x.price),
                         base_quantity: x.quantity

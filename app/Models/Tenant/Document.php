@@ -28,7 +28,7 @@ class Document extends ModelTenant
 
     use HasJsonRelationships;
 
-    protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'invoice', 'note', 'payments'];
+    // protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'invoice', 'note', 'payments'];
 
     protected $fillable = [
         'user_id',
@@ -36,53 +36,53 @@ class Document extends ModelTenant
         'establishment_id',
         'establishment',
         'soap_type_id',
-        'state_type_id',
-        'ubl_version',
-        'group_id',
-        'document_type_id',
-        'series',
+        // 'state_type_id',
+        // 'ubl_version',
+        // 'group_id',
+        // 'document_type_id',
+        // 'series',
         'number',
         'date_of_issue',
         'time_of_issue',
         'customer_id',
         'customer',
-        'currency_type_id',
-        'purchase_order',
+        // 'currency_type_id',
+        // 'purchase_order',
         'quotation_id',
-        'exchange_rate_sale',
-        'total_prepayment',
+        // 'exchange_rate_sale',
+        // 'total_prepayment',
         'total_discount',
-        'total_charge',
-        'total_exportation',
-        'total_free',
-        'total_taxed',
-        'total_unaffected',
-        'total_exonerated',
-        'total_igv',
-        'total_base_isc',
-        'total_isc',
-        'total_base_other_taxes',
-        'total_other_taxes',
-        'total_taxes',
-        'total_value',
+        // 'total_charge',
+        // 'total_exportation',
+        // 'total_free',
+        // 'total_taxed',
+        // 'total_unaffected',
+        // 'total_exonerated',
+        // 'total_igv',
+        // 'total_base_isc',
+        // 'total_isc',
+        // 'total_base_other_taxes',
+        // 'total_other_taxes',
+        // 'total_taxes',
+        // 'total_value',
         'total',
-        'charges',
-        'discounts',
-        'prepayments',
-        'guides',
-        'related',
-        'perception',
-        'detraction',
-        'legends',
-        'additional_information',
-        'filename',
-        'hash',
-        'qr',
-        'has_xml',
-        'has_pdf',
-        'has_cdr',
-        'has_prepayment',
-        'affectation_type_prepayment',
+        // 'charges',
+        // 'discounts',
+        // 'prepayments',
+        // 'guides',
+        // 'related',
+        // 'perception',
+        // 'detraction',
+        // 'legends',
+        // 'additional_information',
+        // 'filename',
+        // 'hash',
+        // 'qr',
+        // 'has_xml',
+        // 'has_pdf',
+        // 'has_cdr',
+        // 'has_prepayment',
+        // 'affectation_type_prepayment',
         'data_json',
         'send_server',
         'shipping_status',
@@ -93,10 +93,10 @@ class Document extends ModelTenant
         'success_shipping_status',
         'success_sunat_shipping_status',
         'success_query_status',
-        'plate_number',
+        // 'plate_number',
         'total_canceled',
         'order_note_id',
-        'soap_shipping_response',
+        // 'soap_shipping_response',
 
         //co
         'state_document_id',
@@ -308,85 +308,6 @@ class Document extends ModelTenant
         $this->attributes['customer'] = (is_null($value))?null:json_encode($value);
     }
 
-    public function getChargesAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setChargesAttribute($value)
-    {
-        $this->attributes['charges'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getDiscountsAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setDiscountsAttribute($value)
-    {
-        $this->attributes['discounts'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getPrepaymentsAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setPrepaymentsAttribute($value)
-    {
-        $this->attributes['prepayments'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getGuidesAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setGuidesAttribute($value)
-    {
-        $this->attributes['guides'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getRelatedAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setRelatedAttribute($value)
-    {
-        $this->attributes['related'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getPerceptionAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setPerceptionAttribute($value)
-    {
-        $this->attributes['perception'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getDetractionAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setDetractionAttribute($value)
-    {
-        $this->attributes['detraction'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getLegendsAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setLegendsAttribute($value)
-    {
-        $this->attributes['legends'] = (is_null($value))?null:json_encode($value);
-    }
 
     public function getDataJsonAttribute($value)
     {
@@ -399,23 +320,6 @@ class Document extends ModelTenant
     }
 
 
-    public function getSoapShippingResponseAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setSoapShippingResponseAttribute($value)
-    {
-        $this->attributes['soap_shipping_response'] = (is_null($value))?null:json_encode($value);
-    }
-
-
-    public function getAdditionalInformationAttribute($value)
-    {
-        $arr = explode('|', $value);
-        return $arr;
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -426,44 +330,44 @@ class Document extends ModelTenant
         return $this->belongsTo(SoapType::class);
     }
 
-    public function state_type()
-    {
-        return $this->belongsTo(StateType::class);
-    }
+    // public function state_type()
+    // {
+    //     return $this->belongsTo(StateType::class);
+    // }
 
     public function person() {
         return $this->belongsTo(Person::class, 'customer_id');
     }
 
-    public function group()
-    {
-        return $this->belongsTo(Group::class);
-    }
+    // public function group()
+    // {
+    //     return $this->belongsTo(Group::class);
+    // }
 
     public function document_type()
     {
         return $this->belongsTo(DocumentType::class, 'document_type_id');
     }
 
-    public function currency_type()
-    {
-        return $this->belongsTo(CurrencyType::class, 'currency_type_id');
-    }
+    // public function currency_type()
+    // {
+    //     return $this->belongsTo(CurrencyType::class, 'currency_type_id');
+    // }
 
     public function getCompanyAttribute()
     {
         return Company::first();
     }
 
-    public function invoice()
-    {
-        return $this->hasOne(Invoice::class);
-    }
+    // public function invoice()
+    // {
+    //     return $this->hasOne(Invoice::class);
+    // }
 
-    public function note()
-    {
-        return $this->hasOne(Note::class);
-    }
+    // public function note()
+    // {
+    //     return $this->hasOne(Note::class);
+    // }
 
     public function items()
     {
@@ -551,29 +455,15 @@ class Document extends ModelTenant
         // return  $query->whereIn('state_type_id', ['01','03'])->where('date_of_issue','<=',date('Y-m-d'));
     }
 
-    public function affected_documents()
-    {
-        return $this->hasMany(Note::class, 'affected_document_id');
-    }
+    // public function affected_documents()
+    // {
+    //     return $this->hasMany(Note::class, 'affected_document_id');
+    // }
 
-    public function scopeWhereHasPrepayment($query)
-    {
-        return $query->where([['has_prepayment', true],['was_deducted_prepayment', false],['state_type_id','05']]);
-    }
-
-    public function reference_guides()
-    {
-        return $this->hasMany(Dispatch::class, 'reference_document_id', 'id');
-    }
 
     public function summary_document()
     {
         return $this->hasOne(SummaryDocument::class);
-    }
-
-    public function scopeWhereAffectationTypePrepayment($query, $type)
-    {
-        return $query->where('affectation_type_prepayment', $type);
     }
     
     public function scopeWhereStateTypeAccepted($query)

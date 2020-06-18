@@ -14,11 +14,13 @@ use Modules\Item\Models\ItemLotsGroup;
 
 use Modules\Factcolombia1\Models\Tenant\TypeUnit;
 use Modules\Factcolombia1\Models\Tenant\Tax;
+use Modules\Factcolombia1\Models\Tenant\Currency;
 
 
 class Item extends ModelTenant
 {
-    protected $with = ['item_type', 'unit_type', 'currency_type', 'warehouses','item_unit_types', 'tags'];
+    protected $with = ['item_type', 'unit_type', 'warehouses','item_unit_types', 'tags'];
+
     protected $fillable = [
         'warehouse_id',
         'name',
@@ -26,21 +28,21 @@ class Item extends ModelTenant
         'description',
         'item_type_id',
         'internal_id',
-        'item_code',
-        'item_code_gs1',
+        // 'item_code',
+        // 'item_code_gs1',
         'unit_type_id',
         'currency_type_id',
         'sale_unit_price',
         'purchase_unit_price',
-        'has_isc',
-        'system_isc_type_id',
-        'percentage_isc',
-        'suggested_price',
+        // 'has_isc',
+        // 'system_isc_type_id',
+        // 'percentage_isc',
+        // 'suggested_price',
 
-        'sale_affectation_igv_type_id',
-        'purchase_affectation_igv_type_id',
+        // 'sale_affectation_igv_type_id',
+        // 'purchase_affectation_igv_type_id',
         'calculate_quantity',
-        'has_igv',
+        // 'has_igv',
 
         'stock',
         'stock_min',
@@ -66,16 +68,10 @@ class Item extends ModelTenant
         'active',
         'series_enabled',
         'tax_id',
+        'purchase_tax_id',
         // 'warehouse_id'
     ];
 
-    /*protected static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope('active', function (Builder $builder) {
-            $builder->where('active', 1);
-        });
-    }*/
 
     public function getAttributesAttribute($value)
     {
@@ -114,18 +110,26 @@ class Item extends ModelTenant
         return $this->belongsTo(Tax::class);
     }
     
-    //colombia
+    public function purchase_tax()
+    {
+        return $this->belongsTo(Tax::class, 'purchase_tax_id');
+    }
 
+    //use legacy
 
     public function currency_type()
     {
-        return $this->belongsTo(CurrencyType::class, 'currency_type_id');
+        return $this->belongsTo(Currency::class, 'currency_type_id');
     }
 
-    public function system_isc_type()
-    {
-        return $this->belongsTo(SystemIscType::class, 'system_isc_type_id');
-    }
+    //colombia
+
+
+
+    // public function system_isc_type()
+    // {
+    //     return $this->belongsTo(SystemIscType::class, 'system_isc_type_id');
+    // }
 
     public function kardex()
     {
@@ -142,15 +146,15 @@ class Item extends ModelTenant
         return $this->hasMany(PurchaseItem::class);
     }
 
-    public function sale_affectation_igv_type()
-    {
-        return $this->belongsTo(AffectationIgvType::class, 'sale_affectation_igv_type_id');
-    }
+    // public function sale_affectation_igv_type()
+    // {
+    //     return $this->belongsTo(AffectationIgvType::class, 'sale_affectation_igv_type_id');
+    // }
 
-    public function purchase_affectation_igv_type()
-    {
-        return $this->belongsTo(AffectationIgvType::class, 'purchase_affectation_igv_type_id');
-    }
+    // public function purchase_affectation_igv_type()
+    // {
+    //     return $this->belongsTo(AffectationIgvType::class, 'purchase_affectation_igv_type_id');
+    // }
 
      public function scopeWhereWarehouse($query)
      {
