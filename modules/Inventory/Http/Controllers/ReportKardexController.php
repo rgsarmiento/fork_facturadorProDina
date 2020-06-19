@@ -145,7 +145,7 @@ class ReportKardexController extends Controller
 
     public function getFullDescription($row){
 
-        $desc = ($row->internal_id)?$row->internal_id.' - '.$row->description : $row->description;
+        $desc = ($row->internal_id)?$row->internal_id.' - '.$row->name : $row->name;
         $category = ($row->category) ? " - {$row->category->name}" : "";
         $brand = ($row->brand) ? " - {$row->brand->name}" : "";
 

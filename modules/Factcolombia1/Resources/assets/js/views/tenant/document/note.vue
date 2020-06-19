@@ -52,12 +52,12 @@
                             
                             
                             <div class="col-md-6 col-lg-6 pb-2">
-                                <div class="form-group" :class="{'has-danger': errors.client_id}">
+                                <div class="form-group" :class="{'has-danger': errors.customer_id}">
                                     <label class="control-label">Cliente</label>
-                                    <el-select v-model="form.client_id" disabled filterable @change="changeCustomer" popper-class="el-select-document_type" dusk="client_id" class="border-left rounded-left border-info">
+                                    <el-select v-model="form.customer_id" disabled filterable @change="changeCustomer" popper-class="el-select-document_type" dusk="customer_id" class="border-left rounded-left border-info">
                                         <el-option v-for="option in customers" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                     </el-select>
-                                    <small class="form-control-feedback" v-if="errors.client_id" v-text="errors.client_id[0]"></small>
+                                    <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
                                 </div>
                             </div> 
  
@@ -100,11 +100,13 @@
                                             <tr v-for="(row, index) in form.items" :key="index">
                                                 <td>{{index + 1}}</td>
                                                 <td>{{row.item.name}} 
-                                                    <!-- {{row.item.presentation.hasOwnProperty('description') ? row.item.presentation.description : ''}} -->
+                                                    {{row.item.presentation.hasOwnProperty('description') ? row.item.presentation.description : ''}}
                                                     <br/>
                                                     <small>{{row.tax.name}}</small>
                                                 </td>
-                                                <td class="text-center">{{row.item.type_unit.name}}</td>
+                                                <td class="text-center">{{row.item.unit_type.name}}</td>
+                                                <!-- <td class="text-center">{{(row.item.hasOwnProperty('unit_type') ) ? row.item.unit_type.name : row.item.item.unit_type.name}}</td> -->
+
 
                                                 <td class="text-right">{{row.quantity}}</td>
                                                 <!--<td class="text-right" v-else ><el-input-number :min="0.01" v-model="row.quantity"></el-input-number> </td> -->
@@ -255,13 +257,13 @@
     // import DocumentOptions from '../documents/partials/options.vue'
     // import {functions, exchangeRate} from '@mixins/functions'
     // import {calculateRowItem} from '../../../helpers/functions' 
-    import Helper from "../../../mixins/Helper";
+    // import Helper from "../../../mixins/Helper";
     import DocumentOptions from './partials/options.vue'
 
     export default {
         props: ['typeUser', 'note'],
         components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions},
-        mixins: [Helper],
+        // mixins: [Helper],
         data() {
             return {
                 datEmision: {
@@ -306,7 +308,7 @@
         async created() {
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
-                    this.all_customers = response.data.customers;
+                    // this.all_customers = response.data.customers;
                     this.taxes = response.data.taxes
                     // console.log(this.taxes)
                     this.all_type_documents = response.data.type_documents;
@@ -314,41 +316,31 @@
                     this.payment_methods = response.data.payment_methods
                     this.payment_forms = response.data.payment_forms 
 
-                    this.filterCustomers();
+                    // this.filterCustomers();
                     this.typeNoteDocuments()
  
                 })
+
             await this.initForm()
 
+            await this.getRecordCustomer()
+
             this.loading_form = true
-            this.$eventHub.$on('reloadDataPersons', (client_id) => {
-                this.reloadDataCustomers(client_id)
+            this.$eventHub.$on('reloadDataPersons', (customer_id) => {
+                this.reloadDataCustomers(customer_id)
             })
             this.$eventHub.$on('initInputPerson', () => {
                 this.initInputPerson()
             })
 
-        },
-        watch: { 
-            typeDocuments: {
-                // handler(val) {
-                //     val.forEach(row => {
-                //     if (row.alert_range)
-                //         this.$root.$emit("addSnackbarNotification", {
-                //         text: `La resolución de ${row.name} esta próxima a vencer por rango.`,
-                //         color: "warning"
-                //         });
-                //     if (row.alert_date)
-                //         this.$root.$emit("addSnackbarNotification", {
-                //         text: `La resolución de ${row.name} esta próxima a vencer por fecha de vigencia.`,
-                //         color: "warning"
-                //         });
-                //     });
-                // },
-                // deep: true
-            }
-        },
+        }, 
         methods: {   
+            getRecordCustomer(){
+                this.$http.get(`/${this.resource}/search/customer/${this.form.customer_id}`).then((response) => {
+                    this.customers = response.data.customers
+                    // this.form.customer_id = this.document.customer_id
+                })
+            },
             typeNoteDocuments() {
                 this.type_documents = this.all_type_documents.filter(row => row.id != 1);
             },
@@ -428,7 +420,7 @@
                 // console.log(this.note)
                 
                 this.form = {
-                    client_id: this.note.client_id,
+                    customer_id: this.note.customer_id,
                     type_document_id: null,
                     note_concept_id: null,
                     currency_id: this.note.currency_id,
@@ -455,14 +447,14 @@
 
                 this.noteService.customer = {
 
-                    identification_number: this.note.client.identification_number,
-                    name: this.note.client.name,
-                    phone: this.note.client.phone,
-                    address: this.note.client.address,
-                    email: this.note.client.email,
+                    identification_number: this.note.customer.number,
+                    name: this.note.customer.name,
+                    phone: this.note.customer.telephone,
+                    address: this.note.customer.address,
+                    email: this.note.customer.email,
                     merchant_registration: "0000-00",
-                    type_document_identification_id: this.note.client.type_identity_document_id,
-                    type_organization_id: this.note.client.type_person_id,
+                    type_document_identification_id: this.note.customer.identity_document_type_id,
+                    type_organization_id: this.note.customer.type_person_id,
                     municipality_id: 149,
                     type_regime_id: 2
 
@@ -503,15 +495,21 @@
                         rows => (this.note_concepts = rows)
                     );
             },
+            getConcepts(val) {
+
+                return axios.post(`/concepts/${val}`).then(response => {
+                                return response.data;
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            });
+
+            },
             cleanCustomer(){
-                this.form.client_id = null
+                this.form.customer_id = null
                 // this.customers = []
             },
-            changeDateOfIssue() {
-            //   if(moment(this.form.date_of_issue) < moment().day(-1) && this.configuration.restrict_receipt_date) {
-            //     this.$message.error('No puede seleccionar una fecha menor a 6 días.');
-            //     this.dateValid=false
-            //   } else { this.dateValid = true }
+            changeDateOfIssue() { 
                 this.form.date_expiration = this.form.date_of_issue
                 this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
                     this.form.exchange_rate_sale = response
@@ -530,21 +528,8 @@
                                                          'contingency': this.is_contingency});
                 this.form.series_id = (this.series.length > 0)?this.series[0].id:null
             },
-            filterCustomers() {
-                // this.form.client_id = null
-                // if(this.form.operation_type_id === '0101' || this.form.operation_type_id === '1001') {
-                //     if(this.form.type_document_id === '01') {
-                //         this.customers = _.filter(this.all_customers, {'identity_type_document_id': '6'})
-                //     } else {
-                //         if(this.document_type_03_filter) {
-                //             this.customers = _.filter(this.all_customers, (c) => { return c.identity_type_document_id !== '6' })
-                //         } else {
-                //             this.customers = this.all_customers
-                //         }
-                //     }
-                // } else {
-                    this.customers = this.all_customers
-                // }
+            filterCustomers() { 
+                this.customers = this.all_customers
             }, 
             addRow(row) {
                 if(this.recordItem)
@@ -731,21 +716,21 @@
             close() {
                 location.href = (this.is_contingency) ? `/contingencies` : `/${this.resource}`
             },
-            reloadDataCustomers(client_id) {
+            reloadDataCustomers(customer_id) {
                 // this.$http.get(`/${this.resource}/table/customers`).then((response) => {
                 //     this.customers = response.data
-                //     this.form.client_id = client_id
+                //     this.form.customer_id = customer_id
                 // })
-                this.$http.get(`/${this.resource}/search/customer/${client_id}`).then((response) => {
+                this.$http.get(`/${this.resource}/search/customer/${customer_id}`).then((response) => {
                     this.customers = response.data.customers
-                    this.form.client_id = client_id
+                    this.form.customer_id = customer_id
                 })
             },
             changeCustomer() { 
             },
             async submit() {
                 
-                if(!this.form.client_id){
+                if(!this.form.customer_id){
                     return this.$message.error('Debe seleccionar un cliente')
                 }
 
@@ -836,7 +821,7 @@
 
             // getCustomer() {
 
-            //     let customer = this.customers.find(x => x.id == this.form.client_id);
+            //     let customer = this.customers.find(x => x.id == this.form.customer_id);
             //     let obj = {
             //         identification_number: customer.identification_number,
             //         name: customer.name,
@@ -846,7 +831,7 @@
             //         merchant_registration: "000000"
             //     };
 
-            //     this.form.client_id = customer.id
+            //     this.form.customer_id = customer.id
 
             //     if (customer.type_person_id == 2) {
             //         obj.dv = customer.dv;
@@ -931,7 +916,7 @@
                 let data = this.form.items.map(x => {
                     return {
 
-                        unit_measure_id: x.type_unit.code, //codigo api dian de unidad
+                        unit_measure_id: x.item.unit_type.code, //codigo api dian de unidad
                         invoiced_quantity: x.quantity,
                         line_extension_amount: this.cadenaDecimales((Number(x.price) * Number(x.quantity)) - x.discount),
                         free_of_charge_indicator: false,
@@ -952,7 +937,7 @@
                             }
                         ],
                         description: x.item.name,
-                        code: x.item.code,
+                        code: x.item.internal_id,
                         type_item_identification_id: 4,
                         price_amount: this.cadenaDecimales(x.price),
                         base_quantity: x.quantity
@@ -987,6 +972,7 @@
                 else
                     return amount.toString()+".00";
                 },
-            }
+            },
+            
     }
 </script>

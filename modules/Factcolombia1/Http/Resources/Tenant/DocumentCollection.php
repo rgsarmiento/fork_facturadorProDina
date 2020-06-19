@@ -24,14 +24,14 @@ class DocumentCollection extends ResourceCollection
 
             return [
                 'id' => $row->id, 
-                'date_issue' => $row->date_issue, 
+                'date_of_issue' => $row->date_of_issue->format('Y-m-d'), 
                 'download_xml' => $download_xml, 
                 'download_pdf' => $download_pdf, 
                 'response_api_invoice' => $row->response_api_invoice, 
                 'acknowledgment_received' => ($row->acknowledgment_received != null) ? ($row->acknowledgment_received == 1 ? 'Aceptado' : 'Rechazado'):'', 
-                'client_name' => $row->client->name, 
-                'client_number' => $row->client->identification_number, 
-                'client_type_identity_document' => $row->client->type_identity_document->name, 
+                'customer_name' => $row->customer->name, 
+                'customer_number' => $row->customer->number, 
+                'customer_identity_document_type' => $row->customer->identity_document_type->name, 
                 'number_full' => "{$row->prefix}-{$row->number}", 
                 'type_document_name' => $row->type_document->name, 
                 'state_document_name' => $row->state_document->name, 

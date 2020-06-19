@@ -13,7 +13,7 @@ use Modules\Factcolombia1\Models\Tenant\{
     TypeDocument,
     TypeInvoice,
     NoteConcept,
-    Document,
+    // Document,
     Currency,
     Company,
     Client,
@@ -38,6 +38,7 @@ use Storage;
 
 use App\Models\Tenant\Item as ItemP;
 use App\Models\Tenant\Person;
+use App\Models\Tenant\Document; //replace model Document of module factcolombia1
 use Modules\Inventory\Models\Warehouse as ModuleWarehouse;
 use Modules\Document\Traits\SearchTrait;
 use Modules\Factcolombia1\Http\Resources\Tenant\DocumentCollection;
@@ -64,7 +65,7 @@ class DocumentController extends Controller
     {
         return [
             'number' => 'Número',
-            'date_issue' => 'Fecha de emisión'
+            'date_of_issue' => 'Fecha de emisión'
         ];
     }
 
@@ -94,7 +95,7 @@ class DocumentController extends Controller
 
     public function note($id) {
 
-        $note = Document::findOrFail($id);
+        $note = Document::with(['items'])->findOrFail($id);
 
         return view('factcolombia1::document.tenant.note', compact('note'));
 
@@ -313,62 +314,63 @@ class DocumentController extends Controller
 
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents)) throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
 
-            $this->document = Document::create([
-                'type_document_id' => $request->type_document_id,
-                'prefix' => $nextConsecutive->prefix,
-                'number' => $correlative_api,
-                'type_invoice_id' => $request->type_invoice_id,
-                'client_id' => $request->client_id,
-                'client' => Client::with('typePerson', 'typeRegime', 'typeIdentityDocument', 'country', 'department', 'city')->findOrFail($request->client_id),
-                'currency_id' => $request->currency_id,
-                'date_issue' => Carbon::parse("{$request->date_issue} ".Carbon::now()->format('H:i:s')),
-                'date_expiration' => Carbon::parse("{$request->date_expiration}"),
-                'observation' => $request->observation,
-                'reference_id' => $request->reference_id,
-                'note_concept_id' => $request->note_concept_id,
-                'sale' => $request->sale,
-                'total_discount' => $request->total_discount,
-                'taxes' => $request->taxes,
-                'total_tax' => $request->total_tax,
-                'subtotal' => $request->subtotal,
-                'total' => $request->total,
-                'version_ubl_id' => $this->company->version_ubl_id,
-                'ambient_id' => $this->company->ambient_id,
+            $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
 
-                'payment_form_id' =>$request->payment_form_id,
-                'payment_method_id' =>$request->payment_method_id,
-                'time_days_credit' => $request->time_days_credit,
+            // $this->document = Document::create([
+            //     'type_document_id' => $request->type_document_id,
+            //     'prefix' => $nextConsecutive->prefix,
+            //     'number' => $correlative_api,
+            //     'type_invoice_id' => $request->type_invoice_id,
+            //     'client_id' => $request->client_id,
+            //     'client' => Client::with('typePerson', 'typeRegime', 'typeIdentityDocument', 'country', 'department', 'city')->findOrFail($request->client_id),
+            //     'currency_id' => $request->currency_id,
+            //     'date_issue' => Carbon::parse("{$request->date_issue} ".Carbon::now()->format('H:i:s')),
+            //     'date_expiration' => Carbon::parse("{$request->date_expiration}"),
+            //     'observation' => $request->observation,
+            //     'reference_id' => $request->reference_id,
+            //     'note_concept_id' => $request->note_concept_id,
+            //     'sale' => $request->sale,
+            //     'total_discount' => $request->total_discount,
+            //     'taxes' => $request->taxes,
+            //     'total_tax' => $request->total_tax,
+            //     'subtotal' => $request->subtotal,
+            //     'total' => $request->total,
+            //     'version_ubl_id' => $this->company->version_ubl_id,
+            //     'ambient_id' => $this->company->ambient_id,
 
-                'response_api' => $response,
-                'response_api_status' => $response_status,
-                'correlative_api' => $correlative_api
+            //     'payment_form_id' =>$request->payment_form_id,
+            //     'payment_method_id' =>$request->payment_method_id,
+            //     'time_days_credit' => $request->time_days_credit,
 
-            ]);
+            //     'response_api' => $response,
+            //     'response_api_status' => $response_status,
+            //     'correlative_api' => $correlative_api
 
-            DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
+            // ]);
+
 
             /*$this->document->update([
                 'xml' => $this->getFileName(),
                 'cufe' => $this->getCufe()
             ]);*/
 
-            foreach ($request->items as $item) {
-                DetailDocument::create([
-                    'document_id' => $this->document->id,
-                    'item_id' => $item['id'],
-                    'item' => $item,
-                    'type_unit_id' => $item['unit_type_id'],
-                    // 'type_unit_id' => $item['type_unit_id'],
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'tax_id' => $item['tax_id'],
-                    'tax' => Tax::find($item['tax_id']),
-                    'total_tax' => $item['total_tax'],
-                    'subtotal' => $item['subtotal'],
-                    'discount' => $item['discount'],
-                    'total' => $item['total']
-                ]);
-            }
+            // foreach ($request->items as $item) {
+            //     DetailDocument::create([
+            //         'document_id' => $this->document->id,
+            //         'item_id' => $item['id'],
+            //         'item' => $item,
+            //         'type_unit_id' => $item['unit_type_id'],
+            //         // 'type_unit_id' => $item['type_unit_id'],
+            //         'quantity' => $item['quantity'],
+            //         'price' => $item['price'],
+            //         'tax_id' => $item['tax_id'],
+            //         'tax' => Tax::find($item['tax_id']),
+            //         'total_tax' => $item['total_tax'],
+            //         'subtotal' => $item['subtotal'],
+            //         'discount' => $item['discount'],
+            //         'total' => $item['total']
+            //     ]);
+            // }
         }
         catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
@@ -557,58 +559,65 @@ class DocumentController extends Controller
 
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents)) throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
 
-            $this->document = Document::create([
-                'type_document_id' => $request->type_document_id,
-                'prefix' => $nextConsecutive->prefix,
-                'number' => $correlative_api,
-                'type_invoice_id' => $request->type_invoice_id,
-                'client_id' => $request->client_id,
-                'client' => Client::with('typePerson', 'typeRegime', 'typeIdentityDocument', 'country', 'department', 'city')->findOrFail($request->client_id),
-                'currency_id' => $request->currency_id,
-                'date_issue' => Carbon::parse("{$request->date_issue} ".Carbon::now()->format('H:i:s')),
-                'date_expiration' => Carbon::parse("{$request->date_expiration}"),
-                'observation' => $request->observation,
-                'reference_id' => $request->reference_id,
-                'note_concept_id' => $request->note_concept_id,
-                'sale' => $request->sale,
-                'total_discount' => $request->total_discount,
-                'taxes' => $request->taxes,
-                'total_tax' => $request->total_tax,
-                'subtotal' => $request->subtotal,
-                'total' => $request->total,
-                'version_ubl_id' => $this->company->version_ubl_id,
-                'ambient_id' => $this->company->ambient_id,
+            // $this->document = Document::create([
+            //     'type_document_id' => $request->type_document_id,
+            //     'prefix' => $nextConsecutive->prefix,
+            //     'number' => $correlative_api,
+            //     'type_invoice_id' => $request->type_invoice_id,
+            //     'client_id' => $request->client_id,
+            //     'client' => Client::with('typePerson', 'typeRegime', 'typeIdentityDocument', 'country', 'department', 'city')->findOrFail($request->client_id),
+            //     'currency_id' => $request->currency_id,
+            //     'date_issue' => Carbon::parse("{$request->date_issue} ".Carbon::now()->format('H:i:s')),
+            //     'date_expiration' => Carbon::parse("{$request->date_expiration}"),
+            //     'observation' => $request->observation,
+            //     'reference_id' => $request->reference_id,
+            //     'note_concept_id' => $request->note_concept_id,
+            //     'sale' => $request->sale,
+            //     'total_discount' => $request->total_discount,
+            //     'taxes' => $request->taxes,
+            //     'total_tax' => $request->total_tax,
+            //     'subtotal' => $request->subtotal,
+            //     'total' => $request->total,
+            //     'version_ubl_id' => $this->company->version_ubl_id,
+            //     'ambient_id' => $this->company->ambient_id,
 
-                'payment_form_id' =>$request->payment_form_id,
-                'payment_method_id' =>$request->payment_method_id,
-                'time_days_credit' => $request->time_days_credit,
+            //     'payment_form_id' =>$request->payment_form_id,
+            //     'payment_method_id' =>$request->payment_method_id,
+            //     'time_days_credit' => $request->time_days_credit,
 
-                'response_api' => $response,
-                'response_api_status' => $response_status,
-                'correlative_api' => $correlative_api
-            ]);
+            //     'response_api' => $response,
+            //     'response_api_status' => $response_status,
+            //     'correlative_api' => $correlative_api
+            // ]);
 
+            // $this->document->update([
+            //     'xml' => $this->getFileName(),
+            //     'cufe' => $this->getCufe()
+            // ]);
+
+            $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
+            
             $this->document->update([
                 'xml' => $this->getFileName(),
                 'cufe' => $this->getCufe()
             ]);
 
-            foreach ($request->items as $item) {
-                DetailDocument::create([
-                    'document_id' => $this->document->id,
-                    'item_id' => $item['id'],
-                    'item' => $item,
-                    'type_unit_id' => $item['type_unit_id'],
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'tax_id' => $item['tax_id'],
-                    'tax' => Tax::find($item['tax_id']),
-                    'total_tax' => $item['total_tax'],
-                    'subtotal' => $item['subtotal'],
-                    'discount' => $item['discount'],
-                    'total' => $item['total']
-                ]);
-            }
+            // foreach ($request->items as $item) {
+            //     DetailDocument::create([
+            //         'document_id' => $this->document->id,
+            //         'item_id' => $item['id'],
+            //         'item' => $item,
+            //         'type_unit_id' => $item['unit_type_id'],
+            //         'quantity' => $item['quantity'],
+            //         'price' => $item['price'],
+            //         'tax_id' => $item['tax_id'],
+            //         'tax' => Tax::find($item['tax_id']),
+            //         'total_tax' => $item['total_tax'],
+            //         'subtotal' => $item['subtotal'],
+            //         'discount' => $item['discount'],
+            //         'total' => $item['total']
+            //     ]);
+            // }
         }
         catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
@@ -957,6 +966,7 @@ class DocumentController extends Controller
                             'description' => "{$row->description}",
                             'item_id' => $row->item_id,
                             'unit_type_id' => $row->unit_type_id,
+                            'unit_type' => $row->unit_type,
                             'quantity_unit' => $row->quantity_unit,
                             'price1' => $row->price1,
                             'price2' => $row->price2,
@@ -1045,6 +1055,7 @@ class DocumentController extends Controller
                             'description' => "{$row->description}",
                             'item_id' => $row->item_id,
                             'unit_type_id' => $row->unit_type_id,
+                            'unit_type' => $row->unit_type,
                             'quantity_unit' => $row->quantity_unit,
                             'price1' => $row->price1,
                             'price2' => $row->price2,
@@ -1185,6 +1196,7 @@ class DocumentController extends Controller
                         'description' => "{$row->description}",
                         'item_id' => $row->item_id,
                         'unit_type_id' => $row->unit_type_id,
+                        'unit_type' => $row->unit_type,
                         'quantity_unit' => $row->quantity_unit,
                         'price1' => $row->price1,
                         'price2' => $row->price2,

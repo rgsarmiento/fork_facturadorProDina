@@ -286,6 +286,20 @@ class Document extends ModelTenant
     {
         return $this->prefix;
     }
+    
+    public function getDocumentTypeIdAttribute()
+    {
+        //equivalent document type invoice peru - colombia
+
+        $document_types = [
+            1 => '01', //FV
+            2 => '08', //ND
+            3 => '07', //NC
+        ];
+
+        return $document_types[$this->type_document_id];
+        
+    }
     //co
 
     public function getEstablishmentAttribute($value)

@@ -154,8 +154,10 @@ trait DocumentTrait
         
         $cufe .= number_format($this->document->total, 2, '.', '');
         $cufe .= $this->company->identification_number;
-        $cufe .= $this->document->client->type_identity_document->code;
-        $cufe .= $this->document->client->identification_number;
+        // $cufe .= $this->document->client->type_identity_document->code;
+        // $cufe .= $this->document->client->identification_number;
+        $cufe .= $this->document->customer->identity_document_type->code;
+        $cufe .= $this->document->customer->number;
         $cufe .= $this->document->type_document->technical_key;
         
         return sha1($cufe);

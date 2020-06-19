@@ -30,15 +30,15 @@
         </div> 
         <div class="row mt-3">
             <div class="col-md-12">
-                <el-input v-model="form.client_email">
+                <el-input v-model="form.customer_email">
                     <el-button slot="append" icon="el-icon-message" @click="clickSendEmail" :loading="loading">Enviar</el-button>
                 </el-input>
-                <small class="form-control-feedback" v-if="errors.client_email" v-text="errors.client_email[0]"></small>
+                <small class="form-control-feedback" v-if="errors.customer_email" v-text="errors.customer_email[0]"></small>
             </div>
         </div>
         <!-- <div class="row mt-3">
             <div class="col-md-12">
-                <el-input v-model="form.client_phone">
+                <el-input v-model="form.customer_phone">
                     <template slot="prepend">+51</template>
                         <el-button slot="append" @click="clickSendWhatsapp" >Enviar
                             <el-tooltip class="item" effect="dark"  content="Es necesario tener aperturado Whatsapp web" placement="top-start">
@@ -46,7 +46,7 @@
                             </el-tooltip>
                         </el-button>
                 </el-input>
-                <small class="form-control-feedback" v-if="errors.client_phone" v-text="errors.client_phone[0]"></small>
+                <small class="form-control-feedback" v-if="errors.customer_phone" v-text="errors.customer_phone[0]"></small>
             </div>
         </div>  -->
         <span slot="footer" class="dialog-footer">
@@ -90,11 +90,11 @@
             }, 
             clickSendWhatsapp() {
                 
-                if(!this.form.client_phone){
+                if(!this.form.customer_phone){
                     return this.$message.error('El número es obligatorio')
                 }
 
-                window.open(`https://wa.me/51${this.form.client_phone}?text=${this.form.message_text}`, '_blank');
+                window.open(`https://wa.me/51${this.form.customer_phone}?text=${this.form.message_text}`, '_blank');
             
             },
             initForm() {
@@ -102,8 +102,8 @@
                 this.form = {
                     id: null,
                     number_full:null,
-                    client_email:null,
-                    client_phone:null,
+                    customer_email:null,
+                    customer_phone:null,
                     correlative_api:null,
                     message_text: null,
                     response_api_message: null,
@@ -124,7 +124,7 @@
             clickSendEmail() {
                 this.loading = true
                 this.$http.post(`/${this.resource}/sendEmail`, {
-                    email: this.form.client_email,
+                    email: this.form.customer_email,
                     number: this.form.correlative_api
                 })
                     .then(response => {

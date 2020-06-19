@@ -83,6 +83,8 @@ class InventoryKardexServiceProvider extends ServiceProvider
 
             }
 
+            //lots
+
             if(isset($document_item->item->IdLoteSelected) )
             {
                 if($document_item->item->IdLoteSelected != null)

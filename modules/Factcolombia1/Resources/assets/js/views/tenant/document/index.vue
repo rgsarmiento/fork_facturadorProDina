@@ -45,8 +45,8 @@
                     <tr>
                     <tr slot-scope="{ index, row }" >
                         <td>{{ index }}</td>
-                        <td class="text-center">{{ row.date_issue }}</td>
-                        <td>{{ row.client_name }}<br/><small v-text="row.client_number"></small></td>
+                        <td class="text-center">{{ row.date_of_issue }}</td>
+                        <td>{{ row.customer_name }}<br/><small v-text="row.customer_number"></small></td>
                         <td>{{ row.number_full }}<br/>
                             <small v-text="row.type_document_name"></small><br/>
                         </td>

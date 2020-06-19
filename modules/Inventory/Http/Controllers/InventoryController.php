@@ -30,7 +30,7 @@ class InventoryController extends Controller
     public function columns()
     {
         return [
-            'description' => 'Producto',
+            'name' => 'Producto',
             'internal_id' => 'Código interno',
             'warehouse' => 'Almacén',
         ];

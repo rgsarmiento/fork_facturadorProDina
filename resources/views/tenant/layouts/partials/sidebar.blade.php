@@ -72,20 +72,15 @@
 
                                         <li class="{{ ($path[0] === 'co-documents'  && $path[1] === 'create')?'nav-active':'' }}">
                                             <a class="nav-link" href="{{route('tenant.co-documents.create')}}">
-                                                Nuevo comprobante colombia
-                                            </a>
-                                        </li>
-
-                                        <li class="{{ ($path[0] === 'co-documents'  && $path[1] != 'create'  )?'nav-active':'' }}">
-                                            <a class="nav-link" href="{{route('tenant.co-documents.index')}}">
-                                                Listado de comprobantes colombia
-                                            </a>
-                                        </li>
-                                        <li class="{{ ($path[0] === 'documents' && $path[1] === 'create')?'nav-active':'' }}">
-                                            <a class="nav-link" href="{{route('tenant.documents.create')}}">
                                                 Nuevo comprobante electrónico
                                             </a>
                                         </li>
+
+                                        {{-- <li class="{{ ($path[0] === 'documents' && $path[1] === 'create')?'nav-active':'' }}">
+                                            <a class="nav-link" href="{{route('tenant.documents.create')}}">
+                                                Nuevo comprobante electrónico
+                                            </a>
+                                        </li> --}}
                                     @endif
 
                                 @endif
@@ -95,9 +90,15 @@
                             @if(in_array('documents', $vc_modules) && $vc_company->soap_type_id != '03')
 
                                 @if(in_array('list_document', $vc_module_levels))
-                                    <li class="{{ ($path[0] === 'documents' && $path[1] != 'create' && $path[1] != 'not-sent')?'nav-active':'' }}">
+                                    {{-- <li class="{{ ($path[0] === 'documents' && $path[1] != 'create' && $path[1] != 'not-sent')?'nav-active':'' }}">
                                         <a class="nav-link" href="{{route('tenant.documents.index')}}">
                                             Listado de comprobantes
+                                        </a>
+                                    </li> --}}
+                                    
+                                    <li class="{{ ($path[0] === 'co-documents'  && $path[1] != 'create'  )?'nav-active':'' }}">
+                                        <a class="nav-link" href="{{route('tenant.co-documents.index')}}">
+                                            Listado de comprobantes 
                                         </a>
                                     </li>
                                 @endif
@@ -142,7 +143,7 @@
                                         </a>
                                         <ul class="nav nav-children">
 
-                                            <li class="{{ ($path[0] === 'co-items')?'nav-active':'' }}">
+                                            {{-- <li class="{{ ($path[0] === 'co-items')?'nav-active':'' }}">
                                                 <a class="nav-link" href="{{route('tenant.co-items.index')}}">
                                                     Productos colombia
                                                 </a>
@@ -152,7 +153,7 @@
                                                 <a class="nav-link" href="{{route('tenant.co-clients.index')}}">
                                                     Clientes colombia
                                                 </a>
-                                            </li>
+                                            </li> --}}
 
                                             <li class="{{ ($path[0] === 'co-taxes')?'nav-active':'' }}">
                                                 <a class="nav-link" href="{{route('tenant.co-taxes.index')}}">

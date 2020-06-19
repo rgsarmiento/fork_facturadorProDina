@@ -17,6 +17,7 @@ class DocumentHelper{
   
     public static function createDocument($request, $nextConsecutive, $correlative_api, $company, $response, $response_status)
     {
+
         $establishment = EstablishmentInput::set(auth()->user()->establishment_id);
 
         $document = Document::create([
@@ -32,8 +33,8 @@ class DocumentHelper{
             'prefix' => $nextConsecutive->prefix,
             'number' => $correlative_api,
             'type_invoice_id' => $request->type_invoice_id,
-            'customer_id' => $request->client_id,
-            'customer' => Person::with('typePerson', 'typeRegime', 'identity_document_type', 'country', 'department', 'city')->findOrFail($request->client_id),
+            'customer_id' => $request->customer_id,
+            'customer' => Person::with('typePerson', 'typeRegime', 'identity_document_type', 'country', 'department', 'city')->findOrFail($request->customer_id),
             'currency_id' => $request->currency_id,
             // 'date_issue' => Carbon::parse("{$request->date_issue} ".Carbon::now()->format('H:i:s')),
             'date_expiration' => Carbon::parse("{$request->date_expiration}"),
@@ -67,8 +68,10 @@ class DocumentHelper{
             $record_item = Item::find($item['id']);
             
             $json_item = [
+                'name' => $record_item->name,
                 'description' => $record_item->description,
                 'internal_id' => $record_item->internal_id,
+                'unit_type' => (key_exists('item', $item))?$item['item']['unit_type']:$record_item->unit_type,
                 'unit_type_id' => (key_exists('item', $item))?$item['item']['unit_type_id']:$record_item->unit_type_id,
                 'presentation' => (key_exists('item', $item)) ? (isset($item['item']['presentation']) ? $item['item']['presentation']:[]):[],
                 'amount_plastic_bag_taxes' => $record_item->amount_plastic_bag_taxes,
@@ -93,6 +96,7 @@ class DocumentHelper{
 
         }
 
+        return $document;
     }
 
 }

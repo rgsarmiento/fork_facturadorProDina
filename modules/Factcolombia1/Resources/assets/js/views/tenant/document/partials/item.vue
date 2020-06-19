@@ -150,13 +150,13 @@
                         </div>
                     </div>
 
-                    <!-- <template v-if="!is_client">
+                    <template v-if="!is_client">
 
                         <div class="col-md-12"  v-if="form.item_unit_types.length > 0">
                             <div style="margin:3px" class="table-responsive">
                                 <h5 class="separator-title">
                                     Lista de Precios
-                                    <el-tooltip class="item" effect="dark" content="Aplica para realizar compra/venta en presentacion de diferentes precios y/o cantidades" placement="top">
+                                    <el-tooltip class="item" effect="dark" content="Aplica para realizar venta en presentacion de diferentes precios y/o cantidades" placement="top">
                                         <i class="fa fa-info-circle"></i>
                                     </el-tooltip>
                                 </h5>
@@ -176,7 +176,7 @@
                                 <tbody>
                                 <tr v-for="(row, index) in form.item_unit_types" :key="index">
 
-                                        <td class="text-center">{{row.unit_type_id}}</td>
+                                        <td class="text-center">{{row.unit_type.name}}</td>
                                         <td class="text-center">{{row.description}}</td>
                                         <td class="text-center">{{row.quantity_unit}}</td>
                                         <td class="text-center">{{row.price1}}</td>
@@ -194,7 +194,7 @@
                             </div>
                         </div> 
  
-                    </template> -->
+                    </template>
                 </div>
             </div>
             <div class="form-actions text-right pt-2">
@@ -207,7 +207,7 @@
                    :external="true"></item-form>
 
 
-        <!-- <warehouses-detail
+        <warehouses-detail
                 :showDialog.sync="showWarehousesDetail"
                 :isUpdateWarehouseId="isUpdateWarehouseId"
                 :warehouses="warehousesDetail">
@@ -224,7 +224,7 @@
             :showDialog.sync="showDialogSelectLots"
             :lots="lots"
             @addRowSelectLot="addRowSelectLot">
-        </select-lots-form> -->
+        </select-lots-form>
 
 
     </el-dialog>
@@ -239,16 +239,15 @@
 <script>
 
     import ItemForm from '@views/items/form.vue'
-    // import LotsGroup from './lots_group.vue'
+    import LotsGroup from './inventory/lots_group.vue'
 
-    // import {calculateRowItem} from '../../../../helpers/functions'
-    // import WarehousesDetail from './select_warehouses.vue'
-    // import SelectLotsForm from './lots.vue'
+    import WarehousesDetail from './inventory/select_warehouses.vue'
+    import SelectLotsForm from './inventory/lots.vue'
 
 
     export default {
         props: ['recordItem','showDialog', 'operationTypeId', 'currencyTypeIdActive', 'currencyTypeSymbolActive', 'exchangeRateSale', 'typeUser', 'isEditItemNote', 'configuration'],
-        components: {ItemForm},
+        components: {ItemForm, LotsGroup, WarehousesDetail, SelectLotsForm},
         data() {
             return {
                 loading_search:false,
@@ -409,7 +408,9 @@
                     total: 0,
                     total_tax: 0,
                     type_unit: {},
-                    unit_type_id: null
+                    unit_type_id: null,
+                    item_unit_types: [],
+                    IdLoteSelected: null,
                 };
 
                 this.activePanel = 0;
@@ -458,20 +459,23 @@
             async changeItem() {
 
                 this.form.item = _.find(this.items, {'id': this.form.item_id});
+                this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
                 this.form.id = this.form.item_id
                 this.form.unit_type_id = this.form.item.unit_type_id
 
+                this.lots = this.form.item.lots
+
                 this.form.tax_id = (this.taxes.length > 0) ? this.form.item.tax.id: null
 
-                // this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
                 this.form.price = this.form.item.sale_unit_price;
-                // this.lots = this.form.item.lots
+                
                 // this.form.has_igv = this.form.item.has_igv;
                 // this.form.affectation_igv_type_id = this.form.item.sale_affectation_igv_type_id;
+                
                 this.form.quantity = 1;
                 this.cleanTotalItem();
-                // this.showListStock = true
-                // this.form.lots_group = this.form.item.lots_group
+                this.showListStock = true
+                this.form.lots_group = this.form.item.lots_group
 
             },
             focusTotalItem(change) {
@@ -484,7 +488,7 @@
                 // debugger
                 if(this.form.item.calculate_quantity) {
                     //console.log('entro')
-                    this.form.quantity = _.round((this.total_item / this.form.unit_price_value), 4)
+                    this.form.quantity = _.round((this.total_item / this.form.price), 4)
                 }
             },
             cleanTotalItem(){
@@ -492,14 +496,34 @@
             },
             async clickAddItem() {
 
+                if(this.form.item.lots_enabled){
+                    if(!this.form.IdLoteSelected)
+                        return this.$message.error('Debe seleccionar un lote.');
+                }
+
+                if (this.validateTotalItem().total_item) return;
+
                 this.form.tax = _.find(this.taxes, {'id': this.form.tax_id})
                 this.form.type_unit = this.form.item.type_unit
                 // console.log(this.form)
+                this.form.item.presentation = this.item_unit_type;
 
                 if (this.recordItem){
                     this.form.indexi = this.recordItem.indexi
                 }
-                // this.row.IdLoteSelected = IdLoteSelected
+
+                let IdLoteSelected = this.form.IdLoteSelected
+                
+                let select_lots = await _.filter(this.form.item.lots, {'has_sale':true})
+                let un_select_lots = await _.filter(this.form.item.lots, {'has_sale':false})
+
+                if(this.form.item.series_enabled){
+                    if(select_lots.length != this.form.quantity)
+                        return this.$message.error('La cantidad de series seleccionadas son diferentes a la cantidad a vender');
+                }
+
+                this.form.IdLoteSelected = IdLoteSelected
+
                 this.$emit('add', this.form);
 
                 if (this.recordItem){
@@ -508,26 +532,11 @@
 
                 this.initForm();
                 
-                // if(this.form.item.lots_enabled){
-                //     if(!this.form.IdLoteSelected)
-                //         return this.$message.error('Debe seleccionar un lote.');
-                // }
-                // if (this.validateTotalItem().total_item) return;
                 // let unit_price = (this.form.has_igv)?this.form.unit_price_value:this.form.unit_price_value*1.18;
                 // this.form.input_unit_price_value = this.form.unit_price_value;
                 // this.form.unit_price = unit_price;
                 // this.form.item.unit_price = unit_price;
-                // this.form.item.presentation = this.item_unit_type;
-                // let IdLoteSelected = this.form.IdLoteSelected
                 // this.row = calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale);
-                // let select_lots = await _.filter(this.row.item.lots, {'has_sale':true})
-                // let un_select_lots = await _.filter(this.row.item.lots, {'has_sale':false})
-
-                // if(this.form.item.series_enabled){
-                //     if(select_lots.length != this.form.quantity)
-                //         return this.$message.error('La cantidad de series seleccionadas son diferentes a la cantidad a vender');
-                // }
-
                // this.row.edit = false;
                 //this.initializeFields()
             },
@@ -563,27 +572,10 @@
                 }
 
             },
-            changePresentation() {
-                let price = 0;
-
-                this.item_unit_type = _.find(this.form.item.item_unit_types, {'id': this.form.item_unit_type_id});
-
-                switch (this.item_unit_type.price_default) {
-                    case 1: price = this.item_unit_type.price1
-                        break;
-                    case 2: price = this.item_unit_type.price2
-                        break;
-                    case 3: price = this.item_unit_type.price3
-                        break;
-                }
-
-                this.form.unit_price_value = price;
-                this.form.item.unit_type_id = this.item_unit_type.unit_type_id;
-            },
             selectedPrice(row)
             {
 
-
+                // console.log(row)
                 let valor = 0
                 switch(row.price_default)
                 {
@@ -601,9 +593,11 @@
                 this.form.item_unit_type_id = row.id
                 this.item_unit_type = row
 
-                this.form.unit_price_value = valor
+                this.form.price = valor
                 this.form.item.unit_type_id = row.unit_type_id
+                // this.form.quantity = row.quantity_unit
                 this.calculateQuantity()
+                // console.log(this.form)
             },
             addRowLotGroup(id)
             {

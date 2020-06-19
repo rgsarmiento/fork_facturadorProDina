@@ -52,11 +52,14 @@ class PersonRequest extends FormRequest
             //     'required_if:identity_document_type_id,"066"',
             // ],
             'address' => [
-                'required_if:identity_document_type_id,"066"',
+                'required',
             ],
             'email' => [
-                'nullable',
+                'required',
                 'email',
+            ],
+            'telephone' => [
+                'required',
             ],
             'code' => [
                 'required',

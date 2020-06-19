@@ -18,8 +18,8 @@ class InventoryCollection extends ResourceCollection
             return [
                 'id' => $row->id,
                 'item_internal_id' => $row->item->internal_id,
-                'item_description' => $row->item->description,
-                'item_fulldescription' => ($row->item->internal_id) ? "{$row->item->internal_id} - {$row->item->description}" :$row->item->description,
+                'item_description' => $row->item->name,
+                'item_fulldescription' => ($row->item->internal_id) ? "{$row->item->internal_id} - {$row->item->name}" :$row->item->name,
                 'warehouse_description' => $row->warehouse->description,
                 'stock' => $row->stock,
                 'created_at' => $row->created_at->format('Y-m-d H:i:s'),

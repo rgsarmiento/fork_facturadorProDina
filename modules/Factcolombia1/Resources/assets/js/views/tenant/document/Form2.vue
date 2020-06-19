@@ -140,7 +140,7 @@
                                             <tr v-for="(row, index) in form.items" :key="index">
                                                 <td>{{index + 1}}</td>
                                                 <td>{{row.item.name}}
-                                                    <!-- {{row.item.presentation.hasOwnProperty('description') ? row.item.presentation.description : ''}} -->
+                                                    {{row.item.presentation.hasOwnProperty('description') ? row.item.presentation.description : ''}}
                                                     <br/>
                                                     <small>{{row.tax.name}}</small>
                                                 </td>
@@ -480,7 +480,9 @@
                     total: 0,
                     sale: 0,
                     time_days_credit: 0,
-                    service_invoice: {}
+                    service_invoice: {},
+                    payment_form_id: null,
+                    payment_method_id: null,
                 }
 
                 this.errors = {}
@@ -842,7 +844,7 @@
                     merchant_registration: "000000"
                 };
 
-                this.form.client_id = customer.id
+                this.form.customer_id = customer.id
 
                 if (customer.type_person_id == 2) {
                     obj.dv = customer.dv;
