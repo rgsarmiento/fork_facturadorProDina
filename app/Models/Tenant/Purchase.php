@@ -7,6 +7,9 @@ use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\DocumentType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Purchase\Models\PurchaseOrder;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
 
 class Purchase extends ModelTenant
 {
@@ -29,8 +32,8 @@ class Purchase extends ModelTenant
         'time_of_issue',
         'supplier_id',
         'supplier',
-        'currency_type_id',
-        'exchange_rate_sale',
+        // 'currency_type_id',
+        // 'exchange_rate_sale',
         'total_prepayment',
         'total_discount',
         'total_charge',
@@ -62,13 +65,23 @@ class Purchase extends ModelTenant
         'date_of_due',
         'purchase_order_id',
         'customer_id',
-        'total_canceled'
+        'total_canceled',
+
+        'currency_id',
+        'taxes',
     ];
 
     protected $casts = [
         'date_of_issue' => 'date',
         'date_of_due' => 'date',
+        'taxes' => 'object',
     ];
+
+    
+    public function currency() {
+        return $this->belongsTo(Currency::class);
+    }
+
 
     public function getEstablishmentAttribute($value)
     {

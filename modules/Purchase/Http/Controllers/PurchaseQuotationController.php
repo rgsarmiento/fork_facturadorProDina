@@ -92,7 +92,7 @@ class PurchaseQuotationController extends Controller
 
     public function getFullDescription($row){
 
-        $desc = ($row->internal_id)?$row->internal_id.' - '.$row->description : $row->description;
+        $desc = ($row->internal_id)?$row->internal_id.' - '.$row->name : $row->name;
         $category = ($row->category) ? " - {$row->category->name}" : "";
         $brand = ($row->brand) ? " - {$row->brand->name}" : "";
 
@@ -173,7 +173,9 @@ class PurchaseQuotationController extends Controller
                         'number' => $row->number,
                         'email' => $row->email,
                         'identity_document_type_id' => $row->identity_document_type_id,
-                        'identity_document_type_code' => $row->identity_document_type->code
+                        'address' =>  $row->address,
+                        'email' =>  $row->email,
+                        'telephone' =>  $row->telephone,
                     ];
                 });
                 return $suppliers;
@@ -189,9 +191,10 @@ class PurchaseQuotationController extends Controller
                     $full_description = $this->getFullDescription($row);
                     return [
                         'id' => $row->id,
+                        'description' => $full_description,
                         'full_description' => $full_description,
-                        'description' => $row->description,
                         'unit_type_id' => $row->unit_type_id,
+                        'unit_type' => $row->unit_type,
                         'is_set' => (bool) $row->is_set,
                     ];
                 });

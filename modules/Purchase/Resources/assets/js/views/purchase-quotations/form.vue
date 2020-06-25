@@ -94,7 +94,7 @@
                                             <tr v-for="(row, index) in form.items" :key="index" width="100%">
                                                 <td width="5%">{{index + 1}}</td>
                                                 <td width="50%">{{row.item.description}}</td>
-                                                <td width="15%" class="text-center">{{row.item.unit_type_id}}</td>
+                                                <td width="15%" class="text-center">{{row.item.unit_type.name}}</td>
                                                 <td width="15%" class="text-right">{{row.quantity}}</td> 
                                                 <td width="15%" class="text-right">
                                                     <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickRemoveItem(index)">x</button>

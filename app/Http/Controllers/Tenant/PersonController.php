@@ -107,9 +107,11 @@ class PersonController extends Controller
             $person->addresses()->updateOrCreate( ['id' => $row['id']], $row);
         }
 
+        $person_type = ($person->type == 'customers') ? 'Cliente':'Proveedor';
+        
         return [
             'success' => true,
-            'message' => ($id)?'Cliente editado con éxito':'Cliente registrado con éxito',
+            'message' => ($id)? "{$person_type} editado con éxito":"{$person_type} registrado con éxito",
             'id' => $person->id
         ];
     }

@@ -27,12 +27,12 @@
                             </div>
                         </div>
                         <div class="col-lg-2">
-                            <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
+                            <div class="form-group" :class="{'has-danger': errors.currency_id}">
                                 <label class="control-label">Moneda</label>
-                                <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
-                                    <el-option v-for="option in currency_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                <el-select v-model="form.currency_id" @change="changeCurrencyType" filterable>
+                                    <el-option v-for="option in currencies" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                 </el-select>
-                                <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
+                                <small class="form-control-feedback" v-if="errors.currency_id" v-text="errors.currency_id[0]"></small>
                             </div>
                         </div>
 
@@ -42,17 +42,6 @@
                                 <label class="control-label">Fec Emisión</label>
                                 <el-date-picker v-model="form.date_of_issue" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue"></el-date-picker>
                                 <small class="form-control-feedback" v-if="errors.date_of_issue" v-text="errors.date_of_issue[0]"></small>
-                            </div>
-                        </div>
-                         <div class="col-lg-2">
-                            <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
-                                <label class="control-label">Tipo de cambio
-                                    <el-tooltip class="item" effect="dark" content="Tipo de cambio del día, extraído de SUNAT" placement="top-end">
-                                        <i class="fa fa-info-circle"></i>
-                                    </el-tooltip>
-                                </label>
-                                <el-input v-model="form.exchange_rate_sale"></el-input>
-                                <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
                         </div>
                     </div>
@@ -150,7 +139,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(row, index) in form.items">
+                                        <tr v-for="(row, index) in form.items" :key="index">
                                             <td>{{ index + 1 }}</td>
                                             <td>{{ row.description }}</td>
                                             <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
@@ -211,7 +200,7 @@
                 form: {},
                 aux_supplier_id:null,
                 expense_types: [],
-                currency_types: [],
+                currencies: [],
                 suppliers: [],
                 establishment: {},
                 currency_type: {},
@@ -229,10 +218,13 @@
                     this.expense_reasons = response.data.expense_reasons
                     this.expense_method_types = response.data.expense_method_types
                     this.expense_types = response.data.expense_types
-                    this.currency_types = response.data.currency_types
+                    this.currencies = response.data.currencies
                     this.establishment = response.data.establishment
                     this.suppliers = response.data.suppliers
-                    this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
+                    
+                    let find_currency = _.find(this.currencies, {id:170})
+                    this.form.currency_id = find_currency ? find_currency.id: null
+
                     this.form.establishment_id = (this.establishment.id) ? this.establishment.id : null
                     this.form.expense_type_id = (this.expense_types.length > 0) ? this.expense_types[0].id : null
                     this.form.expense_reason_id = (this.expense_reasons.length > 0)?this.expense_reasons[0].id:null
@@ -271,8 +263,7 @@
                     date_of_issue: moment().format('YYYY-MM-DD'),
                     time_of_issue: moment().format('HH:mm:ss'),
                     supplier_id: null,
-                    currency_type_id: null,
-                    exchange_rate_sale: 0,
+                    currency_id: null,
                     total: 0,
                     items: [],
                     payments: [],
@@ -283,7 +274,8 @@
             },
             resetForm() {
                 this.initForm()
-                this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
+                let find_currency = _.find(this.currencies, {id:170})
+                this.form.currency_id = find_currency ? find_currency.id: null
                 this.form.establishment_id = this.establishment.id
                 this.form.expense_type_id = (this.expense_types.length > 0)?this.expense_types[0].id:null
                 this.form.expense_reason_id = (this.expense_reasons.length > 0)?this.expense_reasons[0].id:null
@@ -293,9 +285,9 @@
             },
             changeDateOfIssue() {
                 this.form.date_of_due = this.form.date_of_issue
-                this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
-                    this.form.exchange_rate_sale = response
-                })
+                // this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
+                //     this.form.exchange_rate_sale = response
+                // })
             },
             clickCancel(index) {
                 this.form.payments.splice(index, 1);
@@ -321,35 +313,15 @@
                 this.calculateTotal()
             },
             changeCurrencyType() {
-                this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
-                let items = []
-                this.form.items.forEach((row) => {
-                    items.push(this.calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale))
+                this.currency_type = _.find(this.currencies, {'id': this.form.currency_id})
+                // let items = []
+                // this.form.items.forEach((row) => {
+                //     items.push(row)
 
 
-                });
-                this.form.items = items
-                this.calculateTotal()
-            },
-            calculateRowItem(row, currency_type_id,exchange_rate_sale){
-
-                let currency_type_id_old = row.currency_type_id
-
-                row.total = row.total_original
-
-                if (currency_type_id_old === 'PEN' && currency_type_id_old !== currency_type_id)
-                {
-                    row.total = row.total_original / exchange_rate_sale;
-                }
-
-                if (currency_type_id === 'PEN' && currency_type_id_old !== currency_type_id)
-                {
-                    row.total = row.total_original * exchange_rate_sale;
-                }
-
-                row.total = _.round(row.total,2)
-
-                return row
+                // });
+                // this.form.items = items
+                // this.calculateTotal()
             },
             calculateTotal() {
                 let total = 0

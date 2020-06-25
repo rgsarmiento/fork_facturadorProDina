@@ -7,10 +7,12 @@ use App\Models\Tenant\Catalogs\PriceType;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use Modules\Item\Models\ItemLot;
 use Modules\Inventory\Models\Warehouse;
+use Modules\Factcolombia1\Models\Tenant\TypeUnit;
+use Modules\Factcolombia1\Models\Tenant\Tax;
 
 class PurchaseItem extends ModelTenant
 {
-    protected $with = ['affectation_igv_type', 'system_isc_type', 'price_type', 'lots', 'warehouse'];
+    protected $with = ['lots', 'warehouse'];
     public $timestamps = false;
 
     protected $fillable = [
@@ -18,35 +20,51 @@ class PurchaseItem extends ModelTenant
         'item_id',
         'item',
         'quantity',
-        'unit_value',
+        // 'unit_value',
 
-        'affectation_igv_type_id',
-        'total_base_igv',
-        'percentage_igv',
-        'total_igv',
+        // 'affectation_igv_type_id',
+        // 'total_base_igv',
+        // 'percentage_igv',
+        // 'total_igv',
 
-        'system_isc_type_id',
-        'total_base_isc',
-        'percentage_isc',
-        'total_isc',
+        // 'system_isc_type_id',
+        // 'total_base_isc',
+        // 'percentage_isc',
+        // 'total_isc',
 
-        'total_base_other_taxes',
-        'percentage_other_taxes',
-        'total_other_taxes',
-        'total_taxes',
+        // 'total_base_other_taxes',
+        // 'percentage_other_taxes',
+        // 'total_other_taxes',
+        // 'total_taxes',
 
-        'price_type_id',
+        // 'price_type_id',
         'unit_price',
 
-        'total_value',
+        // 'total_value',
         'total',
 
-        'attributes',
-        'charges',
+        // 'attributes',
+        // 'charges',
         'lot_code',
         'warehouse_id',
-        'discounts'
+
+        'unit_type_id',
+        'tax_id',
+        'tax',
+        'total_tax',
+        'subtotal',
+        'discount',
     ];
+
+    protected $casts = [
+        'tax' => 'object'
+    ];
+
+    
+    public function unit_type()
+    {
+        return $this->belongsTo(TypeUnit::class, 'unit_type_id');
+    }
 
     public function getItemAttribute($value)
     {
@@ -86,21 +104,6 @@ class PurchaseItem extends ModelTenant
     public function setDiscountsAttribute($value)
     {
         $this->attributes['discounts'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function affectation_igv_type()
-    {
-        return $this->belongsTo(AffectationIgvType::class, 'affectation_igv_type_id');
-    }
-
-    public function system_isc_type()
-    {
-        return $this->belongsTo(SystemIscType::class, 'system_isc_type_id');
-    }
-
-    public function price_type()
-    {
-        return $this->belongsTo(PriceType::class, 'price_type_id');
     }
 
     public function purchase()

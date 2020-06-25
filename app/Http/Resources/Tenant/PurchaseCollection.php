@@ -31,7 +31,7 @@ class PurchaseCollection extends ResourceCollection
                 'number' => $row->number_full,
                 'supplier_name' => $row->supplier->name,
                 'supplier_number' => $row->supplier->number,
-                'currency_type_id' => $row->currency_type_id,
+                'currency_type_id' => $row->currency->name,
                 'total_exportation' => $row->total_exportation,
                 'total_free' => number_format($row->total_free, 2, ".",""),
                 'total_unaffected' => number_format($row->total_unaffected, 2, ".",""),

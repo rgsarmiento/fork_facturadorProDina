@@ -35,7 +35,10 @@ use App\Models\Tenant\InventoryKardex;
 use App\Models\Tenant\ItemWarehouse;
 use Modules\Finance\Traits\FinanceTrait;
 use Modules\Item\Models\ItemLotsGroup;
-
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+    Tax,
+};
 
 class PurchaseController extends Controller
 {
@@ -112,34 +115,37 @@ class PurchaseController extends Controller
     {
         $suppliers = $this->table('suppliers');
         $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
-        $currency_types = CurrencyType::whereActive()->get();
-        $document_types_invoice = DocumentType::whereIn('id', ['01', '03', 'GU75', 'NE76'])->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        // $currency_types = CurrencyType::whereActive()->get();
+        $document_types_invoice = DocumentType::whereIn('id', ['01', 'GU75', 'NE76'])->get();
+        // $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
+        // $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
         $company = Company::active();
         $payment_method_types = PaymentMethodType::all();
         $payment_destinations = $this->getPaymentDestinations();
         $customers = $this->getPersons('customers');
+        
+        $currencies = Currency::all();
+        $taxes = $this->table('taxes');
 
-        return compact('suppliers', 'establishment','currency_types', 'discount_types',
-                    'charge_types', 'document_types_invoice','company','payment_method_types', 'payment_destinations', 'customers');
+        return compact('suppliers', 'establishment','currencies', 'discount_types',
+                    'taxes', 'document_types_invoice','company','payment_method_types', 'payment_destinations', 'customers');
     }
 
     public function item_tables()
     {
 
         $items = $this->table('items');
+        $taxes = $this->table('taxes');
         $categories = [];
-        $affectation_igv_types = AffectationIgvType::whereActive()->get();
-        $system_isc_types = SystemIscType::whereActive()->get();
-        $price_types = PriceType::whereActive()->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
-        $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
+        // $affectation_igv_types = AffectationIgvType::whereActive()->get();
+        // $system_isc_types = SystemIscType::whereActive()->get();
+        // $price_types = PriceType::whereActive()->get();
+        // $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
+        // $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        // $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
         $warehouses = Warehouse::all();
 
-        return compact('items', 'categories', 'affectation_igv_types', 'system_isc_types', 'price_types',
-                        'discount_types', 'charge_types', 'attribute_types','warehouses');
+        return compact('items', 'categories', 'taxes','warehouses');
     }
 
     public function record($id)
@@ -368,6 +374,29 @@ class PurchaseController extends Controller
     public function table($table)
     {
         switch ($table) {
+            
+            case 'taxes':
+
+                return Tax::all()->transform(function($row) {
+                    return [
+                        'id' => $row->id,
+                        'name' => $row->name,
+                        'code' => $row->code,
+                        'rate' =>  $row->rate,
+                        'conversion' =>  $row->conversion,
+                        'is_percentage' =>  $row->is_percentage,
+                        'is_fixed_value' =>  $row->is_fixed_value,
+                        'is_retention' =>  $row->is_retention,
+                        'in_base' =>  $row->in_base,
+                        'in_tax' =>  $row->in_tax,
+                        'type_tax_id' =>  $row->type_tax_id,
+                        'type_tax' =>  $row->type_tax,
+                        'retention' =>  0,
+                        'total' =>  0,
+                    ];
+                });
+                break;
+
             case 'suppliers':
 
                 $suppliers = Person::whereType('suppliers')->orderBy('name')->get()->transform(function($row) {
@@ -378,7 +407,9 @@ class PurchaseController extends Controller
                         'number' => $row->number,
                         'perception_agent' => (bool) $row->perception_agent,
                         'identity_document_type_id' => $row->identity_document_type_id,
-                        'identity_document_type_code' => $row->identity_document_type->code
+                        'address' =>  $row->address,
+                        'email' =>  $row->email,
+                        'telephone' =>  $row->telephone,
                     ];
                 });
                 return $suppliers;
@@ -387,20 +418,20 @@ class PurchaseController extends Controller
 
             case 'items':
 
-                $items = Item::whereNotIsSet()->whereIsActive()->orderBy('description')->get(); //whereWarehouse()
+                $items = Item::whereNotIsSet()->whereIsActive()->orderBy('name')->get(); //whereWarehouse()
                 return collect($items)->transform(function($row) {
-                    $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
+                    $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->name:$row->name;
                     return [
                         'id' => $row->id,
                         'item_code'  => $row->item_code,
+                        'description' => $full_description,
                         'full_description' => $full_description,
-                        'description' => $row->description,
                         'currency_type_id' => $row->currency_type_id,
                         'currency_type_symbol' => $row->currency_type->symbol,
                         'sale_unit_price' => $row->sale_unit_price,
                         'purchase_unit_price' => $row->purchase_unit_price,
                         'unit_type_id' => $row->unit_type_id,
-                        'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+                        'purchase_tax_id' => $row->purchase_tax_id,
                         'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
                         'has_perception' => (bool) $row->has_perception,
                         'lots_enabled' => (bool) $row->lots_enabled,
@@ -411,6 +442,7 @@ class PurchaseController extends Controller
                                 'description' => "{$row->description}",
                                 'item_id' => $row->item_id,
                                 'unit_type_id' => $row->unit_type_id,
+                                'unit_type' => $row->unit_type,
                                 'quantity_unit' => $row->quantity_unit,
                                 'price1' => $row->price1,
                                 'price2' => $row->price2,
@@ -419,6 +451,8 @@ class PurchaseController extends Controller
                             ];
                         }),
                         'series_enabled' => (bool) $row->series_enabled,
+                        'unit_type' => $row->unit_type,
+                        'tax' => $row->tax,
 
                         // 'warehouses' => collect($row->warehouses)->transform(function($row) {
                         //     return [

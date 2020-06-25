@@ -7,7 +7,7 @@
             </ol>
             <div class="right-wrapper pull-right">
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
-                <button   @click.prevent="clickImport()" type="button" class="btn btn-custom btn-sm  mt-2 mr-2" ><i class="fa fa-upload"></i> Importar</button>
+                <!-- <button   @click.prevent="clickImport()" type="button" class="btn btn-custom btn-sm  mt-2 mr-2" ><i class="fa fa-upload"></i> Importar</button> -->
 
             </div>
         </div>
@@ -40,11 +40,6 @@
                         <!-- <th>Estado</th> -->
                         <th class="text-center">Moneda</th>
                         <!-- <th class="text-right">T.Exportación</th> -->
-                        <th v-if="columns.total_free.visible"  class="text-right">T.Gratuita</th>
-                        <th v-if="columns.total_unaffected.visible" class="text-right">T.Inafecta</th>
-                        <th v-if="columns.total_exonerated.visible" class="text-right">T.Exonerado</th>
-                        <th v-if="columns.total_taxed.visible" class="text-right">T.Gravado</th>
-                        <th v-if="columns.total_igv.visible" class="text-right">T.Igv</th>
                         <th v-if="columns.total_perception.visible" >Percepcion</th>
                         <th class="text-right">Total</th>
                         <!-- <th class="text-center">Descargas</th> -->
@@ -94,11 +89,6 @@
 
                         <td class="text-center">{{ row.currency_type_id }}</td>
                         <!-- <td class="text-right">{{ row.total_exportation }}</td> -->
-                        <td v-if="columns.total_free.visible" class="text-right">{{ row.total_free }}</td>
-                        <td v-if="columns.total_unaffected.visible" class="text-right">{{ row.total_unaffected }}</td>
-                        <td v-if="columns.total_exonerated.visible" class="text-right">{{ row.total_exonerated }}</td>
-                        <td v-if="columns.total_taxed.visible" class="text-right">{{ row.total_taxed }}</td>
-                        <td v-if="columns.total_igv.visible" class="text-right">{{ row.total_igv }}</td>
                         <td v-if="columns.total_perception.visible" class="text-right">{{ row.total_perception ? row.total_perception : 0 }}</td>
                         <td class="text-right">{{ row.total   }}</td>
                         <td>
@@ -176,26 +166,26 @@
                         title: 'F. Vencimiento',
                         visible: false
                     },
-                    total_free: {
-                        title: 'T.Gratuita',
-                        visible: false
-                    },
-                    total_unaffected: {
-                        title: 'T.Inafecta',
-                        visible: false
-                    },
-                    total_exonerated: {
-                        title: 'T.Exonerado',
-                        visible: false
-                    },
-                    total_taxed: {
-                        title: 'T.Gravado',
-                        visible: false
-                    },
-                    total_igv: {
-                        title: 'T.Igv',
-                        visible: false
-                    },
+                    // total_free: {
+                    //     title: 'T.Gratuita',
+                    //     visible: false
+                    // },
+                    // total_unaffected: {
+                    //     title: 'T.Inafecta',
+                    //     visible: false
+                    // },
+                    // total_exonerated: {
+                    //     title: 'T.Exonerado',
+                    //     visible: false
+                    // },
+                    // total_taxed: {
+                    //     title: 'T.Gravado',
+                    //     visible: false
+                    // },
+                    // total_igv: {
+                    //     title: 'T.Igv',
+                    //     visible: false
+                    // },
                     total_perception:{
                         title: 'Percepcion',
                         visible: false

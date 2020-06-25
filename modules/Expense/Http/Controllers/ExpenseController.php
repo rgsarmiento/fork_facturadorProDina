@@ -22,6 +22,10 @@ use App\Models\Tenant\Establishment;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tenant\Company;
 use Modules\Finance\Traits\FinanceTrait; 
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
+
 
 class ExpenseController extends Controller
 {
@@ -61,13 +65,13 @@ class ExpenseController extends Controller
     {
         $suppliers = $this->table('suppliers');
         $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
-        $currency_types = CurrencyType::whereActive()->get();
         $expense_types = ExpenseType::get();
         $expense_method_types = ExpenseMethodType::all();
         $expense_reasons = ExpenseReason::all();
         $payment_destinations = $this->getBankAccounts();
+        $currencies = Currency::all();
 
-        return compact('suppliers', 'establishment','currency_types', 'expense_types', 'expense_method_types', 'expense_reasons', 'payment_destinations');
+        return compact('suppliers', 'establishment','currencies', 'expense_types', 'expense_method_types', 'expense_reasons', 'payment_destinations');
     }
 
 

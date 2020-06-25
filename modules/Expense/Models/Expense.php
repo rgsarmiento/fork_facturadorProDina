@@ -9,6 +9,9 @@ use App\Models\Tenant\Person;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\CurrencyType;
 use App\Models\Tenant\ModelTenant;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
 
 class Expense extends ModelTenant
 {
@@ -22,20 +25,23 @@ class Expense extends ModelTenant
         'expense_reason_id',
         'establishment_id',
         'supplier_id',
-        'currency_type_id',
+        'currency_id',
         'external_id',
         'state_type_id',
         'number',
         'date_of_issue',
         'time_of_issue',
         'supplier',
-        'exchange_rate_sale',
         'total',
     ];
 
     protected $casts = [
         'date_of_issue' => 'date',
     ];
+
+    public function currency() {
+        return $this->belongsTo(Currency::class);
+    }
 
     public function getSupplierAttribute($value)
     {

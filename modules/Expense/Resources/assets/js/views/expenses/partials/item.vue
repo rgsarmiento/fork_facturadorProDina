@@ -37,7 +37,7 @@
 
 
     export default {
-        props: ['showDialog', 'currencyType', 'exchangeRateSale'],
+        props: ['showDialog', 'currencyType'],
         data() {
             return {
                 titleDialog: 'Agregar Detalle',
@@ -55,7 +55,7 @@
                     description: null,
                     total: null,
                     total_original: null,
-                    currency_type_id : null
+                    currency_id : null
                 }
             },
             close() {
@@ -65,7 +65,7 @@
             clickAddItem() {
                 // console.log(this.form)
                 // let total = 0
-                this.form.currency_type_id = this.currencyType.id
+                this.form.currency_id = this.currencyType.id
                 this.form.total_original = parseFloat(this.form.total)
                 // if (this.currencyType.id === 'USD')
                 // {
