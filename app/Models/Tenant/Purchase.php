@@ -69,6 +69,9 @@ class Purchase extends ModelTenant
 
         'currency_id',
         'taxes',
+        'sale',
+        'total_tax',
+        'subtotal',
     ];
 
     protected $casts = [

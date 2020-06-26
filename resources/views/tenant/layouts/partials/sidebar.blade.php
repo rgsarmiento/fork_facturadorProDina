@@ -500,11 +500,11 @@
                                         Reporte Inventario
                                     </a>
                                 </li>
-                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'valued-kardex')) ? 'nav-active' : ''}}">
+                                {{-- <li class="{{(($path[0] === 'reports') && ($path[1] === 'valued-kardex')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('reports.valued_kardex.index')}}">
                                         Kardex valorizado
                                     </a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </li>
                         @endif

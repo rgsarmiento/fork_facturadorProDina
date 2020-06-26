@@ -33,8 +33,8 @@
             <!-- <th class="text-right">T.Gratuita</th>
             <th class="text-right">T.Inafecta</th>
             <th class="text-right">T.Exonerado</th> -->
-            <th class="text-right">T.Gravado</th>
-            <th class="text-right">T.Igv</th>
+            <!-- <th class="text-right">T.Gravado</th>
+            <th class="text-right">T.Igv</th> -->
             <!-- <th>Percepcion</th> -->
             <th class="text-right">Total</th>
             <th class="text-center">Descarga</th>
@@ -66,8 +66,8 @@
             <!-- <td class="text-right">{{ row.total_free }}</td>
             <td class="text-right">{{ row.total_unaffected }}</td>
             <td class="text-right">{{ row.total_exonerated }}</td> -->
-            <td class="text-right">{{ row.total_taxed }}</td>
-            <td class="text-right">{{ row.total_igv }}</td>
+            <!-- <td class="text-right">{{ row.total_taxed }}</td>
+            <td class="text-right">{{ row.total_igv }}</td> -->
             <!-- <td class="text-right">{{ row.total_perception ? row.total_perception : 0 }}</td> -->
             <td class="text-right">{{ row.total }}</td>
             

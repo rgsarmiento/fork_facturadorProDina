@@ -25,6 +25,10 @@ class TenantReestructureColumnsToPurchases extends Migration
 
             $table->dropColumn(['exchange_rate_sale']);
 
+            $table->decimal('sale', 12 ,2)->after('taxes');
+            $table->decimal('total_tax', 12 ,2)->after('taxes');
+            $table->decimal('subtotal', 12 ,2)->after('total_tax');
+
         });
     }
 
@@ -47,6 +51,7 @@ class TenantReestructureColumnsToPurchases extends Migration
 
             $table->decimal('exchange_rate_sale', 13, 3);
 
+            $table->dropColumn(['sale', 'total_tax', 'subtotal']);
         });
     }
 }

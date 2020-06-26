@@ -26,33 +26,7 @@
                 <form autocomplete="off" @submit.prevent="submit">
                     <div class="form-body">
 
-                        <div class="row">
-                            <!-- <div class="col-lg-4">
-                                <div class="form-group" :class="{'has-danger': errors.document_type_id}">
-                                    <label class="control-label">Tipo comprobante</label>
-                                    <el-select v-model="form.document_type_id" @change="changeDocumentType">
-                                        <el-option v-for="option in document_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                    </el-select>
-                                    <small class="form-control-feedback" v-if="errors.document_type_id" v-text="errors.document_type_id[0]"></small>
-                                </div>
-                            </div> -->
-                            <!-- <div class="col-lg-2">
-                                <div class="form-group" :class="{'has-danger': errors.series}">
-                                    <label class="control-label">Serie <span class="text-danger">*</span></label>
-                                    <el-input v-model="form.series" :maxlength="4"   @input="inputSeries"></el-input>
-
-                                    <small class="form-control-feedback" v-if="errors.series" v-text="errors.series[0]"></small>
-                                </div>
-                            </div>
-                            <div class="col-lg-2">
-                                <div class="form-group" :class="{'has-danger': errors.number}">
-                                    <label class="control-label">Número <span class="text-danger">*</span></label>
-                                    <el-input v-model="form.number"></el-input>
-
-                                    <small class="form-control-feedback" v-if="errors.number" v-text="errors.number[0]"></small>
-                                </div>
-                            </div> -->
-                            
+                        <div class="row"> 
 
                             <div class="col-lg-6">
                                 <div class="form-group" :class="{'has-danger': errors.supplier_id}">
@@ -84,12 +58,12 @@
                             </div>
                             
                             <div class="col-lg-2">
-                                <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
+                                <div class="form-group" :class="{'has-danger': errors.currency_id}">
                                     <label class="control-label">Moneda</label>
-                                    <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
-                                        <el-option v-for="option in currency_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                    <el-select v-model="form.currency_id" @change="changeCurrencyType" filterable>
+                                        <el-option v-for="option in currencies" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                     </el-select>
-                                    <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
+                                    <small class="form-control-feedback" v-if="errors.currency_id" v-text="errors.currency_id[0]"></small>
                                 </div>
                             </div>
                         </div>
@@ -104,18 +78,7 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.payment_method_type_id" v-text="errors.payment_method_type_id[0]"></small>
                                 </div>
-                            </div> 
-                            <div class="col-lg-2">
-                                <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
-                                    <label class="control-label">Tipo de cambio
-                                        <el-tooltip class="item" effect="dark" content="Tipo de cambio del día, extraído de SUNAT" placement="top-end">
-                                            <i class="fa fa-info-circle"></i>
-                                        </el-tooltip>
-                                    </label>
-                                    <el-input v-model="form.exchange_rate_sale" :readonly="true"></el-input>
-                                    <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
-                                </div>
-                            </div>
+                            </div>  
                             
                             <div class="col-lg-3" style="margin-top:29px;">
                                 <div class="form-group" :class="{'has-danger': errors.file}">
@@ -155,7 +118,6 @@
                                             <th class="text-right">Cantidad</th>
                                             <th class="text-right">Precio Unitario</th>
                                             <th class="text-right">Descuento</th>
-                                            <th class="text-right">Cargo</th>
                                             <th class="text-right">Total</th>
                                             <th></th>
                                         </tr>
@@ -163,15 +125,16 @@
                                         <tbody>
                                         <tr v-for="(row, index) in form.items" :key="index">
                                             <td>{{ index + 1 }}</td>
-                                            <td>{{ row.item.description }}<br/><small>{{ row.affectation_igv_type.description }}</small></td>
+                                            <td>{{ row.item.description }}<br/>                                            
+                                                <small>{{row.tax.name}}</small>
+                                            </td>
                                             <!-- <td class="text-left">{{ row.warehouse_description }}</td> -->
-                                            <td class="text-center">{{ row.item.unit_type_id }}</td>
+                                            <td class="text-center">{{ row.item.unit_type.name }}</td>
                                             <td class="text-right">{{ row.quantity }}</td>
                                             <!-- <td class="text-right">{{ currency_type.symbol }} {{ row.unit_price }}</td> -->
-                                            <td class="text-right">{{ currency_type.symbol }} {{ getFormatUnitPriceRow(row.unit_price) }}</td>
-                                            <td class="text-right">{{ currency_type.symbol }} {{ row.total_discount }}</td>
-                                            <td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>
-                                            <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
+                                            <td class="text-right">{{ ratePrefix() }} {{ getFormatUnitPriceRow(row.unit_price) }}</td>
+                                            <td class="text-right">{{ ratePrefix() }} {{ row.discount }}</td>
+                                            <td class="text-right">{{ ratePrefix() }} {{ row.total }}</td>
                                             <td class="text-right">
                                                 <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickRemoveItem(index)">x</button>
                                             </td>
@@ -180,13 +143,58 @@
                                     </table>
                                 </div>
                             </div>
+
+                            <div class="col-md-12" style="display: flex; flex-direction: column; align-items: flex-end;" v-if="form.items.length > 0">
+                                <table>
+
+                                    <tr>
+                                        <td>TOTAL VENTA</td>
+                                        <td>:</td>
+                                        <td class="text-right">{{ratePrefix()}} {{ form.sale }}</td>
+                                    </tr>
+                                    <tr >
+                                        <td>TOTAL DESCUENTO (-)</td>
+                                        <td>:</td>
+                                        <td class="text-right">{{ratePrefix()}} {{ form.total_discount }}</td>
+                                    </tr>
+                                    <template v-for="(tax, index) in form.taxes">
+                                        <tr v-if="((tax.total > 0) && (!tax.is_retention))" :key="index">
+                                            <td >
+                                                {{tax.name}}(+)
+                                            </td>
+                                            <td>:</td>
+                                            <td class="text-right">{{ratePrefix()}} {{Number(tax.total).toFixed(2)}}</td>
+                                        </tr>
+                                    </template>
+                                    <tr>
+                                        <td>SUBTOTAL</td>
+                                        <td>:</td>
+                                        <td class="text-right">{{ratePrefix()}} {{ form.subtotal }}</td>
+                                    </tr>
+
+                                    <template v-for="(tax, index) in form.taxes">
+                                        <tr v-if="((tax.is_retention) && (tax.apply))" :key="index">
+
+                                            <td>{{tax.name}}(-)</td>
+                                            <td>:</td>
+                                            <!-- <td class="text-right">
+                                                {{ratePrefix()}} {{Number(tax.retention).toFixed(2)}}
+                                            </td> -->
+                                            <td class="text-right" width=35%>
+                                                <el-input v-model="tax.retention" readonly >
+                                                    <span slot="prefix" class="c-m-top">{{ ratePrefix() }}</span>
+                                                    <i slot="suffix" class="el-input__icon el-icon-delete pointer"  @click="clickRemoveRetention(index)"></i>
+                                                    <!-- <el-button slot="suffix" icon="el-icon-delete" @click="clickRemoveRetention(index)"></el-button> -->
+                                                </el-input>
+                                            </td>
+                                        </tr>
+                                    </template>
+
+                                </table>
+
+                            </div>
+
                             <div class="col-md-12">
-                                <p class="text-right" v-if="form.total_exportation > 0">OP.EXPORTACIÓN: {{ currency_type.symbol }} {{ form.total_exportation }}</p>
-                                <p class="text-right" v-if="form.total_free > 0">OP.GRATUITAS: {{ currency_type.symbol }} {{ form.total_free }}</p>
-                                <p class="text-right" v-if="form.total_unaffected > 0">OP.INAFECTAS: {{ currency_type.symbol }} {{ form.total_unaffected }}</p>
-                                <p class="text-right" v-if="form.total_exonerated > 0">OP.EXONERADAS: {{ currency_type.symbol }} {{ form.total_exonerated }}</p>
-                                <p class="text-right" v-if="form.total_taxed > 0">OP.GRAVADA: {{ currency_type.symbol }} {{ form.total_taxed }}</p>
-                                <p class="text-right" v-if="form.total_igv > 0">IGV: {{ currency_type.symbol }} {{ form.total_igv }}</p>
                                 <h3 class="text-right" v-if="form.total > 0"><b>TOTAL COMPRAS: </b>{{ currency_type.symbol }} {{ form.total }}</h3>
 
                                 <template v-if="is_perception_agent">
@@ -228,8 +236,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h3 class="text-right" v-if="form.total > 0 && !hide_button"><b>MONTO TOTAL : </b>{{ currency_type.symbol }} {{ total_amount }}</h3>
-                                    
+                                    <h3 class="text-right" v-if="form.total > 0 && !hide_button"><b>MONTO TOTAL : </b>{{ ratePrefix() }} {{ total_amount }}</h3>
                                     
                                 </template>
                             </div>
@@ -245,7 +252,6 @@
 
         <purchase-form-item :showDialog.sync="showDialogAddItem"
                            :currency-type-id-active="form.currency_type_id"
-                           :exchange-rate-sale="form.exchange_rate_sale"
                            @add="addRow"></purchase-form-item>
 
         <person-form :showDialog.sync="showDialogNewPerson"
@@ -264,17 +270,15 @@
 
     import PurchaseFormItem from './partials/item.vue'
     import PurchaseOptions from './partials/options.vue'
-    import {functions, exchangeRate} from '../../../../../../../resources/js/mixins/functions'
-    import {calculateRowItem} from '../../../../../../../resources/js/helpers/functions'
-    import Logo from '../../../../../../../resources/js/views/tenant/companies/logo.vue'
-    import PersonForm from '../../../../../../../resources/js/views/tenant/persons/form.vue'
+    import Logo from '@views/companies/logo.vue'
+    import PersonForm from '@views/persons/form.vue'
 
     export default {
         props: ['id', 'saleOpportunity'],
         components: {PurchaseFormItem, PersonForm, PurchaseOptions, Logo},
-        mixins: [functions, exchangeRate],
         data() {
-            return {
+            return {               
+                currencies: [],
                 input_person:{},
                 resource: 'purchase-orders',
                 showDialogAddItem: false,
@@ -296,14 +300,15 @@
                 payment_method_types: [],
                 all_suppliers: [],
                 suppliers: [],
-                company: null,
+                company: {},
                 operation_types: [],
                 establishment: {},
                 all_series: [],
                 series: [],
                 propIsUpdate:false,
                 fileList: [],
-                currency_type: {},
+                currency_type: {},                
+                taxes:  [],
                 purchaseNewId: null
             }
         },
@@ -313,13 +318,16 @@
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
 
-                    this.currency_types = response.data.currency_types
+                    this.currencies = response.data.currencies
+                    this.taxes = response.data.taxes
                     this.establishment = response.data.establishment
                     this.suppliers = response.data.suppliers
                     this.payment_method_types = response.data.payment_method_types
                     this.company = response.data.company 
 
-                    this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
+                    
+                    let find_currency = _.find(this.currencies, {id:170})
+                    this.form.currency_id = find_currency ? find_currency.id: null
                     this.form.establishment_id = (this.establishment.id) ? this.establishment.id:null
 
                     this.changeDateOfIssue()
@@ -341,6 +349,134 @@
 
         },
         methods: {
+            setDataTotals() {
+
+                // console.log(val)
+                let val = this.form
+                val.taxes = JSON.parse(JSON.stringify(this.taxes));
+
+                val.items.forEach(item => {
+                    item.tax = this.taxes.find(tax => tax.id == item.tax_id);
+
+                    if (
+                        item.discount == null ||
+                        item.discount == "" ||
+                        item.discount > item.unit_price * item.quantity
+                    )
+                        this.$set(item, "discount", 0);
+
+                    item.total_tax = 0;
+
+                    if (item.tax != null) {
+                        let tax = val.taxes.find(tax => tax.id == item.tax.id);
+
+                        if (item.tax.is_fixed_value)
+
+                            item.total_tax = (
+                                item.tax.rate * item.quantity -
+                                (item.discount < item.unit_price * item.quantity ? item.discount : 0)
+                            ).toFixed(2);
+
+                        if (item.tax.is_percentage)
+
+                            item.total_tax = (
+                                (item.unit_price * item.quantity -
+                                (item.discount < item.unit_price * item.quantity
+                                    ? item.discount
+                                    : 0)) *
+                                (item.tax.rate / item.tax.conversion)
+                            ).toFixed(2);
+
+                        if (!tax.hasOwnProperty("total"))
+                            tax.total = Number(0).toFixed(2);
+
+                        tax.total = (Number(tax.total) + Number(item.total_tax)).toFixed(2);
+                    }
+
+                    item.subtotal = (
+                        Number(item.unit_price * item.quantity) + Number(item.total_tax)
+                    ).toFixed(2);
+
+                    this.$set(
+                        item,
+                        "total",
+                        (Number(item.subtotal) - Number(item.discount)).toFixed(2)
+                    );
+
+                });
+
+                val.subtotal = val.items
+                    .reduce(
+                        (p, c) => Number(p) + (Number(c.subtotal) - Number(c.discount)),
+                        0
+                    )
+                    .toFixed(2);
+                    val.sale = val.items
+                    .reduce(
+                        (p, c) =>
+                        Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount),
+                        0
+                    )
+                    .toFixed(2);
+                    val.total_discount = val.items
+                    .reduce((p, c) => Number(p) + Number(c.discount), 0)
+                    .toFixed(2);
+                    val.total_tax = val.items
+                    .reduce((p, c) => Number(p) + Number(c.total_tax), 0)
+                    .toFixed(2);
+
+                let total = val.items
+                    .reduce((p, c) => Number(p) + Number(c.total), 0)
+                    .toFixed(2);
+
+                let totalRetentionBase = Number(0);
+
+                // this.taxes.forEach(tax => {
+                val.taxes.forEach(tax => {
+                    if (tax.is_retention && tax.in_base && tax.apply) {
+                        tax.retention = (
+                        Number(val.sale) *
+                        (tax.rate / tax.conversion)
+                        ).toFixed(2);
+
+                        totalRetentionBase =
+                        Number(totalRetentionBase) + Number(tax.retention);
+
+                        if (Number(totalRetentionBase) >= Number(val.sale))
+                        this.$set(tax, "retention", Number(0).toFixed(2));
+
+                        total -= Number(tax.retention).toFixed(2);
+                    }
+
+                    if (
+                        tax.is_retention &&
+                        !tax.in_base &&
+                        tax.in_tax != null &&
+                        tax.apply
+                    ) {
+                        let row = val.taxes.find(row => row.id == tax.in_tax);
+
+                        tax.retention = Number(
+                        Number(row.total) * (tax.rate / tax.conversion)
+                        ).toFixed(2);
+
+                        if (Number(tax.retention) > Number(row.total))
+                        this.$set(tax, "retention", Number(0).toFixed(2));
+
+                        row.retention = Number(tax.retention).toFixed(2);
+                        total -= Number(tax.retention).toFixed(2);
+                    }
+                });
+
+                val.total = Number(total).toFixed(2)
+
+            },
+            ratePrefix(tax = null) {
+                if ((tax != null) && (!tax.is_fixed_value)) return null;
+
+                return (this.company.currency != null) ? this.company.currency.symbol : '$';
+            },
+
             generateFromSaleOpportunity(){
 
                 if(this.saleOpportunity){
@@ -491,8 +627,8 @@
                 //     this.selectSupplier()
 
                 // } else {
-                //     this.suppliers =  this.all_suppliers  //_.filter(this.all_suppliers, (c) => { return c.identity_document_type_id !== '6' })
-                //     this.selectSupplier()
+                this.suppliers =  this.all_suppliers  //_.filter(this.all_suppliers, (c) => { return c.identity_document_type_id !== '6' })
+                this.selectSupplier()
                 // }
             },
             selectSupplier(){
@@ -515,7 +651,7 @@
                     time_of_issue: moment().format('HH:mm:ss'),
                     supplier_id: null,
                     payment_method_type_id:'01',
-                    currency_type_id: null,
+                    currency_id: null,
                     purchase_order: null,
                     exchange_rate_sale: 0,
                     total_prepayment: 0,
@@ -546,6 +682,11 @@
                     attached_temp_path: null,
                     attached: null,
                     sale_opportunity_id: null,
+                    taxes: [],
+
+                    sale: 0,
+                    total_tax: 0,
+                    subtotal: 0,
                 }
 
                 this.initInputPerson()
@@ -554,9 +695,11 @@
             },
             resetForm() {
                 this.initForm()
-                this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
                 this.form.establishment_id = this.establishment.id
                 this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
+                
+                let find_currency = _.find(this.currencies, {id:170})
+                this.form.currency_id = find_currency ? find_currency.id: null
 
                 this.changeDateOfIssue()
                 this.changeDocumentType()
@@ -564,14 +707,15 @@
             },
             changeDateOfIssue() {
                 this.form.date_of_due = this.form.date_of_issue
-                this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
-                    this.form.exchange_rate_sale = (response == 0) ? 1 : response
-                })
+                // this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
+                //     this.form.exchange_rate_sale = (response == 0) ? 1 : response
+                // })
             },
             changeDocumentType() {
                 this.filterSuppliers()
             },
             addRow(row) {
+                // console.log(row)
                 this.form.items.push(row)
                 this.calculateTotal()
             },
@@ -580,67 +724,13 @@
                 this.calculateTotal()
             },
             changeCurrencyType() {
-                this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
-                let items = []
-                this.form.items.forEach((row) => {
-                    items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale))
-                });
-                this.form.items = items
-                this.calculateTotal()
             },
             calculateTotal() {
-                let total_discount = 0
-                let total_charge = 0
-                let total_exportation = 0
-                let total_taxed = 0
-                let total_exonerated = 0
-                let total_unaffected = 0
-                let total_free = 0
-                let total_igv = 0
-                let total_value = 0
-                let total = 0
 
-                // console.log(this.form.items)
-
-                this.form.items.forEach((row) => {
-                    total_discount += parseFloat(row.total_discount)
-                    total_charge += parseFloat(row.total_charge)
-
-                    if (row.affectation_igv_type_id === '10') {
-                        total_taxed += parseFloat(row.total_value)
-                    }
-                    if (row.affectation_igv_type_id === '20') {
-                        total_exonerated += parseFloat(row.total_value)
-                    }
-                    if (row.affectation_igv_type_id === '30') {
-                        total_unaffected += parseFloat(row.total_value)
-                    }
-                    if (row.affectation_igv_type_id === '40') {
-                        total_exportation += parseFloat(row.total_value)
-                    }
-                    if (['10', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
-                        total_free += parseFloat(row.total_value)
-                    }
-
-                    total_value += parseFloat(row.total_value)
-                    total_igv += parseFloat(row.total_igv)
-                    total += parseFloat(row.total)
-                });
-
-                this.form.total_exportation = _.round(total_exportation, 2)
-                this.form.total_taxed = _.round(total_taxed, 2)
-                this.form.total_exonerated = _.round(total_exonerated, 2)
-                this.form.total_unaffected = _.round(total_unaffected, 2)
-                this.form.total_free = _.round(total_free, 2)
-                this.form.total_igv = _.round(total_igv, 2)
-                this.form.total_value = _.round(total_value, 2)
-                this.form.total_taxes = _.round(total_igv, 2)
-                this.form.total = _.round(total, 2)
-
+                this.setDataTotals()
                 this.calculatePerception()
-                
 
-             },
+            },
             calculatePerception(){
                 
                 let supplier = _.find(this.all_suppliers,{'id':this.form.supplier_id})

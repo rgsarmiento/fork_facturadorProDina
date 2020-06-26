@@ -12,6 +12,9 @@ use App\Models\Tenant\ModelTenant;
 use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\DocumentType;
 use Modules\Sale\Models\SaleOpportunity;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
 
 class PurchaseOrder extends ModelTenant
 {
@@ -27,9 +30,7 @@ class PurchaseOrder extends ModelTenant
         'time_of_issue',
         'date_of_due',
         'supplier_id',
-        'supplier',
-        'currency_type_id',
-        'exchange_rate_sale',
+        'supplier', 
         'total_prepayment',
         'total_discount',
         'total_charge',
@@ -52,13 +53,23 @@ class PurchaseOrder extends ModelTenant
         'payment_method_type_id',
         'sale_opportunity_id',
 
+        'currency_id',
+        'taxes',
+        'sale',
+        'total_tax',
+        'subtotal',
+
     ];
 
     protected $casts = [
         'date_of_issue' => 'date',
-        'date_of_due' => 'date',
+        'date_of_due' => 'date',        
+        'taxes' => 'object',
     ];
 
+    public function currency() {
+        return $this->belongsTo(Currency::class);
+    }
 
     public function getSupplierAttribute($value)
     {

@@ -37,6 +37,10 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Tenant\PurchaseOrderRequest;
 use App\CoreFacturalo\Requests\Inputs\Common\PersonInput;
 use Modules\Sale\Models\SaleOpportunity;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+    Tax,
+};
 
 class PurchaseOrderController extends Controller
 {
@@ -95,11 +99,14 @@ class PurchaseOrderController extends Controller
         $suppliers = $this->table('suppliers');
         // $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
         $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
-        $currency_types = CurrencyType::whereActive()->get();
+        // $currency_types = CurrencyType::whereActive()->get();
         $company = Company::active();
         $payment_method_types = PaymentMethodType::all();
 
-        return compact('suppliers', 'establishment','company','currency_types','payment_method_types');
+        $currencies = Currency::all();
+        $taxes = $this->table('taxes');
+
+        return compact('suppliers', 'establishment','company','currencies','payment_method_types', 'taxes');
     }
 
 
@@ -107,16 +114,17 @@ class PurchaseOrderController extends Controller
     {
 
         $items = $this->table('items');
-        $affectation_igv_types = AffectationIgvType::whereActive()->get();
-        $system_isc_types = SystemIscType::whereActive()->get();
-        $price_types = PriceType::whereActive()->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
-        $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
+        // $affectation_igv_types = AffectationIgvType::whereActive()->get();
+        // $system_isc_types = SystemIscType::whereActive()->get();
+        // $price_types = PriceType::whereActive()->get();
+        // $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
+        // $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        // $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
         $warehouses = Warehouse::all();
 
-        return compact('items', 'categories', 'affectation_igv_types', 'system_isc_types', 'price_types',
-                        'discount_types', 'charge_types', 'attribute_types','warehouses');
+        $taxes = $this->table('taxes');
+
+        return compact('items', 'taxes', 'warehouses');
     }
 
 
@@ -130,7 +138,7 @@ class PurchaseOrderController extends Controller
 
     public function getFullDescription($row){
 
-        $desc = ($row->internal_id)?$row->internal_id.' - '.$row->description : $row->description;
+        $desc = ($row->internal_id)?$row->internal_id.' - '.$row->name : $row->name;
         $category = ($row->category) ? " - {$row->category->name}" : "";
         $brand = ($row->brand) ? " - {$row->brand->name}" : "";
 
@@ -218,7 +226,30 @@ class PurchaseOrderController extends Controller
 
     public function table($table)
     {
-        switch ($table) {
+        switch ($table) {            
+            
+            case 'taxes':
+
+                return Tax::all()->transform(function($row) {
+                    return [
+                        'id' => $row->id,
+                        'name' => $row->name,
+                        'code' => $row->code,
+                        'rate' =>  $row->rate,
+                        'conversion' =>  $row->conversion,
+                        'is_percentage' =>  $row->is_percentage,
+                        'is_fixed_value' =>  $row->is_fixed_value,
+                        'is_retention' =>  $row->is_retention,
+                        'in_base' =>  $row->in_base,
+                        'in_tax' =>  $row->in_tax,
+                        'type_tax_id' =>  $row->type_tax_id,
+                        'type_tax' =>  $row->type_tax,
+                        'retention' =>  0,
+                        'total' =>  0,
+                    ];
+                });
+                break;
+
             case 'suppliers':
 
                 $suppliers = Person::whereType('suppliers')->orderBy('name')->get()->transform(function($row) {
@@ -228,8 +259,11 @@ class PurchaseOrderController extends Controller
                         'name' => $row->name,
                         'number' => $row->number,
                         'email' => $row->email,
-                        'identity_document_type_id' => $row->identity_document_type_id,
-                        'identity_document_type_code' => $row->identity_document_type->code
+                        'identity_document_type_id' => $row->identity_document_type_id,                        
+                        'address' =>  $row->address,
+                        'email' =>  $row->email,
+                        'telephone' =>  $row->telephone,
+
                     ];
                 });
                 return $suppliers;
@@ -240,27 +274,30 @@ class PurchaseOrderController extends Controller
 
                 $warehouse = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();
 
-                $items = Item::orderBy('description')->whereNotIsSet()
-                    ->get()->transform(function($row) {
+                $items = Item::orderBy('name')->whereNotIsSet()
+                    ->get()->transform(function($row) use($warehouse){
                     $full_description = $this->getFullDescription($row);
                     return [
                         'id' => $row->id,
                         'full_description' => $full_description,
-                        'description' => $row->description,
+                        'description' => $full_description,
                         'currency_type_id' => $row->currency_type_id,
                         'currency_type_symbol' => $row->currency_type->symbol,
                         'sale_unit_price' => $row->sale_unit_price,
                         'purchase_unit_price' => $row->purchase_unit_price,
                         'unit_type_id' => $row->unit_type_id,
-                        'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                        'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
+                        'purchase_tax_id' => $row->purchase_tax_id,
+                        'lots_enabled' => (bool) false, //$row->lots_enabled,
                         'has_perception' => (bool) $row->has_perception,
                         'percentage_perception' => $row->percentage_perception,
+                        'warehouse_description' => $warehouse->description,
+                        'warehouse' => $warehouse,
                         'item_unit_types' => collect($row->item_unit_types)->transform(function($row) {
                             return [
                                 'id' => $row->id,
                                 'description' => "{$row->description}",
                                 'item_id' => $row->item_id,
+                                'unit_type' => $row->unit_type,
                                 'unit_type_id' => $row->unit_type_id,
                                 'quantity_unit' => $row->quantity_unit,
                                 'price1' => $row->price1,
@@ -268,7 +305,10 @@ class PurchaseOrderController extends Controller
                                 'price3' => $row->price3,
                                 'price_default' => $row->price_default,
                             ];
-                        })
+                        }),
+                        'unit_type' => $row->unit_type,
+                        'tax' => $row->tax,
+
                     ];
                 });
                 return $items;

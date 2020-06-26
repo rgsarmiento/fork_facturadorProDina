@@ -15,16 +15,18 @@
                             <small class="form-control-feedback" v-if="errors.item_id" v-text="errors.item_id[0]"></small>
                         </div>
                     </div>
+
                     <div class="col-md-6">
-                        <div class="form-group" :class="{'has-danger': errors.affectation_igv_type_id}">
-                            <label class="control-label">Afectación Igv</label>
-                            <el-select v-model="form.affectation_igv_type_id" :disabled="!change_affectation_igv_type_id" filterable>
-                                <el-option v-for="option in affectation_igv_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                        <div class="form-group" :class="{'has-danger': errors.tax_id}">
+                            <label class="control-label">Impuesto</label>
+                            <el-select v-model="form.tax_id"  filterable>
+                                <el-option v-for="option in itemTaxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
-                            <el-checkbox v-model="change_affectation_igv_type_id">Editar</el-checkbox>
-                            <small class="form-control-feedback" v-if="errors.affectation_igv_type_id" v-text="errors.affectation_igv_type_id[0]"></small>
+                            <!-- <el-checkbox v-model="change_tax_id">Editar</el-checkbox> -->
+                            <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
                         </div>
                     </div>
+
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.quantity}">
                             <label class="control-label">Cantidad</label>
@@ -41,15 +43,17 @@
                             <small class="form-control-feedback" v-if="errors.unit_price" v-text="errors.unit_price[0]"></small>
                         </div>
                     </div>
-                   <!-- <div class="col-md-6">
-                        <div class="form-group" :class="{'has-danger': errors.warehouse_id}">
-                            <label class="control-label">Almacén de destino</label>
-                            <el-select v-model="form.warehouse_id"   filterable  >
-                                <el-option v-for="option in warehouses" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.warehouse_id" v-text="errors.warehouse_id[0]"></small>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group"  :class="{'has-danger': errors.discount}">
+                            <label class="control-label">Descuento</label>
+                            <el-input v-model="form.discount" :min="0" >
+                                <template slot="prepend" v-if="form.item.currency_type_symbol">{{ form.item.currency_type_symbol }}</template>
+                            </el-input>
+                            <small class="form-control-feedback" v-if="errors.discount" v-text="errors.discount[0]"></small>
                         </div>
-                    </div> -->
+                    </div>
+
                     <div class="col-md-12"  v-if="form.item_unit_types.length > 0">
                         <div style="margin:3px" class="table-responsive">
                             <h3>Lista de Precios</h3>
@@ -64,9 +68,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="(row, index) in form.item_unit_types">
+                            <tr v-for="(row, index) in form.item_unit_types" :key="index">
 
-                                    <td class="text-center">{{row.unit_type_id}}</td>
+                                    <td class="text-center">{{row.unit_type.name}}</td>
                                     <td class="text-center">{{row.description}}</td>
                                     <td class="text-center">{{row.quantity_unit}}</td>
 
@@ -83,118 +87,7 @@
 
                         </div>
 
-                    </div>
-                    <div class="col-md-12 mt-3">
-                        <section class="card mb-2 card-transparent card-collapsed" id="card-section">
-                                <header class="card-header hoverable bg-light border-top rounded-0 py-1" data-card-toggle style="cursor: pointer;" id="card-click">
-                                    <div class="card-actions" style="margin-top: -12px;">
-                                        <a href="#" class="card-action card-action-toggle text-info" data-card-toggle=""></a>
-                                    </div>
-
-                                    <p class="pl-1">Información adicional atributos UBL 2.1</p>
-                                </header>
-                                <div class="card-body px-0 pt-2" style="display: none;">
-                                    <div class="col-md-12 px-0" v-if="discount_types.length > 0">
-                                        <label class="control-label">
-                                            Descuentos
-                                            <a href="#" @click.prevent="clickAddDiscount">[+ Agregar]</a>
-                                        </label>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th>Tipo</th>
-                                                <th>Descripción</th>
-                                                <th>Porcentaje</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="(row, index) in form.discounts">
-                                                <td>
-                                                    <el-select v-model="row.discount_type_id" @change="changeDiscountType(index)">
-                                                        <el-option v-for="option in discount_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                                    </el-select>
-                                                </td>
-                                                <td>
-                                                    <el-input v-model="row.description"></el-input>
-                                                </td>
-                                                <td>
-                                                    <el-input v-model="row.percentage"></el-input>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger" @click.prevent="clickRemoveDiscount(index)">x</button>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-12 px-0" v-if="charge_types.length > 0">
-                                        <label class="control-label">
-                                            Cargos
-                                            <a href="#" @click.prevent="clickAddCharge">[+ Agregar]</a>
-                                        </label>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th>Tipo</th>
-                                                <th>Descripción</th>
-                                                <th>Porcentaje</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="(row, index) in form.charges">
-                                                <td>
-                                                    <el-select v-model="row.charge_type_id" @change="changeChargeType(index)">
-                                                        <el-option v-for="option in charge_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                                    </el-select>
-                                                </td>
-                                                <td>
-                                                    <el-input v-model="row.description"></el-input>
-                                                </td>
-                                                <td>
-                                                    <el-input v-model="row.percentage"></el-input>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger" @click.prevent="clickRemoveCharge(index)">x</button>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-12 px-0" v-if="attribute_types.length > 0">
-                                        <label class="control-label">
-                                            Atributos
-                                            <a href="#" @click.prevent="clickAddAttribute">[+ Agregar]</a>
-                                        </label>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th>Tipo</th>
-                                                <th>Descripción</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="(row, index) in form.attributes">
-                                                <td>
-                                                    <el-select v-model="row.attribute_type_id" filterable @change="changeAttributeType(index)">
-                                                        <el-option v-for="option in attribute_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                                    </el-select>
-                                                </td>
-                                                <td>
-                                                    <el-input v-model="row.value"></el-input>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger" @click.prevent="clickRemoveAttribute(index)">x</button>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </section>
-                    </div>
+                    </div> 
                 </div>
             </div>
             <div class="form-actions text-right pt-2">
@@ -214,11 +107,10 @@
 </style>
 <script>
 
-    import {calculateRowItem} from '../../../../../../../../resources/js/helpers/functions'
-    import itemForm from '../../../../../../../../resources/js/views/tenant/items/form.vue'
+    import itemForm from '@views/items/form.vue'
 
     export default {
-        props: ['showDialog', 'currencyTypeIdActive', 'exchangeRateSale'],
+        props: ['showDialog', 'currencyTypeIdActive'],
         components: {itemForm},
         data() {
             return {
@@ -235,18 +127,20 @@
                 charge_types: [],
                 attribute_types: [],
                 use_price: 1,
-                change_affectation_igv_type_id: false,
+                change_tax_id: false,
+                taxes:[],
             }
         },
-        created() {
-            this.initForm()
-            this.$http.get(`/${this.resource}/item/tables`).then(response => {
+        computed: {
+            itemTaxes() {
+                return this.taxes.filter(tax => !tax.is_retention);
+            },
+        },
+        async created() {
+            await this.initForm()
+            await this.$http.get(`/${this.resource}/item/tables`).then(response => {
                 this.items = response.data.items
-                this.affectation_igv_types = response.data.affectation_igv_types
-                this.system_isc_types = response.data.system_isc_types
-                this.discount_types = response.data.discount_types
-                this.charge_types = response.data.charge_types
-                this.attribute_types = response.data.attribute_types
+                this.taxes  = response.data.taxes 
                 this.warehouses = response.data.warehouses
                 // this.filterItems()
             })
@@ -266,18 +160,19 @@
                     warehouse_id: 1,
                     warehouse_description: null,
                     item: {},
-                    affectation_igv_type_id: null,
-                    affectation_igv_type: {},
-                    has_isc: false,
-                    system_isc_type_id: null,
-                    percentage_isc: 0,
-                    suggested_price: 0,
                     quantity: 1,
                     unit_price: 0,
-                    charges: [],
-                    discounts: [],
-                    attributes: [],
-                    item_unit_types: []
+                    item_unit_types: [],
+                    subtotal: 0,
+                    tax_id: null,
+                    tax: {},
+                    total: 0,
+                    total_tax: 0,
+                    unit_type: {},
+                    discount: 0,
+                    unit_type_id: null,
+                    lots: [],
+
                 }
 
                 this.item_unit_type = {};
@@ -287,61 +182,7 @@
             // },
             create() {
             //     this.initializeFields()
-            },
-            clickAddDiscount() {
-                this.form.discounts.push({
-                    discount_type_id: null,
-                    discount_type: null,
-                    description: null,
-                    percentage: 0,
-                    factor: 0,
-                    amount: 0,
-                    base: 0
-                })
-            },
-            clickRemoveDiscount(index) {
-                this.form.discounts.splice(index, 1)
-            },
-            changeDiscountType(index) {
-                let discount_type_id = this.form.discounts[index].discount_type_id
-                this.form.discounts[index].discount_type = _.find(this.discount_types, {id: discount_type_id})
-            },
-            clickAddCharge() {
-                this.form.charges.push({
-                    charge_type_id: null,
-                    charge_type: null,
-                    description: null,
-                    percentage: 0,
-                    factor: 0,
-                    amount: 0,
-                    base: 0
-                })
-            },
-            clickRemoveCharge(index) {
-                this.form.charges.splice(index, 1)
-            },
-            changeChargeType(index) {
-                let charge_type_id = this.form.charges[index].charge_type_id
-                this.form.charges[index].charge_type = _.find(this.charge_types, {id: charge_type_id})
-            },
-            clickAddAttribute() {
-                this.form.attributes.push({
-                    attribute_type_id: null,
-                    description: null,
-                    value: null,
-                    start_date: null,
-                    end_date: null,
-                    duration: null,
-                })
-            },
-            clickRemoveAttribute(index) {
-                this.form.attributes.splice(index, 1)
-            },
-            changeAttributeType(index) {
-                let attribute_type_id = this.form.attributes[index].attribute_type_id
-                let attribute_type = _.find(this.attribute_types, {id: attribute_type_id})
-                this.form.attributes[index].description = attribute_type.description
-            },
+            }, 
             close() {
                 this.initForm()
                 this.$emit('update:showDialog', false)
@@ -349,35 +190,60 @@
             selectedPrice(row)
             {
 
+                let valor = 0
+                switch(row.price_default)
+                {
+                    case 1:
+                        valor = row.price1
+                        break
+                    case 2:
+                         valor = row.price2
+                        break
+                    case 3:
+                         valor = row.price3
+                        break
+
+                }
+
                 this.form.item_unit_type_id = row.id
                 this.item_unit_type = row
 
-               // this.form.unit_price = valor
+                this.form.unit_price = valor
                 this.form.item.unit_type_id = row.unit_type_id
             },
             changeItem() {
+
                 this.form.item = _.find(this.items, {'id': this.form.item_id})
                 this.form.unit_price = this.form.item.purchase_unit_price
-                this.form.affectation_igv_type_id = this.form.item.purchase_affectation_igv_type_id
 
                 this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
+
+                this.form.unit_type_id = this.form.item.unit_type_id
+                this.form.tax_id = (this.taxes.length > 0) ? this.form.item.purchase_tax_id: null
+
             },
-            clickAddItem() {
+            async clickAddItem() {
+
                 this.form.item.unit_price = this.form.unit_price
                 this.form.item.presentation = this.item_unit_type;
-                this.form.affectation_igv_type = _.find(this.affectation_igv_types, {'id': this.form.affectation_igv_type_id})
-                this.row = calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale)
-                this.row = this.changeWarehouse(this.row)
 
-                this.initForm()
+                this.form.tax = _.find(this.taxes, {'id': this.form.tax_id})
+
+                this.form.unit_type = this.form.item.unit_type
+
+                this.form  = this.changeWarehouse(this.form)
+
                 // this.initializeFields()
-                this.$emit('add', this.row)
+                await this.$emit('add', this.form)
+
+                await this.initForm()
+
             },
-            changeWarehouse(row){
+            changeWarehouse(form){
                 let warehouse = _.find(this.warehouses,{'id':this.form.warehouse_id})
-                row.warehouse_id = warehouse.id
-                row.warehouse_description = warehouse.description
-                return row
+                form.warehouse_id = warehouse.id
+                form.warehouse_description = warehouse.description
+                return form
             },
             reloadDataItems(item_id) {
                 this.$http.get(`/${this.resource}/table/items`).then((response) => {

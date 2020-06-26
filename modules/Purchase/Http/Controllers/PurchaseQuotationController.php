@@ -195,6 +195,8 @@ class PurchaseQuotationController extends Controller
                         'full_description' => $full_description,
                         'unit_type_id' => $row->unit_type_id,
                         'unit_type' => $row->unit_type,
+                        'tax_id' => $row->tax_id,
+                        'tax' => $row->tax,
                         'is_set' => (bool) $row->is_set,
                     ];
                 });

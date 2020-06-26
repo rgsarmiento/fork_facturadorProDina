@@ -193,7 +193,7 @@
                                         <td>{{ row.item.description }}<br/>
                                             <small>{{row.tax.name}}</small>
                                         </td>
-                                        <td class="text-left">{{ row.warehouse_description }}</td>
+                                        <td class="text-left">{{ row.warehouse_description ? row.warehouse_description : row.item.warehouse_description }}</td>
                                         <td class="text-center">{{ row.item.unit_type.name }}</td>
                                         <td class="text-right">{{ row.quantity }}</td>
                                         <td class="text-right">{{ ratePrefix() }} {{ getFormatUnitPriceRow(row.unit_price) }}</td>
@@ -395,7 +395,9 @@
                     this.all_customers = response.data.customers
 
                     // this.charges_types = response.data.charges_types
-                    this.form.currency_id = (this.currencies.length > 0)?this.currencies[0].id:null
+                    
+                    let find_currency = _.find(this.currencies, {id:170})
+                    this.form.currency_id = find_currency ? find_currency.id: null
                     this.form.establishment_id = (this.establishment.id) ? this.establishment.id:null
                     this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
 
@@ -599,22 +601,22 @@
                             let warehouse = response.data.data.warehouse
                             let supp = purchase_order.supplier
 
-                            if (supp.identity_document_type_id == 6) {
-                                this.form.document_type_id = "01"
-                            } else if (supp.identity_document_type_id == 1) {
-                                this.form.document_type_id = "03"
-                            }
-
+                            this.form.document_type_id = "01"
                             // console.log(purchase_order.supplier_id)
                             
                             this.form.items = response.data.data.purchase_order.items
                             this.form.supplier_id = purchase_order.supplier_id 
-                            this.form.currency_type_id = purchase_order.currency_type_id
+                            this.form.currency_id = purchase_order.currency_id
                             this.form.purchase_order_id = purchase_order.id
-                            this.form.payments[0].payment_method_type_id = purchase_order.payment_method_type_id
-                            this.form.payments[0].payment = purchase_order.total
+                            // this.form.payments[0].payment_method_type_id = purchase_order.payment_method_type_id
+                            // this.form.payments[0].payment = purchase_order.total
                             this.form.total = purchase_order.total
-                            this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
+                            this.form.total_tax = purchase_order.total_tax
+                            this.form.sale = purchase_order.sale
+                            this.form.subtotal = purchase_order.subtotal
+                            this.form.total_discount = purchase_order.total_discount
+                            this.form.taxes = purchase_order.taxes
+                            this.currency_type = _.find(this.currencies, {'id': this.form.currency_id})
                             
                             this.form.items.forEach((it)=>{
                                 it.warehouse_id = warehouse.id
@@ -759,9 +761,10 @@
                     this.selectSupplier()
                 // }
             },
-            selectSupplier(){
+            async selectSupplier(){
 
-                let supplier = _.find(this.suppliers, {'id': this.aux_supplier_id})
+                let supplier = await _.find(this.suppliers, {'id': this.aux_supplier_id})
+                // console.log(supplier)
                 this.form.supplier_id = (supplier) ? supplier.id : null
                 this.aux_supplier_id = null
 
@@ -819,7 +822,9 @@
             },
             resetForm() {
                 this.initForm()
-                this.form.currency_id = (this.currencies.length > 0)?this.currencies[0].id:null
+                
+                let find_currency = _.find(this.currencies, {id:170})
+                this.form.currency_id = find_currency ? find_currency.id: null
                 this.form.establishment_id = this.establishment.id
                 this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
 
@@ -960,7 +965,6 @@
                 location.href = '/purchases'
             },
             reloadDataSuppliers(supplier_id) {
-
                 this.$http.get(`/${this.resource}/table/suppliers`).then((response) => {
 
                     this.aux_supplier_id = supplier_id

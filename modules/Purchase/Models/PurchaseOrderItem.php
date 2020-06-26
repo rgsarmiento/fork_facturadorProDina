@@ -3,48 +3,42 @@
 namespace Modules\Purchase\Models; 
  
 use App\Models\Tenant\ModelTenant;
-use App\Models\Tenant\Catalogs\AffectationIgvType;
-use App\Models\Tenant\Catalogs\PriceType;
-use App\Models\Tenant\Catalogs\SystemIscType;
+use Modules\Factcolombia1\Models\Tenant\TypeUnit;
+use Modules\Factcolombia1\Models\Tenant\Tax;
+
 
 class PurchaseOrderItem extends ModelTenant
 {
-    protected $with = ['affectation_igv_type', 'system_isc_type', 'price_type'];
+    // protected $with = ['affectation_igv_type', 'system_isc_type', 'price_type'];
     public $timestamps = false;
 
     protected $fillable = [
-        'purchase_id',
+        'purchase_order_id',
         'item_id',
         'item',
         'quantity',
-        'unit_value',
 
-        'affectation_igv_type_id',
-        'total_base_igv',
-        'percentage_igv',
-        'total_igv',
-
-        'system_isc_type_id',
-        'total_base_isc',
-        'percentage_isc',
-        'total_isc',
-
-        'total_base_other_taxes',
-        'percentage_other_taxes',
-        'total_other_taxes',
-        'total_taxes',
-
-        'price_type_id',
         'unit_price',
-
-        'total_value',
         'total',
+        'unit_type_id',
+        'tax_id',
+        'tax',
+        'total_tax',
+        'subtotal',
+        'discount',
 
-        'attributes',
-        'charges',
-        // 'warehouse_id',
-        'discounts'
     ];
+
+    
+    protected $casts = [
+        'tax' => 'object'
+    ];
+
+    public function unit_type()
+    {
+        return $this->belongsTo(TypeUnit::class, 'unit_type_id');
+    }
+
 
     public function getItemAttribute($value)
     {
@@ -86,24 +80,9 @@ class PurchaseOrderItem extends ModelTenant
         $this->attributes['discounts'] = (is_null($value))?null:json_encode($value);
     }
 
-    public function affectation_igv_type()
+    public function purchase_order()
     {
-        return $this->belongsTo(AffectationIgvType::class, 'affectation_igv_type_id');
-    }
-
-    public function system_isc_type()
-    {
-        return $this->belongsTo(SystemIscType::class, 'system_isc_type_id');
-    }
-
-    public function price_type()
-    {
-        return $this->belongsTo(PriceType::class, 'price_type_id');
-    }
-
-    public function purchase()
-    {
-        return $this->belongsTo(Purchase::class);
+        return $this->belongsTo(PurchaseOrder::class);
     }
 
     public function item()
