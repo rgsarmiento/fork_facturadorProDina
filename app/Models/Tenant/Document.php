@@ -166,6 +166,11 @@ class Document extends ModelTenant
         return $this->belongsTo(StateDocument::class);
     }
 
+    public function getCurrencyTypeIdAttribute()
+    {
+        return $this->currency->name;
+    }
+    
     public function detail_documents() {
         return $this->hasMany(DetailDocument::class);
     }

@@ -27,7 +27,7 @@ class ReportGeneralItemController extends Controller
 
     public function filter() {
 
-        $document_types = DocumentType::whereIn('id', ['01', '03'])->get();
+        $document_types = DocumentType::whereIn('id', ['01', 'GU75', 'NE76'])->get();
 
         return compact('document_types');
     }
@@ -57,27 +57,40 @@ class ReportGeneralItemController extends Controller
         $d_start = $data_of_period['d_start'];
         $d_end = $data_of_period['d_end'];
 
-        $records = $this->dataItems($d_start, $d_end, $document_type_id, $data_type);
+        $records = $this->dataItems($d_start, $d_end, $document_type_id, $data_type, $request);
 
         return $records;
 
     }
 
 
-    private function dataItems($date_start, $date_end, $document_type_id, $data_type)
+    private function dataItems($date_start, $date_end, $document_type_id, $data_type, $request)
     {
 
-        $document_types = $document_type_id ? [$document_type_id] : ['01','03'];
+        $document_types = $document_type_id ? [$document_type_id] : ['01', 'GU75', 'NE76'];
         $model = $data_type['model'];
         $relation = $data_type['relation'];
 
-        $data = $model::whereHas($relation, function($query) use($date_start, $date_end, $document_types){
-                            $query
-                            ->whereBetween('date_of_issue', [$date_start, $date_end])
-                            ->whereIn('document_type_id', $document_types)
-                            ->latest()
-                            ->whereTypeUser();
-                        });
+        if($request['type'] == 'sale'){
+
+            $data = $model::whereHas($relation, function($query) use($date_start, $date_end, $document_types){
+                                $query
+                                ->whereBetween('date_of_issue', [$date_start, $date_end])
+                                ->where('type_document_id', 1)
+                                ->latest()
+                                ->whereTypeUser();
+                            });
+
+        }else{
+
+            $data = $model::whereHas($relation, function($query) use($date_start, $date_end, $document_types){
+                                $query
+                                ->whereBetween('date_of_issue', [$date_start, $date_end])
+                                ->whereIn('document_type_id', $document_types)
+                                ->latest()
+                                ->whereTypeUser();
+                            });
+        }
 
         return $data;
 

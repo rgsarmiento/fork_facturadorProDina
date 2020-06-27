@@ -15,7 +15,7 @@
                             <th class="">N° Documento</th>
                             <th class="">Cliente</th>
                             <!-- <th class="">Cod. Interno</th> -->
-                            <th class="">Descripción</th>
+                            <th class="">Nombre</th>
                             <!-- <th class="">U. Medida</th> -->
                             <th class="">Cantidad</th>
                             <th class="">Total</th>

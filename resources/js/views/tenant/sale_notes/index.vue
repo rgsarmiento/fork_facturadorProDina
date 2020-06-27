@@ -31,12 +31,6 @@
                         <th>Nota de Venta</th>
                         <th>Estado</th>
                         <th class="text-center">Moneda</th>
-                        <th class="text-right" v-if="columns.total_exportation.visible">T.Exportación</th>
-                        <th class="text-right" v-if="columns.total_free.visible">T.Gratuito</th>
-                        <th class="text-right" v-if="columns.total_unaffected.visible">T.Inafecta</th>
-                        <th class="text-right" v-if="columns.total_exonerated.visible">T.Exonerado</th>
-                        <th class="text-right" v-if="columns.total_taxed.visible">T.Gravado</th>
-                        <th class="text-right" v-if="columns.total_igv.visible">T.Igv</th>
                         <th class="text-right">Total</th>
 
                         <th class="text-center" v-if="columns.total_paid.visible">Pagado</th>
@@ -73,13 +67,6 @@
                         <td>{{ row.state_type_description }}</td>
                         <td class="text-center">{{ row.currency_type_id }}</td>
 
-                        <td class="text-right"  v-if="columns.total_exportation.visible" >{{ row.total_exportation }}</td>
-                        <td class="text-right" v-if="columns.total_free.visible">{{ row.total_free }}</td>
-                        <td class="text-right" v-if="columns.total_unaffected.visible">{{ row.total_unaffected }}</td>
-                        <td class="text-right" v-if="columns.total_exonerated.visible">{{ row.total_exonerated }}</td>
-
-                        <td class="text-right" v-if="columns.total_taxed.visible">{{ row.total_taxed }}</td>
-                        <td class="text-right" v-if="columns.total_igv.visible">{{ row.total_igv }}</td>
                         <td class="text-right">{{ row.total }}</td>
 
                         <td class="text-center" v-if="columns.total_paid.visible">
@@ -159,10 +146,10 @@
 
                             <!-- <button  v-if="row.state_type_id != '11'"  type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickOptions(row.id)">Opciones</button> -->
-                            <template v-for="(document,i) in row.documents" >
+                            <!-- <template v-for="(document,i) in row.documents" >
                                 <a :href="`/dispatches/create/${document.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2"
                                     v-if="row.changed" :key="i"><i class="fas fa-file-alt"></i></a>
-                            </template>
+                            </template> -->
 
                             <!-- <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickGenerate(row.id)" v-if="!row.changed && row.state_type_id != '11' ">Generar comprobante</button> -->
@@ -214,45 +201,21 @@
                 recordId: null,
                 showDialogOptions: false,
                 columns: {
-                    total_free: {
-                        title: 'T.Gratuito',
-                        visible: false
-                    },
-                    total_exportation: {
-                        title: 'T.Exportación',
-                        visible: false
-                    },
-                    total_unaffected: {
-                        title: 'T.Inafecto',
-                        visible: false
-                    },
-                    total_exonerated: {
-                        title: 'T.Exonerado',
-                        visible: false
-                    },
-                    total_taxed: {
-                        title: 'T.Gravado',
-                        visible: false
-                    },
-                    total_igv: {
-                        title: 'T.IGV',
-                        visible: false
-                    },
                     paid: {
                         title: 'Estado de Pago',
                         visible: false
                     },
                     type_period: {
                         title: 'Tipo Periodo',
-                        visible: true
+                        visible: false
                     },
                     quantity_period: {
                         title: 'Cantidad Periodo',
-                        visible: true
+                        visible: false
                     },
                     license_plate:{
                         title: 'Placa',
-                        visible: true
+                        visible: false
                     },
                     total_paid:{
                         title: 'Pagado',

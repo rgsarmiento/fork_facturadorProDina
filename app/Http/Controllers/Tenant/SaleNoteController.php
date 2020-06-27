@@ -46,6 +46,13 @@ use App\Models\Tenant\ItemWarehouse;
 use Modules\Finance\Traits\FinanceTrait;
 use Modules\Item\Models\ItemLotsGroup;
 use App\Models\Tenant\Configuration;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+    TypeDocument,
+    Tax,
+};
+use App\Models\Tenant\Document;
+
 
 
 class SaleNoteController extends Controller
@@ -113,7 +120,9 @@ class SaleNoteController extends Controller
                                     'name' => $row->name,
                                     'number' => $row->number,
                                     'identity_document_type_id' => $row->identity_document_type_id,
-                                    'identity_document_type_code' => $row->identity_document_type->code
+                                    'address' =>  $row->address,
+                                    'email' =>  $row->email,
+                                    'telephone' =>  $row->telephone,
                                 ];
                             });
 
@@ -124,9 +133,9 @@ class SaleNoteController extends Controller
     {
         $customers = $this->table('customers');
         $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
-        $currency_types = CurrencyType::whereActive()->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        // $currency_types = CurrencyType::whereActive()->get();
+        // $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
+        // $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
         $company = Company::active();
         $payment_method_types = PaymentMethodType::all();
         $series = collect(Series::all())->transform(function($row) {
@@ -140,8 +149,11 @@ class SaleNoteController extends Controller
         });
         $payment_destinations = $this->getPaymentDestinations();
 
-        return compact('customers', 'establishments','currency_types', 'discount_types',
-                         'charge_types','company','payment_method_types', 'series', 'payment_destinations');
+        $currencies = Currency::all();
+        $taxes = $this->table('taxes');
+
+
+        return compact('customers', 'establishments','currencies', 'taxes','company','payment_method_types', 'series', 'payment_destinations');
     }
 
     public function changed($id)
@@ -154,18 +166,13 @@ class SaleNoteController extends Controller
 
     public function item_tables()
     {
+        $taxes = $this->table('taxes');
         $items = $this->table('items');
         $categories = [];
-        $affectation_igv_types = AffectationIgvType::whereActive()->get();
-        $system_isc_types = SystemIscType::whereActive()->get();
-        $price_types = PriceType::whereActive()->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
-        $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
 
-        return compact('items', 'categories', 'affectation_igv_types', 'system_isc_types', 'price_types',
-                        'discount_types', 'charge_types', 'attribute_types');
+        return compact('items', 'categories', 'taxes');
     }
+
 
     public function record($id)
     {
@@ -414,7 +421,7 @@ class SaleNoteController extends Controller
                 'mode' => 'utf-8',
                 'format' => [
                     $width,
-                    40 +
+                    100 +
                     (($quantity_rows * 8) + $extra_by_item_description) +
                     ($discount_global * 3) +
                     $company_logo +
@@ -549,6 +556,28 @@ class SaleNoteController extends Controller
     public function table($table)
     {
         switch ($table) {
+            case 'taxes':
+
+                return Tax::all()->transform(function($row) {
+                    return [
+                        'id' => $row->id,
+                        'name' => $row->name,
+                        'code' => $row->code,
+                        'rate' =>  $row->rate,
+                        'conversion' =>  $row->conversion,
+                        'is_percentage' =>  $row->is_percentage,
+                        'is_fixed_value' =>  $row->is_fixed_value,
+                        'is_retention' =>  $row->is_retention,
+                        'in_base' =>  $row->in_base,
+                        'in_tax' =>  $row->in_tax,
+                        'type_tax_id' =>  $row->type_tax_id,
+                        'type_tax' =>  $row->type_tax,
+                        'retention' =>  0,
+                        'total' =>  0,
+                    ];
+                });
+                break;
+
             case 'customers':
 
                 $customers = Person::whereType('customers')->whereIsEnabled()->orderBy('name')->take(20)->get()->transform(function($row) {
@@ -558,7 +587,9 @@ class SaleNoteController extends Controller
                         'name' => $row->name,
                         'number' => $row->number,
                         'identity_document_type_id' => $row->identity_document_type_id,
-                        'identity_document_type_code' => $row->identity_document_type->code
+                        'address' =>  $row->address,
+                        'email' =>  $row->email,
+                        'telephone' =>  $row->telephone,
                     ];
                 });
                 return $customers;
@@ -581,19 +612,18 @@ class SaleNoteController extends Controller
                     $detail = $this->getFullDescription($row, $warehouse);
                     return [
                         'id' => $row->id,
+                        'internal_id' => $row->internal_id,
+                        'description' => $detail['full_description'],
                         'full_description' => $detail['full_description'],
                         'brand' => $detail['brand'],
                         'category' => $detail['category'],
                         'stock' => $detail['stock'],
-                        'description' => $row->description,
                         'currency_type_id' => $row->currency_type_id,
                         'currency_type_symbol' => $row->currency_type->symbol,
                         'sale_unit_price' => round($row->sale_unit_price, 2),
                         'purchase_unit_price' => $row->purchase_unit_price,
                         'unit_type_id' => $row->unit_type_id,
-                        'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                        'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
-                        'has_igv' => (bool) $row->has_igv,
+                        'tax_id' => $row->tax_id,
                         'lots_enabled' => (bool) $row->lots_enabled,
                         'series_enabled' => (bool) $row->series_enabled,
                         'is_set' => (bool) $row->is_set,
@@ -604,7 +634,20 @@ class SaleNoteController extends Controller
                                 'stock' => $row->stock,
                             ];
                         }),
-                        'item_unit_types' => $row->item_unit_types,
+                        'item_unit_types' => collect($row->item_unit_types)->transform(function($row) {
+                            return [
+                                'id' => $row->id,
+                                'description' => "{$row->description}",
+                                'item_id' => $row->item_id,
+                                'unit_type_id' => $row->unit_type_id,
+                                'unit_type' => $row->unit_type,
+                                'quantity_unit' => $row->quantity_unit,
+                                'price1' => $row->price1,
+                                'price2' => $row->price2,
+                                'price3' => $row->price3,
+                                'price_default' => $row->price_default,
+                            ];
+                        }),
                         'lots' => $row->item_lots->where('has_sale', false)->where('warehouse_id', $warehouse_id)->transform(function($row) {
                             return [
                                 'id' => $row->id,
@@ -626,7 +669,9 @@ class SaleNoteController extends Controller
                             ];
                         }),
                         'lot_code' => $row->lot_code,
-                        'date_of_due' => $row->date_of_due
+                        'date_of_due' => $row->date_of_due,
+                        'unit_type' => $row->unit_type,
+                        'tax' => $row->tax,
                     ];
                 });
 
@@ -643,7 +688,7 @@ class SaleNoteController extends Controller
 
     public function getFullDescription($row, $warehouse){
 
-        $desc = ($row->internal_id)?$row->internal_id.' - '.$row->description : $row->description;
+        $desc = ($row->internal_id)?$row->internal_id.' - '.$row->name : $row->name;
         $category = ($row->category) ? "{$row->category->name}" : "";
         $brand = ($row->brand) ? "{$row->brand->name}" : "";
 
@@ -680,7 +725,9 @@ class SaleNoteController extends Controller
                             'name' => $row->name,
                             'number' => $row->number,
                             'identity_document_type_id' => $row->identity_document_type_id,
-                            'identity_document_type_code' => $row->identity_document_type->code
+                            'address' =>  $row->address,
+                            'email' =>  $row->email,
+                            'telephone' =>  $row->telephone,
                         ];
                     });
 
@@ -691,9 +738,19 @@ class SaleNoteController extends Controller
     {
         $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
         $series = Series::where('establishment_id',$establishment->id)->get();
-        $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
 
-        return compact('series', 'document_types_invoice');
+        $type_documents = TypeDocument::query()
+                            ->get()
+                            ->each(function($typeDocument) {
+                                $typeDocument->alert_range = (($typeDocument->to - 100) < (Document::query()
+                                    ->hasPrefix($typeDocument->prefix)
+                                    ->whereBetween('number', [$typeDocument->from, $typeDocument->to])
+                                    ->max('number') ?? $typeDocument->from));
+
+                                $typeDocument->alert_date = ($typeDocument->resolution_date_end == null) ? false : Carbon::parse($typeDocument->resolution_date_end)->subMonth(1)->lt(Carbon::now());
+                            });
+
+        return compact('series', 'type_documents');
     }
 
     public function email(Request $request)
@@ -785,7 +842,7 @@ class SaleNoteController extends Controller
     public function totals()
     {
 
-        $records = SaleNote::where([['state_type_id', '01'],['currency_type_id', 'PEN']])->get();
+        $records = SaleNote::where([['state_type_id', '01']])->get();
         $total_pen = 0;
         $total_paid_pen = 0;
         $total_pending_paid_pen = 0;

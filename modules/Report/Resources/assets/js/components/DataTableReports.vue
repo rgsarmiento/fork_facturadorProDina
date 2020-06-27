@@ -138,7 +138,7 @@
                         <tbody>
                             <slot v-for="(row, index) in records" :row="row" :index="customIndex(index)"></slot>
                         </tbody>
-                        <tfoot v-if="resource == 'reports/sales' || resource == 'reports/purchases'">
+                        <!-- <tfoot v-if="resource == 'reports/sales' || resource == 'reports/purchases'">
                             <tr>
                                 <td :colspan="(resource == 'reports/sales') ? 10:8"></td>
                                 <td ><strong>Totales PEN</strong></td>
@@ -162,7 +162,7 @@
                                 <td>{{totals.acum_total_usd}}</td>
 
                             </tr>
-                        </tfoot>
+                        </tfoot> -->
                     </table>
                     <div>
                         <el-pagination
@@ -286,88 +286,88 @@
             },
             getTotals(records){
 
-                this.initTotals()
+                // this.initTotals()
                 // console.log(records)
 
-                records.forEach(row =>{
+                // records.forEach(row =>{
 
-                    let signal = row.document_type_id;
-                    let state = row.state_type_id;
+                //     let signal = row.document_type_id;
+                //     let state = row.state_type_id;
 
-                    if(row.currency_type_id == 'PEN'){
+                //     if(row.currency_type_id == 'PEN'){
 
-                        if((signal == '07' && state != '11')){
+                //         if((signal == '07' && state != '11')){
 
-                            this.totals.acum_total += parseFloat(-row.total);
-                            this.totals.acum_total_taxed += parseFloat(-row.total_taxed);
-                            this.totals.acum_total_igv += parseFloat(-row.total_igv);
-
-
-                            this.totals.acum_total_exonerated += parseFloat(-row.total_exonerated);
-                            this.totals.acum_total_unaffected += parseFloat(-row.total_unaffected);
-                            this.totals.acum_total_free += parseFloat(-row.total_free);
+                //             this.totals.acum_total += parseFloat(-row.total);
+                //             this.totals.acum_total_taxed += parseFloat(-row.total_taxed);
+                //             this.totals.acum_total_igv += parseFloat(-row.total_igv);
 
 
-                        }else if(signal != '07' && state == '11'){
-
-                            this.totals.acum_total += 0;
-                            this.totals.acum_total_taxed += 0;
-                            this.totals.acum_total_igv += 0;
-
-                            this.totals.acum_total_exonerated += 0;
-                            this.totals.acum_total_unaffected += 0;
-                            this.totals.acum_total_free += 0;
-
-                        }else{
-
-                            this.totals.acum_total += parseFloat(row.total);
-                            this.totals.acum_total_taxed += parseFloat(row.total_taxed);
-                            this.totals.acum_total_igv += parseFloat(row.total_igv);
-
-                            this.totals.acum_total_exonerated += parseFloat(row.total_exonerated);
-                            this.totals.acum_total_unaffected += parseFloat(row.total_unaffected);
-                            this.totals.acum_total_free += parseFloat(row.total_free);
-                        }
+                //             this.totals.acum_total_exonerated += parseFloat(-row.total_exonerated);
+                //             this.totals.acum_total_unaffected += parseFloat(-row.total_unaffected);
+                //             this.totals.acum_total_free += parseFloat(-row.total_free);
 
 
-                    }else if(row.currency_type_id == 'USD'){
+                //         }else if(signal != '07' && state == '11'){
 
-                        if((signal == '07' && state != '11')){
+                //             this.totals.acum_total += 0;
+                //             this.totals.acum_total_taxed += 0;
+                //             this.totals.acum_total_igv += 0;
 
-                            this.totals.acum_total_usd += parseFloat(-row.total);
-                            this.totals.acum_total_taxed_usd += parseFloat(-row.total_taxed);
-                            this.totals.acum_total_igv_usd += parseFloat(-row.total_igv);
+                //             this.totals.acum_total_exonerated += 0;
+                //             this.totals.acum_total_unaffected += 0;
+                //             this.totals.acum_total_free += 0;
 
+                //         }else{
 
+                //             this.totals.acum_total += parseFloat(row.total);
+                //             this.totals.acum_total_taxed += parseFloat(row.total_taxed);
+                //             this.totals.acum_total_igv += parseFloat(row.total_igv);
 
-                        }else if(signal != '07' && state == '11'){
-
-                            this.totals.acum_total_usd += 0;
-                            this.totals.acum_total_taxed_usd += 0;
-                            this.totals.acum_total_igv_usd += 0;
-
-
-                        }else{
-
-                            this.totals.acum_total_usd += parseFloat(row.total);
-                            this.totals.acum_total_taxed_usd += parseFloat(row.total_taxed);
-                            this.totals.acum_total_igv_usd += parseFloat(row.total_igv);
-
-                        }
+                //             this.totals.acum_total_exonerated += parseFloat(row.total_exonerated);
+                //             this.totals.acum_total_unaffected += parseFloat(row.total_unaffected);
+                //             this.totals.acum_total_free += parseFloat(row.total_free);
+                //         }
 
 
-                    }
-                    this.totals.acum_total_taxed = _.round(this.totals.acum_total_taxed,2)
-                    this.totals.acum_total_igv = _.round(this.totals.acum_total_igv,2)
-                    this.totals.acum_total = _.round(this.totals.acum_total,2)
-                    this.totals.acum_total_exonerated = _.round(this.totals.acum_total_exonerated,2)
-                    this.totals.acum_total_unaffected = _.round(this.totals.acum_total_unaffected,2)
-                    this.totals.acum_total_free = _.round(this.totals.acum_total_free,2)
+                //     }else if(row.currency_type_id == 'USD'){
 
-                    this.totals.acum_total_taxed_usd = _.round(this.totals.acum_total_taxed_usd,2)
-                    this.totals.acum_total_igv_usd = _.round(this.totals.acum_total_igv_usd,2)
-                    this.totals.acum_total_usd = _.round(this.totals.acum_total_usd,2)
-                })
+                //         if((signal == '07' && state != '11')){
+
+                //             this.totals.acum_total_usd += parseFloat(-row.total);
+                //             this.totals.acum_total_taxed_usd += parseFloat(-row.total_taxed);
+                //             this.totals.acum_total_igv_usd += parseFloat(-row.total_igv);
+
+
+
+                //         }else if(signal != '07' && state == '11'){
+
+                //             this.totals.acum_total_usd += 0;
+                //             this.totals.acum_total_taxed_usd += 0;
+                //             this.totals.acum_total_igv_usd += 0;
+
+
+                //         }else{
+
+                //             this.totals.acum_total_usd += parseFloat(row.total);
+                //             this.totals.acum_total_taxed_usd += parseFloat(row.total_taxed);
+                //             this.totals.acum_total_igv_usd += parseFloat(row.total_igv);
+
+                //         }
+
+
+                //     }
+                //     this.totals.acum_total_taxed = _.round(this.totals.acum_total_taxed,2)
+                //     this.totals.acum_total_igv = _.round(this.totals.acum_total_igv,2)
+                //     this.totals.acum_total = _.round(this.totals.acum_total,2)
+                //     this.totals.acum_total_exonerated = _.round(this.totals.acum_total_exonerated,2)
+                //     this.totals.acum_total_unaffected = _.round(this.totals.acum_total_unaffected,2)
+                //     this.totals.acum_total_free = _.round(this.totals.acum_total_free,2)
+
+                //     this.totals.acum_total_taxed_usd = _.round(this.totals.acum_total_taxed_usd,2)
+                //     this.totals.acum_total_igv_usd = _.round(this.totals.acum_total_igv_usd,2)
+                //     this.totals.acum_total_usd = _.round(this.totals.acum_total_usd,2)
+                // })
             },
             clickDownload(type) {
                 let query = queryString.stringify({

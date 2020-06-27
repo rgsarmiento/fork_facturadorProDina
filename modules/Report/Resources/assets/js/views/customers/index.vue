@@ -10,7 +10,7 @@
                             <th class="">#</th>
                             <th class="">Fecha</th>
                             <th class="">Tipo Documento</th>
-                            <th class="">Serie</th>
+                            <th class="">Prefijo</th>
                             <th class="">Número</th>
                             <th class="">Monto</th>
                         <tr>

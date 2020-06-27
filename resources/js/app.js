@@ -281,6 +281,10 @@ Vue.component('tenant-expense-types-index', require('@viewsModuleExpense/expense
 Vue.component('tenant-expense-reasons-index', require('@viewsModuleExpense/expense_reasons/index.vue'));
 Vue.component('tenant-expense-method-types-index', require('@viewsModuleExpense/expense_method_types/index.vue'));
 
+//technical Services
+Vue.component('tenant-technical-services-index', require('@viewsModuleSale/technical-services/index.vue'));
+Vue.component('tenant-user-commissions-index', require('@viewsModuleSale/user-commissions/index.vue'));
+
 
 // System
 Vue.component('system-clients-index', require('./views/system/clients/index.vue'));

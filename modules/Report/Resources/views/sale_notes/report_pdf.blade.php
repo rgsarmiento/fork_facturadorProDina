@@ -77,15 +77,6 @@
             <div class="">
                 <div class=" ">
                 
-                    @php
-                        $acum_total_taxed=0;
-                        $acum_total_igv=0;
-                        $acum_total=0;
-
-                        $acum_total_taxed_usd=0;
-                        $acum_total_igv_usd=0;
-                        $acum_total_usd=0;
-                    @endphp
 
                     <table class="">
                         <thead>
@@ -97,11 +88,6 @@
                                 <th>Estado</th>
                                 <th class="text-center">Moneda</th>
                                 <th class="text-center">Comprobantes</th>
-                                <th class="text-right" >T.Exportación</th>
-                                <th class="text-right" >T.Inafecta</th>
-                                <th class="text-right" >T.Exonerado</th>
-                                <th class="text-right">T.Gravado</th>
-                                <th class="text-right">T.Igv</th>
                                 <th class="text-right">Total</th>
                             </tr>
                         </thead>
@@ -123,26 +109,16 @@
                                     @if($value->state_type_id == '11')
                                     
                                         <td class="celda">0</td>
-                                        <td class="celda">0</td>
-                                        <td class="celda">0</td>
-                                        <td class="celda">0</td>
-                                        <td class="celda">0</td>
-                                        <td class="celda">0</td>
 
                                     @else
 
-                                        <td class="celda">{{ ($value->total_exportation) }}</td>
-                                        <td class="celda">{{ $value->total_unaffected }}</td>
-                                        <td class="celda">{{ $value->total_exonerated }}</td>
-                                        <td class="celda">{{ $value->total_taxed}}</td>
-                                        <td class="celda">{{ $value->total_igv}}</td>
                                         <td class="celda">{{ $value->total}}</td>
 
                                     @endif
                                 </tr>
 
                                 
-                                @php
+                                {{-- @php
                                 
                                     if($value->currency_type_id == 'PEN'){
 
@@ -177,9 +153,9 @@
                                         }
 
                                     }
-                                @endphp
+                                @endphp --}}
                             @endforeach
-                            <tr>
+                            {{-- <tr>
                                 <td class="celda" colspan="9"></td>
                                 <td class="celda" >Totales PEN</td>
                                 <td class="celda">{{$acum_total_taxed}}</td>
@@ -192,7 +168,7 @@
                                 <td class="celda">{{$acum_total_taxed_usd}}</td>
                                 <td class="celda">{{$acum_total_igv_usd}}</td>
                                 <td class="celda">{{$acum_total_usd}}</td>
-                            </tr>
+                            </tr> --}}
                         </tbody>
                     </table>
                 </div>

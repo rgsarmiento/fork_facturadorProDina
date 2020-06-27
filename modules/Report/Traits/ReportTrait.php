@@ -193,7 +193,7 @@ trait ReportTrait
         $items = Item::orderBy('description')->take(20)->get()->transform(function($row) {
             return [
                 'id' => $row->id,
-                'description' => ($row->internal_id) ? "{$row->internal_id} - {$row->description}" :$row->description,
+                'description' => ($row->internal_id) ? "{$row->internal_id} - {$row->name}" :$row->name,
             ];
         });
 

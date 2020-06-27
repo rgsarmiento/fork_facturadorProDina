@@ -53,30 +53,14 @@
         <br>
         @if(!empty($records))
             <div class="">
-                <div class=" ">
-                    @php
-                        $acum_total_taxed=0;
-                        $acum_total_igv=0;
-                        $acum_total=0;
-                      
-                        $serie_affec = '';
-                        $acum_total_exonerado=0;
-                        $acum_total_inafecto=0;
-
-                        $acum_total_free=0;
-
-                        $acum_total_taxed_usd = 0;
-                        $acum_total_igv_usd = 0;
-                        $acum_total_usd = 0;
-                        $acum_quantity=0;
-                    @endphp
+                <div class=" "> 
                     <table class="">
                         <thead>
                             <tr>
                                 <th class="">#</th>
                                 <th class="">Fecha</th>
                                 <th class="">Tipo Documento</th>
-                                <th class="">Serie</th>
+                                <th class="">Prefijo</th>
                                 <th class="">Número</th>
                                 <th class="">N° Documento</th>
                                 <th class="">Cliente</th>
@@ -89,58 +73,16 @@
                             <tr>
                                 <td class="celda">{{$loop->iteration}}</td>
                                 <td class="celda">{{$value->document->date_of_issue->format('Y-m-d')}}</td> 
-                                <td class="celda">{{$value->document->document_type->description}}</td>
+                                <td class="celda">{{$value->document->type_document->name}}</td>
                                 <td class="celda">{{$value->document->series}}</td>
                                 <td class="celda">{{$value->document->number}}</td>
                                 <td class="celda">{{$value->document->customer->number}}</td>
                                 <td class="celda">{{$value->document->customer->name}}</td>
                                 <td class="celda">{{$value->quantity}}</td>
                                 <td class="celda">{{$value->total}}</td>
-                               
-                                @php
-                                  $signal = $value->document->document_type_id;
-                                  $state = $value->document->state_type_id;
-                                @endphp 
-                                
-                                
-                                
-                                @php
-                                    $value->total = (in_array($value->document->document_type_id,['01','03']) && in_array($value->document->state_type_id,['09','11'])) ? 0 : $value->total;
-                                @endphp
-
-                            @php
-                              
-                                $serie_affec =  '';
-                              
-                            @endphp
- 
+                           
                             </tr>
-                            @php
-
-                                if(($signal == '07' && $state !== '11')){
-
-                                    $acum_total += -$value->total; 
-
-                                }elseif($signal != '07' && $state == '11'){
-
-                                    $acum_total += 0; 
-
-                                }else{
-
-                                    $acum_total += $value->total; 
-
-                                }
-
-                                $acum_quantity += $value->quantity; 
-
-                            @endphp
                             @endforeach
-                            <tr>
-                                <td colspan="6"></td> 
-                                <td >TOTALES</td>
-                                <td>{{$acum_quantity}}</td>
-                                <td>{{$acum_total}}</td>
-                            </tr> 
                         </tbody>
                     </table>
                 </div>

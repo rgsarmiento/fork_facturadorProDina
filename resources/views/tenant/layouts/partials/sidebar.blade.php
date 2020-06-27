@@ -449,7 +449,7 @@
                                     </ul>
                                 </li>
 
-                                <li class="nav-parent
+                                {{-- <li class="nav-parent
                                     {{ ($path[0] === 'fixed-asset' )?'nav-active nav-expanded':'' }}
                                     ">
                                     <a class="nav-link" href="#">
@@ -468,7 +468,7 @@
                                             </a>
                                         </li>
                                     </ul>
-                                </li>
+                                </li> --}}
                             </ul>
                         </li>
                         @endif
@@ -619,13 +619,13 @@
                                             Notas de Venta
                                         </a>
                                     </li>
-                                    @if($vc_company->soap_type_id != '03')
+                                    {{-- @if($vc_company->soap_type_id != '03')
                                     <li class="{{(($path[0] === 'reports') && ($path[1] == 'document-detractions')) ? 'nav-active' : ''}}">
                                         <a class="nav-link" href="{{route('tenant.reports.document_detractions.index')}}">
                                             Detracciones
                                         </a>
                                     </li>
-                                    @endif
+                                    @endif --}}
 
 
                                     <li class="nav-parent
@@ -684,7 +684,7 @@
                                 </ul>
                             </li>
 
-                            @if($vc_company->soap_type_id != '03')
+                            {{-- @if($vc_company->soap_type_id != '03')
                             <li class="{{(($path[0] === 'reports') && ($path[1] == 'consistency-documents')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.consistency-documents.index')}}">Consistencia documentos</a>
                             </li>
@@ -694,7 +694,7 @@
                                     Validador de documentos
                                 </a>
                             </li>
-                            @endif
+                            @endif --}}
                             @if(in_array('hotel', $vc_business_turns))
                             <li class="{{(($path[0] === 'reports') && ($path[1] == 'document-hotels')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.reports.document_hotels.index')}}">

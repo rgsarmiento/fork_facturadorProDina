@@ -21,7 +21,7 @@ class ReportPurchaseController extends Controller
 
     public function filter() {
 
-        $document_types = DocumentType::whereIn('id', ['01', '03'])->get();
+        $document_types = DocumentType::whereIn('id', ['01', 'GU75', 'NE76'])->get();
 
         $persons = $this->getPersons('suppliers');
         $sellers = $this->getSellers();

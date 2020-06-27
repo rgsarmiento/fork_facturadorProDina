@@ -14,10 +14,11 @@ class DocumentCollection extends ResourceCollection
         return $this->collection->transform(function($row, $key){ 
             
             $affected_document = null;
-            if(in_array($row->document_type_id,['07','08']) && $row->note){
 
-                $series = ($row->note->affected_document) ? $row->note->affected_document->series : $row->note->data_affected_document->series;
-                $number =  ($row->note->affected_document) ? $row->note->affected_document->number : $row->note->data_affected_document->number;
+            if(in_array($row->type_document_id,[2,3]) && $row->reference){
+
+                $series = $row->reference->series; 
+                $number =  $row->reference->number;
                 $affected_document = $series.' - '.$number;
             }
 
@@ -51,7 +52,8 @@ class DocumentCollection extends ResourceCollection
 
                 'state_type_id' => $row->state_type_id,
                 'state_type_description' => $row->state_document->name,
-                'document_type_description' => $row->document_type->description,
+                // 'document_type_description' => $row->document_type->description,
+                'document_type_description' => $row->type_document->name,
                 'document_type_id' => $row->document_type->id,   
                 'affected_document' => $affected_document,   
                 'user_name' => ($row->user) ? $row->user->name : '',

@@ -7,22 +7,39 @@ use App\Http\Controllers\Controller;
 use Barryvdh\DomPDF\Facade as PDF;
 use Modules\Report\Exports\DocumentExport;
 use Illuminate\Http\Request;
-use Modules\Report\Traits\ReportTrait;
+use Modules\Report\Traits\ReportDocumentTrait;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Document;
 use App\Models\Tenant\Company;
 use Carbon\Carbon;
 use Modules\Report\Http\Resources\DocumentCollection;
+use Modules\Factcolombia1\Models\Tenant\{
+    TypeDocument,
+};
 
 
 class ReportDocumentController extends Controller
 {
-    use ReportTrait;
+    use ReportDocumentTrait;
 
 
     public function filter() {
 
-        $document_types = DocumentType::whereIn('id', ['01', '03','07', '08'])->get();
+        $document_types = TypeDocument::query()
+                            ->get()
+                            ->each(function($typeDocument) {
+                                $typeDocument->alert_range = (($typeDocument->to - 100) < (Document::query()
+                                    ->hasPrefix($typeDocument->prefix)
+                                    ->whereBetween('number', [$typeDocument->from, $typeDocument->to])
+                                    ->max('number') ?? $typeDocument->from));
+
+                                $typeDocument->alert_date = ($typeDocument->resolution_date_end == null) ? false : Carbon::parse($typeDocument->resolution_date_end)->subMonth(1)->lt(Carbon::now());
+                            })->transform(function($row) {
+                                return [
+                                    'id' => $row->id,
+                                    'description' => $row->name
+                                ];
+                            });
 
         $persons = $this->getPersons('customers');
         $sellers = $this->getSellers();

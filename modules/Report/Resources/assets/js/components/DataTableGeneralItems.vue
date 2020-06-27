@@ -58,7 +58,7 @@
                             </div>
                         </template>
                         
-                        <div class="col-md-3" >
+                        <div class="col-md-3" v-if="form.type == 'purchase'">
                             <div class="form-group">
                                 <label class="control-label">Tipo de documento</label>
                                 <el-select v-model="form.document_type_id" clearable>

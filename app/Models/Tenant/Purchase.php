@@ -236,6 +236,11 @@ class Purchase extends ModelTenant
         return $this->series.'-'.$this->number;
     }
 
+    public function getCurrencyTypeIdAttribute()
+    {
+        return $this->currency->name;
+    }
+
     public function kardex()
     {
         return $this->hasMany(Kardex::class);

@@ -17,12 +17,6 @@
                             <th class="text-center">Comprobantes</th>
                             <th>Cotización</th>
                             <th>Caso</th>
-                            <th class="text-right" >T.Exportación</th>
-                            <th class="text-right" >T.Inafecta</th>
-                            <th class="text-right" >T.Exonerado</th>
-
-                            <th class="text-right">T.Gravado</th>
-                            <th class="text-right">T.Igv</th>
                             <th class="text-right">Total</th>
                         <tr>
                         <tr slot-scope="{ index, row }">
@@ -40,12 +34,6 @@
                             </td>
                             <td>{{row.quotation_number_full}}</td>
                             <td>{{row.sale_opportunity_number_full}}</td>
-                            <td >{{ (row.state_type_id == '11') ? "0.00" : row.total_exportation }}</td>
-                            <td >{{ (row.state_type_id == '11') ? "0.00" : row.total_unaffected }}</td>
-                            <td >{{ (row.state_type_id == '11') ? "0.00" : row.total_exonerated }}</td>
-
-                            <td>{{ (row.state_type_id == '11') ? "0.00" : row.total_taxed}}</td>
-                            <td>{{ (row.state_type_id == '11') ? "0.00" : row.total_igv}}</td>
                             <td>{{ (row.state_type_id == '11') ? "0.00" : row.total}}</td>
                             
                         </tr>
