@@ -6,10 +6,13 @@ use App\Models\Tenant\Catalogs\CurrencyType;
 use Modules\Sale\Models\SaleOpportunity;
 use Modules\Sale\Models\QuotationPayment;
 use Modules\Sale\Models\Contract;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
 
 class Quotation extends ModelTenant
 {
-    protected $with = ['user', 'soap_type', 'state_type', 'currency_type', 'items', 'payments'];
+    protected $with = ['soap_type', 'state_type', 'currency', 'items', 'payments'];
 
     protected $fillable = [
         'id',
@@ -29,32 +32,8 @@ class Quotation extends ModelTenant
         'delivery_date',
         'customer_id',
         'customer',
-        'currency_type_id',
         'exchange_rate_sale',
-        'total_prepayment',
-        'total_discount',
-        'total_charge',
-        'total_exportation',
-        'total_free',
-        'total_taxed',
-        'total_unaffected',
-        'total_exonerated',
-        'total_igv',
-        'total_base_isc',
-        'total_isc',
-        'total_base_other_taxes',
-        'total_other_taxes',
-        'total_taxes',
-        'total_value',
         'total',
-        'charges',
-        'discounts',
-        'prepayments',
-        'guides',
-        'related',
-        'perception',
-        'detraction',
-        'legends',
         'filename',
         'shipping_address',
         'description',
@@ -63,12 +42,21 @@ class Quotation extends ModelTenant
         'account_number',
         'terms_condition',
 
+        //co
+        'currency_id',
+        'sale',
+        'taxes',
+        'total_tax',
+        'total_discount',
+        'subtotal',
+
     ];
 
     protected $casts = [
         'date_of_issue' => 'date',
         'date_of_due' => 'date',
         'delivery_date' => 'date',
+        'taxes' => 'object',
     ];
 
     public function getEstablishmentAttribute($value)
@@ -89,86 +77,6 @@ class Quotation extends ModelTenant
     public function setCustomerAttribute($value)
     {
         $this->attributes['customer'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getChargesAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setChargesAttribute($value)
-    {
-        $this->attributes['charges'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getDiscountsAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setDiscountsAttribute($value)
-    {
-        $this->attributes['discounts'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getPrepaymentsAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setPrepaymentsAttribute($value)
-    {
-        $this->attributes['prepayments'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getGuidesAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setGuidesAttribute($value)
-    {
-        $this->attributes['guides'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getRelatedAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setRelatedAttribute($value)
-    {
-        $this->attributes['related'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getPerceptionAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setPerceptionAttribute($value)
-    {
-        $this->attributes['perception'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getDetractionAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setDetractionAttribute($value)
-    {
-        $this->attributes['detraction'] = (is_null($value))?null:json_encode($value);
-    }
-
-    public function getLegendsAttribute($value)
-    {
-        return (is_null($value))?null:(object) json_decode($value);
-    }
-
-    public function setLegendsAttribute($value)
-    {
-        $this->attributes['legends'] = (is_null($value))?null:json_encode($value);
     }
 
     public function getIdentifierAttribute()
@@ -195,10 +103,18 @@ class Quotation extends ModelTenant
         return $this->belongsTo(Person::class, 'customer_id');
     }
 
+    public function currency() {
+        return $this->belongsTo(Currency::class, 'currency_id');
+    }
 
-    public function currency_type()
+    //legacy
+    public function currency_type() {
+        return $this->belongsTo(Currency::class, 'currency_id');
+    }
+
+    public function getCurrencyTypeIdAttribute()
     {
-        return $this->belongsTo(CurrencyType::class, 'currency_type_id');
+        return $this->currency->name;
     }
 
     public function items()

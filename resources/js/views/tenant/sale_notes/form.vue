@@ -288,7 +288,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <h3 class="text-right" v-if="form.total > 0"><b>TOTAL COMPRAS: </b>{{ ratePrefix() }} {{ form.total }}</h3>
+                                <h3 class="text-right" v-if="form.total > 0"><b>TOTAL A PAGAR: </b>{{ ratePrefix() }} {{ form.total }}</h3>
                             </div>
 
                         </div>
@@ -359,6 +359,7 @@
                 is_contingency: false,
                 taxes:  [],
                 payment_destinations:  [],
+                currencies:  [],
 
             }
         },
@@ -689,13 +690,6 @@
                 this.calculateTotal()
             },
             changeCurrencyType() {
-                this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
-                let items = []
-                this.form.items.forEach((row) => {
-                    items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale))
-                });
-                this.form.items = items
-                this.calculateTotal()
             },
             calculateTotal() {
                 this.setDataTotals()

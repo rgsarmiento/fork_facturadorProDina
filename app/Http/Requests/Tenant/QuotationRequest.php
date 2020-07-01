@@ -24,7 +24,7 @@ class QuotationRequest extends FormRequest
                 'required',
                 'numeric'
             ],
-            'currency_type_id' => [
+            'currency_id' => [
                 'required',
             ],
             'date_of_issue' => [

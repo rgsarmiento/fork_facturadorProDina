@@ -40,6 +40,11 @@ use App\Models\Tenant\PaymentMethodType;
 use Modules\Finance\Traits\FinanceTrait;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\StateType;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+    TypeDocument,
+    Tax,
+};
 
 
 class QuotationController extends Controller
@@ -129,7 +134,9 @@ class QuotationController extends Controller
                                     'name' => $row->name,
                                     'number' => $row->number,
                                     'identity_document_type_id' => $row->identity_document_type_id,
-                                    'identity_document_type_code' => $row->identity_document_type->code
+                                    'address' =>  $row->address,
+                                    'email' =>  $row->email,
+                                    'telephone' =>  $row->telephone,
                                 ];
                             });
 
@@ -137,19 +144,23 @@ class QuotationController extends Controller
     }
 
     public function tables() {
+
         $customers = $this->table('customers');
         $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
-        $currency_types = CurrencyType::whereActive()->get();
+        // $currency_types = CurrencyType::whereActive()->get();
         // $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        // $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
+        // $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
         $company = Company::active();
-        $document_type_03_filter = config('tenant.document_type_03_filter');
         $payment_method_types = PaymentMethodType::orderBy('id','desc')->get();
         $payment_destinations = $this->getPaymentDestinations();
 
-        return compact('customers', 'establishments','currency_types', 'discount_types', 'charge_types',
-                        'company', 'document_type_03_filter','payment_method_types', 'payment_destinations');
+        $currencies = Currency::all();
+        $taxes = $this->table('taxes');
+
+        return compact('customers', 'establishments','currencies', 'taxes',
+                        'company','payment_method_types', 'payment_destinations');
+
     }
 
     public function option_tables()
@@ -164,16 +175,13 @@ class QuotationController extends Controller
     }
 
     public function item_tables() {
+
         $items = $this->table('items');
         $categories = [];
-        $affectation_igv_types = AffectationIgvType::whereActive()->get();
-        $system_isc_types = SystemIscType::whereActive()->get();
-        $price_types = PriceType::whereActive()->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
-        $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
+        $taxes = $this->table('taxes');
 
-        return compact('items', 'categories', 'affectation_igv_types', 'system_isc_types', 'price_types', 'discount_types', 'charge_types', 'attribute_types');
+        return compact('items', 'categories', 'taxes');
+
     }
 
     public function record($id)
@@ -193,7 +201,7 @@ class QuotationController extends Controller
 
     public function getFullDescription($row){
 
-        $desc = ($row->internal_id)?$row->internal_id.' - '.$row->description : $row->description;
+        $desc = ($row->internal_id)?$row->internal_id.' - '.$row->name : $row->name;
         $category = ($row->category) ? " - {$row->category->name}" : "";
         $brand = ($row->brand) ? " - {$row->brand->name}" : "";
 
@@ -349,6 +357,29 @@ class QuotationController extends Controller
     public function table($table)
     {
         switch ($table) {
+
+            case 'taxes':
+
+                return Tax::all()->transform(function($row) {
+                    return [
+                        'id' => $row->id,
+                        'name' => $row->name,
+                        'code' => $row->code,
+                        'rate' =>  $row->rate,
+                        'conversion' =>  $row->conversion,
+                        'is_percentage' =>  $row->is_percentage,
+                        'is_fixed_value' =>  $row->is_fixed_value,
+                        'is_retention' =>  $row->is_retention,
+                        'in_base' =>  $row->in_base,
+                        'in_tax' =>  $row->in_tax,
+                        'type_tax_id' =>  $row->type_tax_id,
+                        'type_tax' =>  $row->type_tax,
+                        'retention' =>  0,
+                        'total' =>  0,
+                    ];
+                });
+                break;
+
             case 'customers':
 
                 $customers = Person::whereType('customers')->whereIsEnabled()->orderBy('name')->take(20)->get()->transform(function($row) {
@@ -358,7 +389,9 @@ class QuotationController extends Controller
                         'name' => $row->name,
                         'number' => $row->number,
                         'identity_document_type_id' => $row->identity_document_type_id,
-                        'identity_document_type_code' => $row->identity_document_type->code
+                        'address' =>  $row->address,
+                        'email' =>  $row->email,
+                        'telephone' =>  $row->telephone,
                     ];
                 });
                 return $customers;
@@ -378,15 +411,14 @@ class QuotationController extends Controller
                     // $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
                     return [
                         'id' => $row->id,
+                        'description' => $full_description,
                         'full_description' => $full_description,
-                        'description' => $row->description,
-                        'currency_type_id' => $row->currency_type_id,
+                        'currency_id' => $row->currency_id,
                         'currency_type_symbol' => $row->currency_type->symbol,
                         'sale_unit_price' => $row->sale_unit_price,
                         'purchase_unit_price' => $row->purchase_unit_price,
                         'unit_type_id' => $row->unit_type_id,
-                        'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                        'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
+                        'tax_id' => $row->tax_id,
                         'is_set' => (bool) $row->is_set,
                         'has_igv' => (bool) $row->has_igv,
                         'calculate_quantity' => (bool) $row->calculate_quantity,
@@ -396,6 +428,7 @@ class QuotationController extends Controller
                                 'description' => "{$row->description}",
                                 'item_id' => $row->item_id,
                                 'unit_type_id' => $row->unit_type_id,
+                                'unit_type' => $row->unit_type,
                                 'quantity_unit' => $row->quantity_unit,
                                 'price1' => $row->price1,
                                 'price2' => $row->price2,
@@ -409,7 +442,9 @@ class QuotationController extends Controller
                                 'warehouse_description' => $row->warehouse->description,
                                 'stock' => $row->stock,
                             ];
-                        })
+                        }),
+                        'unit_type' => $row->unit_type,
+                        'tax' => $row->tax,
                     ];
                 });
                 return $items;
@@ -434,7 +469,9 @@ class QuotationController extends Controller
                             'name' => $row->name,
                             'number' => $row->number,
                             'identity_document_type_id' => $row->identity_document_type_id,
-                            'identity_document_type_code' => $row->identity_document_type->code
+                            'address' =>  $row->address,
+                            'email' =>  $row->email,
+                            'telephone' =>  $row->telephone,
                         ];
                     });
 

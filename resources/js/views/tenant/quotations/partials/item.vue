@@ -9,11 +9,6 @@
                                 Producto/Servicio
                                 <a href="#" @click.prevent="showDialogNewItem = true">[+ Nuevo]</a>
                             </label>
-
-                            <!-- <el-select v-model="form.item_id" @change="changeItem" filterable  ref="select_item" @focus="focusSelectItem">
-                                <el-option v-for="option in items" :key="option.id" :value="option.id" :label="option.full_description"></el-option>
-                            </el-select> -->
-
                             
                             <template  id="select-append">
                                 <el-input id="custom-input">
@@ -38,16 +33,19 @@
                             <small class="form-control-feedback" v-if="errors.item_id" v-text="errors.item_id[0]"></small>
                         </div>
                     </div>
+                    
                     <div class="col-md-5">
-                        <div class="form-group" :class="{'has-danger': errors.affectation_igv_type_id}">
-                            <label class="control-label">Afectación Igv</label>
-                            <el-select v-model="form.affectation_igv_type_id" :disabled="!change_affectation_igv_type_id" filterable>
-                                <el-option v-for="option in affectation_igv_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                        <div class="form-group" :class="{'has-danger': errors.tax_id}">
+                            <label class="control-label">Impuesto</label>
+                            <el-select v-model="form.tax_id"  filterable>
+                                <el-option v-for="option in itemTaxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
-                            <el-checkbox v-model="change_affectation_igv_type_id">Editar</el-checkbox>
-                            <small class="form-control-feedback" v-if="errors.affectation_igv_type_id" v-text="errors.affectation_igv_type_id[0]"></small>
+                            <!-- <el-checkbox :disabled="recordItem != null" v-model="change_tax_id">Editar</el-checkbox> -->
+                            <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
                         </div>
                     </div>
+
+
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.quantity}">
                             <label class="control-label">Cantidad</label>
@@ -64,6 +62,18 @@
                             <small class="form-control-feedback" v-if="errors.unit_price" v-text="errors.unit_price[0]"></small>
                         </div>
                     </div>
+                    
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group"  :class="{'has-danger': errors.discount}">
+                            <label class="control-label">Descuento</label>
+                            <el-input v-model="form.discount" :min="0" >
+                                <template slot="prepend" v-if="form.item.currency_type_symbol">{{ form.item.currency_type_symbol }}</template>
+                            </el-input>
+                            <small class="form-control-feedback" v-if="errors.discount" v-text="errors.discount[0]"></small>
+                        </div>
+                    </div>
+
+
                       <div class="col-md-12"  v-if="item_unit_types.length > 0">
                         <div style="margin:3px" class="table-responsive">
                             <h3>Lista de Precios</h3>
@@ -81,159 +91,24 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(row, index) in item_unit_types">
-                                            <td class="text-center">{{row.unit_type_id}}</td>
-                                            <td class="text-center">{{row.description}}</td>
-                                            <td class="text-center">{{row.quantity_unit}}</td>
-                                            <td class="text-center">{{row.price1}}</td>
-                                            <td class="text-center">{{row.price2}}</td>
-                                            <td class="text-center">{{row.price3}}</td>
-                                            <td class="text-center">Precio {{row.price_default}}</td>
-                                            <td class="series-table-actions text-right">
-                                            <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="selectedPrice(row)">
-                                                    <i class="el-icon-check"></i>
-                                                </button>
-                                            </td>
+                                    <tr v-for="(row, index) in item_unit_types" :key="index">
+                                        <td class="text-center">{{row.unit_type.name}}</td>
+                                        <td class="text-center">{{row.description}}</td>
+                                        <td class="text-center">{{row.quantity_unit}}</td>
+                                        <td class="text-center">{{row.price1}}</td>
+                                        <td class="text-center">{{row.price2}}</td>
+                                        <td class="text-center">{{row.price3}}</td>
+                                        <td class="text-center">Precio {{row.price_default}}</td>
+                                        <td class="series-table-actions text-right">
+                                        <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="selectedPrice(row)">
+                                                <i class="el-icon-check"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6" v-show="form.item.calculate_quantity">
-                        <div class="form-group"  :class="{'has-danger': errors.total_item}">
-                            <label class="control-label">Total venta producto</label>
-                            <el-input v-model="total_item" @input="calculateQuantity" :min="0.01" ref="total_item">
-                                <template slot="prepend" v-if="form.item.currency_type_symbol">{{ form.item.currency_type_symbol }}</template>
-                            </el-input>
-                            <small class="form-control-feedback" v-if="errors.total_item" v-text="errors.total_item[0]"></small>
-                        </div>
-                    </div>
-                    <!--<div class="col-md-6" v-show="has_list_prices">
-                        <div class="form-group" :class="{'has-danger': errors.item_unit_type_id}">
-                            <label class="control-label">Presentación</label>
-                            <el-select v-model="form.item_unit_type_id" filterable @change="changePresentation">
-                                <el-option v-for="option in item_unit_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                            </el-select>
-                            <el-radio-group v-if="form.item_unit_type_id" v-model="item_unit_type.price_default" @change="changePresentation">
-                                <el-radio :label="1">Precio 1</el-radio>
-                                <el-radio :label="2">Precio 2</el-radio>
-                                <el-radio :label="3">Precio 3</el-radio>
-                            </el-radio-group>
-                            <small class="form-control-feedback" v-if="errors.item_unit_type_id" v-text="errors.item_unit_type_id[0]"></small>
-                        </div>
-                    </div>-->
-                    <div class="col-md-12 mt-3">
-                        <section class="card mb-2 card-transparent card-collapsed" id="card-section">
-                                <header class="card-header hoverable bg-light border-top rounded-0 py-1" data-card-toggle style="cursor: pointer;" id="card-click">
-                                    <div class="card-actions" style="margin-top: -12px;">
-                                        <a href="#" class="card-action card-action-toggle text-info" data-card-toggle=""></a>
-
-                                    </div>
-
-                                    <p class="pl-1">Información adicional atributos UBL 2.1</p>
-                                </header>
-                                <div class="card-body px-0 pt-2" style="display: none;">
-                                    <div class="col-md-12 px-0" v-if="discount_types.length > 0">
-                                        <label class="control-label">
-                                            Descuentos
-                                            <a href="#" @click.prevent="clickAddDiscount">[+ Agregar]</a>
-                                        </label>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th>Tipo</th>
-                                                <th>Descripción</th>
-                                                <th>Porcentaje</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="(row, index) in form.discounts">
-                                                <td>
-                                                    <el-select v-model="row.discount_type_id" @change="changeDiscountType(index)">
-                                                        <el-option v-for="option in discount_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                                    </el-select>
-                                                </td>
-                                                <td>
-                                                    <el-input v-model="row.description"></el-input>
-                                                </td>
-                                                <td>
-                                                    <el-input v-model="row.percentage"></el-input>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger" @click.prevent="clickRemoveDiscount(index)">x</button>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-12 px-0" v-if="charge_types.length > 0">
-                                        <label class="control-label">
-                                            Cargos
-                                            <a href="#" @click.prevent="clickAddCharge">[+ Agregar]</a>
-                                        </label>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th>Tipo</th>
-                                                <th>Descripción</th>
-                                                <th>Porcentaje</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="(row, index) in form.charges">
-                                                <td>
-                                                    <el-select v-model="row.charge_type_id" @change="changeChargeType(index)">
-                                                        <el-option v-for="option in charge_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                                    </el-select>
-                                                </td>
-                                                <td>
-                                                    <el-input v-model="row.description"></el-input>
-                                                </td>
-                                                <td>
-                                                    <el-input v-model="row.percentage"></el-input>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger" @click.prevent="clickRemoveCharge(index)">x</button>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-12 px-0" v-if="attribute_types.length > 0">
-                                        <label class="control-label">
-                                            Atributos
-                                            <a href="#" @click.prevent="clickAddAttribute">[+ Agregar]</a>
-                                        </label>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th>Tipo</th>
-                                                <th>Descripción</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="(row, index) in form.attributes">
-                                                <td>
-                                                    <el-select v-model="row.attribute_type_id" filterable @change="changeAttributeType(index)">
-                                                        <el-option v-for="option in attribute_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                                    </el-select>
-                                                </td>
-                                                <td>
-                                                    <el-input v-model="row.value"></el-input>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger" @click.prevent="clickRemoveAttribute(index)">x</button>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </section>
-                    </div>
+                    </div> 
                 </div>
             </div>
             <div class="form-actions text-right pt-2">
@@ -287,19 +162,21 @@
                 has_list_prices: false,
                 warehousesDetail:[],
                 item_unit_types: [],
+                taxes:[],
                 item_unit_type: {}
             }
+        },
+        computed: {
+            itemTaxes() {
+                return this.taxes.filter(tax => !tax.is_retention);
+            },
         },
         created() {
             this.initForm()
             this.$http.get(`/${this.resource}/item/tables`).then(response => {
+                
                 this.items = response.data.items  
-                this.affectation_igv_types = response.data.affectation_igv_types
-                this.system_isc_types = response.data.system_isc_types
-                this.discount_types = response.data.discount_types
-                this.charge_types = response.data.charge_types
-                this.attribute_types = response.data.attribute_types
-                // this.filterItems()
+                this.taxes = response.data.taxes;
 
             })
 
@@ -329,21 +206,21 @@
                 this.form = {
                     item_id: null,
                     item: {},
-                    affectation_igv_type_id: null,
-                    affectation_igv_type: {},
-                    has_isc: false,
-                    system_isc_type_id: null,
-                    percentage_isc: 0,
-                    suggested_price: 0,
                     quantity: 1,
                     unit_price: 0,
-                    charges: [],
-                    discounts: [],
-                    attributes: [],
-                    has_igv: null,
                     item_unit_type_id: null,
-                    unit_type_id: null,
+                    item_unit_types: [],
                     is_set: false,
+                    
+                    subtotal: null,
+                    tax: {},
+                    tax_id: null,
+                    total: 0,
+                    total_tax: 0,
+                    unit_type: {},
+                    discount: 0,
+                    unit_type_id: null,
+
                 };
                 
                 this.total_item = 0;
@@ -356,78 +233,24 @@
             create() {
             //     this.initializeFields()
             },
-            clickAddDiscount() {
-                this.form.discounts.push({
-                    discount_type_id: null,
-                    discount_type: null,
-                    description: null,
-                    percentage: 0,
-                    factor: 0,
-                    amount: 0,
-                    base: 0
-                })
-            },
-            clickRemoveDiscount(index) {
-                this.form.discounts.splice(index, 1)
-            },
-            changeDiscountType(index) {
-                let discount_type_id = this.form.discounts[index].discount_type_id
-                this.form.discounts[index].discount_type = _.find(this.discount_types, {id: discount_type_id})
-            },
-            clickAddCharge() {
-                this.form.charges.push({
-                    charge_type_id: null,
-                    charge_type: null,
-                    description: null,
-                    percentage: 0,
-                    factor: 0,
-                    amount: 0,
-                    base: 0
-                })
-            },
-            clickRemoveCharge(index) {
-                this.form.charges.splice(index, 1)
-            },
-            changeChargeType(index) {
-                let charge_type_id = this.form.charges[index].charge_type_id
-                this.form.charges[index].charge_type = _.find(this.charge_types, {id: charge_type_id})
-            },
-            clickAddAttribute() {
-                this.form.attributes.push({
-                    attribute_type_id: null,
-                    description: null,
-                    value: null,
-                    start_date: null,
-                    end_date: null,
-                    duration: null,
-                })
-            },
-            clickRemoveAttribute(index) {
-                this.form.attributes.splice(index, 1)
-            },
-            changeAttributeType(index) {
-                let attribute_type_id = this.form.attributes[index].attribute_type_id
-                let attribute_type = _.find(this.attribute_types, {id: attribute_type_id})
-                this.form.attributes[index].description = attribute_type.description
-            },
             close() {
                 this.initForm()
                 this.$emit('update:showDialog', false)
             },
             changeItem() {
+
                 this.getItems();
                 this.form.item = _.find(this.items, {'id': this.form.item_id});
                 this.form.unit_price = this.form.item.sale_unit_price;
 
-                this.form.has_igv = this.form.item.has_igv;
-
-                this.form.affectation_igv_type_id = this.form.item.sale_affectation_igv_type_id;
                 this.form.quantity = 1;
                 this.item_unit_types = this.form.item.item_unit_types;
                 
+                this.form.unit_type_id = this.form.item.unit_type_id
+                this.form.tax_id = (this.taxes.length > 0) ? this.form.item.tax_id: null
+
                 (this.item_unit_types.length > 0) ? this.has_list_prices = true : this.has_list_prices = false;
                 
-                this.cleanTotalItem();
             },
             changePresentation() {
                 let price = 0;
@@ -470,27 +293,23 @@
                 this.form.item_unit_type_id = row.id
             },
             clickAddItem() {
-                if (this.validateTotalItem().total_item) return;
                 
-                // this.form.item.unit_price = this.form.unit_price;
-                let unit_price = (this.form.has_igv)?this.form.unit_price:this.form.unit_price*1.18;
+                let unit_price = this.form.unit_price;
 
-                // this.form.item.unit_price = this.form.unit_price
                 this.form.unit_price = unit_price;
                 this.form.item.unit_price = unit_price;
                 
                 this.form.item.presentation = this.item_unit_type;
-                this.form.affectation_igv_type = _.find(this.affectation_igv_types, {'id': this.form.affectation_igv_type_id});
-                this.row = calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale);
                 
-                this.initForm();
+                this.form.tax = _.find(this.taxes, {'id': this.form.tax_id})
+                this.form.unit_type = this.form.item.unit_type
                 
                 // this.initializeFields()
-                this.$emit('add', this.row);
+                this.$emit('add', this.form);
+                this.initForm();
                 this.setFocusSelectItem()
             },
             focusSelectItem(){
-                console.log("foc")
                 this.$refs.select_item.$el.getElementsByTagName('input')[0].focus()
             },
             setFocusSelectItem(){
