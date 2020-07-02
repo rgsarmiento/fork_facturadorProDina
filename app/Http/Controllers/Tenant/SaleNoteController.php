@@ -321,7 +321,7 @@ class SaleNoteController extends Controller
             'automatic_date_of_issue' => $automatic_date_of_issue,
             'user_id' => auth()->id(),
             'external_id' => Str::uuid()->toString(),
-            'customer' => PersonInput::set($inputs['customer_id']),
+            'customer' => Person::with('typePerson', 'typeRegime', 'identity_document_type', 'country', 'department', 'city')->findOrFail($inputs['customer_id']),
             'establishment' => EstablishmentInput::set($inputs['establishment_id']),
             'soap_type_id' => $this->company->soap_type_id,
             'state_type_id' => '01',

@@ -86,15 +86,15 @@
                                 <th>Cotización</th>
 
                                 <th>Comprobantes</th>
-                                <th>Notas de venta</th>
-                                <th>Caso</th>
+                                {{-- <th>Notas de venta</th>
+                                <th>Caso</th> --}}
                                 <th class="text-center">Moneda</th>
-                                <th class="text-right">T.Exportación</th>
+                                {{-- <th class="text-right">T.Exportación</th>
                                 <th class="text-right" >T.Inafecta</th>
 
                                 <th class="text-right">T.Exonerado</th>
                                 <th class="text-right">T.Gravado</th>
-                                <th class="text-right">T.Igv</th>
+                                <th class="text-right">T.Igv</th> --}}
                                 <th class="text-right">Total</th>
                             </tr>
                         </thead>
@@ -111,19 +111,19 @@
                                              <label class="d-block">{{$doc->number_full}}</label>
                                         @endforeach
                                     </td>
-                                    <td class="celda">
+                                    {{-- <td class="celda">
                                         @foreach ($value->sale_notes as $doc)
                                              <label class="d-block">{{$doc->identifier}}</label>
                                         @endforeach
                                     </td>
-                                    <td class="celda">{{ ($value->sale_opportunity) ? $value->sale_opportunity->number_full : '' }}</td>
+                                    <td class="celda">{{ ($value->sale_opportunity) ? $value->sale_opportunity->number_full : '' }}</td> --}}
                                     
                                     <td class="celda">{{$value->currency_type_id}}</td>
-                                    <td class="celda">{{$value->total_exportation}}</td>
+                                    {{-- <td class="celda">{{$value->total_exportation}}</td>
                                     <td class="celda">{{$value->total_unaffected}}</td>
                                     <td class="celda">{{ $value->total_exonerated}}</td>
                                     <td class="celda">{{ $value->total_taxed}}</td>
-                                    <td class="celda">{{ $value->total_igv}}</td>
+                                    <td class="celda">{{ $value->total_igv}}</td> --}}
                                     <td class="celda">{{ $value->total}}</td>
                                 </tr>
                             @endforeach

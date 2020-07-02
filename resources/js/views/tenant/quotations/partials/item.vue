@@ -226,6 +226,8 @@
                 this.total_item = 0;
                 this.item_unit_type = {};
                 this.has_list_prices = false;
+
+                this.item_unit_types = []
             },
             // initializeFields() {
             //     this.form.affectation_igv_type_id = this.affectation_igv_types[0].id

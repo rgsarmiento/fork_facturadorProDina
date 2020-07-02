@@ -65,7 +65,7 @@
         <td><p class="desc">{{ $customer->name }}</p></td>
     </tr>
     <tr>
-        <td><p class="desc">{{ $customer->identity_document_type->description }}:</p></td>
+        <td><p class="desc">{{ $customer->identity_document_type->name }}:</p></td>
         <td><p class="desc">{{ $customer->number }}</p></td>
     </tr>
     @if ($customer->address !== '')
@@ -74,9 +74,9 @@
             <td>
                 <p class="desc">
                     {{ $customer->address }}
-                    {{ ($customer->district_id !== '-')? ', '.$customer->district->description : '' }}
-                    {{ ($customer->province_id !== '-')? ', '.$customer->province->description : '' }}
-                    {{ ($customer->department_id !== '-')? '- '.$customer->department->description : '' }}
+                    {{ ($customer->country_id)? ', '.$customer->country->name : '' }}
+                    {{ ($customer->department_id)? ', '.$customer->department->name : '' }}
+                    {{ ($customer->city_id)? '- '.$customer->city->name : '' }}
                 </p>
             </td>
         </tr>

@@ -60,6 +60,7 @@ class DocumentHelper{
             'response_api_status' => $response_status,
             'correlative_api' => $correlative_api,
             'sale_note_id' => $request->sale_note_id,
+            'quotation_id' => $request->quotation_id,
 
         ]);
 

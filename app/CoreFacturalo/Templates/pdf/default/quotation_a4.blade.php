@@ -65,7 +65,7 @@
         <td width="15%">{{ $document->date_of_issue->format('Y-m-d') }}</td>
     </tr>
     <tr>
-        <td>{{ $customer->identity_document_type->description }}:</td>
+        <td>{{ $customer->identity_document_type->name }}:</td>
         <td>{{ $customer->number }}</td>
         @if($document->date_of_due)
             <td width="25%">Fecha de vencimiento:</td>
@@ -77,9 +77,9 @@
         <td class="align-top">Dirección:</td>
         <td colspan="">
             {{ $customer->address }}
-            {{ ($customer->district_id !== '-')? ', '.$customer->district->description : '' }}
-            {{ ($customer->province_id !== '-')? ', '.$customer->province->description : '' }}
-            {{ ($customer->department_id !== '-')? '- '.$customer->department->description : '' }}
+            {{ ($customer->country_id)? ', '.$customer->country->name : '' }}
+            {{ ($customer->department_id)? ', '.$customer->department->name : '' }}
+            {{ ($customer->city_id)? '- '.$customer->city->name : '' }}
         </td>
         @if($document->delivery_date)
             <td width="25%">Fecha de entrega:</td>

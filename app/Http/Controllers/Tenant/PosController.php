@@ -22,6 +22,11 @@ use Exception;
 use Modules\Item\Models\Category;
 use Modules\Finance\Traits\FinanceTrait;
 use App\Models\Tenant\Company;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+    TypeDocument,
+    Tax,
+};
 
 
 class PosController extends Controller
@@ -67,24 +72,23 @@ class PosController extends Controller
                             ->whereWarehouse()
                             ->whereIsActive()
                             ->get()->transform(function($row) use($configuration){
-                                $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
+                                $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->name:$row->name;
                                 return [
                                     'id' => $row->id,
                                     'item_id' => $row->id,
                                     'full_description' => $full_description,
                                     'description' => $row->description,
-                                    'currency_type_id' => $row->currency_type_id,
+                                    'name' => $row->name,
+                                    'currency_type_id' => $row->currency_type->id,
                                     'internal_id' => $row->internal_id,
                                     'currency_type_symbol' => $row->currency_type->symbol,
                                     'sale_unit_price' => number_format($row->sale_unit_price, $configuration->decimal_quantity, ".",""),
                                     'purchase_unit_price' => $row->purchase_unit_price,
                                     'unit_type_id' => $row->unit_type_id,
-                                    'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                                    'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
                                     'calculate_quantity' => (bool) $row->calculate_quantity,
                                     'is_set' => (bool) $row->is_set,
+                                    'tax_id' => $row->tax_id,
                                     'edit_unit_price' => false,
-                                    'has_igv' => (bool) $row->has_igv,
                                     'aux_quantity' => 1,
                                     'aux_sale_unit_price' => number_format($row->sale_unit_price, $configuration->decimal_quantity, ".",""),
                                     'edit_sale_unit_price' => number_format($row->sale_unit_price, $configuration->decimal_quantity, ".",""),
@@ -100,7 +104,9 @@ class PosController extends Controller
                                             'stock' => $row->stock,
                                         ];
                                     }),
-                                    'unit_type' => $row->item_unit_types
+                                    'item_unit_types' => $row->item_unit_types,
+                                    'unit_type' => $row->unit_type,
+                                    'tax' => $row->tax,
                                 ];
                             });
 
@@ -110,9 +116,6 @@ class PosController extends Controller
 
     public function tables()
     {
-        $affectation_igv_types = AffectationIgvType::whereActive()->get();
-        $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
-        $currency_types = CurrencyType::whereActive()->get();
 
         $customers = $this->table('customers');
         $user = User::findOrFail(auth()->user()->id);
@@ -121,7 +124,10 @@ class PosController extends Controller
 
         $categories = Category::all();
 
-        return compact('items', 'customers','affectation_igv_types','establishment','user','currency_types', 'categories');
+        $currencies = Currency::where('id', 170)->get();
+        $taxes = $this->table('taxes');
+
+        return compact('items', 'customers','currencies','taxes','user', 'categories');
 
     }
 
@@ -142,6 +148,29 @@ class PosController extends Controller
 
     public function table($table)
     {
+        
+        if ($table === 'taxes') {
+
+            return Tax::all()->transform(function($row) {
+                return [
+                    'id' => $row->id,
+                    'name' => $row->name,
+                    'code' => $row->code,
+                    'rate' =>  $row->rate,
+                    'conversion' =>  $row->conversion,
+                    'is_percentage' =>  $row->is_percentage,
+                    'is_fixed_value' =>  $row->is_fixed_value,
+                    'is_retention' =>  $row->is_retention,
+                    'in_base' =>  $row->in_base,
+                    'in_tax' =>  $row->in_tax,
+                    'type_tax_id' =>  $row->type_tax_id,
+                    'type_tax' =>  $row->type_tax,
+                    'retention' =>  0,
+                    'total' =>  0,
+                ];
+            });
+        }
+
         if ($table === 'customers') {
             $customers = Person::whereType('customers')->whereIsEnabled()->orderBy('name')->get()->transform(function($row) {
                 return [
@@ -150,7 +179,9 @@ class PosController extends Controller
                     'name' => $row->name,
                     'number' => $row->number,
                     'identity_document_type_id' => $row->identity_document_type_id,
-                    'identity_document_type_code' => $row->identity_document_type->code
+                    'address' =>  $row->address,
+                    'email' =>  $row->email,
+                    'telephone' =>  $row->telephone,
                 ];
             });
             return $customers;
@@ -162,22 +193,20 @@ class PosController extends Controller
 
             $items = Item::whereWarehouse()->whereIsActive()->where('unit_type_id', '!=', 'ZZ')->orderBy('description')->take(100)
                             ->get()->transform(function($row) use ($configuration) {
-                                $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
+                                $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->name;
                                 return [
                                     'id' => $row->id,
                                     'item_id' => $row->id,
                                     'full_description' => $full_description,
+                                    'name' => $row->name,
                                     'description' => $row->description,
-                                    'currency_type_id' => $row->currency_type_id,
+                                    'currency_type_id' => $row->currency_type->id,
                                     'internal_id' => $row->internal_id,
                                     'currency_type_symbol' => $row->currency_type->symbol,
                                     'sale_unit_price' => number_format($row->sale_unit_price, $configuration->decimal_quantity, ".",""),
-                                    'purchase_unit_price' => $row->purchase_unit_price,
                                     'unit_type_id' => $row->unit_type_id,
-                                    'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                                    'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
                                     'calculate_quantity' => (bool) $row->calculate_quantity,
-                                    'has_igv' => (bool) $row->has_igv,
+                                    'tax_id' => $row->tax_id,
                                     'is_set' => (bool) $row->is_set,
                                     'edit_unit_price' => false,
                                     'aux_quantity' => 1,
@@ -196,7 +225,9 @@ class PosController extends Controller
                                             $r->individual_item->description
                                         ];
                                     }),
-                                    'unit_type' => $row->item_unit_types
+                                    'unit_type' => $row->unit_type,
+                                    'tax' => $row->tax,
+                                    'item_unit_types' => $row->item_unit_types
                                 ];
                             });
             return $items;

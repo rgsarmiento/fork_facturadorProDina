@@ -201,7 +201,7 @@ class PurchaseOrderController extends Controller
 
         $values = [
             'user_id' => auth()->id(),
-            'supplier' => PersonInput::set($inputs['supplier_id']),
+            'supplier' => Person::with('typePerson', 'typeRegime', 'identity_document_type', 'country', 'department', 'city')->findOrFail($inputs['supplier_id']),
             'external_id' => Str::uuid()->toString(),
             'establishment' => EstablishmentInput::set($inputs['establishment_id']),
             'soap_type_id' => $this->company->soap_type_id,

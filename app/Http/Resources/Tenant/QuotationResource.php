@@ -17,12 +17,14 @@ class QuotationResource extends JsonResource
     {
         $quotation = Quotation::find($this->id);
         $quotation->payments = self::getTransformPayments($quotation->payments);
+        $has_document = (count($this->documents) > 0 || count($this->sale_notes) > 0)?true:false;
 
         return [
             'id' => $this->id,
             'external_id' => $this->external_id,  
             'identifier' => $this->identifier,
             'date_of_issue' => $this->date_of_issue->format('Y-m-d'), 
+            'has_document' => $has_document,
             'quotation' => $quotation
         ];
     }

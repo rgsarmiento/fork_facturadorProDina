@@ -66,7 +66,7 @@
         <td width="15%">{{ $document->date_of_issue->format('Y-m-d') }}</td>
     </tr>
     <tr>
-        <td>{{ $supplier->identity_document_type->description }}:</td>
+        <td>{{ $supplier->identity_document_type->name }}:</td>
         <td>{{ $supplier->number }}</td>
         @if($document->date_of_due)
             <td width="25%">Fecha de vencimiento:</td>
@@ -78,9 +78,9 @@
         <td class="align-top">Dirección:</td>
         <td colspan="3">
             {{ $supplier->address }}
-            {{ ($supplier->district_id !== '-')? ', '.$supplier->district->description : '' }}
-            {{ ($supplier->province_id !== '-')? ', '.$supplier->province->description : '' }}
-            {{ ($supplier->department_id !== '-')? '- '.$supplier->department->description : '' }}
+            {{ ($supplier->country_id)? ', '.$supplier->country->name : '' }}
+            {{ ($supplier->department_id)? ', '.$supplier->department->name : '' }}
+            {{ ($supplier->city_id)? '- '.$supplier->city->name : '' }}
         </td>
     </tr>
     @endif

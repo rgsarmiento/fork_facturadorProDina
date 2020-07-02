@@ -18,7 +18,7 @@
         </div>
         <div class="col-md-4">
           <div class="right-wrapper">
-            <h2 class="text-sm pr-5">T/C  {{form.exchange_rate_sale}}</h2>
+            <!-- <h2 class="text-sm pr-5">T/C  {{form.exchange_rate_sale}}</h2> -->
             <h2 class="text-sm  pull-right">{{user.name}}</h2>
           </div>
         </div>
@@ -86,10 +86,10 @@
             <div v-bind:class="classObjectCol"  :key="index" >
               <section class="card ">
                 <div class="card-body pointer px-2 pt-2" @click="clickAddItem(item,index)">
-                  <p class="font-weight-semibold mb-0" v-if="item.description.length > 50" data-toggle="tooltip" data-placement="top" :title="item.description">
-                    {{item.description.substring(0,50)}}
+                  <p class="font-weight-semibold mb-0" v-if="item.name.length > 50" data-toggle="tooltip" data-placement="top" :title="item.name">
+                    {{item.name.substring(0,50)}}
                   </p>
-                  <p class="font-weight-semibold mb-0" v-if="item.description.length < 50">{{item.description}}</p>
+                  <p class="font-weight-semibold mb-0" v-if="item.name.length < 50">{{item.name}}</p>
                   <img :src="item.image_url" class="img-thumbail img-custom" />
                   <p class="text-muted font-weight-lighter mb-0">
                     <small>{{item.internal_id}}</small>
@@ -97,23 +97,13 @@
                         <br>
                         <small > {{ item.sets.join('-') }} </small>
                     </template>
-
-                    <!-- <el-popover v-if="item.warehouses" placement="right" width="280"  trigger="hover">
-                      <el-table  :data="item.warehouses">
-                        <el-table-column width="150" property="warehouse_description" label="Ubicación"></el-table-column>
-                        <el-table-column width="100" property="stock" label="Stock"></el-table-column>
-                      </el-table>
-                      <el-button slot="reference"><i class="fa fa-search"></i></el-button>
-                    </el-popover> -->
                   </p>
                 </div>
                 <div class="card-footer pointer text-center bg-primary" >
-                  <!-- <button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2" @click="clickHistorySales(item.item_id)"><i class="fa fa-list"></i></button>
-                  <button type="button" class="btn waves-effect waves-light btn-xs btn-success m-1__2" @click="clickHistoryPurchases(item.item_id)"><i class="fas fa-cart-plus"></i></button> -->
                   <template v-if="!item.edit_unit_price">
                     <h5   class="font-weight-semibold text-right text-white" >
                       <button v-if="configuration.options_pos" type="button" class="btn btn-xs btn-primary-pos" @click="clickOpenInputEditUP(index)"><span style='font-size:16px;'>&#9998;</span> </button>
-                      {{item.currency_type_symbol}} {{item.sale_unit_price}}
+                      {{currency.symbol}} {{item.sale_unit_price}}
                     </h5>
                   </template>
                   <template v-else>
@@ -125,13 +115,6 @@
 
                 </div>
                 <div v-if="configuration.options_pos" class=" card-footer  bg-primary btn-group flex-wrap" style="width:100% !important; padding:0 !important; ">
-                  <!-- <el-popover v-if="item.warehouses" placement="right" width="280"  trigger="hover">
-                    <el-table  :data="item.warehouses">
-                      <el-table-column width="150" property="warehouse_description" label="Ubicación"></el-table-column>
-                      <el-table-column width="100" property="stock" label="Stock"></el-table-column>
-                    </el-table>
-                    <button type="button" style="width:100% !important;" slot="reference" class="btn btn-xs btn-default " @click="clickHistorySales(item.item_id)"><i class="fa fa-search"></i></button>
-                  </el-popover> -->
                   <el-tooltip class="item" effect="dark" content="Visualizar stock" placement="bottom-end">
                     <button type="button" style="width:33.5% !important;"   class="btn btn-xs btn-primary-pos" @click="clickWarehouseDetail(item)">
                       <i class="fa fa-search"></i>
@@ -182,15 +165,15 @@
                 <a class="btn btn-sm btn-default w-100" @click="clickDeleteCustomer">
                   <i class="fas fa-trash fa-wf"></i>
                 </a>
-                <a class="btn btn-sm btn-default w-100" @click="selectCurrencyType">
-                  <template v-if="form.currency_type_id == 'PEN'">
+                <!-- <a class="btn btn-sm btn-default w-100" @click="selectCurrencyType"> -->
+                  <!-- <template v-if="form.currency_id == 'PEN'">
                     <strong>S/</strong>
                   </template>
                   <template v-else>
                     <strong>$</strong>
-                  </template>
+                  </template> -->
                   <!-- <i class="fa fa-usd" aria-hidden="true"></i> -->
-                </a>
+                <!-- </a> -->
               </div>
             </div>
           </div>
@@ -206,38 +189,22 @@
                         class
                         @input="clickAddItem(item,index,true)"
                       ></el-input>
-                      <!-- <el-input-number v-model="item.item.aux_quantity" @change="clickAddItem(item,index,true)" :min="1" :max="10"></el-input-number> -->
                     </td>
                     <td width="20%">
-                      <p class="m-0">{{item.item.description}}</p>
+                      <p class="m-0">{{item.item.name}}</p>
                       <small> {{nameSets(item.item_id)}} </small>
-                      <!-- <p class="text-muted m-b-0"><small>Descuento 2%</small></p> -->
                     </td>
-                    <!-- <td>
-                      <p class="font-weight-semibold m-0 text-center">{{currency_type.symbol}}</p>
-                    </td>
-                    <td width="30%">
-                      <p class="font-weight-semibold m-0 text-center">
-                        <el-input
-                          v-model="item.item.unit_price"
-                          @blur="blurCalculateQuantity2(index)"
-                        >
-                        </el-input>
-                      </p>
-                    </td> -->
                     <td>
-                      <p class="font-weight-semibold m-0 text-center">{{currency_type.symbol}}</p>
+                      <p class="font-weight-semibold m-0 text-center">{{currency.symbol}}</p>
                     </td>
                     <td width="30%">
                       <p class="font-weight-semibold m-0 text-center">
-                        <!-- {{currency_type.symbol}} {{item.total}} -->
                         <el-input
                           v-model="item.total"
                           @input="calculateQuantity(index)"
                           @blur="blurCalculateQuantity(index)"
                           :readonly="!item.item.calculate_quantity"
                         >
-                          <!-- <template slot="prepend" v-if="currency_type.symbol">{{ currency_type.symbol }}</template> -->
                         </el-input>
                       </p>
                     </td>
@@ -260,65 +227,31 @@
                   <tr v-if="form.total_exonerated > 0" class="font-weight-semibold  m-0">
                       <td class="font-weight-semibold">OP.EXONERADAS</td>
                       <td class="font-weight-semibold">:</td>
-                      <td class="text-right text-blue">{{ currency_type.symbol }} {{ form.total_exonerated }}</td>
+                      <td class="text-right text-blue">{{ currency.symbol }} {{ form.total_exonerated }}</td>
                   </tr>
                   <tr v-if="form.total_free > 0" class="font-weight-semibold  m-0">
                       <td class="font-weight-semibold">OP.GRATUITAS</td>
                       <td class="font-weight-semibold">:</td>
-                      <td class="text-right text-blue">{{ currency_type.symbol }} {{ form.total_free }}</td>
+                      <td class="text-right text-blue">{{ currency.symbol }} {{ form.total_free }}</td>
                   </tr>
                   <tr v-if="form.total_unaffected > 0" class="font-weight-semibold  m-0">
                       <td class="font-weight-semibold">OP.INAFECTAS</td>
                       <td class="font-weight-semibold">:</td>
-                      <td class="text-right text-blue">{{ currency_type.symbol }} {{ form.total_unaffected }}</td>
+                      <td class="text-right text-blue">{{ currency.symbol }} {{ form.total_unaffected }}</td>
                   </tr>
                   <tr v-if="form.total_taxed > 0" class="font-weight-semibold  m-0">
                       <td class="font-weight-semibold">OP.GRAVADA</td>
                       <td class="font-weight-semibold">:</td>
-                      <td class="text-right text-blue">{{ currency_type.symbol }} {{ form.total_taxed }}</td>
+                      <td class="text-right text-blue">{{ currency.symbol }} {{ form.total_taxed }}</td>
                   </tr>
                   <tr v-if="form.total_igv > 0" class="font-weight-semibold  m-0">
                       <td class="font-weight-semibold">IGV</td>
                       <td class="font-weight-semibold">:</td>
-                      <td class="text-right text-blue">{{ currency_type.symbol }} {{ form.total_igv }}</td>
+                      <td class="text-right text-blue">{{ currency.symbol }} {{ form.total_igv }}</td>
                   </tr>
               </table>
             </div>
-
-            <!-- <div class="col-12 text-right px-0" v-if="form.total_taxed > 0">
-              <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">OP.GRAVADA: </span>
-                <span class="text-blue">{{currency_type.symbol}} {{ form.total_taxed }}</span>
-              </h4>
-            </div>
-
-            <div class="col-12 text-right px-0" v-if="form.total_free > 0">
-              <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">OP.GRATUITAS: </span>
-                <span class="text-blue">{{currency_type.symbol}} {{ form.total_free }}</span>
-              </h4>
-            </div>
-
-            <div class="col-12 text-right px-0" v-if="form.total_unaffected > 0">
-              <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">OP.INAFECTAS: </span>
-                <span class="text-blue">{{currency_type.symbol}} {{ form.total_unaffected }}</span>
-              </h4>
-            </div>
-
-            <div class="col-12 text-right px-0" v-if="form.total_exonerated > 0">
-              <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">OP.EXONERADAS: </span>
-                <span class="text-blue">{{currency_type.symbol}} {{ form.total_exonerated }}</span>
-              </h4>
-            </div>
-
-            <div class="col-12 text-right px-0" v-if="form.total_igv > 0">
-              <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">IGV: </span>
-                <span class="text-blue">{{currency_type.symbol}} {{form.total_igv}}</span>
-              </h4>
-            </div> -->
+ 
 
           </div>
           <div
@@ -331,7 +264,7 @@
               <span class="font-weight-semibold h5">PAGO</span>
             </div>
             <div class="col-6 text-center">
-              <h5 class="font-weight-semibold h5">{{currency_type.symbol}} {{ form.total }}</h5>
+              <h5 class="font-weight-semibold h5">{{currency.symbol}} {{ form.total }}</h5>
             </div>
           </div>
         </div>
@@ -351,8 +284,8 @@
       <payment-form
         :is_payment.sync="is_payment"
         :form="form"
-        :currency-type-id-active="form.currency_type_id"
-        :currency-type-active="currency_type"
+        :currency-type-id-active="form.currency_id"
+        :currency-type-active="currency"
         :exchange-rate-sale="form.exchange_rate_sale"
         :customer="customer"
         :soapCompany="soapCompany"
@@ -429,10 +362,10 @@
 </style>
 
 <script>
-      import { calculateRowItem } from "../../../helpers/functions";
+      // import { calculateRowItem } from "../../../helpers/functions";
       import PaymentForm from "./partials/payment.vue";
       import ItemForm from "./partials/form.vue";
-      import { functions, exchangeRate } from "../../../mixins/functions";
+      // import { functions, exchangeRate } from "../../../mixins/functions";
       import HistorySalesForm from "../../../../../modules/Pos/Resources/assets/js/views/history/sales.vue";
       import HistoryPurchasesForm from "../../../../../modules/Pos/Resources/assets/js/views/history/purchases.vue";
       import PersonForm from "../persons/form.vue";
@@ -441,7 +374,7 @@
       export default {
         props: ['configuration', 'soapCompany'],
         components: { PaymentForm, ItemForm, HistorySalesForm, HistoryPurchasesForm, PersonForm, WarehousesDetail},
-        mixins: [functions, exchangeRate],
+        // mixins: [functions, exchangeRate],
 
         data() {
           return {
@@ -465,10 +398,11 @@
             items: [],
             all_items: [],
             customers: [],
-            affectation_igv_types: [],
+            currencies: [],
+            taxes: [],
             all_customers: [],
             establishment: null,
-            currency_type: {},
+            currency: {},
             form_item: {},
             customer: {},
             row: {},
@@ -530,32 +464,32 @@
         },
 
         methods: {
-            filterCategorie(id,  mod = false)
-            {
+          filterCategorie(id,  mod = false)
+          {
 
-                if(id)
-                {
-                    this.items = this.all_items.filter(x => x.category_id == id)
+              if(id)
+              {
+                  this.items = this.all_items.filter(x => x.category_id == id)
 
-                }else{
-                    this.filterItems()
-                }
+              }else{
+                  this.filterItems()
+              }
 
-                if(mod)
-                {
-                        this.place= 'cat2'
-                }
-                else{
-                    this.place= 'prod'
-                }
+              if(mod)
+              {
+                      this.place= 'cat2'
+              }
+              else{
+                  this.place= 'prod'
+              }
 
-            },
+          },
           getColor(i)
           {
             return this.colors[(i % this.colors.length )]
           },
           initCurrencyType(){
-              this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
+              this.currency = _.find(this.currencies, {'id': this.form.currency_id})
           },
           getFormPosLocalStorage(){
 
@@ -676,34 +610,32 @@
                 this.form.items[index].quantity = 0;
                 this.form.items[index].item.aux_quantity = 0;
               }
-              // this.calculateTotal()
             }
 
-            //  this.clickAddItem(this.form.items[index],index, true)
           },
           blurCalculateQuantity(index) {
-            this.row = calculateRowItem(
-              this.form.items[index],
-              this.form.currency_type_id,
-              1
-            );
-            this.form.items[index] = this.row;
-            this.calculateTotal();
-            this.setFormPosLocalStorage()
+            // this.row = calculateRowItem(
+            //   this.form.items[index],
+            //   this.form.currency_id,
+            //   1
+            // );
+            // this.form.items[index] = this.row;
+            // this.calculateTotal();
+            // this.setFormPosLocalStorage()
           },
           blurCalculateQuantity2(index) {
-            this.row = calculateRowItem(
-              this.form.items[index],
-              this.form.currency_type_id,
-              1
-            );
-            this.form.items[index] = this.row;
-            this.calculateTotal();
+            // this.row = calculateRowItem(
+            //   this.form.items[index],
+            //   this.form.currency_id,
+            //   1
+            // );
+            // this.form.items[index] = this.row;
+            // this.calculateTotal();
           },
           changeCustomer() {
             let customer = _.find(this.all_customers, { id: this.form.customer_id });
             this.customer = customer;
-            this.form.document_type_id = customer.identity_document_type_id == "1" ? "03" : "01";
+            // this.form.document_type_id = customer.identity_document_type_id == "1" ? "03" : "01";
             this.setLocalStorageIndex('customer', this.customer)
             this.setFormPosLocalStorage()
           },
@@ -756,52 +688,30 @@
             });
           },
           initForm() {
-            this.form = {
-              establishment_id: null,
-              document_type_id: "01",
-              series_id: null,
-              prefix: null,
-              number: "#",
-              date_of_issue: moment().format("YYYY-MM-DD"),
-              time_of_issue: moment().format("HH:mm:ss"),
-              customer_id: null,
-              currency_type_id: "PEN",
-              purchase_order: null,
-              exchange_rate_sale: 1,
-              total_prepayment: 0,
-              total_charge: 0,
-              total_discount: 0,
-              total_exportation: 0,
-              total_free: 0,
-              total_taxed: 0,
-              total_unaffected: 0,
-              total_exonerated: 0,
-              total_igv: 0,
-              total_base_isc: 0,
-              total_isc: 0,
-              total_base_other_taxes: 0,
-              total_other_taxes: 0,
-              total_taxes: 0,
-              total_value: 0,
-              total: 0,
-              operation_type_id: "0101",
-              date_of_due: moment().format("YYYY-MM-DD"),
-              items: [],
-              charges: [],
-              discounts: [],
-              attributes: [],
-              guides: [],
-              payments: [],
-              hotel: {},
-              additional_information: null,
-              actions: {
-                format_pdf: "a4"
+            
+              this.form = {
+                  type_document_id: null,
+                  currency_id: null,
+                  date_issue: moment().format('YYYY-MM-DD'),
+                  date_expiration: null,
+                  type_invoice_id: 1,
+                  total_discount: 0,
+                  total_tax: 0,
+                  watch: false,
+                  subtotal: 0,
+                  items: [],
+                  taxes: [],
+                  total: 0,
+                  sale: 0,
+                  time_days_credit: 0,
+                  service_invoice: {},
+                  payment_form_id: null,
+                  payment_method_id: null,
               }
-            };
 
-            this.initFormItem();
-            this.changeDateOfIssue();
-            this.initInputPerson()
+              this.initFormItem();
+              this.changeDateOfIssue();
+              this.initInputPerson()
 
           },
           initInputPerson(){
@@ -811,25 +721,31 @@
               }
           },
           initFormItem() {
-            this.form_item = {
-              item_id: null,
-              item: {},
-              affectation_igv_type_id: null,
-              affectation_igv_type: {},
-              has_isc: false,
-              system_isc_type_id: null,
-              calculate_quantity: false,
-              percentage_isc: 0,
-              suggested_price: 0,
-              quantity: 1,
-              aux_quantity: 1,
-              unit_price_value: 0,
-              unit_price: 0,
-              charges: [],
-              discounts: [],
-              attributes: [],
-              has_igv: false
-            };
+
+              this.form_item = {
+            
+                  id: null,
+                  item_id: null,
+                  item: {},
+                  code: null,
+                  discount: 0,
+                  name: null,
+                  unit_price_value: 0,
+                  unit_price: 0,
+                  quantity: 1,
+                  aux_quantity: 1,
+                  subtotal: null,
+                  tax: {},
+                  tax_id: null,
+                  total: 0,
+                  total_tax: 0,
+                  type_unit: {},
+                  unit_type_id: null,
+                  item_unit_types: [],
+                  IdLoteSelected: null,
+
+              };
+
           },
           async clickPayment() {
             let flag = 0;
@@ -859,116 +775,103 @@
             this.setFormPosLocalStorage()
           },
           async clickAddItem(item, index, input = false) {
-            this.loading = true;
-            let exchangeRateSale = this.form.exchange_rate_sale;
-            let exist_item = _.find(this.form.items, { item_id: item.item_id });
-            let pos = this.form.items.indexOf(exist_item);
-            let response = null;
+            
+              this.loading = true;
+              // let exchangeRateSale = this.form.exchange_rate_sale;
+              let exist_item = _.find(this.form.items, { item_id: item.item_id });
+              let pos = this.form.items.indexOf(exist_item);
+              let response = null;
 
-            // console.log(item.calculate_quantity)
-            // console.log(exist_item)
+              // console.log(item.calculate_quantity)
+              console.log(item, exist_item, this.form)
 
-            if (exist_item) {
-              if (input) {
-                response = await this.getStatusStock(
-                  item.item_id,
-                  exist_item.item.aux_quantity
-                );
-                if (!response.success) {
-                  item.item.aux_quantity = item.quantity;
-                  this.loading = false;
-                  return this.$message.error(response.message);
+              if (exist_item) {
+
+                if (input) {
+
+                  response = await this.getStatusStock(item.item_id, exist_item.item.aux_quantity);
+
+                  if (!response.success) {
+                    item.item.aux_quantity = item.quantity;
+                    this.loading = false;
+                    return this.$message.error(response.message);
+                  }
+
+                  exist_item.quantity = exist_item.item.aux_quantity;
+
+                } else {
+
+                  response = await this.getStatusStock( item.item_id, parseFloat(exist_item.item.aux_quantity) + 1);
+
+                  if (!response.success) {
+                    this.loading = false;
+                    return this.$message.error(response.message);
+                  }
+
+                  exist_item.quantity++;
+                  exist_item.item.aux_quantity++;
+
                 }
 
-                exist_item.quantity = exist_item.item.aux_quantity;
+                // console.log(exist_item)
+                let search_item_bd = await _.find(this.items, { item_id: item.item_id });
+
+                if(search_item_bd){
+                  exist_item.item.unit_price = parseFloat(search_item_bd.sale_unit_price)
+                }
+
+                let unit_price = exist_item.item.sale_unit_price
+                exist_item.item.unit_price = unit_price
+
+                this.form.items[pos] = this.form_item;
+
               } else {
-                response = await this.getStatusStock(
-                  item.item_id,
-                  parseFloat(exist_item.item.aux_quantity) + 1
-                );
-                if (!response.success) {
-                  this.loading = false;
-                  return this.$message.error(response.message);
-                }
 
-                exist_item.quantity++;
-                exist_item.item.aux_quantity++;
+                  response = await this.getStatusStock(item.item_id, 1);
+
+                  if (!response.success) {
+                    this.loading = false;
+                    return this.$message.error(response.message);
+                  }
+
+                  this.form_item.item = item;
+                  this.form_item.unit_price_value = this.form_item.item.sale_unit_price;
+                  this.form_item.quantity = 1;
+                  this.form_item.aux_quantity = 1;
+
+                  let unit_price = this.form_item.unit_price_value;
+
+                  this.form_item.unit_price = unit_price;
+                  this.form_item.item.unit_price = unit_price;
+                  this.form_item.item.presentation = null;
+
+                  this.form_item.id = this.form_item.item.item_id
+                  this.form_item.item_id = this.form_item.item.item_id
+                  this.form_item.unit_type_id = this.form_item.item.unit_type_id
+                  this.form_item.tax_id = (this.taxes.length > 0) ? this.form_item.item.tax.id: null
+                  this.form_item.tax = _.find(this.taxes, {'id': this.form_item.tax_id})
+                  this.form_item.unit_type = this.form_item.item.unit_type
+
+
+                  // console.log(this.form_item)
+
+                  this.form.items.push(this.form_item);
+                  item.aux_quantity = 1;
+
               }
 
-              // console.log(exist_item)
-              let search_item_bd = await _.find(this.items, { item_id: item.item_id });
-              if(search_item_bd){
-                exist_item.item.unit_price = parseFloat(search_item_bd.sale_unit_price)
-              }
-
-              let unit_price = exist_item.item.has_igv ? exist_item.item.sale_unit_price : exist_item.item.sale_unit_price * 1.18
-              // exist_item.unit_price = unit_price
-              exist_item.item.unit_price = unit_price
+              this.$notify({
+                title: "",
+                message: "Producto añadido!",
+                type: "success",
+                duration: 700
+              });
 
 
-              this.row = calculateRowItem(
-                exist_item,
-                this.form.currency_type_id,
-                exchangeRateSale
-              );
-
-              this.form.items[pos] = this.row;
-            } else {
-              response = await this.getStatusStock(item.item_id, 1);
-              if (!response.success) {
-                this.loading = false;
-                return this.$message.error(response.message);
-              }
-
-              this.form_item.item = item;
-              this.form_item.unit_price_value = this.form_item.item.sale_unit_price;
-              this.form_item.has_igv = this.form_item.item.has_igv;
-              this.form_item.affectation_igv_type_id = this.form_item.item.sale_affectation_igv_type_id;
-              this.form_item.quantity = 1;
-              this.form_item.aux_quantity = 1;
-
-              let unit_price = this.form_item.has_igv ? this.form_item.unit_price_value : this.form_item.unit_price_value * 1.18;
-
-              this.form_item.unit_price = unit_price;
-              this.form_item.item.unit_price = unit_price;
-              this.form_item.item.presentation = null;
-
-              this.form_item.charges = [];
-              this.form_item.discounts = [];
-              this.form_item.attributes = [];
-              this.form_item.affectation_igv_type = _.find(
-                this.affectation_igv_types,
-                { id: this.form_item.affectation_igv_type_id }
-              );
-
-              // console.log(this.form_item)
-              this.row = calculateRowItem(
-                this.form_item,
-                this.form.currency_type_id,
-                exchangeRateSale
-              );
-              // console.log(this.row)
-
-              this.form.items.push(this.row);
-              item.aux_quantity = 1;
-            }
-
-            // console.log("pos", this.row);
-
-            this.$notify({
-              title: "",
-              message: "Producto añadido!",
-              type: "success",
-              duration: 700
-            });
-
-
-            // console.log(this.row)
-            // console.log(this.form.items)
-            await this.calculateTotal();
-            this.loading = false;
-
-            await this.setFormPosLocalStorage()
+              // console.log(this.form.items)
+              await this.calculateTotal();
+              this.loading = false;
+              await this.setFormPosLocalStorage()
           },
           async getStatusStock(item_id, quantity) {
             let data = {};
@@ -989,60 +892,7 @@
           },
 
           calculateTotal() {
-                let total_discount = 0;
-                let total_charge = 0;
-                let total_exportation = 0;
-                let total_taxed = 0;
-                let total_exonerated = 0;
-                let total_unaffected = 0;
-                let total_free = 0;
-                let total_igv = 0;
-                let total_value = 0;
-                let total = 0;
-                this.form.items.forEach(row => {
-                  total_discount += parseFloat(row.total_discount);
-                  total_charge += parseFloat(row.total_charge);
-
-                  if (row.affectation_igv_type_id === "10") {
-                    total_taxed += parseFloat(row.total_value);
-                  }
-                  if (row.affectation_igv_type_id === "20") {
-                    total_exonerated += parseFloat(row.total_value);
-                  }
-                  if (row.affectation_igv_type_id === "30") {
-                    total_unaffected += parseFloat(row.total_value);
-                  }
-                  if (row.affectation_igv_type_id === "40") {
-                    total_exportation += parseFloat(row.total_value);
-                  }
-                  if (["10", "20", "30", "40"].indexOf(row.affectation_igv_type_id) < 0) {
-                    total_free += parseFloat(row.total_value);
-                  }
-                  if (
-                    ["10", "20", "30", "40"].indexOf(row.affectation_igv_type_id) > -1
-                  ) {
-                    total_igv += parseFloat(row.total_igv);
-                    total += parseFloat(row.total);
-                  }
-                  total_value += parseFloat(row.total_value);
-                });
-
-                this.form.total_exportation = _.round(total_exportation, 2);
-                this.form.total_exonerated = _.round(total_exonerated, 2);
-                this.form.total_taxed = _.round(total_taxed, 2)
-                this.form.total_exonerated = _.round(total_exonerated, 2)
-
-                // this.form.total_taxed =
-                //   _.round(total_taxed, 2) + this.form.total_exonerated;
-                // this.form.total_exonerated = _.round(total_exonerated, 2)
-                this.form.total_unaffected = _.round(total_unaffected, 2);
-                this.form.total_free = _.round(total_free, 2);
-                this.form.total_igv = _.round(total_igv, 2);
-                this.form.total_value = _.round(total_value, 2);
-                this.form.total_taxes = _.round(total_igv, 2);
-                this.form.total = _.round(total, 2);
-
-
+              this.setDataTotals()
           },
           changeDateOfIssue() {
             // this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
@@ -1051,27 +901,151 @@
 
 
           },
+          setDataTotals() {
+
+              // console.log(val)
+              let val = this.form
+              val.taxes = JSON.parse(JSON.stringify(this.taxes));
+
+              val.items.forEach(item => {
+                  item.tax = this.taxes.find(tax => tax.id == item.tax_id);
+
+                  if (
+                      item.discount == null ||
+                      item.discount == "" ||
+                      item.discount > item.unit_price * item.quantity
+                  )
+                      this.$set(item, "discount", 0);
+
+                  item.total_tax = 0;
+
+                  if (item.tax != null) {
+                      let tax = val.taxes.find(tax => tax.id == item.tax.id);
+
+                      if (item.tax.is_fixed_value)
+
+                          item.total_tax = (
+                              item.tax.rate * item.quantity -
+                              (item.discount < item.unit_price * item.quantity ? item.discount : 0)
+                          ).toFixed(2);
+
+                      if (item.tax.is_percentage)
+
+                          item.total_tax = (
+                              (item.unit_price * item.quantity -
+                              (item.discount < item.unit_price * item.quantity
+                                  ? item.discount
+                                  : 0)) *
+                              (item.tax.rate / item.tax.conversion)
+                          ).toFixed(2);
+
+                      if (!tax.hasOwnProperty("total"))
+                          tax.total = Number(0).toFixed(2);
+
+                      tax.total = (Number(tax.total) + Number(item.total_tax)).toFixed(2);
+                  }
+
+                  item.subtotal = (
+                      Number(item.unit_price * item.quantity) + Number(item.total_tax)
+                  ).toFixed(2);
+
+                  this.$set(
+                      item,
+                      "total",
+                      (Number(item.subtotal) - Number(item.discount)).toFixed(2)
+                  );
+
+              });
+
+              val.subtotal = val.items
+                  .reduce(
+                      (p, c) => Number(p) + (Number(c.subtotal) - Number(c.discount)),
+                      0
+                  )
+                  .toFixed(2);
+                  val.sale = val.items
+                  .reduce(
+                      (p, c) =>
+                      Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount),
+                      0
+                  )
+                  .toFixed(2);
+                  val.total_discount = val.items
+                  .reduce((p, c) => Number(p) + Number(c.discount), 0)
+                  .toFixed(2);
+                  val.total_tax = val.items
+                  .reduce((p, c) => Number(p) + Number(c.total_tax), 0)
+                  .toFixed(2);
+
+              let total = val.items
+                  .reduce((p, c) => Number(p) + Number(c.total), 0)
+                  .toFixed(2);
+
+              let totalRetentionBase = Number(0);
+
+              // this.taxes.forEach(tax => {
+              val.taxes.forEach(tax => {
+                  if (tax.is_retention && tax.in_base && tax.apply) {
+                      tax.retention = (
+                      Number(val.sale) *
+                      (tax.rate / tax.conversion)
+                      ).toFixed(2);
+
+                      totalRetentionBase =
+                      Number(totalRetentionBase) + Number(tax.retention);
+
+                      if (Number(totalRetentionBase) >= Number(val.sale))
+                      this.$set(tax, "retention", Number(0).toFixed(2));
+
+                      total -= Number(tax.retention).toFixed(2);
+                  }
+
+                  if (
+                      tax.is_retention &&
+                      !tax.in_base &&
+                      tax.in_tax != null &&
+                      tax.apply
+                  ) {
+                      let row = val.taxes.find(row => row.id == tax.in_tax);
+
+                      tax.retention = Number(
+                      Number(row.total) * (tax.rate / tax.conversion)
+                      ).toFixed(2);
+
+                      if (Number(tax.retention) > Number(row.total))
+                      this.$set(tax, "retention", Number(0).toFixed(2));
+
+                      row.retention = Number(tax.retention).toFixed(2);
+                      total -= Number(tax.retention).toFixed(2);
+                  }
+              });
+
+              val.total = Number(total).toFixed(2)
+
+          },
           changeExchangeRate(){
-            this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
-                this.form.exchange_rate_sale = response
-            })
+            // this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
+            //     this.form.exchange_rate_sale = response
+            // })
           },
           async getTables() {
             await this.$http.get(`/${this.resource}/tables`).then(response => {
+
               this.all_items = response.data.items;
-              this.affectation_igv_types = response.data.affectation_igv_types;
               this.all_customers = response.data.customers;
-              this.establishment = response.data.establishment;
-              this.currency_types = response.data.currency_types;
+              this.currencies = response.data.currencies;
               this.user = response.data.user;
-              this.form.currency_type_id =
-              this.currency_types.length > 0 ? this.currency_types[0].id : null;
+              this.form.currency_id = this.currencies.length > 0 ? this.currencies[0].id : null;
+              this.taxes = response.data.taxes
+
               this.renderCategories(response.data.categories)
-              // this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
+              // this.currency = _.find(this.currencys, {'id': this.form.currency_id})
               // this.changeCurrencyType();
+
               this.filterItems();
               this.changeDateOfIssue();
               this.changeExchangeRate()
+
             });
           },
           renderCategories(source)
@@ -1182,21 +1156,21 @@
               });
           },
           selectCurrencyType(){
-              this.form.currency_type_id = (this.form.currency_type_id === 'PEN') ? 'USD':'PEN'
-              this.changeCurrencyType()
+              // this.form.currency_id = (this.form.currency_id === 'PEN') ? 'USD':'PEN'
+              // this.changeCurrencyType()
           },
           async changeCurrencyType() {
 
-              // console.log(this.form.currency_type_id)
-              this.currency_type = await _.find(this.currency_types, {'id': this.form.currency_type_id})
-              let items = []
-              this.form.items.forEach((row) => {
-                  items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale))
-              });
-              this.form.items = items
-              this.calculateTotal()
+              // console.log(this.form.currency_id)
+              // this.currency = await _.find(this.currencys, {'id': this.form.currency_id})
+              // let items = []
+              // this.form.items.forEach((row) => {
+              //     items.push(calculateRowItem(row, this.form.currency_id, this.form.exchange_rate_sale))
+              // });
+              // this.form.items = items
+              // this.calculateTotal()
 
-              await this.setFormPosLocalStorage()
+              // await this.setFormPosLocalStorage()
 
           },
             openFullWindow() {

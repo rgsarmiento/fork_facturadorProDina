@@ -8,23 +8,23 @@
                     <data-table :resource="resource" :applyCustomer="true">
                         <tr slot="heading">
                             <th>#</th>
-                            <th class="text-center">Fecha Emisión</th>
+                            <th>Fecha Emisión</th>
                             <th class="">Usuario/Vendedor</th>
                             <th>Cliente</th>
                             <th>Estado</th>
                             <th>Cotización</th>
 
                             <th>Comprobantes</th>
-                            <th>Notas de venta</th>
-                            <th>Caso</th>
+                            <!-- <th>Notas de venta</th>
+                            <th>Caso</th> -->
                             <th class="text-center">Moneda</th>
-                            <th class="text-right">T.Exportación</th>
+                            <!-- <th class="text-right">T.Exportación</th>
                             <th class="text-right" >T.Inafecta</th>
 
                             <th class="text-right">T.Exonerado</th>
                             <th class="text-right">T.Gravado</th>
-                            <th class="text-right">T.Igv</th>
-                            <th class="text-right">Total</th>
+                            <th class="text-right">T.Igv</th> -->
+                            <th class="text-center">Total</th>
                         <tr>
                         <tr slot-scope="{ index, row }">
                             <td>{{ index }}</td>  
@@ -38,20 +38,20 @@
                                     <label class="d-block"  :key="i">{{doc.number_full}}</label>
                                 </template>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <template v-for="(s_note,i) in row.sale_notes">                                
                                     <label class="d-block"  :key="i">{{s_note.identifier}}</label>
                                 </template>
                             </td>
-                            <td>{{row.sale_opportunity_number_full}}</td>
-                            <td>{{row.currency_type_id}}</td>
-                            <td >{{ row.total_exportation }}</td>
+                            <td>{{row.sale_opportunity_number_full}}</td> -->
+                            <td class="text-center">{{row.currency_type_id}}</td>
+                            <!-- <td >{{ row.total_exportation }}</td>
                             <td >{{ row.total_unaffected }}</td>
                             <td >{{ row.total_exonerated }}</td>
 
                             <td>{{ row.total_taxed}}</td>
-                            <td>{{ row.total_igv}}</td>
-                            <td>{{ row.total}}</td>
+                            <td>{{ row.total_igv}}</td> -->
+                            <td class="text-center">{{ row.total}}</td>
                             
                         </tr>
                         

@@ -45,6 +45,7 @@ use Modules\Factcolombia1\Models\Tenant\{
     TypeDocument,
     Tax,
 };
+use App\Models\Tenant\Document;
 
 
 class QuotationController extends Controller
@@ -165,13 +166,24 @@ class QuotationController extends Controller
 
     public function option_tables()
     {
-        $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
-        $series = Series::where('establishment_id',$establishment->id)->get();
-        $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
-        $payment_method_types = PaymentMethodType::all();
-        $payment_destinations = $this->getPaymentDestinations();
+        // $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
+        // $series = Series::where('establishment_id',$establishment->id)->get();
+        // $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
+        // $payment_method_types = PaymentMethodType::all();
+        // $payment_destinations = $this->getPaymentDestinations();
 
-        return compact('series', 'document_types_invoice', 'payment_method_types', 'payment_destinations');
+        $type_documents = TypeDocument::query()
+                            ->get()
+                            ->each(function($typeDocument) {
+                                $typeDocument->alert_range = (($typeDocument->to - 100) < (Document::query()
+                                    ->hasPrefix($typeDocument->prefix)
+                                    ->whereBetween('number', [$typeDocument->from, $typeDocument->to])
+                                    ->max('number') ?? $typeDocument->from));
+
+                                $typeDocument->alert_date = ($typeDocument->resolution_date_end == null) ? false : Carbon::parse($typeDocument->resolution_date_end)->subMonth(1)->lt(Carbon::now());
+                            });
+
+        return compact('type_documents');
     }
 
     public function item_tables() {
@@ -332,7 +344,7 @@ class QuotationController extends Controller
         $values = [
             'user_id' => auth()->id(),
             'external_id' => Str::uuid()->toString(),
-            'customer' => PersonInput::set($inputs['customer_id']),
+            'customer' => Person::with('typePerson', 'typeRegime', 'identity_document_type', 'country', 'department', 'city')->findOrFail($inputs['customer_id']),
             'establishment' => EstablishmentInput::set($inputs['establishment_id']),
             'soap_type_id' => $this->company->soap_type_id,
             'state_type_id' => '01'
@@ -413,6 +425,7 @@ class QuotationController extends Controller
                         'id' => $row->id,
                         'description' => $full_description,
                         'full_description' => $full_description,
+                        'internal_id' => $row->internal_id,
                         'currency_id' => $row->currency_id,
                         'currency_type_symbol' => $row->currency_type->symbol,
                         'sale_unit_price' => $row->sale_unit_price,
