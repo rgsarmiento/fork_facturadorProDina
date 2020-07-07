@@ -63,7 +63,7 @@
                                 trigger="click">
                                 <el-table :data="row.items">
                                     <el-table-column width="80" property="key" label="#"></el-table-column>
-                                    <el-table-column width="220" property="description" label="Nombre"></el-table-column>
+                                    <el-table-column width="220" property="name" label="Nombre"></el-table-column>
                                     <el-table-column width="90" property="quantity" label="Cantidad"></el-table-column>
                                 </el-table>
                                 <el-button slot="reference"> <i class="fa fa-eye"></i></el-button>

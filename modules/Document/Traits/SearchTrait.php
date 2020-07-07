@@ -9,7 +9,7 @@ trait SearchTrait
 
     public function getItemsServices($request){
 
-        return Item::where('description','like', "%{$request->input}%")
+        return Item::where('name','like', "%{$request->input}%")
                     ->orWhere('internal_id','like', "%{$request->input}%")
                     ->orWhereHas('category', function($query) use($request) {
                         $query->where('name', 'like', '%' . $request->input . '%');
@@ -20,14 +20,14 @@ trait SearchTrait
                     ->where('unit_type_id','ZZ')
                     ->whereNotIsSet()
                     ->whereIsActive()
-                    ->orderBy('description')
+                    ->orderBy('name')
                     ->get();
 
     }
     
     public function getItemsNotServices($request){
 
-        return Item::where('description','like', "%{$request->input}%")
+        return Item::where('name','like', "%{$request->input}%")
                     ->orWhere('internal_id','like', "%{$request->input}%")
                     ->orWhereHas('category', function($query) use($request) {
                         $query->where('name', 'like', '%' . $request->input . '%');
@@ -38,7 +38,7 @@ trait SearchTrait
                     ->whereWarehouse()
                     ->whereNotIsSet()
                     ->whereIsActive()
-                    ->orderBy('description')
+                    ->orderBy('name')
                     ->get();
 
     }

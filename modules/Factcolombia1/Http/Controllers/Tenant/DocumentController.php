@@ -945,7 +945,7 @@ class DocumentController extends Controller
                 $detail = $this->getFullDescription($row, $warehouse);
                 return [
                     'id' => $row->id,
-                    'name' => $detail['full_description'],
+                    'name' => $row->name,
                     'full_description' => $detail['full_description'],
                     'brand' => $detail['brand'],
                     'category' => $detail['category'],
@@ -1034,7 +1034,7 @@ class DocumentController extends Controller
 
                 return [
                     'id' => $row->id,
-                    'name' => $detail['full_description'],
+                    'name' => $row->name,
                     'full_description' => $detail['full_description'],
                     'brand' => $detail['brand'],
                     'category' => $detail['category'],
@@ -1175,7 +1175,7 @@ class DocumentController extends Controller
 
             return [
                 'id' => $row->id,
-                'name' => $detail['full_description'],
+                'name' => $row->name,
                 'full_description' => $detail['full_description'],
                 'brand' => $detail['brand'],
                 'category' => $detail['category'],

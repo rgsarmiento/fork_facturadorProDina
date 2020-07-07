@@ -613,7 +613,8 @@ class SaleNoteController extends Controller
                     return [
                         'id' => $row->id,
                         'internal_id' => $row->internal_id,
-                        'description' => $detail['full_description'],
+                        'name' => $row->name,
+                        'description' => $row->description,
                         'full_description' => $detail['full_description'],
                         'brand' => $detail['brand'],
                         'category' => $detail['category'],

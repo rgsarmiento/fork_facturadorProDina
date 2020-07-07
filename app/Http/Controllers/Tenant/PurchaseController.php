@@ -360,7 +360,7 @@ class PurchaseController extends Controller
         $values = [
             'user_id' => auth()->id(),
             'external_id' => Str::uuid()->toString(),
-            'supplier' => PersonInput::set($inputs['supplier_id']),
+            'supplier' => Person::with('typePerson', 'typeRegime', 'identity_document_type', 'country', 'department', 'city')->findOrFail($inputs['supplier_id']),
             'soap_type_id' => $company->soap_type_id,
             'group_id' => ($inputs->document_type_id === '01') ? '01':'02',
             'state_type_id' => '01'
@@ -424,7 +424,8 @@ class PurchaseController extends Controller
                     return [
                         'id' => $row->id,
                         'item_code'  => $row->item_code,
-                        'description' => $full_description,
+                        'name'  => $row->name,
+                        'description'  => $row->description,
                         'full_description' => $full_description,
                         'currency_type_id' => $row->currency_type_id,
                         'currency_type_symbol' => $row->currency_type->symbol,

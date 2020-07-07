@@ -125,7 +125,7 @@
                                         <tbody>
                                         <tr v-for="(row, index) in form.items" :key="index">
                                             <td>{{ index + 1 }}</td>
-                                            <td>{{ row.item.description }}<br/>                                            
+                                            <td>{{ row.item.name }}<br/>                                            
                                                 <small>{{row.tax.name}}</small>
                                             </td>
                                             <!-- <td class="text-left">{{ row.warehouse_description }}</td> -->

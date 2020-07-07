@@ -191,7 +191,8 @@ class PurchaseQuotationController extends Controller
                     $full_description = $this->getFullDescription($row);
                     return [
                         'id' => $row->id,
-                        'description' => $full_description,
+                        'name' => $row->name,
+                        'description' => $row->description,
                         'full_description' => $full_description,
                         'unit_type_id' => $row->unit_type_id,
                         'unit_type' => $row->unit_type,

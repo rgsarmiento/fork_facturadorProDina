@@ -59,7 +59,7 @@ class PurchaseCollection extends ResourceCollection
                     return [
                         'key' => $key + 1,
                         'id' => $row->id,
-                        'description' => $row->item->description,
+                        'name' => $row->item->name ?? $row->item->description,
                         'quantity' => round($row->quantity,2)
                     ];
                 }),

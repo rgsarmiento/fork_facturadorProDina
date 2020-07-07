@@ -279,8 +279,9 @@ class PurchaseOrderController extends Controller
                     $full_description = $this->getFullDescription($row);
                     return [
                         'id' => $row->id,
+                        'name' => $row->name,
+                        'description' => $row->description,
                         'full_description' => $full_description,
-                        'description' => $full_description,
                         'currency_type_id' => $row->currency_type_id,
                         'currency_type_symbol' => $row->currency_type->symbol,
                         'sale_unit_price' => $row->sale_unit_price,
