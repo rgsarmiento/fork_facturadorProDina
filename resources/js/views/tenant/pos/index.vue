@@ -855,7 +855,7 @@
                   this.form_item.item.unit_price = unit_price;
                   this.form_item.item.presentation = null;
 
-                  this.form_item.id = this.form_item.item.item_id
+                  // this.form_item.id = this.form_item.item.item_id
                   this.form_item.item_id = this.form_item.item.item_id
                   this.form_item.unit_type_id = this.form_item.item.unit_type_id
                   this.form_item.tax_id = (this.taxes.length > 0) ? this.form_item.item.tax.id: null

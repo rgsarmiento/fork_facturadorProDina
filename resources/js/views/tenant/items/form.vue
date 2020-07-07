@@ -75,7 +75,7 @@
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.tax_id}">
                             <label class="control-label">Impuesto (Venta)</label>
-                            <el-select v-model="form.tax_id" >
+                            <el-select v-model="form.tax_id" filterable>
                                 <el-option v-for="option in taxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
@@ -440,7 +440,7 @@
                                 <div class="short-div col-md-8">
                                     <div class="form-group" :class="{'has-danger': errors.purchase_tax_id}">
                                         <label class="control-label">Impuesto (Compra)</label>
-                                        <el-select v-model="form.purchase_tax_id" >
+                                        <el-select v-model="form.purchase_tax_id" filterable>
                                             <el-option v-for="option in taxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                         </el-select>
                                         <small class="form-control-feedback" v-if="errors.purchase_tax_id" v-text="errors.purchase_tax_id[0]"></small>

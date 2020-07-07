@@ -73,7 +73,7 @@ class DocumentHelper{
         
         foreach ($request->items as $item) {
 
-            $record_item = Item::find($item['id']);
+            $record_item = Item::find($item['item_id']);
             
             $json_item = [
                 'name' => $record_item->name,
@@ -89,7 +89,7 @@ class DocumentHelper{
             ];
 
             $document->items()->create([
-                'item_id' => $item['id'],
+                'item_id' => $item['item_id'],
                 'item' => array_merge($item, $json_item),
                 'unit_type_id' => $item['unit_type_id'],
                 'quantity' => $item['quantity'],

@@ -388,7 +388,7 @@ export default {
       this.document.payments = q.payments;
 
       await this.document.items.forEach((it)=>{
-          it.id = it.item_id
+          // it.id = it.item_id
           it.price = it.unit_price
       })
 
