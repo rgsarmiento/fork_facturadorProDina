@@ -423,6 +423,7 @@ class QuotationController extends Controller
                     // $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
                     return [
                         'id' => $row->id,
+                        'name' => $row->name,
                         'description' => $full_description,
                         'full_description' => $full_description,
                         'internal_id' => $row->internal_id,

@@ -40,12 +40,12 @@
                             </div> 
 
                             <div class="col-lg-4 pb-2">
-                                <div class="form-group" :class="{'has-danger': errors.type_document_id}">
+                                <div class="form-group" :class="{'has-danger': errors.type_invoice_id}">
                                     <label class="control-label">Tipo de factura</label>
-                                    <el-select v-model="form.type_document_id" @change="changeDocumentType" popper-class="el-select-document_type" dusk="type_document_id" class="border-left rounded-left border-info">
+                                    <el-select v-model="form.type_invoice_id"  popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info">
                                         <el-option v-for="option in type_invoices" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                     </el-select>
-                                    <small class="form-control-feedback" v-if="errors.type_document_id" v-text="errors.type_document_id[0]"></small>
+                                    <small class="form-control-feedback" v-if="errors.type_invoice_id" v-text="errors.type_invoice_id[0]"></small>
                                 </div>
                             </div>
 
@@ -351,7 +351,7 @@
                     this.payment_methods = response.data.payment_methods
                     this.payment_forms = response.data.payment_forms
                     this.form.currency_id = (this.currencies.length > 0)?this.currencies[0].id:null;
-                    this.form.type_document_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null;
+                    this.form.type_invoice_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null;
                     this.form.payment_form_id = (this.payment_forms.length > 0)?this.payment_forms[0].id:null;
                     this.form.payment_method_id = (this.payment_methods.length > 0)?this.payment_methods[0].id:null;
 
@@ -399,27 +399,27 @@
             },
             keyupCustomer(){
 
-                if(this.input_person.number){
+                // if(this.input_person.number){
 
-                    if(!isNaN(parseInt(this.input_person.number))){
+                //     if(!isNaN(parseInt(this.input_person.number))){
 
-                        switch (this.input_person.number.length) {
-                            case 8:
-                                this.input_person.identity_type_document_id = '1'
-                                this.showDialogNewPerson = true
-                                break;
+                //         switch (this.input_person.number.length) {
+                //             case 8:
+                //                 this.input_person.identity_type_document_id = '1'
+                //                 this.showDialogNewPerson = true
+                //                 break;
 
-                            case 11:
-                                this.input_person.identity_type_document_id = '6'
-                                this.showDialogNewPerson = true
-                                break;
-                            default:
-                                this.input_person.identity_type_document_id = '6'
-                                this.showDialogNewPerson = true
-                                break;
-                        }
-                    }
-                }
+                //             case 11:
+                //                 this.input_person.identity_type_document_id = '6'
+                //                 this.showDialogNewPerson = true
+                //                 break;
+                //             default:
+                //                 this.input_person.identity_type_document_id = '6'
+                //                 this.showDialogNewPerson = true
+                //                 break;
+                //         }
+                //     }
+                // }
             },
             clickAddItemInvoice(){
                 this.recordItem = null
@@ -444,7 +444,7 @@
                 if (input.length > 0) {
 
                     this.loading_search = true
-                    let parameters = `input=${input}&type_document_id=${this.form.type_document_id}&operation_type_id=${this.form.operation_type_id}`
+                    let parameters = `input=${input}`
 
                     this.$http.get(`/${this.resource}/search/customers?${parameters}`)
                             .then(response => {
@@ -466,7 +466,7 @@
             initForm() {
 
                 this.form = {
-                    type_document_id: null,
+                    type_document_id: 1,
                     currency_id: null,
                     date_issue: moment().format('YYYY-MM-DD'),
                     date_expiration: null,
@@ -502,7 +502,7 @@
                 this.initForm()
                 this.form.currency_id = (this.currencies.length > 0)?this.currencies[0].id:null
                 // this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
-                this.form.type_document_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null
+                this.form.type_invoice_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null
                 this.form.payment_form_id = (this.payment_forms.length > 0)?this.payment_forms[0].id:null;
                 this.form.payment_method_id = (this.payment_methods.length > 0)?this.payment_methods[0].id:null;
                 // this.form.operation_type_id = (this.operation_types.length > 0)?this.operation_types[0].id:null
@@ -546,11 +546,11 @@
             },
 
             filterSeries() {
-                this.form.series_id = null
-                this.series = _.filter(this.all_series, {'establishment_id': this.form.establishment_id,
-                                                         'type_document_id': this.form.type_document_id,
-                                                         'contingency': this.is_contingency});
-                this.form.series_id = (this.series.length > 0)?this.series[0].id:null
+                // this.form.series_id = null
+                // this.series = _.filter(this.all_series, {'establishment_id': this.form.establishment_id,
+                //                                          'type_document_id': this.form.type_document_id,
+                //                                          'contingency': this.is_contingency});
+                // this.form.series_id = (this.series.length > 0)?this.series[0].id:null
             },
             filterCustomers() {
                 // this.form.customer_id = null

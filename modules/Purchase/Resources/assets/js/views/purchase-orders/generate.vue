@@ -123,7 +123,7 @@
                                         <tbody>
                                         <tr v-for="(row, index) in form.items" :key="index" width="100%">
                                             <td>{{ index + 1 }}</td>
-                                            <td>{{ row.item.description }}<br/>
+                                            <td>{{ row.item.name }}<br/>
                                             <!-- <small>{{ row.affectation_igv_type.description }}</small> -->
                                             </td>
                                             <td class="text-center">{{ row.item.unit_type.name }}</td>

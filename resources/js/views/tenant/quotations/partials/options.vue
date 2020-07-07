@@ -99,16 +99,16 @@
 
 
         <div class="col-lg-12">
-          <div class="form-group" :class="{'has-danger': errors.document_type_id}">
+          <div class="form-group" :class="{'has-danger': errors.type_document_id}">
             <label class="control-label">Tipo comprobante</label> 
-            <el-select v-model="document.type_invoice_id" @change="changeDocumentType" :disabled="true" popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info">
+            <el-select v-model="document.type_document_id" @change="changeDocumentType" :disabled="true" class="border-left rounded-left border-info">
                 <el-option v-for="option in type_documents" :key="option.id" :value="option.id" :label="option.name"></el-option>
                 <el-option key="nv" value="nv" label="NOTA DE VENTA"></el-option>
             </el-select>
             <small
               class="form-control-feedback"
-              v-if="errors.document_type_id"
-              v-text="errors.document_type_id[0]"
+              v-if="errors.type_document_id"
+              v-text="errors.type_document_id[0]"
             ></small>
           </div>
         </div>
@@ -621,7 +621,7 @@ export default {
                         percent: this.cadenaDecimales(x.tax.rate)
                     }
                 ],
-                description: x.item.description,
+                description: x.item.name,
                 code: x.item.internal_id,
                 type_item_identification_id: 4,
                 price_amount: this.cadenaDecimales(x.unit_price),

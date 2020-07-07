@@ -6,12 +6,12 @@
                 :show-close="false">  
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="form-group" :class="{'has-danger': errors.type_invoice_id}">
+                    <div class="form-group" :class="{'has-danger': errors.type_document_id}">
                         <label class="control-label">Tipo comprobante</label>
-                        <el-select v-model="document.type_invoice_id" @change="changeDocumentType" :disabled="true" popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info">
+                        <el-select v-model="document.type_document_id" @change="changeDocumentType" :disabled="true" popper-class="el-select-document_type" dusk="type_document_id" class="border-left rounded-left border-info">
                             <el-option v-for="option in type_documents" :key="option.id" :value="option.id" :label="option.name"></el-option>
                         </el-select>
-                        <small class="form-control-feedback" v-if="errors.type_invoice_id" v-text="errors.type_invoice_id[0]"></small>
+                        <small class="form-control-feedback" v-if="errors.type_document_id" v-text="errors.type_document_id[0]"></small>
                         <!-- <el-checkbox  v-model="generate_dispatch">Generar Guía Remisión</el-checkbox> -->
                     </div>
                 </div> 
@@ -125,7 +125,7 @@
             resetDocument(){
                 this.generate = (this.showGenerate) ? true:false
                 this.initDocument()
-                this.document.type_invoice_id = (this.document_types.length > 0)?this.document_types[0].id:null
+                // this.document.type_document_id = (this.document_types.length > 0)?this.document_types[0].id:null
                 this.changeDocumentType()
             },
             async submit() {
@@ -208,9 +208,9 @@
                 this.filterSeries();
             },
             filterSeries() {
-                this.document.series_id = null
-                this.series = _.filter(this.all_series, {'type_invoice_id': this.document.type_invoice_id})
-                this.document.series_id = (this.series.length > 0)?this.series[0].id:null
+                // this.document.series_id = null
+                // this.series = _.filter(this.all_series, {'type_invoice_id': this.document.type_invoice_id})
+                // this.document.series_id = (this.series.length > 0)?this.series[0].id:null
             },
             clickFinalize() {
                 location.href = `/${this.resource}`
@@ -351,7 +351,7 @@
                                 percent: this.cadenaDecimales(x.tax.rate)
                             }
                         ],
-                        description: x.item.description,
+                        description: x.item.name,
                         code: x.item.internal_id,
                         type_item_identification_id: 4,
                         price_amount: this.cadenaDecimales(x.unit_price),

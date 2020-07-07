@@ -197,7 +197,7 @@
                                         <tbody v-if="form.items.length > 0">
                                             <tr v-for="(row, index) in form.items" :key="index">
                                                 <td>{{ index + 1 }}</td>
-                                                <td>{{ row.item.description }} 
+                                                <td>{{ row.item.name }} 
                                                     <template v-if="row.item.presentation">
                                                         {{row.item.presentation.hasOwnProperty('description') ? row.item.presentation.description : ''}}
                                                     </template>
