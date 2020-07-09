@@ -12,14 +12,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="row in warehouses">
+                            <tr v-for="(row, index) in warehouses" :key="index">
                                 <th>{{ row.warehouse_description }}</th>
                                 <th class="text-right">{{ row.stock }}</th>
                             </tr>
                             </tbody>
                         </table>
 
-                        <h5>Lista de Precios Creados</h5>
+                        <!-- <h5>Lista de Precios Creados</h5>
                         <table class="table">
                           <thead>
                             <tr>
@@ -43,7 +43,7 @@
                               <th>{{ row.price_default }}</th>
                             </tr>
                           </tbody>
-                        </table>
+                        </table> -->
 
                     </div>
                 </div>

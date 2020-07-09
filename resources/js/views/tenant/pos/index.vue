@@ -537,7 +537,7 @@
 
           },
           clickWarehouseDetail(item){
-            this.unittypeDetail = item.unit_type
+              this.unittypeDetail = item.unit_type
               this.warehousesDetail = item.warehouses
               this.showWarehousesDetail = true
           },

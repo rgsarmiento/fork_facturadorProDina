@@ -141,7 +141,7 @@ $cash_documents = $cash->cash_documents;
                                         @php
                                             $type_transaction =  'Venta';
                                             $document_type_description =  'NOTA DE VENTA';
-                                            $number = $value->sale_note->identifier;
+                                            $number = $value->sale_note->number_full;
                                             $date_time_of_issue = "{$value->sale_note->date_of_issue->format('Y-m-d')} {$value->sale_note->time_of_issue}";
                                             $payment_method_description = $payment->payment_method_type->description;
                                             $total = $payment->payment;

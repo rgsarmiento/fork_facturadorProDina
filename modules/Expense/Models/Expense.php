@@ -87,10 +87,16 @@ class Expense extends ModelTenant
         return $this->belongsTo(Establishment::class);
     }
 
-    public function currency_type()
+    
+    public function getCurrencyTypeIdAttribute()
     {
-        return $this->belongsTo(CurrencyType::class, 'currency_type_id');
+        return $this->currency->name;
     }
+    
+    // public function currency_type()
+    // {
+    //     return $this->belongsTo(CurrencyType::class, 'currency_type_id');
+    // }
 
     public function expense_type()
     {

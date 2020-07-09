@@ -25,6 +25,11 @@ use App\Models\Tenant\ItemTag;
 use App\Models\Tenant\Catalogs\Tag;
 use Illuminate\Support\Facades\DB;
 
+use Modules\Factcolombia1\Models\Tenant\{
+    TypeUnit,
+    Currency,
+    Tax,
+};
 
 
 class ItemSetController extends Controller
@@ -38,7 +43,7 @@ class ItemSetController extends Controller
     public function columns()
     {
         return [
-            'description' => 'Nombre',
+            'name' => 'Nombre',
             'internal_id' => 'Código interno',
         ];
     }
@@ -48,7 +53,7 @@ class ItemSetController extends Controller
         $records = Item::whereTypeUser()
                         ->whereIsSet()
                         ->where($request->column, 'like', "%{$request->value}%")
-                        ->orderBy('description');
+                        ->orderBy('name');
 
         return new ItemCollection($records->paginate(config('tenant.items_per_page')));
     }
@@ -60,16 +65,16 @@ class ItemSetController extends Controller
 
     public function tables()
     {
-        $unit_types = UnitType::whereActive()->orderByDescription()->get();
-        $currency_types = CurrencyType::whereActive()->orderByDescription()->get();
-        $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
-        $system_isc_types = SystemIscType::whereActive()->orderByDescription()->get();
-        $affectation_igv_types = AffectationIgvType::whereActive()->get();
+        
+        $unit_types = TypeUnit::get();
+        $taxes = Tax::query()->where('is_retention', false)->get();
+        $currency_types = Currency::get();
+
         // $warehouses = Warehouse::all();
         // $accounts = Account::all();
         // $tags = Tag::all();
         $individual_items = Item::whereWarehouse()->whereTypeUser()->whereNotIsSet()->whereIsActive()->get()->transform(function($row) {
-            $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
+            $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->name:$row->name;
             return [
                 'id' => $row->id,
                 'full_description' => $full_description,
@@ -79,8 +84,9 @@ class ItemSetController extends Controller
             ];
         });
 
-        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types', 'individual_items');
+        return compact('unit_types', 'currency_types', 'taxes', 'individual_items');
     }
+
 
     public function record($id)
     {

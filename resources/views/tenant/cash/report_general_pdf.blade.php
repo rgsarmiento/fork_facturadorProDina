@@ -134,7 +134,7 @@ $cash_final_balance = 0;
 
                                             $type_transaction =  'Venta';
                                             $document_type_description =  'NOTA DE VENTA';
-                                            $number = $value->sale_note->identifier;
+                                            $number = $value->sale_note->number_full;
                                             $date_of_issue = $value->sale_note->date_of_issue->format('Y-m-d');
                                             $customer_name = $value->sale_note->customer->name;
                                             $customer_number = $value->sale_note->customer->number;
