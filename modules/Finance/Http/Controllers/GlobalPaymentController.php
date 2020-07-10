@@ -31,8 +31,9 @@ class GlobalPaymentController extends Controller
 
         $payment_types = $this->getCollectionPaymentTypes();
         $destination_types = $this->getCollectionDestinationTypes();
+        $currencies = $this->getCurrencies();
 
-        return compact('payment_types', 'destination_types');
+        return compact('payment_types', 'destination_types', 'currencies');
     }
 
 
@@ -55,6 +56,7 @@ class GlobalPaymentController extends Controller
         $params = (object)[
             'date_start' => $data_of_period['d_start'],
             'date_end' => $data_of_period['d_end'],
+            'currency_id' => $request['currency_id'],
         ];
         
         $records = $model::whereFilterPaymentType($params);

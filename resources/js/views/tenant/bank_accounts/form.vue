@@ -29,14 +29,14 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
+                        <div class="form-group" :class="{'has-danger': errors.currency_id}">
                             <label class="control-label">Moneda</label>
-                            <el-select v-model="form.currency_type_id">
-                                <el-option v-for="option in currency_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                            <el-select v-model="form.currency_id" filterable>
+                                <el-option v-for="option in currencies" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
-                            <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
+                            <small class="form-control-feedback" v-if="errors.currency_id" v-text="errors.currency_id[0]"></small>
                         </div>
-                    </div>
+                    </div> 
                     <div class="col-md-8">
                         <div class="form-group" :class="{'has-danger': errors.cci}">
                             <label class="control-label">CCI</label>
@@ -69,7 +69,7 @@
                 errors: {},
                 form: {},
                 banks: [],
-                currency_types: [],
+                currencies: [],
             }
         },
         created() {
@@ -77,7 +77,7 @@
             this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     this.banks = response.data.banks
-                    this.currency_types = response.data.currency_types
+                    this.currencies = response.data.currencies
                 })
 //            await this.$http.get(`/${this.resource}/record`)
 //                .then(response => {
@@ -94,7 +94,7 @@
                     bank_id: null,
                     description: null,
                     number: null,
-                    currency_type_id: null,
+                    currency_id: null,
                     cci: null,
                 }
             },

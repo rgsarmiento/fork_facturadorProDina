@@ -15,6 +15,9 @@ use App\Models\Tenant\{
 use Modules\Sale\Models\QuotationPayment;
 use Modules\Sale\Models\ContractPayment;
 use Modules\Finance\Models\IncomePayment;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
 
 
 trait FinanceTrait
@@ -132,7 +135,7 @@ trait FinanceTrait
             ['id'=> PurchasePayment::class, 'description' => 'COMPRAS'],
             ['id'=> ExpensePayment::class, 'description' => 'GASTOS'],
             ['id'=> QuotationPayment::class, 'description' => 'COTIZACIÓN'],
-            ['id'=> ContractPayment::class, 'description' => 'CONTRATO'],
+            // ['id'=> ContractPayment::class, 'description' => 'CONTRATO'],
             ['id'=> IncomePayment::class, 'description' => 'INGRESO'],
         ];
     }
@@ -263,7 +266,8 @@ trait FinanceTrait
 
     public function calculateTotalCurrencyType($record, $payment)
     {
-        return ($record->currency_type_id === 'USD') ? $payment * $record->exchange_rate_sale : $payment;
+        return $payment;
+        // return ($record->currency_type_id === 'USD') ? $payment * $record->exchange_rate_sale : $payment;
     }
 
     
@@ -372,4 +376,10 @@ trait FinanceTrait
         ];
 
     }
+
+    public function getCurrencies()
+    {
+        return Currency::get(['id', 'name']);
+    }
+
 }

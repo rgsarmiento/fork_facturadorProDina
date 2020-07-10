@@ -43,7 +43,7 @@ class DocumentHelper{
             'customer' => Person::with('typePerson', 'typeRegime', 'identity_document_type', 'country', 'department', 'city')->findOrFail($request->customer_id),
             'currency_id' => $request->currency_id,
             // 'date_issue' => Carbon::parse("{$request->date_issue} ".Carbon::now()->format('H:i:s')),
-            'date_expiration' => Carbon::parse("{$request->date_expiration}"),
+            'date_expiration' => $request->date_expiration ? Carbon::parse("{$request->date_expiration}") : null,
             'date_of_issue' => Carbon::parse($request->date_issue)->format('Y-m-d'),
             'time_of_issue' => Carbon::now()->format('H:i:s'),
             'observation' => $request->observation,

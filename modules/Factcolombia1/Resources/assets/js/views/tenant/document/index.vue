@@ -33,13 +33,14 @@
                         <th>Cliente</th>
                         <th>Documento</th>
                         <th>Estado DIAN</th>
-                        <th>Acuse recibido cliente</th>
+                        <!-- <th>Acuse recibido cliente</th> -->
                         <th class="text-center">Moneda</th>
                         <th class="text-right">T.Venta</th>
                         <th class="text-right">T.Descuentos</th>
                         <th class="text-right">T.Impuestos</th>
                         <th class="text-right">Subtotal</th>
                         <th class="text-right">Total</th>
+                        <th class="text-center"></th>
                         <th class="text-right">Descargas</th>
                         <th class="text-right">Acciones</th>
                     <tr>
@@ -51,7 +52,7 @@
                             <small v-text="row.type_document_name"></small><br/>
                         </td>
                         <td class="text-center">{{ row.state_document_name }}</td>
-                        <td class="text-center">{{ row.acknowledgment_received }}</td>
+                        <!-- <td class="text-center">{{ row.acknowledgment_received }}</td> -->
                         <td class="text-center">{{ row.currency_name }}</td>
 
                         <td class="text-right">{{ row.sale }}</td>
@@ -60,6 +61,10 @@
                         <td class="text-right">{{ row.subtotal }}</td>
                         <td class="text-right">{{ row.total }}</td>
                        
+                        <td class="text-center">
+                            <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
+                                    @click.prevent="clickPayment(row.id)">Pagos</button>
+                        </td>
                         <td class="text-right" > 
                             <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickDownload(row.download_xml)"
@@ -82,6 +87,9 @@
                 </data-table>
             </div>
  
+            <document-payments :showDialog.sync="showDialogPayments"
+                               :documentId="recordId"></document-payments>
+
             <document-options :showDialog.sync="showDialogOptions"
                               :showDownload="false"
                               :recordId="recordId"
@@ -94,9 +102,10 @@
  
     import DataTable from '@components/DataTable.vue'
     import DocumentOptions from './partials/options.vue'
+    import DocumentPayments from './partials/payments.vue'
 
     export default {
-        components: {DataTable, DocumentOptions},
+        components: {DataTable, DocumentOptions, DocumentPayments},
         data() {
             return {
                 showDialogReportPayment:false,
@@ -113,6 +122,10 @@
         created() {
         },
         methods: {
+            clickPayment(recordId) {
+                this.recordId = recordId;
+                this.showDialogPayments = true;
+            },
             clickVoided(recordId = null) {
                 this.recordId = recordId
                 this.showDialogVoided = true

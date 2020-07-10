@@ -67,7 +67,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Ruc: </strong>{{$company->number}}</p>
+                        <p><strong>N° Documento: </strong>{{$company->number}}</p>
                     </td>
                     <td>
                         <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
@@ -104,7 +104,8 @@
 
                                         if($value->payment->associated_record_payment->document_type){
 
-                                            $document_type = $value->payment->associated_record_payment->document_type->description;
+                                            $document_type = $value->payment->associated_record_payment->document_type->description ?? $value->payment->associated_record_payment->document_type->name;
+                                            // $document_type = $value->payment->associated_record_payment->document_type->description;
                                         
                                         }elseif(isset($value->payment->associated_record_payment->prefix)){
                                             

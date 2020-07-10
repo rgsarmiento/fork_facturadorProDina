@@ -7,6 +7,9 @@ use Modules\Expense\Models\ExpensePayment;
 use App\Models\Tenant\Invoice;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
 
 class ToPay
 { 
@@ -63,13 +66,13 @@ class ToPay
                 ->whereIn('state_type_id', ['01','03','05','07','13'])
                 ->whereIn('document_type_id', ['01','03','GU75', 'NE76'])
                 ->select(DB::raw("purchases.id as id, ".
-                                    "DATE_FORMAT(purchases.date_of_issue, '%Y/%m/%d') as date_of_issue, ".
-                                    "DATE_FORMAT(purchases.date_of_due, '%Y/%m/%d') as date_of_due, ".
+                                    "DATE_FORMAT(purchases.date_of_issue, '%Y-%m-%d') as date_of_issue, ".
+                                    "DATE_FORMAT(purchases.date_of_due, '%Y-%m-%d') as date_of_due, ".
                                     "persons.name as supplier_name, persons.id as supplier_id, purchases.document_type_id,".
                                     "CONCAT(purchases.series,'-',purchases.number) AS number_full, ".
                                     "purchases.total as total, ".
                                     "IFNULL(payments.total_payment, 0) as total_payment, ".
-                                    "'purchase' AS 'type', ". "purchases.currency_type_id, " . "purchases.exchange_rate_sale"))
+                                    "'purchase' AS 'type', ". "purchases.currency_id"))
                 ->where('purchases.establishment_id', $establishment_id)
                 ->whereBetween('purchases.date_of_issue', [$d_start, $d_end]);
 
@@ -85,13 +88,13 @@ class ToPay
                 ->whereIn('state_type_id', ['01','03','05','07','13'])
                 ->whereIn('document_type_id', ['01','03','GU75', 'NE76'])
                 ->select(DB::raw("purchases.id as id, ".
-                                    "DATE_FORMAT(purchases.date_of_issue, '%Y/%m/%d') as date_of_issue, ".
-                                    "DATE_FORMAT(purchases.date_of_due, '%Y/%m/%d') as date_of_due, ".
+                                    "DATE_FORMAT(purchases.date_of_issue, '%Y-%m-%d') as date_of_issue, ".
+                                    "DATE_FORMAT(purchases.date_of_due, '%Y-%m-%d') as date_of_due, ".
                                     "persons.name as supplier_name, persons.id as supplier_id, purchases.document_type_id, ".
                                     "CONCAT(purchases.series,'-',purchases.number) AS number_full, ".
                                     "purchases.total as total, ".
                                     "IFNULL(payments.total_payment, 0) as total_payment, ".
-                                    "'purchase' AS 'type', ". "purchases.currency_type_id, " . "purchases.exchange_rate_sale"))
+                                    "'purchase' AS 'type', ". "purchases.currency_id"))
                 ->where('purchases.establishment_id', $establishment_id);
 
         }
@@ -114,13 +117,13 @@ class ToPay
                 })
                 ->whereIn('state_type_id', ['01','03','05','07','13'])
                 ->select(DB::raw("expenses.id as id, ".
-                                "DATE_FORMAT(expenses.date_of_issue, '%Y/%m/%d') as date_of_issue, ".
+                                "DATE_FORMAT(expenses.date_of_issue, '%Y-%m-%d') as date_of_issue, ".
                                 "null as date_of_due, ".
                                 "persons.name as supplier_name, persons.id as supplier_id, null as document_type_id, ".
                                 "expenses.number as number_full, ".
                                 "expenses.total as total, ".
                                 "IFNULL(payments.total_payment, 0) as total_payment, ".
-                                "'expense' AS 'type', " . "expenses.currency_type_id, " . "expenses.exchange_rate_sale"))
+                                "'expense' AS 'type', " . "expenses.currency_id"))
                 ->where('expenses.establishment_id', $establishment_id)
                 // ->where('expenses.changed', false)
                 ->whereBetween('expenses.date_of_issue', [$d_start, $d_end]);
@@ -137,13 +140,13 @@ class ToPay
                 })
                 ->whereIn('state_type_id', ['01','03','05','07','13'])
                 ->select(DB::raw("expenses.id as id, ".
-                                "DATE_FORMAT(expenses.date_of_issue, '%Y/%m/%d') as date_of_issue, ".
+                                "DATE_FORMAT(expenses.date_of_issue, '%Y-%m-%d') as date_of_issue, ".
                                 "null as date_of_due, ".
                                 "persons.name as supplier_name, persons.id as supplier_id, null as document_type_id, ".
                                 "expenses.number as number_full, ".
                                 "expenses.total as total, ".
                                 "IFNULL(payments.total_payment, 0) as total_payment, ".
-                                "'sale_note' AS 'type', " . "expenses.currency_type_id, " . "expenses.exchange_rate_sale"))
+                                "'sale_note' AS 'type', " . "expenses.currency_id"))
                 ->where('expenses.establishment_id', $establishment_id);
                 // ->where('expenses.changed', false)
                 // ->where('expenses.total_canceled', false);
@@ -197,10 +200,8 @@ class ToPay
                     'date_payment_last' => ($date_payment_last) ? $date_payment_last->date_of_payment->format('Y-m-d') : null,
                     'delay_payment' => $delay_payment,
                     'date_of_due' =>  $date_of_due,
-                    'currency_type_id' => $row->currency_type_id,
-                    'exchange_rate_sale' => (float)$row->exchange_rate_sale
+                    'currency_id' => Currency::select('name')->find($row->currency_id)->name, 
                 ];
-//            }
         });
     }
 
@@ -221,13 +222,13 @@ class ToPay
                 ->whereIn('state_type_id', ['01','03','05','07','13'])
                 ->whereIn('document_type_id', ['01','03','GU75', 'NE76'])
                 ->select(DB::raw("purchases.id as id, ".
-                                    "DATE_FORMAT(purchases.date_of_issue, '%Y/%m/%d') as date_of_issue, ".
-                                    "DATE_FORMAT(purchases.date_of_due, '%Y/%m/%d') as date_of_due, ".
+                                    "DATE_FORMAT(purchases.date_of_issue, '%Y-%m-%d') as date_of_issue, ".
+                                    "DATE_FORMAT(purchases.date_of_due, '%Y-%m-%d') as date_of_due, ".
                                     "persons.name as supplier_name, persons.id as supplier_id, purchases.document_type_id, ".
                                     "CONCAT(purchases.series,'-',purchases.number) AS number_full, ".
                                     "purchases.total as total, ".
                                     "IFNULL(payments.total_payment, 0) as total_payment, ".
-                                    "'purchase' AS 'type', ". "purchases.currency_type_id, " . "purchases.exchange_rate_sale"));
+                                    "'purchase' AS 'type', ". "purchases.currency_id"));
 
  
         $expense_payments = DB::table('expense_payments')
@@ -242,13 +243,13 @@ class ToPay
                 })
                 ->whereIn('state_type_id', ['01','03','05','07','13'])
                 ->select(DB::raw("expenses.id as id, ".
-                                "DATE_FORMAT(expenses.date_of_issue, '%Y/%m/%d') as date_of_issue, ".
+                                "DATE_FORMAT(expenses.date_of_issue, '%Y-%m-%d') as date_of_issue, ".
                                 "null as date_of_due, ".
                                 "persons.name as supplier_name, persons.id as supplier_id, null as document_type_id, ".
                                 "expenses.number as number_full, ".
                                 "expenses.total as total, ".
                                 "IFNULL(payments.total_payment, 0) as total_payment, ".
-                                "'sale_note' AS 'type', " . "expenses.currency_type_id, " . "expenses.exchange_rate_sale"));
+                                "'sale_note' AS 'type', " . "expenses.currency_id"));
 
 
         $records = $purchases->union($expenses)->get();
@@ -298,8 +299,7 @@ class ToPay
                     'date_payment_last' => ($date_payment_last) ? $date_payment_last->date_of_payment->format('Y-m-d') : null,
                     'delay_payment' => $delay_payment,
                     'date_of_due' =>  $date_of_due,
-                    'currency_type_id' => $row->currency_type_id,
-                    'exchange_rate_sale' => (float)$row->exchange_rate_sale
+                    'currency_id' => $row->currency_id,
                 ];
 //            }
         });

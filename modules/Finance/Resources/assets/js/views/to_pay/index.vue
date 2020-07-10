@@ -102,7 +102,7 @@
                                     </el-button>
                                 </div>
                             </div>
-                            <div class="row mt-5 mb-3 text-right">
+                            <!-- <div class="row mt-5 mb-3 text-right">
                                 <div class="col-md-1 text-right">
                                 </div>
 
@@ -131,9 +131,9 @@
                                     <span size="small">Saldo corriente (USD)</span>
                                     </el-badge>
                                 </div>
-                            </div>
+                            </div> -->
 
-                            <div class="table-responsive">
+                            <div class="table-responsive mt-4">
                             <table class="table">
                                 <thead>
                                 <tr>
@@ -189,7 +189,7 @@
                                                 <el-button icon="el-icon-view" slot="reference"></el-button>
                                                 </el-popover>
                                             </td>
-                                                <td>{{row.currency_type_id}}</td>
+                                                <td>{{row.currency_id}}</td>
                                             <td class="text-right text-danger">{{ row.total_to_pay }}</td>
                                             <td class="text-right">{{ row.total }}</td>
                                             <td class="text-right">

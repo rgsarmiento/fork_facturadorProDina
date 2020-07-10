@@ -31,8 +31,9 @@ class BalanceController extends Controller
 
         $payment_types = [];
         $destination_types = [];
+        $currencies = $this->getCurrencies();
 
-        return compact('payment_types', 'destination_types');
+        return compact('payment_types', 'destination_types', 'currencies');
     }
 
 
@@ -49,10 +50,11 @@ class BalanceController extends Controller
     public function getRecords($request){
 
         $data_of_period = $this->getDatesOfPeriod($request); 
-
+        
         $params = (object)[
             'date_start' => $data_of_period['d_start'],
             'date_end' => $data_of_period['d_end'],
+            'currency_id' => $request['currency_id'],
         ];
         
         $bank_accounts = BankAccount::with(['global_destination' => function($query) use($params){
