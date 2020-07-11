@@ -27,7 +27,8 @@
         "robrichards/xmlseclibs": "3.0.*",
         "staudenmeir/eloquent-json-relations": "^1.1",
         "symfony/process": "^4.4",
-        "thiagoalessio/tesseract_ocr": "^2.7"
+        "thiagoalessio/tesseract_ocr": "^2.7",
+        "doctrine/dbal": "2.9"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
