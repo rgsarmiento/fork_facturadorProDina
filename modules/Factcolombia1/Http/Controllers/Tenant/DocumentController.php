@@ -60,7 +60,7 @@ class DocumentController extends Controller
         return view('factcolombia1::document.tenant.index');
     }
 
-    
+
     public function columns()
     {
         return [
@@ -188,21 +188,14 @@ class DocumentController extends Controller
 
             $id_test = $company->test_id;
             $base_url = config('tenant.service_fact');
-            
+
             if($company->type_environment_id == 2)
                 $ch = curl_init("{$base_url}ubl2.1/invoice/{$id_test}");
             else
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
-                
-            $data_document = json_encode($service_invoice);
-            // dd($data_document);
 
-//                        $file = fopen("C:\\DEBUG.TXT", "w");
-//                        fwrite($file, json_encode(array("sendmail" => true)));
-//                        fclose($file);
-//            return $data_document;
-//return json_encode(array("sendmail" => true));
-            // dd($data_document);
+            $data_document = json_encode($service_invoice);
+
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -214,49 +207,50 @@ class DocumentController extends Controller
             ));
             $response = curl_exec($ch);
             curl_close($ch);
-// dd($response);
-        //    return $response;
 
             $response_model = json_decode($response);
+
             $zip_key = null;
-            $invoice_status_api = null;
 
-//                        $file = fopen("C:\\DEBUG.TXT", "w");
-//                        fwrite($file, json_encode($response_model));
-//                        fwrite($file, " ---- ".json_encode(array_key_exists('urlinvoicepdf', $response_model)));
-//                        fclose($file);
 
-            if(array_key_exists('urlinvoicepdf', $response_model) && array_key_exists('urlinvoicexml', $response_model))
-            {
-                if(!is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey))
+                if(property_exists($response_model, 'urlinvoicepdf') && property_exists($response_model, 'urlinvoicexml'))
                 {
-                    if(is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->Success))
+                //   dd("uno");
+                    if(!is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey))
                     {
-                        if($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->Success == 'false')
+                    //  dd("dos");
+                        if(is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->Success))
                         {
-                            return [
-                                'success' => false,
-                                'message' => $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->ProcessedMessage
-                            ];
+                        // dd("tres");
+                            if($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->Success == 'false')
+                            {
+                            // dd("cuatro");
+                                return [
+                                    'success' => false,
+                                    'message' => $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->ProcessedMessage
+                                ];
+                            }
                         }
                     }
+                    else
+                        if(is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey))
+                        {
+                            $zip_key = $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey;
+                        }
                 }
-                else
-                    if(is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey))
-                    {
-                        $zip_key = $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey;
-                    }
-            }
-            // dd($response_model, $zip_key);
-// dd($zip_key);
-            //return $zip_key;
 
             //declaro variuable response status en null
             $response_status = null;
             //compruebo zip_key para ejecutar servicio de status document
 
-            if($zip_key)
+            if(!$zip_key)
             {
+                return [
+                    'success' => false,
+                    'message' => "Error de ZipKey."
+                ];
+            }
+
                 //espero 3 segundos para ejecutar sevcio de status document
                 sleep(3);
 
@@ -275,39 +269,23 @@ class DocumentController extends Controller
                 $response_status = curl_exec($ch2);
                 curl_close($ch2);
                 $response_status_decoded = json_decode($response_status);
-                // dd($response_status_decoded, $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage);
 
                 if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == "true")
+                {
                     $this->setStateDocument(1, $correlative_api);
+                }
                 else
                 {
-                    if(is_array($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string))
-                        $mensajeerror = implode(",", $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string);
-                    else
-                        $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string;
-                    if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == 'false')
-                    {
-//                        $file = fopen("C:\\DEBUG.TXT", "w");
-//                        fwrite($file, $response_status);
-//                        fclose($file);
+                    $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage;
+                    /*return [
+                        'success' => false,
+                        'message' => "Error al Validar Factura Nro: {$correlative_api}",
+                        'error' => $mensajeerror
+                    ];*/
 
-                        return [
-                            'success' => false,
-                            'message' => "Error al Validar Factura Nro: {$correlative_api} Errores: ".$mensajeerror
-                        ];
-                    }
                 }
-            }
-            else
-                return [
-                    'success' => false,
-                    'message' => "Error de ZipKey."
-                ];
-
-            ///-------------------------------
 
             $nextConsecutive = FacadeDocument::nextConsecutive($request->type_document_id);
-//            return json_encode($nextConsecutive);
             $this->company = Company::query()
                 ->with('country', 'version_ubl', 'type_identity_document')
                 ->firstOrFail();
@@ -316,61 +294,7 @@ class DocumentController extends Controller
 
             $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
 
-            // $this->document = Document::create([
-            //     'type_document_id' => $request->type_document_id,
-            //     'prefix' => $nextConsecutive->prefix,
-            //     'number' => $correlative_api,
-            //     'type_invoice_id' => $request->type_invoice_id,
-            //     'client_id' => $request->client_id,
-            //     'client' => Client::with('typePerson', 'typeRegime', 'typeIdentityDocument', 'country', 'department', 'city')->findOrFail($request->client_id),
-            //     'currency_id' => $request->currency_id,
-            //     'date_issue' => Carbon::parse("{$request->date_issue} ".Carbon::now()->format('H:i:s')),
-            //     'date_expiration' => Carbon::parse("{$request->date_expiration}"),
-            //     'observation' => $request->observation,
-            //     'reference_id' => $request->reference_id,
-            //     'note_concept_id' => $request->note_concept_id,
-            //     'sale' => $request->sale,
-            //     'total_discount' => $request->total_discount,
-            //     'taxes' => $request->taxes,
-            //     'total_tax' => $request->total_tax,
-            //     'subtotal' => $request->subtotal,
-            //     'total' => $request->total,
-            //     'version_ubl_id' => $this->company->version_ubl_id,
-            //     'ambient_id' => $this->company->ambient_id,
 
-            //     'payment_form_id' =>$request->payment_form_id,
-            //     'payment_method_id' =>$request->payment_method_id,
-            //     'time_days_credit' => $request->time_days_credit,
-
-            //     'response_api' => $response,
-            //     'response_api_status' => $response_status,
-            //     'correlative_api' => $correlative_api
-
-            // ]);
-
-
-            /*$this->document->update([
-                'xml' => $this->getFileName(),
-                'cufe' => $this->getCufe()
-            ]);*/
-
-            // foreach ($request->items as $item) {
-            //     DetailDocument::create([
-            //         'document_id' => $this->document->id,
-            //         'item_id' => $item['id'],
-            //         'item' => $item,
-            //         'type_unit_id' => $item['unit_type_id'],
-            //         // 'type_unit_id' => $item['type_unit_id'],
-            //         'quantity' => $item['quantity'],
-            //         'price' => $item['price'],
-            //         'tax_id' => $item['tax_id'],
-            //         'tax' => Tax::find($item['tax_id']),
-            //         'total_tax' => $item['total_tax'],
-            //         'subtotal' => $item['subtotal'],
-            //         'discount' => $item['discount'],
-            //         'total' => $item['total']
-            //     ]);
-            // }
         }
         catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
@@ -395,7 +319,7 @@ class DocumentController extends Controller
         ];
     }
 
-    
+
 
 
 
@@ -426,7 +350,7 @@ class DocumentController extends Controller
                     'message' => 'Error al obtener correlativo Api.'
                 ];
             }
-            
+
             //return $correlative_api;
 
             $note_service['number'] = $correlative_api;
@@ -596,7 +520,7 @@ class DocumentController extends Controller
             // ]);
 
             $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
-            
+
             $this->document->update([
                 'xml' => $this->getFileName(),
                 'cufe' => $this->getCufe()
@@ -843,14 +767,14 @@ class DocumentController extends Controller
        // return response()->download(storage_path("app/invoice/invoice-{$correlativo}.xml"));
 
     }
-    
+
     public function tables()
     {
 
-        $customers = $this->table('customers');  
-        // $customers = Client::all();  
+        $customers = $this->table('customers');
+        // $customers = Client::all();
 
-        
+
         $type_documents = TypeDocument::query()
                             ->get()
                             ->each(function($typeDocument) {
@@ -908,7 +832,7 @@ class DocumentController extends Controller
             });
             return $customers;
         }
- 
+
         if ($table === 'taxes') {
             return Tax::all()->transform(function($row) {
                 return [
@@ -929,12 +853,12 @@ class DocumentController extends Controller
                 ];
             });
         }
- 
+
         if ($table === 'items') {
 
             $establishment_id = auth()->user()->establishment_id;
             $warehouse = ModuleWarehouse::where('establishment_id', $establishment_id)->first();
-            
+
             $items_u = ItemP::whereWarehouse()->whereIsActive()->whereNotIsSet()->orderBy('description')->take(20)->get();
             $items_s = ItemP::where('unit_type_id','ZZ')->whereIsActive()->orderBy('description')->take(10)->get();
             $items = $items_u->merge($items_s);
@@ -1014,7 +938,7 @@ class DocumentController extends Controller
         return [];
     }
 
-    
+
     public function searchItems(Request $request)
     {
 

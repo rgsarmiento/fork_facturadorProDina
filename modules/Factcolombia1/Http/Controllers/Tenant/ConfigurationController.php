@@ -274,7 +274,10 @@ class ConfigurationController extends Controller
     public function storeServiceCompanie(ConfigurationServiceCompanyRequest $request)
     {
         $company = ServiceCompany::firstOrFail();
-        $base_url = env("SERVICE_FACT", "");
+       // $base_url = env("SERVICE_FACT", "");
+        $base_url = config("tenant.service_fact", "");
+
+
 
         //----send software----
         $ch = curl_init("{$base_url}ubl2.1/config/software");
@@ -425,7 +428,9 @@ class ConfigurationController extends Controller
     public function storeServiceCertificate(ConfigurationServiceCertificateCompanyRequest $request)
     {
         $company = ServiceCompany::firstOrFail();
-        $base_url = env("SERVICE_FACT", "");
+       // $base_url = env("SERVICE_FACT", "");
+
+        $base_url = config("tenant.service_fact", "");
 
         $ch2 = curl_init("{$base_url}ubl2.1/config/certificate");
         $data = [
@@ -541,7 +546,12 @@ class ConfigurationController extends Controller
     {
         try{
             $company = ServiceCompany::firstOrFail();
-            $base_url = env("SERVICE_FACT", "");
+         //   $base_url = env("SERVICE_FACT", "");
+            $base_url = config("tenant.service_fact", "");
+
+           // return json_encode($base_url);
+
+
             $ch3 = curl_init("{$base_url}ubl2.1/config/resolution");
             $data = [
                 "type_document_id"=> $request->type_document_id,
@@ -568,6 +578,8 @@ class ConfigurationController extends Controller
             $err = curl_error($ch3);
             curl_close($ch3);
             $respuesta = json_decode($response_resolution);
+
+            return json_encode($respuesta);
 
             if($err)
             {
