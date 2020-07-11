@@ -26,7 +26,13 @@ class UserController extends Controller
 
     public function tables()
     {
-        $modules = Module::orderBy('description')->get();
+        $modules = Module::whereIn('id', [1,2,4,5,6,7,8,10,12])
+                            ->with(['levels' => function($query){
+                                $query->whereIn('id', [1,2,5,7,8,9]);
+                            }])
+                            ->orderBy('description')
+                            ->get();
+
         $establishments = Establishment::orderBy('description')->get();
         $types = [['type' => 'admin', 'description'=>'Administrador'], ['type' => 'seller', 'description'=>'Vendedor']];
 

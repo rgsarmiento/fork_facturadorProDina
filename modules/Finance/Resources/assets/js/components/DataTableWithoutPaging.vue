@@ -96,13 +96,13 @@
                         <tfoot v-if="resource == 'finances/payment-method-types'">
                             <tr>
                                 <td class="text-center" colspan="2">Totales</td>
-                                <td class="text-center">S/ {{totals.t_documents}}</td>
-                                <td class="text-center">S/ {{totals.t_sale_notes}}</td>
-                                <td class="text-center">S/ {{totals.t_quotations}}</td>
-                                <!-- <td class="text-center">S/ {{totals.t_contracts}}</td> -->
-                                <td class="text-center">S/ {{totals.t_income}}</td>
-                                <td class="text-center">S/ {{totals.t_purchases}}</td>
-                                <td class="text-center">S/ {{totals.t_expenses}}</td>
+                                <td class="text-center"> {{totals.t_documents}}</td>
+                                <td class="text-center"> {{totals.t_sale_notes}}</td>
+                                <td class="text-center"> {{totals.t_quotations}}</td>
+                                <!-- <td class="text-center"> {{totals.t_contracts}}</td> -->
+                                <td class="text-center"> {{totals.t_income}}</td>
+                                <td class="text-center"> {{totals.t_purchases}}</td>
+                                <td class="text-center"> {{totals.t_expenses}}</td>
                             </tr>
                         </tfoot>
                     </table> 

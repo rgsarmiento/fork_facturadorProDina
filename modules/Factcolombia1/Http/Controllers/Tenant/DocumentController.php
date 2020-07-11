@@ -72,7 +72,7 @@ class DocumentController extends Controller
     public function records(Request $request)
     {
 
-        $records =  Document::where($request->column, 'like', '%' . $request->value . '%')->latest();
+        $records =  Document::where($request->column, 'like', '%' . $request->value . '%')->whereTypeUser()->latest();
 
         return new DocumentCollection($records->paginate(config('tenant.items_per_page')));
     }

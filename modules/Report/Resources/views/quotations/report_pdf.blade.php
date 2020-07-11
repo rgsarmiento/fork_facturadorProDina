@@ -67,7 +67,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Ruc: </strong>{{$company->number}}</p>
+                        <p><strong>N° Documento: </strong>{{$company->number}}</p>
                     </td>
                 
                 </tr>

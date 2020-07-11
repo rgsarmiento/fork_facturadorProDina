@@ -5,10 +5,10 @@
                 <div class="row">
  
                     <div class="col-md-6">
-                        <div class="form-group" :class="{'has-danger': errors.description}">
+                        <div class="form-group" :class="{'has-danger': errors.name}">
                             <label class="control-label">Producto</label>
-                            <el-input v-model="form.description" readonly></el-input>
-                            <small class="form-control-feedback" v-if="errors.description" v-text="errors.description[0]"></small>
+                            <el-input v-model="form.name" readonly></el-input>
+                            <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
                         </div>
                     </div>    
                     <div class="col-md-3">
@@ -68,25 +68,15 @@
                     id: null,
                     item_type_id: '01',
                     internal_id: null,
-                    item_code: null,
-                    item_code_gs1: null,
                     description: null,
                     name: null,
                     second_name: null,
-                    unit_type_id: 'NIU',
-                    currency_type_id: 'PEN',
+                    unit_type_id: 10,
                     sale_unit_price: 0,
                     purchase_unit_price: 0,
-                    has_isc: false,
-                    system_isc_type_id: null,
-                    percentage_isc: 0,
-                    suggested_price: 0,
-                    sale_affectation_igv_type_id: null,
-                    purchase_affectation_igv_type_id: null,
                     calculate_quantity: false,
                     stock: 0,
                     stock_min: 1,
-                    has_igv: true,
                     has_perception: false,
                     item_unit_types:[],
                     percentage_of_profit: 0,
@@ -100,7 +90,10 @@
                     brand_id: null,
                     date_of_due:null,
                     commission_amount:0,
-                    commission_type:'amount'
+                    commission_type:'amount',
+                    tax_id: 1,
+                    purchase_tax_id: 1,
+                    currency_type_id: 170,
                 }
                 this.show_has_igv = true
                 this.enabled_percentage_of_profit = false

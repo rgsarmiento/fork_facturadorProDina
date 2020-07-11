@@ -64,7 +64,7 @@ class UserCommissionHelper
 
         $purchase_unit_price = 0;
 
-        if($record->item->unit_type_id != 'ZZ'){
+        if($record->item->unit_type_id != 1){
 
             if($record->relation_item->purchase_unit_price > 0){
 
@@ -84,7 +84,8 @@ class UserCommissionHelper
     
     public static function calculateTotalCurrencyType($record, $total)
     {
-        return ($record->currency_type_id === 'USD') ? $total * $record->exchange_rate_sale : $total;
+        return $total;
+        // return ($record->currency_type_id === 'USD') ? $total * $record->exchange_rate_sale : $total;
     }
 
 }
