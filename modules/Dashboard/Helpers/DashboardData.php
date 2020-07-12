@@ -258,6 +258,7 @@ class DashboardData
                                            ->get();
 
             $documents = Document::query()->where('establishment_id', $establishment_id)->get();
+
         }
 
 
@@ -408,15 +409,17 @@ class DashboardData
 
             $sale_note_total_pen = $sale_notes->filter(function ($row) use($h_format) {
                 return substr($row->time_of_issue, 0, 2) === $h_format;
-            })->where('currency_type_id', 'PEN')->sum('total');
+            })
+            //->where('currency_type_id', 'PEN')
+            ->sum('total');
 
-            $sale_note_total_col_usd = $sale_notes->filter(function ($row) use($h_format) {
+            /*$sale_note_total_col_usd = $sale_notes->filter(function ($row) use($h_format) {
                 return substr($row->time_of_issue, 0, 2) === $h_format;
-            })->where('currency_type_id', 'USD');
+            })->where('currency_type_id', 'USD');*/
 
-            foreach ($sale_note_total_col_usd as $sn) {
+            /*foreach ($sale_note_total_col_usd as $sn) {
                 $sale_note_total_usd += $sn->total * $sn->exchange_rate_sale;
-            }
+            }*/
 
             $sale_note_total = $sale_note_total_pen + $sale_note_total_usd;
             $sale_notes_array[$h_format.'h'] = round($sale_note_total, 2);
@@ -448,12 +451,12 @@ class DashboardData
             }*/
 
             //NC
-            $document_total_note_credit_pen = $documents->filter(function ($row) use($h_format) {
+            /*$document_total_note_credit_pen = $documents->filter(function ($row) use($h_format) {
                 return substr($row->time_of_issue, 0, 2) === $h_format;
             })
             //->where('document_type_id', '07')
             //->where('currency_type_id', 'PEN')
-            ->sum('total');
+            ->sum('total');*/
 
             /*$document_total_nc_col_usd = $documents->filter(function ($row) use($h_format) {
                 return substr($row->time_of_issue, 0, 2) === $h_format;
@@ -464,7 +467,7 @@ class DashboardData
             }*/
 
             $d_total = $document_total_pen + $document_total_usd;
-            $d_total_nc = $document_total_note_credit_pen + $document_total_note_credit_usd;
+            $d_total_nc = 0; //$document_total_note_credit_pen + $document_total_note_credit_usd;
 
             $document_total = $d_total - $d_total_nc;
             //DOCUMENT
@@ -508,28 +511,28 @@ class DashboardData
                                                 //  ->where('currency_type_id', 'PEN')
                                                 ->where('date_of_issue', $d_start)->sum('total');
 
-            $document_total_usd = collect($documents)
+            $document_total_usd = 0; /*collect($documents)
                                                // ->whereIn('state_type_id', ['01','03','05','07','13'])
                                                // ->whereIn('document_type_id', ['01','03','08'])
                                                 //->where('currency_type_id', 'USD')
                                                 ->where('date_of_issue', $d_start)
                                                 ->map(function ($item, $key) {
                                                     return $item->total * $item->exchange_rate_sale;
-                                                 })->sum();
+                                                 })->sum();*/
 
-            $document_total_note_credit_pen = collect($documents)
+            $document_total_note_credit_pen = 0; /*collect($documents)
                                                             //->where('document_type_id', '07')
                                                             //->where('currency_type_id', 'PEN')
                                                             ->where('date_of_issue', $d_start)
-                                                            ->sum('total');
+                                                            ->sum('total');*/
 
-            $document_total_note_credit_usd = collect($documents)
+            $document_total_note_credit_usd = 0;/*collect($documents)
                                                             //->where('document_type_id', '07')
                                                             //->where('currency_type_id', 'USD')
                                                             ->where('date_of_issue', $d_start)
                                                             ->map(function ($item, $key) {
                                                                 return $item->total * $item->exchange_rate_sale;
-                                                            })->sum();
+                                                            })->sum();*/
 
 
             $d_total = $document_total_pen + $document_total_usd;
@@ -571,13 +574,13 @@ class DashboardData
                 return $row->date_of_issue->format('m') === $m_format;
             })->sum('total');
 
-            $sale_note_total_col_usd = $sale_notes->filter(function ($row) use($m_format) {
+           /* $sale_note_total_col_usd = $sale_notes->filter(function ($row) use($m_format) {
                 return $row->date_of_issue->format('m') === $m_format;
-            })->where('currency_type_id', 'USD');
+            })->where('currency_type_id', 'USD');*/
 
-            foreach ($sale_note_total_col_usd as $sn) {
+            /*foreach ($sale_note_total_col_usd as $sn) {
                 $sale_note_total_usd += $sn->total * $sn->exchange_rate_sale;
-            }
+            }*/
 
             $sale_note_total = round($sale_note_total_pen + $sale_note_total_usd, 2);
 
@@ -593,21 +596,26 @@ class DashboardData
 
             $document_total_pen = $documents->filter(function ($row) use($m_format) {
                 return $row->date_of_issue->format('m') === $m_format;
-            })->whereIn('state_type_id', ['01','03','05','07','13'])->where('currency_type_id', 'PEN')
-            ->whereIn('document_type_id', ['01','03','08'])->sum('total');
+            })
+            //->whereIn('state_type_id', ['01','03','05','07','13'])->where('currency_type_id', 'PEN')
+            //->whereIn('document_type_id', ['01','03','08'])
+            ->sum('total');
 
-            $document_total_col_usd = $documents->filter(function ($row) use($m_format) {
+            /*$document_total_col_usd = $documents->filter(function ($row) use($m_format) {
                 return $row->date_of_issue->format('m') === $m_format;
-            })->whereIn('state_type_id', ['01','03','05','07','13'])->where('currency_type_id', 'USD')->whereIn('document_type_id', ['01','03','08']);
+            })
+            ->whereIn('state_type_id', ['01','03','05','07','13'])
+            ->where('currency_type_id', 'USD')
+            ->whereIn('document_type_id', ['01','03','08']);
 
             foreach ($document_total_col_usd as $doc) {
                 $document_total_usd += $doc->total * $doc->exchange_rate_sale;
-            }
+            }*/
 
             //NC
-            $document_total_note_credit_pen = $documents->filter(function ($row) use($m_format) {
+            $document_total_note_credit_pen = 0;/*$documents->filter(function ($row) use($m_format) {
                 return $row->date_of_issue->format('m') === $m_format;
-            })->where('document_type_id', '07')->where('currency_type_id', 'PEN')->sum('total');
+            })->where('document_type_id', '07')->where('currency_type_id', 'PEN')->sum('total');*/
 
             $document_total_nc_col_usd = $documents->filter(function ($row) use($m_format) {
                 return $row->date_of_issue->format('m') === $m_format;
