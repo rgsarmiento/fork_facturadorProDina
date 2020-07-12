@@ -69,7 +69,7 @@ class DashboardUtility
             $document_items = DocumentItem::whereHas('document',function($query) use($establishment_id, $d_start, $d_end){
 
                                                 $query->where('establishment_id', $establishment_id)
-                                                        ->whereIn('state_type_id', ['01','03','05','07','13'])
+                                                        //->whereIn('state_type_id', ['01','03','05','07','13'])
                                                         ->whereBetween('date_of_issue', [$d_start, $d_end]);
                                             })
                                             ->get();
@@ -78,7 +78,7 @@ class DashboardUtility
             $sale_note_items = SaleNoteItem::whereHas('sale_note', function($query) use($establishment_id, $d_start, $d_end){
 
                                                 $query->where([['establishment_id', $establishment_id],['changed',false]])
-                                                        ->whereIn('state_type_id', ['01','03','05','07','13'])
+                                                       // ->whereIn('state_type_id', ['01','03','05','07','13'])
                                                         ->whereBetween('date_of_issue', [$d_start, $d_end]);
                                             })
                                             ->get();
@@ -90,16 +90,16 @@ class DashboardUtility
 
             $document_items = DocumentItem::whereHas('document', function($query) use($establishment_id){
 
-                                                $query->where('establishment_id', $establishment_id)
-                                                        ->whereIn('state_type_id', ['01','03','05','07','13']);
+                                                $query->where('establishment_id', $establishment_id);
+                                                        //->whereIn('state_type_id', ['01','03','05','07','13']);
                                             })
                                             ->get();
 
 
             $sale_note_items = SaleNoteItem::whereHas('sale_note', function($query) use($establishment_id){
 
-                                                $query->where([['establishment_id', $establishment_id],['changed',false]])
-                                                        ->whereIn('state_type_id', ['01','03','05','07','13']);
+                                                $query->where([['establishment_id', $establishment_id],['changed',false]]);
+                                                       // ->whereIn('state_type_id', ['01','03','05','07','13']);
                                             })
                                             ->get();
 
