@@ -60,21 +60,23 @@ class DashboardSalePurchase
         if($d_start && $d_end){
 
             $documents = Document::query()->where('establishment_id', $establishment_id)
-                                    ->whereIn('state_type_id', ['01','03','05','07','13'])
+                                    //->whereIn('state_type_id', ['01','03','05','07','13'])
                                     ->whereBetween('date_of_issue', [$d_start, $d_end])->get();
 
 
             $sale_notes = SaleNote::query()->where([['establishment_id', $establishment_id],['changed',false]])
-                                    ->whereIn('state_type_id', ['01','03','05','07','13'])
+                                    //->whereIn('state_type_id', ['01','03','05','07','13'])
                                     ->whereBetween('date_of_issue', [$d_start, $d_end])->get();
         }else{
 
             $documents = Document::query()->where('establishment_id', $establishment_id)
-                    ->whereIn('state_type_id', ['01','03','05','07','13'])->get();
+                    //->whereIn('state_type_id', ['01','03','05','07','13'])
+                    ->get();
 
 
             $sale_notes = SaleNote::query()->where([['establishment_id', $establishment_id],['changed',false]])
-                    ->whereIn('state_type_id', ['01','03','05','07','13'])->get();
+                    //->whereIn('state_type_id', ['01','03','05','07','13'])
+                    ->get();
 
         }
 
@@ -137,7 +139,10 @@ class DashboardSalePurchase
     private function purchase_totals($establishment_id, $d_start, $d_end)
     {
         // $purchases = Purchase::get();
-        $purchases = Purchase::query()->whereIn('state_type_id', ['01','03','05','07','13'])->where('establishment_id', $establishment_id)->get();
+        $purchases = Purchase::query()
+       // ->whereIn('state_type_id', ['01','03','05','07','13'])
+        ->where('establishment_id', $establishment_id)
+        ->get();
 
         $purchases_total = round($purchases->sum('total'),2);
         $purchases_total_perception = round($purchases->sum('total_perception'),2);
@@ -201,21 +206,23 @@ class DashboardSalePurchase
         if($d_start && $d_end){
 
             $documents = Document::query()->where('establishment_id', $establishment_id)
-                        ->whereIn('state_type_id', ['01','03','05','07','13'])
+                       // ->whereIn('state_type_id', ['01','03','05','07','13'])
                         ->whereBetween('date_of_issue', [$d_start, $d_end])->get();
 
 
             $sale_notes = SaleNote::query()->where([['establishment_id', $establishment_id],['changed',false]])
-                        ->whereIn('state_type_id', ['01','03','05','07','13'])
+                        //->whereIn('state_type_id', ['01','03','05','07','13'])
                         ->whereBetween('date_of_issue', [$d_start, $d_end])->get();
         }else{
 
             $documents = Document::query()->where('establishment_id', $establishment_id)
-                        ->whereIn('state_type_id', ['01','03','05','07','13'])->get();
+                        //->whereIn('state_type_id', ['01','03','05','07','13'])
+                        ->get();
 
 
             $sale_notes = SaleNote::query()->where([['establishment_id', $establishment_id],['changed',false]])
-                        ->whereIn('state_type_id', ['01','03','05','07','13'])->get();
+                        //->whereIn('state_type_id', ['01','03','05','07','13'])
+                        ->get();
 
         }
 
