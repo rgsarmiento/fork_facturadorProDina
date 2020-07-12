@@ -124,7 +124,7 @@
                 </div>
                 <div class="form-group" :class="{'text-danger': errors.telephone}">
                     <label for="email">Teléfono:</label>
-                    <input v-model="form_contact.telephone" type="text" maxlength="15" autocomplete="off" class="form-control" placeholder="Ingrese número de teléfono" name="teléfono">
+                    <input v-model="form_contact.telephone" type="text" maxlength="10" autocomplete="off" class="form-control" placeholder="Ingrese número de teléfono" name="teléfono">
                     <small class="form-control-feedback" v-if="errors.telephone" v-text="errors.telephone[0]"></small>
                 </div>
                 <div class="form-group" :class="{'text-danger': errors.address}">
@@ -553,7 +553,6 @@
             {
                 if(!this.user)
                     return null
-
 
                 return {
                     name: this.user.name,

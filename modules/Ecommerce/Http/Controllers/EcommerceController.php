@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Tenant\CulqiEmail;
 use App\Http\Controllers\Tenant\Api\ServiceController;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Tenant\Document;
 
 class EcommerceController extends Controller
 {
@@ -204,6 +205,36 @@ class EcommerceController extends Controller
 
     }
 
+    public function transactionFinally2(Request $request)
+    {
+        try{
+            $user = auth()->user();
+
+            $document = Document::find($request->documentId);
+
+            //1. confirmar dato de compriante en order
+            $order_generated = Order::find($request->orderId);
+            $order_generated->document_external_id = $document->external_id;
+            $order_generated->number_document = $document->number; //$document->series."-".$document->number;
+            $order_generated->status_order_id = $request->status_order_id;
+            $order_generated->save();
+
+            return [
+                'success' => true,
+                'message' => 'Order Actualizada',
+                'order_total' => $order_generated->total
+            ];
+        }
+        catch(Exception $e)
+        {
+            return [
+                'success' => false,
+                'message' =>  $e->getMessage()
+            ];
+        }
+
+    }
+
     public function paymentCash(Request $request)
     {
         $validator = Validator::make($request->customer, [
@@ -320,7 +351,7 @@ class EcommerceController extends Controller
         if ($request->identification_number) {
             $user->telephone = $request->identification_number;
         }
-        
+
         $user->save();
 
         return ['success' => true];

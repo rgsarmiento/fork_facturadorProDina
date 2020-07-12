@@ -146,7 +146,30 @@ class DocumentController extends Controller
 
         try {
 
-            //envio api ///
+            if(!$request->customer_id)
+            {
+                $customer = (object)$request->service_invoice['customer'];
+
+                $person = Person::updateOrCreate([
+                    'type' => 'customers',
+                    'identity_document_type_id' => $customer->identity_document_type_id,
+                    'number' => $customer->identification_number,
+                ], [
+                    'code' => random_int(1000, 9999),
+                    'name' => $customer->name,
+                    'country_id' => 47,
+                    'department_id' => 779,
+                    'city_id' => 12688,
+                    'address' => $customer->address,
+                    'email' => $customer->email,
+                    'telephone' => $customer->phone,
+                ]);
+
+                $request['customer_id'] = $person->id;
+
+            }
+
+
 
             $response =  null;
             $response_status =  null;
@@ -166,8 +189,6 @@ class DocumentController extends Controller
 
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
             $company = ServiceTenantCompany::firstOrFail();
-
-//            return json_encode($request->date_expiration);
 
             if(file_exists(storage_path('sendmail.api')))
                 $service_invoice['sendmail'] = true;
@@ -277,7 +298,7 @@ class DocumentController extends Controller
                 else
                 {
                     $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage;
-                    /*return [
+                   /* return [
                         'success' => false,
                         'message' => "Error al Validar Factura Nro: {$correlative_api}",
                         'error' => $mensajeerror
@@ -319,13 +340,9 @@ class DocumentController extends Controller
         ];
     }
 
-
-
-
-
-
     public function storeNote(DocumentRequest $request) {
         DB::connection('tenant')->beginTransaction();
+
         try {
             // dd($request->all());
             // return json_encode( $request->all());
@@ -483,41 +500,6 @@ class DocumentController extends Controller
 
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents)) throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
 
-            // $this->document = Document::create([
-            //     'type_document_id' => $request->type_document_id,
-            //     'prefix' => $nextConsecutive->prefix,
-            //     'number' => $correlative_api,
-            //     'type_invoice_id' => $request->type_invoice_id,
-            //     'client_id' => $request->client_id,
-            //     'client' => Client::with('typePerson', 'typeRegime', 'typeIdentityDocument', 'country', 'department', 'city')->findOrFail($request->client_id),
-            //     'currency_id' => $request->currency_id,
-            //     'date_issue' => Carbon::parse("{$request->date_issue} ".Carbon::now()->format('H:i:s')),
-            //     'date_expiration' => Carbon::parse("{$request->date_expiration}"),
-            //     'observation' => $request->observation,
-            //     'reference_id' => $request->reference_id,
-            //     'note_concept_id' => $request->note_concept_id,
-            //     'sale' => $request->sale,
-            //     'total_discount' => $request->total_discount,
-            //     'taxes' => $request->taxes,
-            //     'total_tax' => $request->total_tax,
-            //     'subtotal' => $request->subtotal,
-            //     'total' => $request->total,
-            //     'version_ubl_id' => $this->company->version_ubl_id,
-            //     'ambient_id' => $this->company->ambient_id,
-
-            //     'payment_form_id' =>$request->payment_form_id,
-            //     'payment_method_id' =>$request->payment_method_id,
-            //     'time_days_credit' => $request->time_days_credit,
-
-            //     'response_api' => $response,
-            //     'response_api_status' => $response_status,
-            //     'correlative_api' => $correlative_api
-            // ]);
-
-            // $this->document->update([
-            //     'xml' => $this->getFileName(),
-            //     'cufe' => $this->getCufe()
-            // ]);
 
             $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
 
@@ -526,24 +508,9 @@ class DocumentController extends Controller
                 'cufe' => $this->getCufe()
             ]);
 
-            // foreach ($request->items as $item) {
-            //     DetailDocument::create([
-            //         'document_id' => $this->document->id,
-            //         'item_id' => $item['id'],
-            //         'item' => $item,
-            //         'type_unit_id' => $item['unit_type_id'],
-            //         'quantity' => $item['quantity'],
-            //         'price' => $item['price'],
-            //         'tax_id' => $item['tax_id'],
-            //         'tax' => Tax::find($item['tax_id']),
-            //         'total_tax' => $item['total_tax'],
-            //         'subtotal' => $item['subtotal'],
-            //         'discount' => $item['discount'],
-            //         'total' => $item['total']
-            //     ]);
-            // }
         }
         catch (\Exception $e) {
+
             DB::connection('tenant')->rollBack();
 
             return [

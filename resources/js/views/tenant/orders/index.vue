@@ -13,12 +13,12 @@
       </ol>
       <div class="right-wrapper pull-right"></div>
     </div>
-    <div class="card mb-0">
+    <div class="card mb-0" v-loading="loading_submit">
       <div class="card-header bg-info">
         <h3 class="my-0">Listado de Pedidos Tienda Virtual</h3>
       </div>
       <div class="card-body">
-        <data-table :resource="resource">
+        <data-table  :resource="resource">
           <tr slot="heading" width="100%">
             <th>#</th>
             <th>Codigo de Pedido</th>
@@ -34,7 +34,7 @@
           <tr slot-scope="{ index, row }">
             <td>{{ index }}</td>
             <td>{{ row.order_id }}</td>
-            <td>{{ row.customer }}</td>
+            <td>{{ row.customer_name }}</td>
             <td class="text-center">
               <template>
                 <el-popover placement="right" width="415" trigger="click">
@@ -67,6 +67,7 @@
               <el-select v-model="row.status_order_id" placeholder="Estatus Pedido" :value="row.status_order_id" @change="updateStatus(row)">
                 <el-option
                   v-for="item in options"
+                  :disabled="row.number_document && item.id == 2  ? true:false"
                   :key="item.id"
                   :label="item.description"
                   :value="item.id">
@@ -118,15 +119,19 @@
       </div>
     </el-dialog>
 
+    <DocumentForm @handleLoader="handleLoader" ref="form_document" :purchase="purchaseForm">
+    </DocumentForm>
+
   </div>
 </template>
 <script>
 import DataTable from "../../../components/DataTable.vue";
+import DocumentForm from './form_document.vue'
+
 
 export default {
   props: [],
-
-  components: { DataTable },
+  components: { DataTable, DocumentForm },
   data() {
     return {
       showDialog: false,
@@ -141,7 +146,9 @@ export default {
       showDialog: false,
       form: [],
       record: '', // record orders
-      stocks: ''
+      stocks: '',
+      purchaseForm: {},
+      loading_submit: false
     };
   },
   async created() {
@@ -151,6 +158,10 @@ export default {
   },
   computed: {},
   methods: {
+    handleLoader(val)
+    {
+        this.loading_submit = val
+    },
     optionDisable(product, stock) {
       for (var i = 0; i < this.record.items.length; i++) {
         if (product === this.record.items[i].id) {
@@ -166,24 +177,31 @@ export default {
       }
     },
     async updateStatus(record) {
-      console.log(record)
-      this.record = record
-      if (record.status_order_id === 3) {
-        this.totalProduct = await this.products(record)
-        await this.$http.post(`/orders/warehouse`, {item_id: this.totalProduct}).then(response => {
-          this.warehouses = response.data.data
-          this.showDialog = true
-        })
-        return
-      }
-
-      await this.$http.post(`/statusOrder/update`, {record: record}).then(response => {
+        this.record = record
+        if (record.status_order_id === 2) {
+            await this.$refs.form_document.sendDocument(record)
+           // await this.sendDocument(record.purchase)
+        } else if (record.status_order_id === 3) {
+            this.totalProduct = await this.products(record.items)
+            await this.$http
+            .post(`/orders/warehouse`, { item_id: this.totalProduct })
+            .then(response => {
+                this.warehouses = response.data.data
+                this.showDialog = true
+            });
+            return;
+        } else {
+            this.saveUpdateStatus()
+        }
+    },
+    saveUpdateStatus(){
+      this.$http.post(`/statusOrder/update`, { record: this.record }).then(response => {
         this.$message.success(response.data.message)
       })
     },
     async save () {
       var save = []
-      
+
       for (var i = 0; i < this.record.items.length; i++) {
         if (this.totalProduct[i] === this.record.items[i].id) {
           save.push({
@@ -203,11 +221,11 @@ export default {
       this.showDialog = false
       this.recoard = ''
     },
-    products (products) {
+    products (items) {
       let listProduct = []
 
-      for (var i = 0; i <= products.items.length-1; i++) {
-        listProduct.push(products.items[i].id)
+      for (var i = 0; i <= items.length-1; i++) {
+        listProduct.push(items[i].id)
       }
       return listProduct
     }

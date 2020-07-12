@@ -34,6 +34,8 @@ Route::prefix('ecommerce')->group(function() {
 
     Route::post('culqi', 'CulqiController@payment')->name('tenant_ecommerce_culqui');
     Route::post('transaction_finally', 'EcommerceController@transactionFinally')->name('tenant_ecommerce_transaction_finally');
+    Route::post('transaction_finally2', 'EcommerceController@transactionFinally2');
+
     Route::post('payment_cash', 'EcommerceController@paymentCash')->name('tenant_ecommerce_payment_cash');
 
     Route::get('configuration', 'ConfigurationController@index')->name('tenant_ecommerce_configuration');
