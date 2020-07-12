@@ -298,11 +298,11 @@ class DocumentController extends Controller
                 else
                 {
                     $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage;
-                   /* return [
+                    return [
                         'success' => false,
                         'message' => "Error al Validar Factura Nro: {$correlative_api}",
                         'error' => $mensajeerror
-                    ];*/
+                    ];
 
                 }
 
@@ -314,7 +314,7 @@ class DocumentController extends Controller
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents)) throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
 
             $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
-            
+
             $payments = (new DocumentHelper())->savePayments($this->document, $request->payments);
 
 
