@@ -72,7 +72,7 @@ class DocumentController extends Controller
     public function records(Request $request)
     {
 
-        $records =  Document::where($request->column, 'like', '%' . $request->value . '%')->latest();
+        $records =  Document::where($request->column, 'like', '%' . $request->value . '%')->whereTypeUser()->latest();
 
         return new DocumentCollection($records->paginate(config('tenant.items_per_page')));
     }
@@ -315,6 +315,8 @@ class DocumentController extends Controller
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents)) throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
 
             $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
+            
+            $payments = (new DocumentHelper())->savePayments($this->document, $request->payments);
 
             // $this->document = Document::create([
             //     'type_document_id' => $request->type_document_id,

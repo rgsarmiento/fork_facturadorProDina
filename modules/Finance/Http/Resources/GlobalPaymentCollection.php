@@ -22,7 +22,7 @@ class GlobalPaymentCollection extends ResourceCollection
 
             if($row->payment->associated_record_payment->document_type){
 
-                $document_type = $row->payment->associated_record_payment->document_type->description;
+                $document_type = $row->payment->associated_record_payment->document_type->description ?? $row->payment->associated_record_payment->document_type->name;
             
             }elseif(isset($row->payment->associated_record_payment->prefix)){
                 

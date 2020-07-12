@@ -49,7 +49,7 @@ class DocumentRequest extends FormRequest
             'subtotal' => 'required|numeric|between:0.00,9999999999.99',
             'total' => 'required|numeric|between:0.00,9999999999.99',
             'items' => 'required|array',
-            'items.*.id' => 'required|exists:tenant.items,id',
+            'items.*.item_id' => 'required|exists:tenant.items,id',
             'payment_form_id' => 'required',
             'payment_method_id' => 'required',
         ];

@@ -102,7 +102,7 @@
                                     </el-button>
                                 </div>
                             </div>
-                            <div class="row mt-5 mb-3 text-right">
+                            <!-- <div class="row mt-5 mb-3 text-right">
                                 <div class="col-md-1 text-right">
                                 </div>
 
@@ -131,9 +131,9 @@
                                     <span size="small">Saldo corriente (USD)</span>
                                     </el-badge>
                                 </div>
-                            </div>
+                            </div> -->
 
-                            <div class="table-responsive">
+                            <div class="table-responsive mt-4">
                             <table class="table">
                                 <thead>
                                 <tr>
@@ -144,7 +144,6 @@
                                     <th>Cliente</th>
                                     <th>Días de retraso</th>
 
-                                    <th>Guías</th>
 
                                     <th>Ver Cartera</th>
                                     <th>Moneda</th>
@@ -164,46 +163,6 @@
                                             <td>{{ row.delay_payment ? row.delay_payment : 'No tiene días atrasados.' }}</td>
 
                                             <td>
-                                                <template>
-                                                <el-popover placement="right" width="400" trigger="click">
-                                                    <el-table :data="row.guides">
-                                                    <el-table-column
-                                                        width="120"
-                                                        property="date_of_issue"
-                                                        label="Fecha Emisión"
-                                                    ></el-table-column>
-                                                    <el-table-column width="100" property="number" label="Número"></el-table-column>
-                                                    <el-table-column
-                                                        width="100"
-                                                        property="date_of_shipping"
-                                                        label="Fecha Envío"
-                                                    ></el-table-column>
-                                                    <el-table-column fixed="right" label="Descargas" width="120">
-                                                        <template slot-scope="scope">
-                                                        <button
-                                                            type="button"
-                                                            class="btn waves-effect waves-light btn-xs btn-info"
-                                                            @click.prevent="clickDownloadDispatch(scope.row.download_external_xml)"
-                                                        >XML</button>
-                                                        <button
-                                                            type="button"
-                                                            class="btn waves-effect waves-light btn-xs btn-info"
-                                                            @click.prevent="clickDownloadDispatch(scope.row.download_external_pdf)"
-                                                        >PDF</button>
-                                                        <button
-                                                            type="button"
-                                                            class="btn waves-effect waves-light btn-xs btn-info"
-                                                            @click.prevent="clickDownloadDispatch(scope.row.download_external_cdr)"
-                                                        >CDR</button>
-                                                        </template>
-                                                    </el-table-column>
-                                                    </el-table>
-                                                    <el-button slot="reference" icon="el-icon-view"></el-button>
-                                                </el-popover>
-                                                </template>
-                                            </td>
-
-                                            <td>
                                                 <el-popover placement="right" width="300" trigger="click">
                                                 <p>
                                                     Saldo actual:
@@ -215,24 +174,11 @@
                                                     class="custom-badge"
                                                     >{{ row.date_payment_last ? row.date_payment_last : 'No registra pagos.' }}</span>
                                                 </p>
-
-                                                <!-- <p>
-                                                    Dia de retraso en el pago:
-                                                    <span
-                                                    class="custom-badge"
-                                                    >{{ row.delay_payment ? row.delay_payment : 'No tiene días atrasados.'}}</span>
-                                                </p> -->
-
-                                                <!-- <p>
-                                                    Fecha de vencimiento:
-                                                    <span
-                                                    class="custom-badge"
-                                                    >{{ row.date_of_due ? row.date_of_due : 'No tiene fecha de vencimiento.'}}</span>
-                                                </p> -->
+ 
                                                 <el-button icon="el-icon-view" slot="reference"></el-button>
                                                 </el-popover>
                                             </td>
-                                                <td>{{row.currency_type_id}}</td>
+                                                <td>{{row.currency_id}}</td>
                                             <td class="text-right text-danger">{{ row.total_to_pay }}</td>
                                             <td class="text-right">{{ row.total }}</td>
                                             <td class="text-right">

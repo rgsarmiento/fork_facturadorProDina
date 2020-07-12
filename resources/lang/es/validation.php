@@ -258,6 +258,7 @@ return [
         'type_organization_id' => 'tipo Organizacion',
         'type_regime_id' => 'regimen',
         'merchant_registration' => 'registro mercantil',
+        'currency_id' => 'moneda',
         
 
         

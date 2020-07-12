@@ -23,6 +23,10 @@ use App\Models\Tenant\Establishment;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tenant\Company;
 use Modules\Finance\Traits\FinanceTrait; 
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
+
 
 class IncomeController extends Controller
 {
@@ -61,13 +65,13 @@ class IncomeController extends Controller
     public function tables()
     {
         $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
-        $currency_types = CurrencyType::whereActive()->get();
         $income_types = IncomeType::get();
         $payment_method_types = PaymentMethodType::all();
         $income_reasons = IncomeReason::all();
         $payment_destinations = $this->getPaymentDestinations();
+        $currencies = Currency::all();
 
-        return compact('establishment','currency_types', 'income_types', 'payment_method_types', 'income_reasons', 'payment_destinations');
+        return compact('establishment','currencies', 'income_types', 'payment_method_types', 'income_reasons', 'payment_destinations');
     }
 
 

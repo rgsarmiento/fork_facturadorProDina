@@ -40,7 +40,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Ruc: </strong></p>
+                        <p><strong>N° Documento: </strong></p>
                     </td>
                     <td align="center">{{$company->number}}</td>
                     <td>

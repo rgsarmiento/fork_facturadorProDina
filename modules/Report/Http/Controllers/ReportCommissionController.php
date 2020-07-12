@@ -98,13 +98,13 @@ class ReportCommissionController extends Controller
 
             $data = $model::with(['documents'=>function($q) use($date_start, $date_end){
 
-                                $q->whereIn('state_type_id', ['01','03','05','07','13'])
-                                ->whereIn('document_type_id', ['01','03','08'])
+                                $q->whereStateTypeAccepted()
+                                ->whereIn('type_document_id', [1, 2])
                                 ->whereBetween('date_of_issue', [$date_start, $date_end]);
 
                             },'sale_notes'=>function($z) use($date_start, $date_end){
 
-                                $z->whereIn('state_type_id', ['01','03','05','07','13'])
+                                $z->whereStateTypeAccepted()
                                 ->whereBetween('date_of_issue', [$date_start, $date_end]);
 
                             }])
@@ -116,13 +116,13 @@ class ReportCommissionController extends Controller
 
             $data = $model::with(['documents'=>function($q) use($date_start, $date_end){
                             
-                                $q->whereIn('state_type_id', ['01','03','05','07','13'])
-                                ->whereIn('document_type_id', ['01','03','08'])
+                                $q->whereStateTypeAccepted()
+                                ->whereIn('type_document_id', [1, 2])
                                 ->whereBetween('date_of_issue', [$date_start, $date_end]);
                             
                             },'sale_notes'=>function($z) use($date_start, $date_end){
 
-                                $z->whereIn('state_type_id', ['01','03','05','07','13'])
+                                $z->whereStateTypeAccepted()
                                 ->whereBetween('date_of_issue', [$date_start, $date_end]);
                             
                             }])

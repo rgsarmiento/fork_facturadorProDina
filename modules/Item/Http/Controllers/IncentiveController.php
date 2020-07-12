@@ -20,7 +20,7 @@ class IncentiveController extends Controller
     public function columns()
     {
         return [
-            'description' => 'Nombre',
+            'name' => 'Nombre',
             'internal_id' => 'Código interno',
             'brand' => 'Marca',
             'category' => 'Categoría', 
@@ -45,7 +45,7 @@ class IncentiveController extends Controller
                                 })
                                 ->whereTypeUser()
                                 ->whereNotIsSet()
-                                ->orderBy('description');
+                                ->orderBy('name');
                 break;
 
             case 'category':
@@ -54,7 +54,7 @@ class IncentiveController extends Controller
                                 })
                                 ->whereTypeUser()
                                 ->whereNotIsSet()
-                                ->orderBy('description');
+                                ->orderBy('name');
                 break;
 
             default:
@@ -62,7 +62,7 @@ class IncentiveController extends Controller
                 $records = Item::whereTypeUser()
                                 ->whereNotIsSet()
                                 ->where($request->column, 'like', "%{$request->value}%")
-                                ->orderBy('description');
+                                ->orderBy('name');
                 break;
         }
 

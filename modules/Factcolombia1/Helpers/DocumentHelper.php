@@ -12,9 +12,15 @@ use Carbon\Carbon;
 use Modules\Factcolombia1\Models\Tenant\{
     Tax,
 };
+use Modules\Finance\Traits\FinanceTrait; 
 
 class DocumentHelper{
   
+    use FinanceTrait;
+
+    protected $apply_change;
+
+
     public static function createDocument($request, $nextConsecutive, $correlative_api, $company, $response, $response_status)
     {
 
@@ -37,7 +43,7 @@ class DocumentHelper{
             'customer' => Person::with('typePerson', 'typeRegime', 'identity_document_type', 'country', 'department', 'city')->findOrFail($request->customer_id),
             'currency_id' => $request->currency_id,
             // 'date_issue' => Carbon::parse("{$request->date_issue} ".Carbon::now()->format('H:i:s')),
-            'date_expiration' => Carbon::parse("{$request->date_expiration}"),
+            'date_expiration' => $request->date_expiration ? Carbon::parse("{$request->date_expiration}") : null,
             'date_of_issue' => Carbon::parse($request->date_issue)->format('Y-m-d'),
             'time_of_issue' => Carbon::now()->format('H:i:s'),
             'observation' => $request->observation,
@@ -67,7 +73,7 @@ class DocumentHelper{
         
         foreach ($request->items as $item) {
 
-            $record_item = Item::find($item['id']);
+            $record_item = Item::find($item['item_id']);
             
             $json_item = [
                 'name' => $record_item->name,
@@ -83,11 +89,11 @@ class DocumentHelper{
             ];
 
             $document->items()->create([
-                'item_id' => $item['id'],
+                'item_id' => $item['item_id'],
                 'item' => array_merge($item, $json_item),
                 'unit_type_id' => $item['unit_type_id'],
                 'quantity' => $item['quantity'],
-                'unit_price' => $item['price'],
+                'unit_price' => isset($item['price']) ? $item['price'] : $item['unit_price'],
                 'tax_id' => $item['tax_id'],
                 'tax' => Tax::find($item['tax_id']),
                 'total_tax' => $item['total_tax'],
@@ -99,6 +105,69 @@ class DocumentHelper{
         }
 
         return $document;
+    }
+
+
+    public function savePayments($document, $payments){
+         
+        if($payments){
+
+            $total = $document->total;
+            $balance = $total - collect($payments)->sum('payment');
+            
+            $search_cash = ($balance < 0) ? collect($payments)->firstWhere('payment_method_type_id', '01') : null;
+
+            $this->apply_change = false;
+
+            if($balance < 0 && $search_cash){
+
+                $payments = collect($payments)->map(function($row) use($balance){
+        
+                    $change = null;
+                    $payment = $row['payment'];
+
+                    if($row['payment_method_type_id'] == '01' && !$this->apply_change){
+            
+                        $change = abs($balance);
+                        $payment = $row['payment'] - abs($balance); 
+                        $this->apply_change = true; 
+        
+                    }
+
+                    return [
+                        "id" => null,
+                        "document_id" => null,
+                        "sale_note_id" => null,
+                        "date_of_payment" => $row['date_of_payment'],
+                        "payment_method_type_id" => $row['payment_method_type_id'],
+                        "reference" => $row['reference'],
+                        "payment_destination_id" => isset($row['payment_destination_id']) ? $row['payment_destination_id'] : null,
+                        "change" => $change,
+                        "payment" => $payment
+                    ];
+
+                });
+            }
+
+            // dd($payments, $balance, $this->apply_change);
+
+            foreach ($payments as $row) {
+
+                if($balance < 0 && !$this->apply_change){
+                    $row['change'] = abs($balance);
+                    $row['payment'] = $row['payment'] - abs($balance); 
+                    $this->apply_change = true; 
+                }
+
+                $record = $document->payments()->create($row);
+                
+                //considerar la creacion de una caja chica cuando recien se crea el cliente
+                if(isset($row['payment_destination_id'])){
+                    $this->createGlobalPayment($record, $row);
+                }
+
+            }
+        }
     }
 
 }

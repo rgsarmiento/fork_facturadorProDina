@@ -27,7 +27,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Ruc: </strong></p>
+                        <p><strong>N° Documento: </strong></p>
                     </td>
                     <td align="center">{{$value->number}}</td>
                 
@@ -50,12 +50,9 @@
                                 <th>#</th>
                                 <th class="text-center">Fecha Emisión</th>
                                 <th>Número</th>
-
                                 <th>Cliente</th>
                                 <th>Por cobrar</th>
                                 <th>Total</th>
-
-
                             </tr>
                         </thead>
                         <tbody>

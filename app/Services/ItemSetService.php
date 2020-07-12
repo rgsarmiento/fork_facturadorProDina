@@ -12,7 +12,7 @@ class ItemSetService
         $result = array();
 
         foreach ($records as $row) {
-            array_push($result, $row->individual_item->description);
+            array_push($result, $row->individual_item->name);
         }
 
         return $result;

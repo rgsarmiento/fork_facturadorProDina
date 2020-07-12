@@ -25,7 +25,7 @@ class HistoryController extends Controller
                                         $query->where('customer_id', $form->customer_id);
                                     })
                                     ->join('sale_notes', 'sale_note_items.sale_note_id', '=', 'sale_notes.id')
-                                    ->select(DB::raw("sale_note_items.id as id, sale_notes.prefix as series, sale_notes.id as number,
+                                    ->select(DB::raw("sale_note_items.id as id, sale_notes.series as series, sale_notes.number as number,
                                             sale_note_items.unit_price as price, sale_notes.date_of_issue as date_of_issue"))
                                     ->orderBy('created_at', 'desc');
 
@@ -35,7 +35,7 @@ class HistoryController extends Controller
                                         $query->where('customer_id', $form->customer_id);
                                     })
                                     ->join('documents', 'document_items.document_id', '=', 'documents.id')
-                                    ->select(DB::raw("document_items.id as id, documents.series as series, documents.number as number,
+                                    ->select(DB::raw("document_items.id as id, documents.prefix as series, documents.number as number,
                                             document_items.unit_price as price, documents.date_of_issue as date_of_issue"))
                                     ->orderBy('created_at', 'desc');
 

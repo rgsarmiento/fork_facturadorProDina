@@ -16,7 +16,7 @@
 
                         </div>
                         <div class="col-6 px-0">
-                            <h4 class="font-weight-semibold m-0 text-center m-b-0">{{item.item.description}}</h4>
+                            <h4 class="font-weight-semibold m-0 text-center m-b-0">{{item.item.name}}</h4>
                             <!-- <p class="m-b-0">Descripción del producto</p> -->
                             <!-- <p class="text-muted m-b-0"><small>Descuento 2%</small></p> -->
                         </div>
@@ -30,30 +30,43 @@
 
             </div>
             <div class="h-25 bg-info" style="overflow-y: auto">
-                <div class="row m-0 p-0 bg-white h-25 d-flex align-items-center">
+                <div class="row m-0 p-0 bg-white h-10 d-flex align-items-center">
+                    <div class="col-sm-6 py-1">
+                        <p class="font-weight-semibold mb-0">TOTAL VENTA</p>
+                    </div>
+                    <div class="col-sm-6 py-1 text-right">
+                        <p class="font-weight-semibold mb-0">{{currencyTypeActive.symbol}} {{ form.sale }}</p>
+                    </div>
+                </div>
+                <div class="row m-0 p-0 bg-white h-10 d-flex align-items-center" v-if="form.total_discount > 0">
+                    <div class="col-sm-6 py-1 ">
+                        <p class="font-weight-semibold mb-0">TOTAL DESCUENTO (-)</p>
+                    </div>
+                    <div class="col-sm-6 py-1 text-right">
+                        <p class="font-weight-semibold mb-0">{{currencyTypeActive.symbol}} {{form.total_discount}}</p>
+                    </div>
+                </div>
+
+                <template v-for="(tax, index) in form.taxes" >
+                    <div class="row m-0 p-0 bg-white h-10 d-flex align-items-center" v-if="((tax.total > 0) && (!tax.is_retention))" :key="index" >
+                        <div class="col-sm-8 py-1">
+                            <p class="font-weight-semibold mb-0">{{tax.name}}(+)</p>
+                        </div>
+                        <div class="col-sm-4 py-1 text-right">
+                            <p class="font-weight-semibold mb-0">{{currencyTypeActive.symbol}} {{Number(tax.total).toFixed(2)}}</p>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="row m-0 p-0 bg-white h-10 d-flex align-items-center" v-if="form.subtotal > 0">
                     <div class="col-sm-6 py-1">
                         <p class="font-weight-semibold mb-0">SUBTOTAL</p>
                     </div>
                     <div class="col-sm-6 py-1 text-right">
-                        <p class="font-weight-semibold mb-0">{{currencyTypeActive.symbol}} {{ form.total_taxed }}</p>
+                        <p class="font-weight-semibold mb-0">{{currencyTypeActive.symbol}} {{form.subtotal}}</p>
                     </div>
                 </div>
-                <div class="row m-0 p-0 bg-white h-25 d-flex align-items-center">
-                    <div class="col-sm-6 py-1">
-                        <p class="font-weight-semibold mb-0">IGV</p>
-                    </div>
-                    <div class="col-sm-6 py-1 text-right">
-                        <p class="font-weight-semibold mb-0">{{currencyTypeActive.symbol}} {{form.total_igv}}</p>
-                    </div>
-                </div>
-                <!-- <div class="row m-0 p-0 bg-white">
-                    <div class="col-sm-6 py-1">
-                        <p class="font-weight-semibold mb-0">DESCUENTO</p>
-                    </div>
-                    <div class="col-sm-6 py-1 text-right">
-                        <p class="font-weight-semibold mb-0">{{currencyTypeActive.symbol}} 4.00</p>
-                    </div>
-                </div> -->
+
                 <div class="row m-0 p-0 h-50 d-flex align-items-center">
                     <div class="col-sm-6 py-2">
                         <p class="font-weight-semibold mb-0 text-white">TOTAL</p>
@@ -66,7 +79,7 @@
         </div>
         <div class="col-lg-8 col-md-6 px-4 pt-3 hyo">
             <div class="row d-flex justify-content-center pt-2">
-                <div class="col-lg-6 col-md-6 ">
+                <!-- <div class="col-lg-6 col-md-6 ">
 
                     <el-radio-group v-model="form.document_type_id" size="small"   @change="filterSeries">
                         <el-radio-button label="01" >FACTURA  </el-radio-button>
@@ -86,15 +99,76 @@
 
                      <button class="btn btn-sm btn-block btn-primary" @click="back"><i class="fas fa-angle-left"></i> Regresar</button>
 
-                </div>
+                </div> -->
 
+                <div class="col-lg-8">
+                    <div class="card card-default">
+                        <div class="card-body ">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <el-radio-group v-model="form.document_type_id" size="small" @change="filterSeries">
+                                        <el-radio-button label="01" >FACTURA  </el-radio-button>
+                                        <el-radio-button label="80">NOTA DE VENTA  </el-radio-button>
+                                    </el-radio-group>
+                                </div>
+                                <div class="col-lg-2 col-md-2" >
+                                    <el-select v-model="form.series_id" class="c-width" v-if="form.document_type_id == '80'">
+                                        <el-option   v-for="option in series" :key="option.id" :label="option.number" :value="option.id">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <div class="col-md-4 ">
+                                    <button class="text-center btn btn-sm btn-block btn-primary pull-right" @click="back"><i class="fas fa-angle-left"></i> Regresar</button>
+                                </div>
+                            </div>
+                            <div class="row mt-2" v-if="form.document_type_id == '01'">
+
+                                <div class="col-md-6">
+                                    <div class="form-group" :class="{'has-danger': errors.type_document_id}">
+                                        <label class="control-label">Tipo de factura</label>
+                                        <el-select v-model="form.type_document_id" >
+                                            <el-option v-for="option in type_invoices" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                        </el-select>
+                                        <small class="form-control-feedback" v-if="errors.type_document_id" v-text="errors.type_document_id[0]"></small>
+                                    </div>
+                                </div> 
+                                <div class="col-md-6">
+                                    <div class="form-group" :class="{'has-danger': errors.payment_form_id}">
+                                        <label class="control-label">Forma de pago</label>
+                                        <el-select v-model="form.payment_form_id" filterable>
+                                            <el-option v-for="option in payment_forms" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                        </el-select>
+                                        <small class="form-control-feedback" v-if="errors.payment_form_id" v-text="errors.payment_form_id[0]"></small>
+                                    </div>
+                                </div> 
+                                <div class="col-md-6">
+                                    <div class="form-group" :class="{'has-danger': errors.payment_method_id}">
+                                        <label class="control-label">Medio de pago</label>
+                                        <el-select v-model="form.payment_method_id" filterable>
+                                            <el-option v-for="option in payment_methods" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                        </el-select>
+                                        <small class="form-control-feedback" v-if="errors.payment_method_id" v-text="errors.payment_method_id[0]"></small>
+                                    </div>
+                                </div>  
+                                <div class="col-md-6" v-show="form.payment_form_id == 2">
+                                    <div class="form-group" :class="{'has-danger': errors.time_days_credit}">
+                                        <label class="control-label">Plazo Credito</label>
+                                        <el-input v-model="form.time_days_credit"></el-input>
+                                        <small class="form-control-feedback" v-if="errors.time_days_credit" v-text="errors.time_days_credit[0]"></small>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="col-lg-8">
                     <div class="card card-default">
 
                         <div class="card-body text-center">
-                                <p class="my-0"><small>Monto a cobrar</small></p>
-                                <h1 class="mb-2 mt-0">{{currencyTypeActive.symbol}} {{ form.total }}</h1>
+                            <p class="my-0"><small>Monto a cobrar</small></p>
+                            <h1 class="mb-2 mt-0">{{currencyTypeActive.symbol}} {{ form.total }}</h1>
                         </div>
                     </div>
                 </div>
@@ -129,7 +203,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-8">
+                <!-- <div class="col-lg-8">
                     <div class="card card-default">
 
                         <div class="card-body text-center">
@@ -154,7 +228,7 @@
 
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="col-lg-8">
                     <div class="card card-default">
                         <div class="card-body">
@@ -189,41 +263,7 @@
                                             </div>
                                         </template>
                                     </div>
-                                </div>
-                                <!-- <div class="col-lg-12 m-bottom">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <label class="control-label" >Método de Pago</label>
-
-                                            <el-select v-model="form_payment.payment_method_type_id" @change="changePaymentMethodType">
-                                                    <el-option v-for="option in payment_method_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                            </el-select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 m-bottom" v-if="has_card">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <label class="control-label" >Tarjeta
-                                            <a class="text-info" @click.prevent="showDialogNewCardBrand = true" href="#">[+ Nueva]</a>
-                                            </label>
-                                            <el-select v-model="form_payment.card_brand_id">
-                                                    <el-option v-for="option in cards_brand" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                            </el-select>
-
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 m-bottom" >
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <label class="control-label"  >Referencia</label>
-                                            <el-input v-model="form_payment.reference" >
-                                            </el-input>
-                                        </div>
-                                    </div>
-                                </div>-->
+                                </div> 
                                 <div class="col-lg-12" v-if="form_payment.payment_method_type_id=='01'">
                                     <div class="row">
                                         <div class="col-lg-3">
@@ -270,9 +310,10 @@
             @add="addRow"
             ></multiple-payment-form>
 
-        <!-- <sale-notes-options :showDialog.sync="showDialogSaleNote"
+        <sale-notes-options :showDialog.sync="showDialogSaleNote"
                           :recordId="saleNotesNewId"
-                          :showClose="true"></sale-notes-options>  -->
+                          :originPos="true"
+                          :showClose="true"></sale-notes-options> 
 
         <card-brands-form   :showDialog.sync="showDialogNewCardBrand"
                             :external="true"
@@ -313,7 +354,7 @@
                 resource_options:null,
                 has_card: false,
                 resource: 'pos',
-                resource_documents: 'documents',
+                resource_documents: 'co-documents',
                 resource_payments: 'document_payments',
                 amount: 0,
                 enter_amount: 0,
@@ -328,7 +369,12 @@
                 form_cash_document:{},
                 statusDocument:{},
                 payment_method_types:[],
-                payments:[]
+                payments:[],
+                type_invoices: [],
+                type_documents: [],
+                payment_methods: [],
+                payment_forms: [],
+                errors: {},
             }
         },
         async created() {
@@ -355,161 +401,36 @@
         methods: {
             changeEnabledDiscount(){
 
-                if(!this.enabled_discount){
+                // if(!this.enabled_discount){
 
-                    this.discount_amount = 0
-                    this.deleteDiscountGlobal()
-                    this.reCalculateTotal()
+                //     this.discount_amount = 0
+                //     this.deleteDiscountGlobal()
+                //     this.reCalculateTotal()
 
-                }
+                // }
 
             },
             inputDiscountAmount(){
 
-                if(this.enabled_discount){
+                // if(this.enabled_discount){
 
-                    if(this.discount_amount && !isNaN(this.discount_amount) && parseFloat(this.discount_amount) > 0){
+                //     if(this.discount_amount && !isNaN(this.discount_amount) && parseFloat(this.discount_amount) > 0){
 
-                        if(this.discount_amount >= this.form.total)
-                            return this.$message.error("El monto de descuento debe ser menor al total de venta")
+                //         if(this.discount_amount >= this.form.total)
+                //             return this.$message.error("El monto de descuento debe ser menor al total de venta")
 
-                        this.reCalculateTotal()
+                //         this.reCalculateTotal()
 
-                    }else{
+                //     }else{
 
-                        // this.discount_amount = 0
-                        this.deleteDiscountGlobal()
-                        this.reCalculateTotal()
+                //         // this.discount_amount = 0
+                //         this.deleteDiscountGlobal()
+                //         this.reCalculateTotal()
 
-                    }
+                //     }
 
-                    // console.log(this.discount_amount)
-                }
-            },
-            discountGlobal(){
-
-                let global_discount = parseFloat(this.discount_amount)
-
-                let base = parseFloat(this.form.total)
-                let amount = parseFloat(global_discount)
-                let factor = _.round(amount/base, 4)
-
-                let discount = _.find(this.form.discounts,{'discount_type_id':'03'})
-
-                if(global_discount>0 && !discount){
-
-                    this.form.total_discount =  _.round(amount,2)
-
-                    this.form.total =  _.round(this.form.total - amount, 2)
-
-                    this.form.total_value =  _.round(this.form.total / 1.18, 2)
-                    this.form.total_taxed =  this.form.total_value
-
-                    this.form.total_igv =  _.round(this.form.total_value * 0.18, 2)
-                    this.form.total_taxes =  this.form.total_igv
-
-                    this.form.discounts.push({
-                            discount_type_id: '03',
-                            description: 'Descuentos globales que no afectan la base imponible del IGV/IVAP',
-                            factor: factor,
-                            amount: amount,
-                            base: base
-                        })
-
-                }else{
-
-                    let index = this.form.discounts.indexOf(discount);
-
-                    if(index > -1){
-
-                        this.form.total_discount =  _.round(amount,2)
-
-                        this.form.total =  _.round(this.form.total - amount, 2)
-
-                        this.form.total_value =  _.round(this.form.total / 1.18, 2)
-                        this.form.total_taxed =  this.form.total_value
-
-                        this.form.total_igv =  _.round(this.form.total_value * 0.18, 2)
-                        this.form.total_taxes =  this.form.total_igv
-
-                        this.form.discounts[index].base = base
-                        this.form.discounts[index].amount = amount
-                        this.form.discounts[index].factor = factor
-
-                    }
-
-                }
-
-                this.difference = this.enter_amount - this.form.total
-                // console.log(this.form.discounts)
-            },
-            reCalculateTotal() {
-
-                let total_discount = 0
-                let total_charge = 0
-                let total_exportation = 0
-                let total_taxed = 0
-                let total_exonerated = 0
-                let total_unaffected = 0
-                let total_free = 0
-                let total_igv = 0
-                let total_value = 0
-                let total = 0
-                let total_plastic_bag_taxes = 0
-
-                this.form.items.forEach((row) => {
-                    total_discount += parseFloat(row.total_discount)
-                    total_charge += parseFloat(row.total_charge)
-
-                    if (row.affectation_igv_type_id === '10') {
-                        total_taxed += parseFloat(row.total_value)
-                    }
-                    if (row.affectation_igv_type_id === '20') {
-                        total_exonerated += parseFloat(row.total_value)
-                    }
-                    if (row.affectation_igv_type_id === '30') {
-                        total_unaffected += parseFloat(row.total_value)
-                    }
-                    if (row.affectation_igv_type_id === '40') {
-                        total_exportation += parseFloat(row.total_value)
-                    }
-                    if (['10', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
-                        total_free += parseFloat(row.total_value)
-                    }
-                    if (['10', '20', '30', '40'].indexOf(row.affectation_igv_type_id) > -1) {
-                        total_igv += parseFloat(row.total_igv)
-                        total += parseFloat(row.total)
-                    }
-                    total_value += parseFloat(row.total_value)
-                    total_plastic_bag_taxes += parseFloat(row.total_plastic_bag_taxes)
-                });
-
-                this.form.total_exportation = _.round(total_exportation, 2)
-                this.form.total_taxed = _.round(total_taxed, 2)
-                this.form.total_exonerated = _.round(total_exonerated, 2)
-                this.form.total_unaffected = _.round(total_unaffected, 2)
-                this.form.total_free = _.round(total_free, 2)
-                this.form.total_igv = _.round(total_igv, 2)
-                this.form.total_value = _.round(total_value, 2)
-                this.form.total_taxes = _.round(total_igv, 2)
-                this.form.total_plastic_bag_taxes = _.round(total_plastic_bag_taxes, 2)
-                // this.form.total = _.round(total, 2)
-                this.form.total = _.round(total + this.form.total_plastic_bag_taxes, 2)
-
-                this.discountGlobal()
-
-
-            },
-            deleteDiscountGlobal(){
-
-                let discount = _.find(this.form.discounts, {'discount_type_id':'03'})
-                let index = this.form.discounts.indexOf(discount)
-
-                if (index > -1) {
-                    this.form.discounts.splice(index, 1)
-                    this.form.total_discount = 0
-                }
-
+                //     // console.log(this.discount_amount)
+                // }
             },
             back()
             {
@@ -693,7 +614,8 @@
                 this.series = _.filter(this.all_series, {'document_type_id': this.form.document_type_id });
                 this.form.series_id = (this.series.length > 0)?this.series[0].id:null
 
-                if(!this.form.series_id)
+                
+                if(!this.form.series_id && this.form.document_type_id == '80')
                 {
                    return this.$message.warning('El establecimiento no tiene series disponibles para el comprobante');
                 }
@@ -716,23 +638,26 @@
             sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             },
-            async clickPayment(){
-                // if(this.has_card && !this.form_payment.card_brand_id) return this.$message.error('Seleccione una tarjeta');
-
-                if(!this.form.series_id)
-                {
-                   return this.$message.warning('El establecimiento no tiene series disponibles para el comprobante');
-                }
+            async clickPayment(){ 
 
                 if (this.form.document_type_id === "80") {
+                    
+                    if(!this.form.series_id){
+                        return this.$message.warning('El establecimiento no tiene series disponibles para el comprobante');
+                    }
+
                     this.form.prefix = "NV";
                     this.form.paid = 1;
                     this.resource_documents = "sale-notes";
                     this.resource_payments = "sale_note_payments";
                     this.resource_options = this.resource_documents;
+
                 } else {
+
+                    this.form.service_invoice = await this.createInvoiceService();
+
                     this.form.prefix = null;
-                    this.resource_documents = "documents";
+                    this.resource_documents = "co-documents";
                     this.resource_payments = "document_payments";
                     this.resource_options = this.resource_documents;
                 }
@@ -745,17 +670,19 @@
 
                             // this.form_payment.sale_note_id = response.data.data.id;
                             this.form_cash_document.sale_note_id = response.data.data.id;
+                            this.saleNotesNewId = response.data.data.id;
+                            this.showDialogSaleNote = true;
 
                         } else {
 
                             // this.form_payment.document_id = response.data.data.id;
                             this.form_cash_document.document_id = response.data.data.id;
                             this.statusDocument = response.data.data.response
+                            this.documentNewId = response.data.data.id;
+                            this.showDialogOptions = true;
 
                         }
 
-                        this.documentNewId = response.data.data.id;
-                        this.showDialogOptions = true;
 
                         // this.savePaymentMethod();
                         this.saveCashDocument();
@@ -814,10 +741,186 @@
                         this.all_series = response.data.series
                         this.payment_method_types = response.data.payment_method_types
                         this.cards_brand = response.data.cards_brand
+                        this.type_invoices = response.data.type_invoices
+                        this.type_documents = response.data.type_documents
+                        this.payment_methods = response.data.payment_methods
+                        this.payment_forms = response.data.payment_forms
                         this.filterSeries()
                     })
 
             },
-        }
+            
+            async createInvoiceService() {
+                // let resol = this.resolution.resolution; //TODO
+                const invoice = {
+                    number: 0,
+                    type_document_id: 1
+                };
+
+                invoice.customer = await this.getCustomer();
+                invoice.tax_totals = await this.getTaxTotal();
+                invoice.legal_monetary_totals = await this.getLegacyMonetaryTotal();
+                invoice.allowance_charges = await this.createAllowanceCharge(invoice.legal_monetary_totals.allowance_total_amount, invoice.legal_monetary_totals.line_extension_amount );
+
+                invoice.invoice_lines = await this.getInvoiceLines();
+                invoice.with_holding_tax_total = await this.getWithHolding();
+
+                return invoice;
+            },
+            getCustomer() {
+
+                let customer = this.customer;
+
+                let obj = {
+                    identification_number: customer.number,
+                    name: customer.name,
+                    phone: customer.telephone,
+                    address: customer.address,
+                    email: customer.email,
+                    merchant_registration: "000000"
+                };
+
+                this.form.customer_id = customer.id
+
+                if (customer.type_person_id == 2) {
+                    obj.dv = customer.dv;
+                }
+
+                return obj;
+            },
+
+            getTaxTotal() {
+
+                let tax = [];
+                this.form.items.forEach(element => {
+                    let find = tax.find(x => x.tax_id == element.tax.type_tax_id && x.percent == element.tax.rate);
+                    if(find)
+                    {
+                        let indexobj = tax.findIndex(x => x.tax_id == element.tax.type_tax_id && x.percent == element.tax.rate);
+                        tax.splice(indexobj, 1);
+                        tax.push({
+                            tax_id: find.tax_id,
+                            tax_amount: this.cadenaDecimales(Number(find.tax_amount) + Number(element.total_tax)),
+                            percent: this.cadenaDecimales(find.percent),
+                            taxable_amount: this.cadenaDecimales(Number(find.taxable_amount) + Number(element.unit_price) * Number(element.quantity)) - Number(element.discount)
+                        });
+                    }
+                    else {
+                        tax.push({
+                            tax_id: element.tax.type_tax_id,
+                            tax_amount: this.cadenaDecimales(Number(element.total_tax)),
+                            percent: this.cadenaDecimales(Number(element.tax.rate)),
+                            taxable_amount: this.cadenaDecimales((Number(element.unit_price) * Number(element.quantity)) - Number(element.discount))
+                        });
+                    }
+                });
+            //      console.log(tax);
+                this.tax_amount_calculate = tax;
+                return tax;
+            },
+
+            getLegacyMonetaryTotal() {
+
+                let line_ext_am = 0;
+                let tax_incl_am = 0;
+                let allowance_total_amount = 0;
+                this.form.items.forEach(element => {
+                    line_ext_am += (Number(element.unit_price) * Number(element.quantity)) - Number(element.discount);
+                    allowance_total_amount += Number(element.discount);
+                });
+
+                let total_tax_amount = 0;
+                this.tax_amount_calculate.forEach(element => {
+                    total_tax_amount += Number(element.tax_amount);
+                });
+
+                tax_incl_am = line_ext_am + total_tax_amount;
+
+                return {
+                    line_extension_amount: this.cadenaDecimales(line_ext_am),
+                    tax_exclusive_amount: this.cadenaDecimales(line_ext_am),
+                    tax_inclusive_amount: this.cadenaDecimales(tax_incl_am),
+                    allowance_total_amount: this.cadenaDecimales(allowance_total_amount),
+                    charge_total_amount: "0.00",
+                    payable_amount: this.cadenaDecimales(tax_incl_am - allowance_total_amount)
+                };
+
+            },
+
+            getInvoiceLines() {
+
+                let data = this.form.items.map(x => {
+                    return {
+
+                        unit_measure_id: x.item.unit_type.code, //codigo api dian de unidad
+                        invoiced_quantity: x.quantity,
+                        line_extension_amount: this.cadenaDecimales((Number(x.unit_price) * Number(x.quantity)) - x.discount),
+                        free_of_charge_indicator: false,
+                                allowance_charges: [
+                            {
+                                        charge_indicator: false,
+                                        allowance_charge_reason: "DESCUENTO GENERAL",
+                                        amount: this.cadenaDecimales(x.discount),
+                                        base_amount: this.cadenaDecimales(Number(x.unit_price) * Number(x.quantity))
+                                    }
+                        ],
+                        tax_totals: [
+                            {
+                                tax_id: x.tax.type_tax_id,
+                                tax_amount: this.cadenaDecimales(x.total_tax),
+                                taxable_amount: this.cadenaDecimales((Number(x.unit_price) * Number(x.quantity)) - x.discount),
+                                percent: this.cadenaDecimales(x.tax.rate)
+                            }
+                        ],
+                        description: x.item.name,
+                        code: x.item.internal_id,
+                        type_item_identification_id: 4,
+                        price_amount: this.cadenaDecimales(x.unit_price),
+                        base_quantity: x.quantity
+                    };
+
+                });
+
+                return data;
+            },
+
+            getWithHolding() {
+
+                let total = this.form.sale
+                let list = this.form.taxes.filter(function(x) {
+                    return x.is_retention && x.apply;
+                });
+
+                return list.map(x => {
+                    return {
+                        tax_id: x.type_tax_id,
+                        tax_amount: this.cadenaDecimales(x.retention),
+                        percent: this.cadenaDecimales(x.rate),
+                        taxable_amount: this.cadenaDecimales(total),
+                    };
+                });
+
+            },
+
+            createAllowanceCharge(amount, base) {
+                return [
+                    {
+                        discount_id: 1,
+                        charge_indicator: false,
+                        allowance_charge_reason: "DESCUENTO GENERAL",
+                        amount: this.cadenaDecimales(amount),
+                        base_amount: this.cadenaDecimales(base)
+                    }
+                ]
+            },
+
+            cadenaDecimales(amount){
+                if(amount.toString().indexOf(".") != -1)
+                    return amount.toString();
+                else
+                    return amount.toString()+".00";
+                },
+            }
+        
     }
 </script>

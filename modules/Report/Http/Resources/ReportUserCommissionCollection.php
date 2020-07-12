@@ -27,6 +27,7 @@ class ReportUserCommissionCollection extends ResourceCollection
                 'commission' => $commission,
                 'amount' => $row->user_commission->amount,
                 'total_utility' => $utilities['total_utility'],
+                // 'utilities' => $utilities,
             ];
         });
     }

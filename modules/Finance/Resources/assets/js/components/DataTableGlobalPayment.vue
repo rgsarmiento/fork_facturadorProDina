@@ -69,6 +69,19 @@
                             </div>
                         </div>
 
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Moneda
+                                    <el-tooltip class="item" effect="dark" content="Filtra por moneda del documento emitido" placement="top-start">
+                                        <i class="fa fa-info-circle"></i>
+                                    </el-tooltip>
+                                </label>
+                                <el-select v-model="form.currency_id" filterable>
+                                    <el-option v-for="option in currencies" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                </el-select>
+                            </div>
+                        </div> 
+
                         <div class="col-lg-7 col-md-7 col-md-7 col-sm-12" style="margin-top:29px">
                             <el-button class="submit" type="primary" @click.prevent="getRecordsByFilter" :loading="loading_submit" icon="el-icon-search" >Buscar</el-button>
 
@@ -139,6 +152,7 @@
                 pagination: {},
                 search: {},
                 payment_types: [],
+                currencies: [],
                 destination_types: [],
                 form: {},
                 pickerOptionsDates: {
@@ -169,6 +183,7 @@
             await this.$http.get(`/${this.resource}/filter`)
                 .then(response => {
                     this.payment_types = response.data.payment_types; 
+                    this.currencies = response.data.currencies; 
                     this.destination_types = response.data.destination_types; 
                 });
 
@@ -186,6 +201,7 @@
             initForm(){
 
                 this.form = {
+                    currency_id: 170,
                     payment_type: null,
                     destination_type: null,
                     period: 'month',

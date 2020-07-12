@@ -71,7 +71,7 @@ class ReportKardexCollection extends ResourceCollection
                     'date_time' => $row->created_at->format('Y-m-d H:i:s'),
                     'type_transaction' => "Nota de venta",
                     'date_of_issue' => isset($row->inventory_kardexable->date_of_issue) ? $row->inventory_kardexable->date_of_issue->format('Y-m-d') : '',
-                    'number' => optional($row->inventory_kardexable)->prefix.'-'.optional($row->inventory_kardexable)->id,
+                    'number' => optional($row->inventory_kardexable)->series.'-'.optional($row->inventory_kardexable)->number,
                     'input' => ($row->quantity > 0) ?  $row->quantity:"-",
                     'output' => ($row->quantity < 0) ?  $row->quantity:"-",
                     'balance' => self::$balance+= $row->quantity,

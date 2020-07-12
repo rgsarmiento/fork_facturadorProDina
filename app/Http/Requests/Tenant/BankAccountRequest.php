@@ -25,7 +25,7 @@ class BankAccountRequest extends FormRequest
             'number' => [
                 'required',
             ],
-            'currency_type_id' => [
+            'currency_id' => [
                 'required',
             ],
         ];

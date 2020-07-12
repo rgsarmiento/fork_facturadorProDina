@@ -9,6 +9,9 @@ use App\Models\Tenant\Person;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\CurrencyType;
 use App\Models\Tenant\ModelTenant;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
 
 class Income extends ModelTenant
 {
@@ -23,13 +26,12 @@ class Income extends ModelTenant
         'income_reason_id',
         'establishment_id',
         'customer',
-        'currency_type_id',
+        'currency_id',
         'external_id',
         'state_type_id',
         'number',
         'date_of_issue',
         'time_of_issue',
-        'exchange_rate_sale',
         'total',
     ];
 
@@ -67,10 +69,19 @@ class Income extends ModelTenant
         return $this->belongsTo(Establishment::class);
     }
 
-    public function currency_type()
-    {
-        return $this->belongsTo(CurrencyType::class, 'currency_type_id');
+    public function currency() {
+        return $this->belongsTo(Currency::class);
     }
+
+    public function getCurrencyTypeIdAttribute()
+    {
+        return $this->currency->name;
+    }
+
+    // public function currency_type()
+    // {
+    //     return $this->belongsTo(CurrencyType::class, 'currency_type_id');
+    // }
 
     public function income_type()
     {

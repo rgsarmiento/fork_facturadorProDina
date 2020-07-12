@@ -22,10 +22,14 @@ use Exception;
 use Modules\Item\Models\Category;
 use Modules\Finance\Traits\FinanceTrait;
 use App\Models\Tenant\Company;
+use App\Models\Tenant\Document;
 use Modules\Factcolombia1\Models\Tenant\{
     Currency,
     TypeDocument,
     Tax,
+    PaymentMethod,
+    PaymentForm,
+    TypeInvoice,
 };
 
 
@@ -61,7 +65,7 @@ class PosController extends Controller
     {
         $configuration =  Configuration::first();
 
-        $items = Item::where('description','like', "%{$request->input_item}%")
+        $items = Item::where('name','like', "%{$request->input_item}%")
                             ->orWhere('internal_id','like', "%{$request->input_item}%")
                             ->orWhereHas('category', function($query) use($request) {
                                 $query->where('name', 'like', '%' . $request->input_item . '%');
@@ -95,7 +99,7 @@ class PosController extends Controller
                                     'image_url' => ($row->image !== 'imagen-no-disponible.jpg') ? asset('storage'.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'items'.DIRECTORY_SEPARATOR.$row->image) : asset("/logo/{$row->image}"),
                                     'sets' => collect($row->sets)->transform(function($r){
                                         return [
-                                            $r->individual_item->description
+                                            $r->individual_item->name
                                         ];
                                     }),
                                     'warehouses' => collect($row->warehouses)->transform(function ($row) {
@@ -126,23 +130,43 @@ class PosController extends Controller
 
         $currencies = Currency::where('id', 170)->get();
         $taxes = $this->table('taxes');
+        $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
 
-        return compact('items', 'customers','currencies','taxes','user', 'categories');
+
+        return compact('items', 'customers','currencies','taxes','user', 'categories', 'establishment');
 
     }
 
     public function payment_tables(){
 
-        $series = Series::whereIn('document_type_id',['01','03','80'])
-                        ->where([['establishment_id', auth()->user()->establishment_id],['contingency',false]])
-                        ->get();
-
         $payment_method_types = PaymentMethodType::all();
         $cards_brand = CardBrand::all();
         $payment_destinations = $this->getPaymentDestinations();
 
+        $type_invoices = TypeInvoice::where('id', 1)->get();
 
-        return compact('series','payment_method_types','cards_brand', 'payment_destinations');
+        $type_documents = TypeDocument::query()
+                            ->where('id', 1)
+                            ->get()
+                            ->each(function($typeDocument) {
+                                $typeDocument->alert_range = (($typeDocument->to - 100) < (Document::query()
+                                    ->hasPrefix($typeDocument->prefix)
+                                    ->whereBetween('number', [$typeDocument->from, $typeDocument->to])
+                                    ->max('number') ?? $typeDocument->from));
+
+                                $typeDocument->alert_date = ($typeDocument->resolution_date_end == null) ? false : Carbon::parse($typeDocument->resolution_date_end)->subMonth(1)->lt(Carbon::now());
+                            });
+                            
+        $payment_methods = PaymentMethod::all();
+
+        $payment_forms = PaymentForm::all();
+
+        $series = Series::whereIn('document_type_id',['80'])
+                        ->where([['establishment_id', auth()->user()->establishment_id],['contingency',false]])
+                        ->get();
+
+        return compact('payment_method_types','cards_brand', 'payment_destinations', 'series',
+                    'type_invoices', 'type_documents', 'payment_methods', 'payment_forms');
 
     }
 
@@ -222,7 +246,7 @@ class PosController extends Controller
                                     'category_id' => ($row->category) ? $row->category->id : null,
                                     'sets' => collect($row->sets)->transform(function($r){
                                         return [
-                                            $r->individual_item->description
+                                            $r->individual_item->name
                                         ];
                                     }),
                                     'unit_type' => $row->unit_type,

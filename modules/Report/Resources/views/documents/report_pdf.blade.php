@@ -67,7 +67,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Ruc: </strong>{{$company->number}}</p>
+                        <p><strong>N° Documento: </strong>{{$company->number}}</p>
                     </td>
                     <td>
                         <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
@@ -88,7 +88,7 @@
                                 <th>Doc. Afectado</th>
 
                                 <th>Cliente</th>
-                                <th>RUC</th>
+                                <th>N° Documento</th>
                                 <th>Estado</th>
                                 <th class="">Moneda</th>
                                 <!-- <th>Total Exonerado</th>

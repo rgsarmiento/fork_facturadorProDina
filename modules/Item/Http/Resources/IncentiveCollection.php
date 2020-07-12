@@ -22,7 +22,7 @@ class IncentiveCollection extends ResourceCollection
                 'commission_amount' => $row->commission_amount,
                 'internal_id' => $row->internal_id,
                 'description' => $row->description,
-                'full_description' => $row->internal_id ? "{$row->internal_id} - {$row->description}":$row->description,
+                'full_description' => $row->internal_id ? "{$row->internal_id} - {$row->name}":$row->name,
 
             ];
         });

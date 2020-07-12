@@ -48,7 +48,7 @@
         </a>
         @endif
 
-        @if($vc_document > 0)
+        {{-- @if($vc_document > 0)
         <span class="separator"></span>
         <ul class="notifications">
             <li class="open">
@@ -63,12 +63,10 @@
                             <span class="float-right badge badge-default"><i class="fas fa-arrow-right"></i></span>Comprobantes pendientes de envío
                         </div>
                     </a>
-                    {{-- <div class="content">
-                    </div> --}}
                 </div>
             </li>
         </ul>
-        @endif
+        @endif --}}
 
         <span class="separator"></span>
         <div id="userbox" class="userbox">

@@ -73,6 +73,7 @@ class SaleNotePaymentController extends Controller
             $record->save();
             $this->createGlobalPayment($record, $request->all());
             $this->saveFiles($record, $request, 'sale_notes');
+            $this->createPdf($request->input('sale_note_id'));
 
         });
 
@@ -83,7 +84,6 @@ class SaleNotePaymentController extends Controller
             $sale_note->save();
         }
 
-        $this->createPdf($request->input('sale_note_id'));
 
         return [
             'success' => true,

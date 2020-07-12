@@ -35,8 +35,9 @@ class PaymentMethodTypeController extends Controller
 
         $payment_types = [];
         $destination_types = [];
+        $currencies = $this->getCurrencies();
 
-        return compact('payment_types', 'destination_types');
+        return compact('payment_types', 'destination_types', 'currencies');
     }
 
 
@@ -57,6 +58,7 @@ class PaymentMethodTypeController extends Controller
         $params = (object)[
             'date_start' => $data_of_period['d_start'],
             'date_end' => $data_of_period['d_end'],
+            'currency_id' => $request['currency_id'],
         ];
         
         $payment_method_types = PaymentMethodType::whereFilterPayments($params)->get();

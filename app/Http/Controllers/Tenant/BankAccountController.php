@@ -9,6 +9,10 @@ use App\Models\Tenant\Bank;
 use App\Models\Tenant\BankAccount;
 use App\Models\Tenant\Catalogs\CurrencyType;
 use Exception;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
+
 
 class BankAccountController extends Controller
 {
@@ -32,9 +36,9 @@ class BankAccountController extends Controller
     public function tables()
     {
         $banks = Bank::all();
-        $currency_types = CurrencyType::whereActive()->get();
+        $currencies = Currency::all();
 
-        return compact('banks', 'currency_types');
+        return compact('banks', 'currencies');
     }
 
 

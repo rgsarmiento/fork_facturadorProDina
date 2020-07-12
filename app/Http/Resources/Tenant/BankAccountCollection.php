@@ -21,7 +21,7 @@ class BankAccountCollection extends ResourceCollection
                 'description' => $row->description,
                 'number' => $row->number,
                 'cci' => $row->cci,
-                'currency_type_description' => $row->currency_type->description,
+                'currency_name' => $row->currency->name,
             ];
         });
     }

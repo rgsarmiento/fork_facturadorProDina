@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\Tenant\Catalogs\CurrencyType;
 use Hyn\Tenancy\Traits\UsesTenantConnection;
 use Modules\Finance\Models\GlobalPayment;
+use Modules\Factcolombia1\Models\Tenant\{
+    Currency,
+};
 
 class BankAccount extends ModelTenant
 {
@@ -18,7 +21,7 @@ class BankAccount extends ModelTenant
         'bank_id',
         'description',
         'number',
-        'currency_type_id',
+        'currency_id',
         'cci',
         'status'
     ];
@@ -37,10 +40,19 @@ class BankAccount extends ModelTenant
         return $this->belongsTo(Bank::class);
     }
 
-    public function currency_type()
-    {
-        return $this->belongsTo(CurrencyType::class, 'currency_type_id');
+    public function currency() {
+        return $this->belongsTo(Currency::class);
     }
+
+    public function getCurrencyTypeIdAttribute()
+    {
+        return $this->currency->name;
+    }
+
+    // public function currency_type()
+    // {
+    //     return $this->belongsTo(CurrencyType::class, 'currency_type_id');
+    // }
 
     public function global_destination()
     {

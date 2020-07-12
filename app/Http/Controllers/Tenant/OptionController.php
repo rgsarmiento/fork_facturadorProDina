@@ -40,59 +40,59 @@ class OptionController extends Controller
     public function deleteDocuments(Request $request)
     {
 
-        $this->delete_quantity = 0;
+        // $this->delete_quantity = 0;
 
-        Summary::where('soap_type_id', '01')->delete();
-        Voided::where('soap_type_id', '01')->delete();
+        // Summary::where('soap_type_id', '01')->delete();
+        // Voided::where('soap_type_id', '01')->delete();
         
-        //Purchase
-        $this->deleteInventoryKardex(Purchase::class);
+        // //Purchase
+        // $this->deleteInventoryKardex(Purchase::class);
 
-        Purchase::where('soap_type_id', '01')->delete();
+        // Purchase::where('soap_type_id', '01')->delete();
         
-        PurchaseOrder::where('soap_type_id', '01')->delete();
-        PurchaseQuotation::where('soap_type_id', '01')->delete();
+        // PurchaseOrder::where('soap_type_id', '01')->delete();
+        // PurchaseQuotation::where('soap_type_id', '01')->delete();
 
-        $quantity = Document::where('soap_type_id', '01')->count();
+        // $quantity = Document::where('soap_type_id', '01')->count();
 
-        //Document
-        $this->deleteInventoryKardex(Document::class);
+        // //Document
+        // $this->deleteInventoryKardex(Document::class);
 
-        Document::where('soap_type_id', '01')
-        ->whereIn('document_type_id', ['07', '08'])->delete();        
-        Document::where('soap_type_id', '01')->delete();
+        // Document::where('soap_type_id', '01')
+        // ->whereIn('document_type_id', ['07', '08'])->delete();        
+        // Document::where('soap_type_id', '01')->delete();
 
-        $this->update_quantity_documents($quantity);
+        // $this->update_quantity_documents($quantity);
 
-        Retention::where('soap_type_id', '01')->delete();
-        Perception::where('soap_type_id', '01')->delete();
+        // Retention::where('soap_type_id', '01')->delete();
+        // Perception::where('soap_type_id', '01')->delete();
 
-        //SaleNote
-        $sale_notes = SaleNote::where('soap_type_id', '01')->get();
-        SaleNote::where('soap_type_id', '01')->delete();
-        $this->deleteInventoryKardex(SaleNote::class, $sale_notes);
+        // //SaleNote
+        // $sale_notes = SaleNote::where('soap_type_id', '01')->get();
+        // SaleNote::where('soap_type_id', '01')->delete();
+        // $this->deleteInventoryKardex(SaleNote::class, $sale_notes);
 
         
-        Contract::where('soap_type_id', '01')->delete();
-        Quotation::where('soap_type_id', '01')->delete();
-        SaleOpportunity::where('soap_type_id', '01')->delete();
+        // Contract::where('soap_type_id', '01')->delete();
+        // Quotation::where('soap_type_id', '01')->delete();
+        // SaleOpportunity::where('soap_type_id', '01')->delete();
 
-        Expense::where('soap_type_id', '01')->delete();
-        OrderNote::where('soap_type_id', '01')->delete();
+        // Expense::where('soap_type_id', '01')->delete();
+        // OrderNote::where('soap_type_id', '01')->delete();
         
-        GlobalPayment::where('soap_type_id', '01')->delete();
+        // GlobalPayment::where('soap_type_id', '01')->delete();
         
-        Income::where('soap_type_id', '01')->delete();
+        // Income::where('soap_type_id', '01')->delete();
 
-        FixedAssetPurchase::where('soap_type_id', '01')->delete();
+        // FixedAssetPurchase::where('soap_type_id', '01')->delete();
 
-        $this->updateStockAfterDelete();
+        // $this->updateStockAfterDelete();
 
-        return [
-            'success' => true,
-            'message' => 'Documentos de prueba eliminados',
-            'delete_quantity' => $this->delete_quantity,
-        ];
+        // return [
+        //     'success' => true,
+        //     'message' => 'Documentos de prueba eliminados',
+        //     'delete_quantity' => $this->delete_quantity,
+        // ];
     }
 
     private function deleteInventoryKardex($model, $records = null){

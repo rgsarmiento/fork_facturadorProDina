@@ -30,7 +30,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Ruc: </strong></p>
+                        <p><strong>N° Documento: </strong></p>
                     </td>
                     <td align="center">{{$company->number}}</td>
                     <td>
@@ -70,7 +70,8 @@
 
                                         if($value->payment->associated_record_payment->document_type){
 
-                                            $document_type = $value->payment->associated_record_payment->document_type->description;
+                                            // $document_type = $value->payment->associated_record_payment->document_type->description;
+                                            $document_type = $value->payment->associated_record_payment->document_type->description ?? $value->payment->associated_record_payment->document_type->name;
                                         
                                         }elseif(isset($value->payment->associated_record_payment->prefix)){
                                             

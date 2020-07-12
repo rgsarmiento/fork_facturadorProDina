@@ -18,46 +18,25 @@ foreach ($cash_documents as $cash_document) {
 
     if($cash_document->sale_note){
 
-        if($cash_document->sale_note->currency_type_id == 'PEN'){
-
-            $cash_income += $cash_document->sale_note->total;
-            $final_balance += $cash_document->sale_note->total;
-
-        }else{
-
-            $cash_income += $cash_document->sale_note->total * $cash_document->sale_note->exchange_rate_sale;
-            $final_balance += $cash_document->sale_note->total * $cash_document->sale_note->exchange_rate_sale;
-
-        }
+        $cash_income += $cash_document->sale_note->total;
+        $final_balance += $cash_document->sale_note->total;
 
         if( count($cash_document->sale_note->payments) > 0)
         {
             $pays = $cash_document->sale_note->payments;
 
             foreach ($methods_payment as $record) {
-
                 $record->sum = ($record->sum + $pays->where('payment_method_type_id', $record->id)->sum('payment') );
             }
 
         }
 
 
-
-
-
     }
     else if($cash_document->document){
 
-        if($cash_document->document->currency_type_id == 'PEN'){
-
-            $cash_income += $cash_document->document->total;
-            $final_balance += $cash_document->document->total;
-
-        }else{
-
-            $cash_income += $cash_document->document->total * $cash_document->document->exchange_rate_sale;
-            $final_balance += $cash_document->document->total * $cash_document->document->exchange_rate_sale;
-        }
+        $cash_income += $cash_document->document->total;
+        $final_balance += $cash_document->document->total;
 
         if( count($cash_document->document->payments) > 0)
         {
@@ -71,24 +50,13 @@ foreach ($cash_documents as $cash_document) {
 
         }
 
-
-
-
     }
     else if($cash_document->expense_payment){
 
         if($cash_document->expense_payment->expense->state_type_id == '05'){
 
-            if($cash_document->expense_payment->expense->currency_type_id == 'PEN'){
-
-                $cash_egress += $cash_document->expense_payment->payment;
-                $final_balance -= $cash_document->expense_payment->payment;
-
-            }else{
-
-                $cash_egress += $cash_document->expense_payment->payment  * $cash_document->expense_payment->expense->exchange_rate_sale;
-                $final_balance -= $cash_document->expense_payment->payment  * $cash_document->expense_payment->expense->exchange_rate_sale;
-            }
+            $cash_egress += $cash_document->expense_payment->payment;
+            $final_balance -= $cash_document->expense_payment->payment;
 
         }
     }
@@ -294,7 +262,7 @@ $cash_final_balance = $final_balance + $cash->beginning_balance;
 
                                             $type_transaction =  'Venta';
                                             $document_type_description =  'NOTA DE VENTA';
-                                            $number = $value->sale_note->identifier;
+                                            $number = $value->sale_note->number_full;
                                             $date_of_issue = $value->sale_note->date_of_issue->format('Y-m-d');
                                             $customer_name = $value->sale_note->customer->name;
                                             $customer_number = $value->sale_note->customer->number;

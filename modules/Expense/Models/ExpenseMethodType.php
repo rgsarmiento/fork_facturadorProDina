@@ -23,8 +23,8 @@ class ExpenseMethodType extends ModelTenant
 
         return $query->with(['expense_payments' => function($q) use($params){
                     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p){
-                            $p->whereStateTypeAccepted()->whereTypeUser();
+                        ->whereHas('associated_record_payment', function($p) use($params){
+                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id);
                         });
                 }]);
 

@@ -60,41 +60,41 @@ class PaymentMethodType extends ModelTenant
 
         return $query->with(['document_payments' => function($q) use($params){
                     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p){
-                            $p->whereStateTypeAccepted()->whereTypeUser();
+                        ->whereHas('associated_record_payment', function($p) use($params){
+                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id);
                         });
                 },
                 'sale_note_payments' => function($q) use($params){
                     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p){
-                            $p->whereStateTypeAccepted()->whereTypeUser()
+                        ->whereHas('associated_record_payment', function($p) use($params){
+                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
                                 ->whereNotChanged();
                         });
                 },
                 'quotation_payments' => function($q) use($params){
                     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p){
-                            $p->whereStateTypeAccepted()->whereTypeUser()
+                        ->whereHas('associated_record_payment', function($p) use($params){
+                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
                                 ->whereNotChanged();
                         });
                 },
-                'contract_payments' => function($q) use($params){
-                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p){
-                            $p->whereStateTypeAccepted()->whereTypeUser()
-                                ->whereNotChanged();
-                        });
-                },
+                // 'contract_payments' => function($q) use($params){
+                //     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
+                //         ->whereHas('associated_record_payment', function($p) use($params){
+                //             $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
+                //                 ->whereNotChanged();
+                //         });
+                // },
                 'purchase_payments' => function($q) use($params){
                     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p){
-                            $p->whereStateTypeAccepted()->whereTypeUser();
+                        ->whereHas('associated_record_payment', function($p) use($params){
+                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id);
                         });
                 },
                 'income_payments' => function($q) use($params){
                     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p){
-                            $p->whereStateTypeAccepted()->whereTypeUser();
+                        ->whereHas('associated_record_payment', function($p) use($params){
+                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id);
                         });
                 }
                 ]);

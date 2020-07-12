@@ -30,13 +30,18 @@
                     </el-input>
                 </div>
                 <div class="col-md-6">
-                <template v-if="showClose">
-                    <el-button @click="clickClose">Cerrar</el-button>
-                </template>
-                <template v-else>
-                    <el-button @click="clickFinalize">Ir al listado</el-button>
-                    <el-button type="primary" @click="clickNewSaleNote">Nueva nota de venta</el-button>
-                </template>
+                    <template v-if="originPos">
+                        <el-button  type="primary"  class="float-right" @click="clickNewSale">Nueva venta</el-button>                             
+                    </template>
+                    <template v-else>
+                        <template v-if="showClose">
+                            <el-button @click="clickClose">Cerrar</el-button>
+                        </template>
+                        <template v-else>
+                            <el-button @click="clickFinalize">Ir al listado</el-button>
+                            <el-button type="primary" @click="clickNewSaleNote">Nueva nota de venta</el-button>
+                        </template>
+                    </template>
                 </div>
             </span>
         </el-dialog>
@@ -49,7 +54,7 @@
 
     export default {
 
-        props: ['showDialog', 'recordId', 'showClose'],
+        props: ['showDialog', 'recordId', 'showClose', 'originPos'],
         data() {
             return {
                 titleDialog: null,
@@ -97,6 +102,11 @@
             },
             clickFinalize() {
                 location.href = `/${this.resource}`
+            },
+            clickNewSale(){
+                this.initForm()
+                this.$eventHub.$emit('cancelSale')
+
             },
             clickNewSaleNote() {
                 this.clickClose()

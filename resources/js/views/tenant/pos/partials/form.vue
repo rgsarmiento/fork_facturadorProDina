@@ -27,19 +27,11 @@
                                         <div class="col-md-9"> 
                                             <div class="row">
 
-                                                <!-- <div class="short-div col-md-6"> 
+                                                <div class="short-div col-md-6"> 
                                                     <div class="form-group" :class="{'has-danger': errors.name}">
                                                         <label class="control-label">Nombre <span class="text-danger">*</span></label>
                                                         <el-input v-model="form.name" dusk="name"></el-input>
                                                         <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
-                                                    </div>
-                                                </div> -->
-
-                                                <div class="short-div col-md-6"> 
-                                                    <div class="form-group" :class="{'has-danger': errors.description}">
-                                                        <label class="control-label">Nombre<span class="text-danger">*</span></label>
-                                                        <el-input v-model="form.description" dusk="description"></el-input>
-                                                        <small class="form-control-feedback" v-if="errors.description" v-text="errors.description[0]"></small>
                                                     </div>
                                                 </div>
 
@@ -51,29 +43,19 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- <div class="short-div col-md-8"> 
+                                                <div class="short-div col-md-8"> 
                                                     <div class="form-group" :class="{'has-danger': errors.description}">
                                                         <label class="control-label">Descripción <span class="text-danger">*</span></label>
                                                         <el-input v-model="form.description" dusk="description"></el-input>
                                                         <small class="form-control-feedback" v-if="errors.description" v-text="errors.description[0]"></small>
                                                     </div>
-                                                </div> -->
-
-                                                
-                                                <div class="short-div col-md-8"> 
-                                                    <div class="form-group" :class="{'has-danger': errors.name}">
-                                                        <label class="control-label">Descripción</label>
-                                                        <el-input v-model="form.name" dusk="name"></el-input>
-                                                        <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
-                                                    </div>
                                                 </div>
-
-
+ 
                                                 <div class="short-div col-md-4">
                                                     <div class="form-group" :class="{'has-danger': errors.unit_type_id}">
                                                         <label class="control-label">Unidad</label>
                                                         <el-select v-model="form.unit_type_id" dusk="unit_type_id">
-                                                            <el-option v-for="option in unit_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                                            <el-option v-for="option in unit_types" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                                         </el-select>
                                                         <small class="form-control-feedback" v-if="errors.unit_type_id" v-text="errors.unit_type_id[0]"></small>
                                                     </div>
@@ -139,19 +121,19 @@
                                         </div>
                                     </div>
                                     <div class="col-md-8">
-                                        <div class="form-group" :class="{'has-danger': errors.sale_affectation_igv_type_id}">
-                                            <label class="control-label">Tipo de afectación (Venta)</label>
-                                            <el-select v-model="form.sale_affectation_igv_type_id" @change="changeAffectationIgvType">
-                                                <el-option v-for="option in affectation_igv_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                        <div class="form-group" :class="{'has-danger': errors.tax_id}">
+                                            <label class="control-label">Impuesto (Venta)</label>
+                                            <el-select v-model="form.tax_id" filterable>
+                                                <el-option v-for="option in taxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
-                                            <small class="form-control-feedback" v-if="errors.sale_affectation_igv_type_id" v-text="errors.sale_affectation_igv_type_id[0]"></small>
+                                            <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
                                             <label class="control-label">Moneda</label>
-                                            <el-select v-model="form.currency_type_id" dusk="currency_type_id">
-                                                <el-option v-for="option in currency_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                            <el-select v-model="form.currency_type_id" dusk="currency_type_id" filterable>
+                                                <el-option v-for="option in currency_types" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
                                         </div>
@@ -162,12 +144,12 @@
                                             <small class="form-control-feedback" v-if="errors.calculate_quantity" v-text="errors.calculate_quantity[0]"></small>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 center-el-checkbox" v-show="show_has_igv">
+                                    <!-- <div class="col-md-4 center-el-checkbox" v-show="show_has_igv">
                                         <div class="form-group" :class="{'has-danger': errors.has_igv}">
                                             <el-checkbox v-model="form.has_igv">Incluye Igv</el-checkbox><br>
                                             <small class="form-control-feedback" v-if="errors.has_igv" v-text="errors.has_igv[0]"></small>
                                         </div>
-                                    </div>   
+                                    </div>    -->
 
                                     
                                     
@@ -184,12 +166,12 @@
                                         </div>
                                     </div>
                                     <div class="col-md-8">
-                                        <div class="form-group" :class="{'has-danger': errors.purchase_affectation_igv_type_id}">
-                                            <label class="control-label">Tipo de afectación (Compra)</label>
-                                            <el-select v-model="form.purchase_affectation_igv_type_id">
-                                                <el-option v-for="option in affectation_igv_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                        <div class="form-group" :class="{'has-danger': errors.purchase_tax_id}">
+                                            <label class="control-label">Impuesto (Compra)</label>
+                                            <el-select v-model="form.purchase_tax_id" filterable>
+                                                <el-option v-for="option in taxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
-                                            <small class="form-control-feedback" v-if="errors.purchase_affectation_igv_type_id" v-text="errors.purchase_affectation_igv_type_id[0]"></small>
+                                            <small class="form-control-feedback" v-if="errors.purchase_tax_id" v-text="errors.purchase_tax_id[0]"></small>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -204,23 +186,6 @@
                                 </div>
                             </el-tab-pane>    
 
-                            <el-tab-pane label="UNSPSC" name="third"> 
-                                <div class="row">
-                                    
-                                    <div class="col-md-4">
-                                        <div class="form-group" :class="{'has-danger': errors.item_code}">
-                                            <label class="control-label">Código Sunat
-                                                <el-tooltip class="item" effect="dark" content="Código proporcionado por SUNAT, campo obligatorio para exportaciones" placement="top">
-                                                    <i class="fa fa-info-circle"></i>
-                                                </el-tooltip>
-                                            </label>
-                                            <el-input v-model="form.item_code" dusk="item_code"></el-input>
-                                            <small class="form-control-feedback" v-if="errors.item_code" v-text="errors.item_code[0]"></small>
-                                        </div>
-                                    </div>
-                                </div>
-                                    
-                            </el-tab-pane>    
 
                         </el-tabs>
                     </div> 
@@ -256,15 +221,16 @@
                 system_isc_types: [],
                 activeName: 'first',
                 affectation_igv_types: [],
+                taxes: [],
                 show_has_igv:true,
                 item_unit_type:{
-                        id:null,
-                        unit_type_id:null,
-                        quantity_unit:0,
-                        price1:0,
-                        price2:0,
-                        price3:0,
-                        price_default:2,
+                    id:null,
+                    unit_type_id:null,
+                    quantity_unit:0,
+                    price1:0,
+                    price2:0,
+                    price3:0,
+                    price_default:2,
 
                 }
             }
@@ -275,10 +241,9 @@
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => { 
 
+                    this.taxes = response.data.taxes
                     this.unit_types = response.data.unit_types
                     this.currency_types = response.data.currency_types
-                    this.system_isc_types = response.data.system_isc_types
-                    this.affectation_igv_types = response.data.affectation_igv_types
                     this.warehouse = (response.data.warehouse) ? response.data.warehouse:{id:1, establishment_id:1, description:'Almacén Oficina Principal'}
 
                     // this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
@@ -302,21 +267,12 @@
                     id: null,
                     item_type_id: '01',
                     internal_id: null,
-                    item_code: null,
-                    item_code_gs1: null,
                     description: null,
                     second_name:null,
                     name:null,
-                    unit_type_id: 'NIU',
-                    currency_type_id: 'PEN',
+                    unit_type_id: 10,
                     sale_unit_price: 0,
                     purchase_unit_price: 0,
-                    has_isc: false,
-                    system_isc_type_id: null,
-                    percentage_isc: 0,
-                    suggested_price: 0,
-                    sale_affectation_igv_type_id: null,
-                    purchase_affectation_igv_type_id: null,
                     calculate_quantity: false,
                     stock: 0,
                     stock_min: 1,
@@ -326,27 +282,30 @@
                     image: null,
                     image_url: null,
                     temp_path: null,
+                    tax_id: 1,
+                    purchase_tax_id: 1,
+                    currency_type_id: 170,
                 }
                 this.show_has_igv = true
             },
             changeAffectationIgvType(){
 
-                let affectation_igv_type_exonerated = [20,21,30,31,32,33,34,35,36,37]
-                let is_exonerated = affectation_igv_type_exonerated.includes((parseInt(this.form.sale_affectation_igv_type_id)));
+                // let affectation_igv_type_exonerated = [20,21,30,31,32,33,34,35,36,37]
+                // let is_exonerated = affectation_igv_type_exonerated.includes((parseInt(this.form.sale_affectation_igv_type_id)));
 
-                if(is_exonerated){
-                    this.show_has_igv = false
-                    this.form.has_igv = true
-                }else{
-                    this.show_has_igv = true
-                }
+                // if(is_exonerated){
+                //     this.show_has_igv = false
+                //     this.form.has_igv = true
+                // }else{
+                //     this.show_has_igv = true
+                // }
 
             },
             resetForm() {
                 this.initForm()
                 this.activeName = 'first'
-                this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
-                this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
+                // this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
+                // this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
             },
             create() {
                 this.titleDialog = (this.recordId)? 'Editar Producto':'Nuevo Producto'
@@ -418,16 +377,6 @@
             close() {
                 this.$emit('update:showDialog', false)
                 this.resetForm()
-            },
-            changeHasIsc() {
-                this.form.system_isc_type_id = null
-                this.form.percentage_isc = 0
-                this.form.suggested_price = 0
-            },
-            changeSystemIscType() {
-                if (this.form.system_isc_type_id !== '03') {
-                    this.form.suggested_price = 0
-                }
             }
         }
     }

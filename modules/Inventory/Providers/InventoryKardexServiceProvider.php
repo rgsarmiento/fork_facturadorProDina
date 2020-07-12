@@ -126,6 +126,7 @@ class InventoryKardexServiceProvider extends ServiceProvider
     }
 
     private function sale_note() {
+
         SaleNoteItem::created(function ($sale_note_item) {
 
             if(!$sale_note_item->item->is_set){

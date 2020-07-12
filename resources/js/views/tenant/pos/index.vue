@@ -224,32 +224,32 @@
 
             <div class="col-md-12" style="display: flex; flex-direction: column; align-items: flex-end;">
               <table>
-                  <tr v-if="form.total_exonerated > 0" class="font-weight-semibold  m-0">
-                      <td class="font-weight-semibold">OP.EXONERADAS</td>
-                      <td class="font-weight-semibold">:</td>
-                      <td class="text-right text-blue">{{ currency.symbol }} {{ form.total_exonerated }}</td>
-                  </tr>
-                  <tr v-if="form.total_free > 0" class="font-weight-semibold  m-0">
-                      <td class="font-weight-semibold">OP.GRATUITAS</td>
-                      <td class="font-weight-semibold">:</td>
-                      <td class="text-right text-blue">{{ currency.symbol }} {{ form.total_free }}</td>
-                  </tr>
-                  <tr v-if="form.total_unaffected > 0" class="font-weight-semibold  m-0">
-                      <td class="font-weight-semibold">OP.INAFECTAS</td>
-                      <td class="font-weight-semibold">:</td>
-                      <td class="text-right text-blue">{{ currency.symbol }} {{ form.total_unaffected }}</td>
-                  </tr>
-                  <tr v-if="form.total_taxed > 0" class="font-weight-semibold  m-0">
-                      <td class="font-weight-semibold">OP.GRAVADA</td>
-                      <td class="font-weight-semibold">:</td>
-                      <td class="text-right text-blue">{{ currency.symbol }} {{ form.total_taxed }}</td>
-                  </tr>
-                  <tr v-if="form.total_igv > 0" class="font-weight-semibold  m-0">
-                      <td class="font-weight-semibold">IGV</td>
-                      <td class="font-weight-semibold">:</td>
-                      <td class="text-right text-blue">{{ currency.symbol }} {{ form.total_igv }}</td>
-                  </tr>
-              </table>
+                <tr class="font-weight-semibold  m-0" v-if="form.sale > 0">
+                    <td class="font-weight-semibold">TOTAL VENTA</td>
+                    <td class="font-weight-semibold">:</td>
+                    <td class="text-right text-blue">{{currency.symbol}} {{ form.sale }}</td>
+                </tr>
+                <tr class="font-weight-semibold  m-0" v-if="form.total_discount > 0">
+                    <td class="font-weight-semibold">TOTAL DESCUENTO (-)</td>
+                    <td class="font-weight-semibold">:</td>
+                    <td class="text-right text-blue">{{currency.symbol}} {{ form.total_discount }}</td>
+                </tr>
+                <template v-for="(tax, index) in form.taxes" >
+                    <tr v-if="((tax.total > 0) && (!tax.is_retention))" :key="index" class="font-weight-semibold  m-0">
+                        <td class="font-weight-semibold">
+                            {{tax.name}}(+)
+                        </td>
+                        <td class="font-weight-semibold">:</td>
+                        <td class="text-right text-blue">{{currency.symbol}} {{Number(tax.total).toFixed(2)}}</td>
+                    </tr>
+                </template>
+                <tr class="font-weight-semibold  m-0" v-if="form.subtotal > 0">
+                    <td class="font-weight-semibold">SUBTOTAL</td>
+                    <td class="font-weight-semibold">:</td>
+                    <td class="text-right text-blue">{{currency.symbol}} {{ form.subtotal }}</td>
+                </tr> 
+
+            </table>
             </div>
  
 
@@ -418,7 +418,7 @@
           this.events();
 
           await this.getFormPosLocalStorage()
-          await this.initCurrencyType()
+          // await this.initCurrencyType()
           this.customer = await this.getLocalStorageIndex('customer')
 
            if(document.querySelector('.sidebar-toggle')){
@@ -537,7 +537,7 @@
 
           },
           clickWarehouseDetail(item){
-            this.unittypeDetail = item.unit_type
+              this.unittypeDetail = item.unit_type
               this.warehousesDetail = item.warehouses
               this.showWarehousesDetail = true
           },
@@ -690,9 +690,15 @@
           initForm() {
             
               this.form = {
-                  type_document_id: null,
-                  currency_id: null,
+                  document_type_id: '01',
+                  series_id: null,
+                  establishment_id: null,
+                  type_document_id: 1,
+                  currency_id: 170,
                   date_issue: moment().format('YYYY-MM-DD'),
+                  date_of_issue: moment().format('YYYY-MM-DD'),
+                  time_of_issue: moment().format('HH:mm:ss'),
+                  exchange_rate_sale: 0,
                   date_expiration: null,
                   type_invoice_id: 1,
                   total_discount: 0,
@@ -705,8 +711,9 @@
                   sale: 0,
                   time_days_credit: 0,
                   service_invoice: {},
-                  payment_form_id: null,
-                  payment_method_id: null,
+                  payment_form_id: 1,
+                  payment_method_id: 1,
+                  payments: []
               }
 
               this.initFormItem();
@@ -748,6 +755,7 @@
 
           },
           async clickPayment() {
+
             let flag = 0;
             this.form.items.forEach(row => {
               if (row.aux_quantity < 0 || row.total < 0 || isNaN(row.total)) {
@@ -761,11 +769,13 @@
               return this.$message.error("Seleccione un cliente");
             if (!this.form.items[0])
               return this.$message.error("Seleccione un producto");
+
             this.form.establishment_id = this.establishment.id;
             this.loading = true;
             await this.sleep(800);
             this.is_payment = true;
             this.loading = false;
+
           },
           sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -783,7 +793,6 @@
               let response = null;
 
               // console.log(item.calculate_quantity)
-              console.log(item, exist_item, this.form)
 
               if (exist_item) {
 
@@ -823,7 +832,8 @@
                 let unit_price = exist_item.item.sale_unit_price
                 exist_item.item.unit_price = unit_price
 
-                this.form.items[pos] = this.form_item;
+                this.form.items[pos] = exist_item;
+                // this.form.items[pos] = this.form_item;
 
               } else {
 
@@ -845,7 +855,7 @@
                   this.form_item.item.unit_price = unit_price;
                   this.form_item.item.presentation = null;
 
-                  this.form_item.id = this.form_item.item.item_id
+                  // this.form_item.id = this.form_item.item.item_id
                   this.form_item.item_id = this.form_item.item.item_id
                   this.form_item.unit_type_id = this.form_item.item.unit_type_id
                   this.form_item.tax_id = (this.taxes.length > 0) ? this.form_item.item.tax.id: null
@@ -867,11 +877,14 @@
                 duration: 700
               });
 
+              // console.log(item, exist_item, this.form)
+
 
               // console.log(this.form.items)
               await this.calculateTotal();
               this.loading = false;
               await this.setFormPosLocalStorage()
+              await this.initFormItem()
           },
           async getStatusStock(item_id, quantity) {
             let data = {};
@@ -1034,14 +1047,17 @@
               this.all_items = response.data.items;
               this.all_customers = response.data.customers;
               this.currencies = response.data.currencies;
+              this.establishment = response.data.establishment;
               this.user = response.data.user;
               this.form.currency_id = this.currencies.length > 0 ? this.currencies[0].id : null;
+              // console.log(this.form.currency_id)
               this.taxes = response.data.taxes
 
               this.renderCategories(response.data.categories)
               // this.currency = _.find(this.currencys, {'id': this.form.currency_id})
               // this.changeCurrencyType();
-
+              this.initCurrencyType()
+  
               this.filterItems();
               this.changeDateOfIssue();
               this.changeExchangeRate()

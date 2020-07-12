@@ -26,15 +26,6 @@
                                 <small class="form-control-feedback" v-if="errors.number" v-text="errors.number[0]"></small>
                             </div>
                         </div> -->
-                        <div class="col-lg-2">
-                            <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
-                                <label class="control-label">Moneda</label>
-                                <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
-                                    <el-option v-for="option in currency_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                </el-select>
-                                <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
-                            </div>
-                        </div>
 
 
                         <div class="col-lg-2">
@@ -44,7 +35,7 @@
                                 <small class="form-control-feedback" v-if="errors.date_of_issue" v-text="errors.date_of_issue[0]"></small>
                             </div>
                         </div>
-                         <div class="col-lg-2">
+                         <!-- <div class="col-lg-2">
                             <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
                                 <label class="control-label">Tipo de cambio
                                     <el-tooltip class="item" effect="dark" content="Tipo de cambio del día, extraído de SUNAT" placement="top-end">
@@ -54,8 +45,17 @@
                                 <el-input v-model="form.exchange_rate_sale"></el-input>
                                 <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
+                        </div> -->
+                        <div class="col-lg-3">
+                            <div class="form-group" :class="{'has-danger': errors.currency_id}">
+                                <label class="control-label">Moneda</label>
+                                <el-select v-model="form.currency_id" @change="changeCurrencyType" filterable>
+                                    <el-option v-for="option in currencies" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                </el-select>
+                                <small class="form-control-feedback" v-if="errors.currency_id" v-text="errors.currency_id[0]"></small>
+                            </div>
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-lg-3">
                             <div class="form-group" :class="{'has-danger': errors.income_reason_id}">
                                 <label class="control-label">Motivo</label>
                                 <el-select v-model="form.income_reason_id"  >
@@ -204,7 +204,7 @@
                 form: {},
                 aux_customer:null,
                 income_types: [],
-                currency_types: [],
+                currencies: [],
                 suppliers: [],
                 establishment: {},
                 currency_type: {},
@@ -223,9 +223,10 @@
                     this.income_reasons = response.data.income_reasons
                     this.payment_method_types = response.data.payment_method_types
                     this.income_types = response.data.income_types
-                    this.currency_types = response.data.currency_types
+                    this.currencies = response.data.currencies
                     this.establishment = response.data.establishment
-                    this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
+                    let find_currency = _.find(this.currencies, {id:170})
+                    this.form.currency_id = find_currency ? find_currency.id: null
                     this.form.establishment_id = (this.establishment.id) ? this.establishment.id : null
                     this.form.income_type_id = (this.income_types.length > 0) ? this.income_types[0].id : null
                     this.form.income_reason_id = (this.income_reasons.length > 0)?this.income_reasons[0].id:null
@@ -251,7 +252,7 @@
                     date_of_issue: moment().format('YYYY-MM-DD'),
                     time_of_issue: moment().format('HH:mm:ss'),
                     customer: null,
-                    currency_type_id: null,
+                    currency_id: null,
                     exchange_rate_sale: 0,
                     total: 0,
                     items: [],
@@ -263,7 +264,8 @@
             },
             resetForm() {
                 this.initForm()
-                this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
+                let find_currency = _.find(this.currencies, {id:170})
+                this.form.currency_id = find_currency ? find_currency.id: null
                 this.form.establishment_id = this.establishment.id
                 this.form.income_type_id = (this.income_types.length > 0)?this.income_types[0].id:null
                 this.form.income_reason_id = (this.income_reasons.length > 0)?this.income_reasons[0].id:null
@@ -272,10 +274,10 @@
                 this.changeCurrencyType()
             },
             changeDateOfIssue() {
-                this.form.date_of_due = this.form.date_of_issue
-                this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
-                    this.form.exchange_rate_sale = response
-                })
+                // this.form.date_of_due = this.form.date_of_issue
+                // this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
+                //     this.form.exchange_rate_sale = response
+                // })
             },
             clickCancel(index) {
                 this.form.payments.splice(index, 1);
@@ -300,35 +302,15 @@
                 this.calculateTotal()
             },
             changeCurrencyType() {
-                this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
-                let items = []
-                this.form.items.forEach((row) => {
-                    items.push(this.calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale))
+                this.currency_type = _.find(this.currencies, {'id': this.form.currency_id})
+                // let items = []
+                // this.form.items.forEach((row) => {
+                //     items.push(this.calculateRowItem(row, this.form.currency_id, this.form.exchange_rate_sale))
 
 
-                });
-                this.form.items = items
-                this.calculateTotal()
-            },
-            calculateRowItem(row, currency_type_id,exchange_rate_sale){
-
-                let currency_type_id_old = row.currency_type_id
-
-                row.total = row.total_original
-
-                if (currency_type_id_old === 'PEN' && currency_type_id_old !== currency_type_id)
-                {
-                    row.total = row.total_original / exchange_rate_sale;
-                }
-
-                if (currency_type_id === 'PEN' && currency_type_id_old !== currency_type_id)
-                {
-                    row.total = row.total_original * exchange_rate_sale;
-                }
-
-                row.total = _.round(row.total,2)
-
-                return row
+                // });
+                // this.form.items = items
+                // this.calculateTotal()
             },
             calculateTotal() {
                 let total = 0

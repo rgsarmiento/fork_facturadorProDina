@@ -67,7 +67,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Ruc: </strong>{{$company->number}}</p>
+                        <p><strong>N° Documento: </strong>{{$company->number}}</p>
                     </td>
                     <td>
                         <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
@@ -86,7 +86,7 @@
                                 <th class="">CPE</th>
                                 <th class="">NV</th>
                                 <th class="">COT</th>
-                                <th class="">Contrato</th>
+                                {{-- <th class="">Contrato</th> --}}
                                 <th class="">Ingresos</th>
                                 <th class="">Compras</th>
                                 <th class="">Gastos</th>
@@ -98,14 +98,14 @@
                                 <tr> 
                                     <td class="celda">{{$loop->iteration}}</td>
                                     <td class="celda">{{$value['description']}}</td>
-                                    <td class="celda">S/ {{$value['document_payment']}}</td>
-                                    <td class="celda">S/ {{$value['sale_note_payment']}}</td>
-                                    <td class="celda">S/ {{$value['quotation_payment']}}</td>
-                                    <td class="celda">S/ {{$value['contract_payment']}}</td>
-                                    <td class="celda">S/ {{$value['income_payment']}}</td>
-                                    <td class="celda">S/  {{$value['purchase_payment']}}</td>
-                                    <td class="celda">S/ {{$value['expense_payment']}}</td>
-                                    <td class="celda">S/ {{$value['balance']}}</td> 
+                                    <td class="celda">{{$value['document_payment']}}</td>
+                                    <td class="celda">{{$value['sale_note_payment']}}</td>
+                                    <td class="celda">{{$value['quotation_payment']}}</td>
+                                    {{-- <td class="celda">{{$value['contract_payment']}}</td> --}}
+                                    <td class="celda">{{$value['income_payment']}}</td>
+                                    <td class="celda"> {{$value['purchase_payment']}}</td>
+                                    <td class="celda">{{$value['expense_payment']}}</td>
+                                    <td class="celda">{{$value['balance']}}</td> 
                                 </tr>
 
                                  

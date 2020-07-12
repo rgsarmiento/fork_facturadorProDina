@@ -534,10 +534,10 @@
             //     this.$message.error('No puede seleccionar una fecha menor a 6 días.');
             //     this.dateValid=false
             //   } else { this.dateValid = true }
-                this.form.date_expiration = this.form.date_of_issue
-                this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
-                    this.form.exchange_rate_sale = response
-                })
+                // this.form.date_expiration = this.form.date_of_issue
+                // this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
+                //     this.form.exchange_rate_sale = response
+                // })
             },
             assignmentDateOfPayment(){
                 this.form.payments.forEach((payment)=>{

@@ -30,7 +30,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Ruc: </strong></p>
+                        <p><strong>N° Documento: </strong></p>
                     </td>
                     <td align="center">{{$company->number}}</td>
                     <td>
@@ -56,7 +56,7 @@
                                 <th>Cotización</th>
                                 <th>Caso</th>
                                 <th>Cliente</th>
-                                <th>RUC</th>
+                                <th>N° Documento</th>
                                 <th>Estado</th>
                                 <th class="">Moneda</th> 
                                 <th>Total</th>

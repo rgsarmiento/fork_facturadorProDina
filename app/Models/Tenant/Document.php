@@ -365,7 +365,7 @@ class Document extends ModelTenant
 
     public function document_type()
     {
-        return $this->belongsTo(DocumentType::class, 'document_type_id');
+        return $this->belongsTo(TypeDocument::class, 'type_document_id');
     }
 
     // public function currency_type()
@@ -487,6 +487,7 @@ class Document extends ModelTenant
     
     public function scopeWhereStateTypeAccepted($query)
     {
-        return $query->whereIn('state_type_id', ['01','03','05','07','13']);
+        return $query->whereIn('state_document_id', [1, 2, 3, 4, 5]);
+        // return $query->whereIn('state_type_id', ['01','03','05','07','13']);
     }
 }
