@@ -74,7 +74,10 @@
                 </el-option>
               </el-select>
             </td>
-            <td>{{row.number_document}}</td>
+            <td>
+                 <el-button v-if="row.document_external_id" class="submit" type="success" icon="el-icon-tickets" @click.prevent="clickShowDocument(row.document_external_id)"></el-button>
+            </td>
+            </td>
           </tr>
         </data-table>
       </div>
@@ -122,22 +125,29 @@
     <DocumentForm @handleLoader="handleLoader" ref="form_document" :purchase="purchaseForm">
     </DocumentForm>
 
+    <options-form
+      :showDialog.sync="showDialogOptions"
+      :recordId="documentNewId"
+      :resource="resource_document"
+    ></options-form>
+
   </div>
 </template>
 <script>
 import DataTable from "../../../components/DataTable.vue";
 import DocumentForm from './form_document.vue'
-
+import OptionsForm from "./partials/option.vue";
 
 export default {
   props: [],
-  components: { DataTable, DocumentForm },
+  components: { DataTable, DocumentForm, OptionsForm },
   data() {
     return {
       showDialog: false,
       showImportDialog: false,
       showImageDetail: false,
       resource: "orders",
+      resource_document: 'co-documents',
       recordId: null,
       options: [],
       warehouses: [],
@@ -148,7 +158,10 @@ export default {
       record: '', // record orders
       stocks: '',
       purchaseForm: {},
-      loading_submit: false
+      loading_submit: false,
+      showDialogOptions: false,
+      documentNewId:null
+
     };
   },
   async created() {
@@ -158,6 +171,12 @@ export default {
   },
   computed: {},
   methods: {
+    async clickShowDocument(external_id) {
+      await this.$http.get(`${this.resource_document}/documents/search/externalId/${external_id}`).then((response) => {
+        this.documentNewId = response.data.id
+      })
+      this.showDialogOptions = true
+    },
     handleLoader(val)
     {
         this.loading_submit = val

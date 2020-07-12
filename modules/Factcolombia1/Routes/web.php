@@ -28,6 +28,8 @@ if($current_hostname) {
                 Route::get('download/{type}/{document}', 'Tenant\DocumentController@download');
                 Route::post('sendEmail', 'Tenant\DocumentController@sendEmailCoDocument');
                 Route::post('note', 'Tenant\DocumentController@storeNote');
+                Route::get('documents/search/externalId/{external_id}', 'Tenant\DocumentController@searchExternalId');
+
 
             });
 

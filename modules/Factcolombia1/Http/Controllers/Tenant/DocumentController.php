@@ -1136,4 +1136,9 @@ class DocumentController extends Controller
 
         return compact('items');
     }
+
+    public function searchExternalId($external_id)
+    {
+        return response()->json(Document::where('external_id', $external_id)->first());
+    }
 }
