@@ -170,7 +170,7 @@ class Document extends ModelTenant
     {
         return $this->currency->name;
     }
-    
+
     public function detail_documents() {
         return $this->hasMany(DetailDocument::class);
     }
@@ -237,7 +237,7 @@ class Document extends ModelTenant
         }
 
         $model = json_decode($this->response_api);
-        if(array_key_exists('urlinvoicepdf', $model))
+        if(array_key_exists('urlinvoicepdf', (array)$model))
             return (object)[
                 'message' => $model->message,
                 'urlinvoicepdf' => $model->urlinvoicepdf,
@@ -291,7 +291,7 @@ class Document extends ModelTenant
     {
         return $this->prefix;
     }
-    
+
     public function getDocumentTypeIdAttribute()
     {
         //equivalent document type invoice peru - colombia
@@ -303,7 +303,7 @@ class Document extends ModelTenant
         ];
 
         return $document_types[$this->type_document_id];
-        
+
     }
     //co
 
@@ -484,7 +484,7 @@ class Document extends ModelTenant
     {
         return $this->hasOne(SummaryDocument::class);
     }
-    
+
     public function scopeWhereStateTypeAccepted($query)
     {
         return $query->whereIn('state_document_id', [1, 2, 3, 4, 5]);

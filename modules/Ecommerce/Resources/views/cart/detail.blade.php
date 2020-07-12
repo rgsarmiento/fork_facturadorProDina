@@ -89,18 +89,10 @@
             <div class="checkout-methods text-center">
 
                 @guest
-                <a href="{{route('tenant_ecommerce_login')}}" class="btn btn-block btn-sm btn-primary login-link culqi">Pagar
-                    con VISA</a>
-                <a href="{{route('tenant_ecommerce_login')}}" class="btn btn-block btn-sm btn-primary login-link">Pagar
-                    con EFECTIVO</a>
-                <a style="margin-left:15%" href="{{route('tenant_ecommerce_login')}}"
-                    class="btn btn-block btn-sm login-link">
-                    <img src="{{ asset('porto-ecommerce/assets/images/btn_buynowCC_LG.gif') }}" alt="">
+                <a href="#" class="btn btn-block btn-sm btn-primary login-link culqi">
+                    Inicia sesion para completar tu compra
                 </a>
-
                 @else
-                <button class="btn btn-block btn-sm btn-primary culqi" onclick="execCulqi()"> Pagar con VISA </button>
-
                 <button @click="payment_cash.clicked = !payment_cash.clicked" class="btn btn-block btn-sm btn-primary">
                     Pagar con EFECTIVO </button>
                 <div v-show="payment_cash.clicked" style="margin: 3%" class="form-group">
@@ -114,17 +106,7 @@
                         <button @click="paymentCash" class="btn btn-success">OK!</button>
                     </div>
                 </div>
-
-
-                @if($information->script_paypal)
-
-                    {!!html_entity_decode($information->script_paypal)!!}
-
-                @endif
-
-
                 @endguest
-
             </div><!-- End .checkout-methods -->
         </div><!-- End .cart-summary -->
 
@@ -133,9 +115,16 @@
             <h3>Datos de contacto y envío</h3>
 
             <form autocomplete="off" action="#">
+
+
+                <div class="form-group" :class="{'text-danger': errors.identification_number}">
+                    <label for="email">N° Identificación:</label>
+                    <input v-model="form_contact.identification_number" onkeypress="return isNumberKey(event)" maxlength="8" type="text" autocomplete="off" class="form-control" placeholder="Ingrese N° Identificación">
+                    <small class="form-control-feedback" v-if="errors.identification_number" v-text="errors.identification_number[0]"></small>
+                </div>
                 <div class="form-group" :class="{'text-danger': errors.telephone}">
                     <label for="email">Teléfono:</label>
-                    <input v-model="form_contact.telephone" type="text" autocomplete="off" class="form-control" placeholder="Ingrese número de teléfono" name="teléfono">
+                    <input v-model="form_contact.telephone" type="text" maxlength="10" autocomplete="off" class="form-control" placeholder="Ingrese número de teléfono" name="teléfono">
                     <small class="form-control-feedback" v-if="errors.telephone" v-text="errors.telephone[0]"></small>
                 </div>
                 <div class="form-group" :class="{'text-danger': errors.address}">
@@ -147,108 +136,22 @@
         </div>
     </div><!-- End .col-lg-4 -->
 
-
-
-
-    <div class="modal fade" id="modal_ask_document" tabindex="-1" role="dialog" data-backdrop="static"
-        data-keyboard="false" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title" id="exampleModalCenterTitle">Generar Comprobante Electronico</h2>
-
-                </div>
-                <div class="modal-body">
-                    <h3>La Transacción de se realizó correctamente.</h3>
-                    <h4>¿ Desea generar un comprobante y enviarlo a su email ? </h4> <br>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @click="checkDocument('6')">SI, FACTURA</button>
-                    <button type="button" class="btn btn-primary" @click="checkDocument('1')">SI, BOLETA
-                        ELECTRONICA</button>
-                    <button type="button" class="btn btn-secondary" @click="redirectHome" data-dismiss="modal">No,
-                        NINGUNA</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal_identity_document" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        data-backdrop="static" data-keyboard="false" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLabel">Datos Generales para el Comprobante</h3>
-                </div>
-                <div class="modal-body">
-
-                    <form>
-                        <div class="form-group">
-                            <label class="control-label">Tipo Doc. Identidad <span class="text-danger">*</span></label>
-                            <select class="form-control" :disabled="formIdentity.identity_document_type_id == '6'"
-                                v-model="formIdentity.identity_document_type_id">
-                                <option v-for="option in identity_document_types" :value="option.id"
-                                    :label="option.description"></option>
-                            </select>
-
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">Ingrese Número <span> (Se debe validar el numero ingresado)</span> <span class="text-danger">*</span></label>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" v-model="formIdentity.number"
-                                    :maxlength="maxLength" aria-label="Recipient's username"
-                                    aria-describedby="button-addon2">
-                                <div class="input-group-append">
-
-                                    <button  :disabled="!formIdentity.number" @click.prevent="searchCustomer"
-                                        class="btn btn-outline-secondary" type="button" id="button-addon2">
-
-                                        <template v-if="formIdentity.identity_document_type_id === '6'">
-                                            <i class="icon-search"></i> <span>SUNAT @{{ text_search }}</span>
-                                        </template>
-                                        <template v-if="formIdentity.identity_document_type_id === '1'">
-                                            <i class="icon-search"></i> <span>RENIEC @{{ text_search }}</span>
-                                        </template>
-                                    </button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </form>
-                    <div v-show="response_search.message" class="alert"
-                        :class="{'alert-danger' : !response_search.success, 'alert-success': response_search.success}"
-                        role="alert">
-                        @{{ response_search.message }}
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button>
-                    <button type="button" class="btn btn-primary" @click="sendDocument"
-                        v-show="formIdentity.validate">ENVIAR</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div><!-- End .row -->
 
-<input type="hidden" id="total_amount" data-total="0.0">
+<input type="hidden" id="total_amount" data-total="0.0" />
 
 @endsection
 
 @push('scripts')
-<!-- script src="https://checkout.culqi.com/js/v3"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.31.1/dist/sweetalert2.all.min.js"></script>
-<script src="https://momentjs.com/downloads/moment.min.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script -->
-
 
 <script type="text/javascript">
     var app_cart = new Vue({
         el: '#app',
         data: {
             form_contact: {
-                address:   '',
-                telephone:   '',
+                address:   null,
+                telephone:   null,
+                identification_number:   null,
             },
             payment_cash: {
                 amount: '',
@@ -277,10 +180,13 @@
             },
             aux_totals: {},
             form_document: {},
+            customer: {},
+
             user: {},
             typeDocumentSelected: '',
             response_order_total:0,
-            errors: {}
+            errors: {},
+
         },
         computed: {
             maxLength: function () {
@@ -306,6 +212,7 @@
             this.calculateSummary()
         },
         created() {
+            this.user = @json(Auth::user());
             let array = localStorage.getItem('products_cart');
             array = JSON.parse(array)
             if (array) {
@@ -322,18 +229,21 @@
         },
         methods: {
             getFormPaymentCash() {
-              this.form_document.datos_del_cliente_o_receptor.direccion = this.form_contact.address
-              this.form_document.datos_del_cliente_o_receptor.telefono = this.form_contact.telephone
-                let precio = Math.round(Number(this.summary.total) * 100).toFixed(2);
-                let precio_culqi = Number(this.summary.total)
+
+                const customer = this.getCustomer()
+                if(!customer)
+                    alert("Debe iniciar sesion.")
+
+                //let precio = Math.round(Number(this.summary.total) * 100).toFixed(2);
+              //  const tot = Number(this.summary.total)
                 return {
                     producto: 'Compras Ecommerce Facturador Pro',
-                    precio: precio,
-                    precio_culqi: precio_culqi,
-                    customer: this.form_document.datos_del_cliente_o_receptor,
+                  //  precio: precio,
+                    precio_culqi: Number(this.summary.total),
+                    customer: customer,
                     items: this.records,
-                    telephone: this.form_contact.telephone,
-                    address: this.form_contact.address
+                    //telephone: this.form_contact.telephone,
+                    //address: this.form_contact.address
                 }
             },
             async paymentCash() {
@@ -386,50 +296,6 @@
             redirectHome() {
                 window.location = "{{ route('tenant.ecommerce.index') }}";
             },
-            async searchCustomer() {
-                this.text_search = 'Buscando...'
-                this.response_search = {
-                    succes: false,
-                    message: ''
-                }
-                let identity_document_type_name = ''
-                if (this.formIdentity.identity_document_type_id === '6') {
-                    identity_document_type_name = 'ruc'
-                }
-                if (this.formIdentity.identity_document_type_id === '1') {
-                    identity_document_type_name = 'dni'
-                }
-
-                let response = await axios.get(
-                    `/services/${identity_document_type_name}/${this.formIdentity.number}`)
-
-                if (response.data.success) {
-                    this.response_search.success = response.data.success
-                    this.response_search.message = 'Datos Encontrados (Ahora puede enviar su comprobante.)'
-                    // let data = response.data.data
-                    this.formIdentity.validate = true
-                    this.form_document.datos_del_cliente_o_receptor.codigo_tipo_documento_identidad = this
-                        .formIdentity.identity_document_type_id
-                    this.form_document.datos_del_cliente_o_receptor.numero_documento = this.formIdentity
-                        .number
-                    /* this.form.name = data.name
-                     this.form.trade_name = data.trade_name
-                     this.form.address = data.address
-                     this.form.department_id = data.department_id
-                     this.form.province_id = data.province_id
-                     this.form.district_id = data.district_id
-                     this.form.phone = data.phone*/
-                } else {
-                    this.response_search.success = response.data.success
-                    this.response_search.message = response.data.message
-
-                    this.form_document.datos_del_cliente_o_receptor.codigo_tipo_documento_identidad = "0"
-                    this.form_document.datos_del_cliente_o_receptor.numero_documento = "0"
-                }
-
-                this.text_search = ''
-
-            },
             getHeaderConfig() {
                 let token = this.user.api_token
                 let axiosConfig = {
@@ -439,113 +305,6 @@
                     }
                 };
                 return axiosConfig;
-            },
-            checkDocument(typeDocument) {
-
-                $('#modal_ask_document').modal('hide');
-
-                this.formIdentity.identity_document_type_id = typeDocument
-
-                $('#modal_identity_document').modal('show');
-                //this.typeDocumentSelected = typeDocument
-                //let total = parseFloat(this.response_order_total)
-                // console.log(total, this.response_order_total)
-
-                /*if (typeDocument == '6') {
-                    let tipoDocumento = this.user.identity_document_type_id
-                    let number = this.user.number
-                    // console.log(this.user)
-
-                    // if (!tipoDocumento || !number || number.length !== 11) {
-                    $('#modal_identity_document').modal('show');
-                    // } else {
-                    //     this.form_document.datos_del_cliente_o_receptor.codigo_tipo_documento_identidad =
-                    //         tipoDocumento
-                    //     this.form_document.datos_del_cliente_o_receptor.numero_documento = number
-                    //     this.sendDocument()
-                    // }
-
-                } else {
-
-                    if(total > 700){
-
-                        $('#modal_identity_document').modal('show');
-
-                    }else{
-
-                        this.sendDocument()
-                    }
-
-                }*/
-
-            },
-            finallyProcess(form) {
-                let url_finally = '{{ route("tenant_ecommerce_transaction_finally")}}';
-                axios.post(url_finally, form, this.getHeaderConfig())
-                    .then(response => {
-                        console.log(response)
-                        console.log('transaccion finalizada correctamente')
-                        swal({
-                            title: "Gracias por su pago!",
-                            text: "La Transacción de su compra se finalizó correctamente. El Comprobante y detalle de su compra se envió a su correo.",
-                            type: "success"
-                        }).then((x) => {
-                            this.redirectHome()
-                        })
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        console.log('error al finalizar la transaccion')
-                    });
-
-            },
-            async sendDocument() {
-
-                $('#modal_ask_document').modal('hide');
-                $('#modal_identity_document').modal('hide');
-
-                swal({
-                    title: "Estamos enviando el Comprobante a su Email",
-                    text: `Por favor no cierre esta ventana hasta que el proceso termine.`,
-                    focusConfirm: false,
-                    onOpen: () => {
-                        Swal.showLoading()
-                    }
-                });
-                let doc = await this.getDocument()
-               // console.log(doc)
-                // return
-                await axios.post('/api/documents', doc, this.getHeaderConfig())
-                    .then(response => {
-                       // console.log('documento generado correctamente')
-                        this.finallyProcess(this.getDataFinally(response.data))
-                        this.initForm()
-                    })
-                    .catch(error => {
-                      // console.log(error)
-                        //console.log('error al generar documento')
-                        swal({
-                            type: 'error',
-                            title: 'Oops...',
-                            text: 'Sucedió un error al generar el comprobante electronico!',
-                        }).then((x) => {
-                            window.location = "{{ route('tenant.ecommerce.index') }}";
-                        })
-
-                    });
-
-            },
-            getDataFinally(document) {
-                return {
-                    document_external_id: document.data.external_id,
-                    number_document: document.number,
-                    orderId: this.order_generated.id,
-                    product: 'Compras Ecommerce Facturador Pro',
-                    precio_culqi: this.summary.total,
-                    identity_document_type_id: this.formIdentity.identity_document_type_id,
-                    number: this.formIdentity.number,
-
-                }
             },
             async getDocument() {
                 this.form_document.items = await this.getItemsDocument()
@@ -649,46 +408,39 @@
                 return rec
             },
             initForm() {
-              this.errors = {}
-                this.user = JSON.parse('{!! json_encode( Auth::user() ) !!}')
-                if(!this.user){
-                    return false
+
+                this.errors = {}
+
+                if(this.user){
+                    this.form_contact.address =  this.user.address
+                    this.form_contact.telephone =  this.user.telephone
                 }
 
                 this.form_document = {
-                    "acciones": {
-                        "enviar_email": true,
-                        "formato_pdf": "a4"
-                    },
-                    "serie_documento": "",
-                    "numero_documento": "#",
-                    "fecha_de_emision": moment().format('YYYY-MM-DD'),
-                    "hora_de_emision": moment().format('HH:mm:ss'),
-                    "codigo_tipo_operacion": "0101",
-                    "codigo_tipo_documento": "01",
-                    "codigo_tipo_moneda": "PEN",
-                    "fecha_de_vencimiento": moment().format('YYYY-MM-DD'),
-                    "datos_del_cliente_o_receptor": {
-                        "codigo_tipo_documento_identidad": "0",
-                        "numero_documento": "0",
-                        "apellidos_y_nombres_o_razon_social": this.user.name,
-                        "codigo_pais": "PE",
-                        "ubigeo": "150101",
-                        "direccion": this.user.address,
-                        "correo_electronico": this.user.email,
-                        "telefono": this.user.telephone
-                    },
-                    "totales": {},
-                    "items": [],
+                    type_document_id: 1,
+                    currency_id: null,
+                    date_issue: moment().format('YYYY-MM-DD'),
+                    date_expiration: null,
+                    type_invoice_id: 1,
+                    total_discount: 0,
+                    total_tax: 0,
+                    watch: false,
+                    subtotal: 0,
+                    items: [],
+                    taxes: [],
+                    total: 0,
+                    sale: 0,
+                    time_days_credit: 0,
+                    service_invoice: {},
+                    payment_form_id: null,
+                    payment_method_id: null,
                 }
-
 
                 this.formIdentity = {
                     identity_document_type_id: '6'
                 }
 
-                this.form_contact.address =  this.user.address
-                this.form_contact.telephone =  this.user.telephone
+
 
 
             },
@@ -707,7 +459,7 @@
 
             },
             clearShoppingCart() {
-              this.errors = {}
+                this.errors = {}
                 this.records_old = this.records
                 this.records = []
                 localStorage.setItem('products_cart', JSON.stringify([]))
@@ -796,135 +548,28 @@
                     .catch(error => {
 
                     });
+            },
+            getCustomer()
+            {
+                if(!this.user)
+                    return null
+
+                return {
+                    name: this.user.name,
+                    email: this.user.email,
+                    type: this.user.type,
+                    telephone: this.form_contact.telephone,
+                    address: this.form_contact.address,
+                    identification_number: this.form_contact.identification_number
+                }
             }
+
         }
     })
 
 </script>
 
 <script>
-    Culqi.publicKey = {!! json_encode($configuration->token_public_culqui ) !!};
-    if(!Culqi.publicKey)
-    {
-      $('.culqi').hide()
-/*
-        swal({
-            title: "Culqi configuración",
-            text: "El pago con visa aun no esta disponible. Intente con efectivo.",
-            type: "error",
-            position: 'top-end',
-            icon: 'warning',
-        })
-*/
-    }
-    Culqi.options({
-        installments: true
-    });
-
-    async function askedDocument(order) {
-        app_cart.order_generated = order
-        $('#modal_ask_document').modal('show')
-    }
-
-    function execCulqi() {
-
-        let precio = Math.round((Number($("#total_amount").data('total')) * 100).toFixed(2));
-        if (precio > 0) {
-            Culqi.settings({
-                title: "Productos Ecommerce",
-                currency: 'PEN',
-                description: 'Compras Ecommerce Facturador Pro',
-                amount: precio
-            });
-            Culqi.open();
-        }
-    }
-
-
-    function culqi() {
-        if (Culqi.token) {
-
-            swal({
-                title: "Estamos hablando con su banco",
-                text: `Por favor no cierre esta ventana hasta que el proceso termine.`,
-                focusConfirm: false,
-                onOpen: () => {
-                    Swal.showLoading()
-                }
-            });
-
-            let precio = Math.round((Number($("#total_amount").data('total')).toFixed(2) * 100));
-            let precio_culqi = Number($("#total_amount").data('total')).toFixed(2);
-
-            var url = "/culqi";
-            var token = Culqi.token.id;
-            var email = Culqi.token.email;
-            var installments = Culqi.token.metadata.installments;
-            var data = {
-                producto: 'Compras Ecommerce Facturador Pro',
-                precio: precio,
-                precio_culqi: precio_culqi,
-                token: token,
-                email: email,
-                installments: installments,
-                customer: JSON.stringify(getCustomer()),
-                items: JSON.stringify(getItems())
-            }
-
-            $.ajax({
-                url: "{{route('tenant_ecommerce_culqui')}}",
-                method: 'post',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: data,
-                dataType: 'JSON',
-                success: function (data) {
-                    if (data.success == true) {
-                        app_cart.clearShoppingCart();
-                        swal({
-                            title: "Gracias por su pago!",
-                            text: "En breve le enviaremos un correo electronico con los detalles de su compra.",
-                            type: "success"
-                        }).then((x) => {
-
-                            askedDocument(data.order);
-                            app_cart.saveContactDataUser();
-                            //window.location = "{{ route('tenant.ecommerce.index') }}";
-                        })
-                    } else {
-                        const message = data.message
-                        swal("Pago No realizado", message, "error");
-                    }
-                },
-                error: function (error_data) {
-                    swal("Pago No realizado", error_data, "error");
-                }
-            });
-
-        } else {
-            console.log(Culqi.error);
-            swal("Pago No realizado", Culqi.error.user_message, "error");
-        }
-    };
-
-    function getCustomer() {
-        let user = JSON.parse('{!! json_encode( Auth::user() ) !!}')
-        return {
-            "codigo_tipo_documento_identidad": "0",
-            "numero_documento": "0",
-            "apellidos_y_nombres_o_razon_social": user.name,
-            "codigo_pais": "PE",
-            "ubigeo": "150101",
-            "direccion": "",
-            "correo_electronico": user.email,
-            "telefono": ""
-        }
-    }
-
-    function getItems() {
-        return app_cart.records
-    }
 
     function isNumberKey(evt) {
         var charCode = (evt.which) ? evt.which : evt.keyCode;

@@ -33,7 +33,7 @@ class DocumentRequest extends FormRequest
         return [
             'type_document_id' => 'required|exists:tenant.co_type_documents,id',
             'type_invoice_id' => 'nullable|exists:tenant.co_type_invoices,id',
-            'customer_id' => 'required|exists:tenant.persons,id',
+           // 'customer_id' => 'required|exists:tenant.persons,id',
             // 'client_id' => 'required|exists:tenant.co_clients,id',
             'currency_id' => 'required|exists:tenant.co_currencies,id',
             'date_issue' => 'required|date',

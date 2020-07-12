@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Tenant\CulqiEmail;
 use App\Http\Controllers\Tenant\Api\ServiceController;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Tenant\Document;
 
 class EcommerceController extends Controller
 {
@@ -204,19 +205,52 @@ class EcommerceController extends Controller
 
     }
 
+    public function transactionFinally2(Request $request)
+    {
+        try{
+            $user = auth()->user();
+
+            $document = Document::find($request->documentId);
+
+            //1. confirmar dato de compriante en order
+            $order_generated = Order::find($request->orderId);
+            $order_generated->document_external_id = $document->external_id;
+            $order_generated->number_document = $document->number; //$document->series."-".$document->number;
+            $order_generated->status_order_id = $request->status_order_id;
+            $order_generated->save();
+
+            return [
+                'success' => true,
+                'message' => 'Order Actualizada',
+                'order_total' => $order_generated->total
+            ];
+        }
+        catch(Exception $e)
+        {
+            return [
+                'success' => false,
+                'message' =>  $e->getMessage()
+            ];
+        }
+
+    }
+
     public function paymentCash(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->customer, [
+            'identification_number' => 'required|numeric',
             'telephone' => 'required|numeric',
             'address' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
-        } else {
-            try {
-                $user = auth()->user();
-                $order = Order::create([
+        }
+
+        try {
+
+            $user = auth()->user();
+            $order = Order::create([
                 'external_id' => Str::uuid()->toString(),
                 'customer' =>  $request->customer,
                 'shipping_address' => 'direccion 1',
@@ -224,7 +258,7 @@ class EcommerceController extends Controller
                 'total' => $request->precio_culqi,
                 'reference_payment' => 'efectivo',
                 'status_order_id' => 1
-              ]);
+            ]);
 
             $customer_email = $user->email;
             $document = new stdClass;
@@ -247,7 +281,7 @@ class EcommerceController extends Controller
             ];
         }
       }
-    }
+
 
     public function ratingItem(Request $request)
     {
@@ -301,11 +335,21 @@ class EcommerceController extends Controller
     public function saveDataUser(Request $request)
     {
         $user = auth()->user();
+
         if ($request->address) {
             $user->address = $request->address;
         }
-        if ($user->telephone = $request->telephone) {
+        if ($request->telephone) {
             $user->telephone = $request->telephone;
+        }
+
+        if(!$user->identity_document_type_id)
+        {
+            $user->identity_document_type_id = 3;
+        }
+
+        if ($request->identification_number) {
+            $user->telephone = $request->identification_number;
         }
 
         $user->save();
