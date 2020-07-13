@@ -194,17 +194,7 @@
             </td>
             <td class="text-right align-top">{{ number_format($row->unit_price, 2) }}</td>
             <td class="text-right align-top">
-                @if($row->discounts)
-                    @php
-                        $total_discount_line = 0;
-                        foreach ($row->discounts as $disto) {
-                            $total_discount_line = $total_discount_line + $disto->amount;
-                        }
-                    @endphp
-                    {{ number_format($total_discount_line, 2) }}
-                @else
-                0
-                @endif
+                {{ $row->discount }}
             </td>
             <td class="text-right align-top">{{ number_format($row->total, 2) }}</td>
         </tr>
