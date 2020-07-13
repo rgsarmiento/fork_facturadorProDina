@@ -27,7 +27,7 @@ class TransferCollection extends ResourceCollection
                 'inventory' => $row->inventory->transform(function($o) use ($row) {
                     return [
                         'id' => $o->item->id,
-                        'description' => $o->item->description,
+                        'description' => $o->item->name,
                         'quantity' => $o->quantity,
                         'lots_enabled' => (bool)$o->item->lots_enabled,
                         'lots' => $o->item->item_lots->where('has_sale', false)->where('warehouse_id', $row->warehouse_destination_id)->transform(function($row) {

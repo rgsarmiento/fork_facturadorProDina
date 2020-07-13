@@ -81,7 +81,7 @@ trait InventoryTrait
         return collect($records)->transform(function($row) use ($warehouse_id) {
             return  [
                 'id' => $row->id,
-                'description' => $row->description,
+                'description' => $row->name,
                 'lots_enabled' => (bool)$row->lots_enabled,
                 'lots' => $row->item_lots->where('has_sale', false)->where('warehouse_id', $warehouse_id)->transform(function($row) {
                     return [
@@ -105,7 +105,7 @@ trait InventoryTrait
         return collect($records)->transform(function($row) {
             return  [
                 'id' => $row->id,
-                'description' => ($row->internal_id) ? "{$row->internal_id} - {$row->description}" :$row->description,
+                'description' => ($row->internal_id) ? "{$row->internal_id} - {$row->name}" :$row->name,
                 'lots_enabled' => (bool) $row->lots_enabled,
                 'series_enabled' => (bool) $row->series_enabled,
                 'lots' => $row->item_lots->where('has_sale', false)->transform(function($row) {

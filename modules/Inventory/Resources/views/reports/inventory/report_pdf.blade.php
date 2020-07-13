@@ -67,7 +67,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Ruc: </strong>{{$company->number}}</p>
+                        <p><strong>N° Documento: </strong>{{$company->number}}</p>
                     </td>
                     <td>
                         <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
@@ -93,7 +93,7 @@
                             @foreach($reports as $key => $value)
                                 <tr>
                                     <td class="celda">{{$loop->iteration}}</td>
-                                    <td class="celda">{{$value->item->description ?? ''}}</td>
+                                    <td class="celda">{{$value->item->name ?? ''}}</td>
                                     <td class="celda">{{$value->stock}}</td>
                                     <td class="celda">{{$value->item->sale_unit_price}}</td>
                                     <td class="celda">{{$value->item->purchase_unit_price}}</td>

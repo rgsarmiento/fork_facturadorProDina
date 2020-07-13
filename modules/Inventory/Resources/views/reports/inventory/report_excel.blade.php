@@ -30,7 +30,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Ruc: </strong></p>
+                        <p><strong>N° Documento: </strong></p>
                     </td>
                     <td align="center">{{$company->number}}</td>
                     <td>
@@ -59,7 +59,7 @@
                             @foreach($records as $key => $value)
                             <tr>
                                 <td>{{$loop->iteration}}</td>
-                                <td>{{$value->item->description ?? ''}}</td>
+                                <td>{{$value->item->name ?? ''}}</td>
                                 <td>{{$value->stock}}</td>
                                 <td>{{$value->item->sale_unit_price}}</td>
                                 <td>{{$value->item->purchase_unit_price}}</td>
