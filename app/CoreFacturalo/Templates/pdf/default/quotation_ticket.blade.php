@@ -217,8 +217,10 @@
                         <br/>{!! $attr->description !!} : {{ $attr->value }}
                     @endforeach
                 @endif
+                @if($row->discount > 0)
                 <br>
                 {{ $row->discount }}
+                @endif
             </td>
             <td class="text-right desc-9 align-top">{{ number_format($row->unit_price, 2) }}</td>
             <td class="text-right desc-9 align-top">{{ number_format($row->total, 2) }}</td>
