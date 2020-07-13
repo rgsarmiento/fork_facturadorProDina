@@ -73,7 +73,7 @@ $establishment = $cash->user->establishment;
                 </tr>
                 <tr>
                     <td class="td-custom">
-                        <p><strong>Ruc: </strong>{{$company->number}}</p>
+                        <p><strong>N° Documento: </strong>{{$company->number}}</p>
                     </td>
                     <td class="td-custom">
                         <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
