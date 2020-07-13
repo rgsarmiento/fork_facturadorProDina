@@ -56,6 +56,7 @@
                         {{ ($path[0] === 'co-documents')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'co-items')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'co-clients')?'nav-active nav-expanded':'' }}
+                        {{ ($path[0] === 'co-taxes')?'nav-active nav-expanded':'' }}
 
 
                         ">
@@ -136,6 +137,7 @@
                                         {{ ($path[0] === 'categories')?'nav-active nav-expanded':'' }}
                                         {{ ($path[0] === 'brands')?'nav-active nav-expanded':'' }}
                                         {{ ($path[0] === 'person-types')?'nav-active nav-expanded':'' }}
+                                        {{ ($path[0] === 'co-taxes')?'nav-active nav-expanded':'' }}
                                         {{ ($path[0] === 'persons' && $path[1] === 'customers')?'nav-active nav-expanded':'' }}
                                         ">
                                         <a class="nav-link" href="#">
