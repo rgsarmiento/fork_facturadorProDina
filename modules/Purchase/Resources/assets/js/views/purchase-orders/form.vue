@@ -627,7 +627,7 @@
                 //     this.selectSupplier()
 
                 // } else {
-                this.suppliers =  this.all_suppliers  //_.filter(this.all_suppliers, (c) => { return c.identity_document_type_id !== '6' })
+                // this.suppliers =  this.all_suppliers  //_.filter(this.all_suppliers, (c) => { return c.identity_document_type_id !== '6' })
                 this.selectSupplier()
                 // }
             },
