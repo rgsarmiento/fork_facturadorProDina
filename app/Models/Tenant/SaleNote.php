@@ -48,6 +48,7 @@ class SaleNote extends ModelTenant
         'taxes',
         'total_tax',
         'subtotal',
+        'total_discount',
 
     ];
 
