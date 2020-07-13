@@ -217,6 +217,8 @@ class DocumentController extends Controller
 
             $data_document = json_encode($service_invoice);
 
+            //return ($data_document);
+
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -228,6 +230,7 @@ class DocumentController extends Controller
             ));
             $response = curl_exec($ch);
             curl_close($ch);
+
 
             $response_model = json_decode($response);
 
@@ -288,6 +291,7 @@ class DocumentController extends Controller
                     "Authorization: Bearer {$company->api_token}"
                 ));
                 $response_status = curl_exec($ch2);
+
                 curl_close($ch2);
                 $response_status_decoded = json_decode($response_status);
 
