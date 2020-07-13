@@ -31,7 +31,7 @@ use Modules\Factcolombia1\Models\Tenant\{
     PaymentForm,
     TypeInvoice,
 };
-
+use Carbon\Carbon;
 
 class PosController extends Controller
 {
