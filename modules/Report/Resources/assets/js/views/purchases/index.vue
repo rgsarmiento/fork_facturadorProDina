@@ -26,7 +26,8 @@
                             <td>{{ row.supplier_name }}<br/><small v-text="row.supplier_number"></small></td>
                             <td>{{row.state_type_description}}</td>
                             <td>{{row.number}}
-                                <small v-text="row.document_type_description"></small><br/>
+                                <br/>
+                                <small v-text="row.document_type_description"></small>
 
                             </td>
                             <td>{{row.payment_method_type_description}}</td>

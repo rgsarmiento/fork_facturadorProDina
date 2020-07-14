@@ -24,6 +24,11 @@ class DashboardView
         });
     }
 
+    public static function getCurrencies()
+    {
+        return Currency::get(['id', 'name']);
+    }
+
     public static function getUnpaid($request)
     {
         $establishment_id = $request['establishment_id'];

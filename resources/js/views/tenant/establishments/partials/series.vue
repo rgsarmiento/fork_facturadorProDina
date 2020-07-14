@@ -9,7 +9,7 @@
                             <tr>
                                 <th>Tipo de documento</th>
                                 <th>Número</th>
-                                <th class="text-center">D. Contingencia</th>
+                                <!-- <th class="text-center">D. Contingencia</th> -->
                                 <th></th>
                             </tr>
                             </thead>
@@ -18,7 +18,7 @@
                                 <template v-if="row.id">
                                     <td>{{ row.document_type_description }}</td>
                                     <td>{{ row.number }}</td>
-                                    <td class="text-center">{{ (row.contingency) ? "SI" : "NO" }}</td>
+                                    <!-- <td class="text-center">{{ (row.contingency) ? "SI" : "NO" }}</td> -->
                                     <td class="series-table-actions text-right">
                                         <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
                                         <!--<el-button type="danger" icon="el-icon-delete" plain @click.prevent="clickDelete(row.id)"></el-button>-->
@@ -27,7 +27,7 @@
                                 <template v-else>
                                     <td>
                                         <div class="form-group mb-0" :class="{'has-danger': row.errors.document_type_id}">
-                                            <el-select v-model="row.document_type_id">
+                                            <el-select v-model="row.document_type_id" filterable>
                                                 <el-option v-for="option in document_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="row.errors.document_type_id" v-text="row.errors.document_type_id[0]"></small>
@@ -39,14 +39,14 @@
                                             <small class="form-control-feedback" v-if="row.errors.number" v-text="row.errors.number[0]"></small>
                                         </div>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <div class="col-md-3 center-el-checkbox">
                                             <div class="form-group" :class="{'has-danger': row.errors.contingency}">
                                                 <el-checkbox v-model="row.contingency" @change="filterDocumentType(row)">Contingencia</el-checkbox>
                                                 <small class="form-control-feedback" v-if="row.errors.contingency" v-text="row.errors.contingency[0]"></small>
                                             </div>
                                         </div>
-                                    </td>
+                                    </td> -->
                                     <td class="series-table-actions text-right">
                                         <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickSubmit(index)">
                                             <i class="fa fa-check"></i>
@@ -154,13 +154,13 @@
             },
             filterDocumentType(row){
 
-                if(row.contingency){
-                    this.document_types = _.filter(this.all_document_types, item => (item.id == '01' || item.id =='03' || item.id =='07' || item.id =='08' || item.id == '09'))
-                    row.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
-                }else{
-                    row.document_type_id = null
-                    this.document_types = this.all_document_types
-                }
+                // if(row.contingency){
+                //     this.document_types = _.filter(this.all_document_types, item => (item.id == '01' || item.id =='03' || item.id =='07' || item.id =='08' || item.id == '09'))
+                //     row.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
+                // }else{
+                //     row.document_type_id = null
+                //     this.document_types = this.all_document_types
+                // }
             },
             initDocumentTypes(){
                 this.document_types = (this.all_document_types.length > 0) ? this.all_document_types : []

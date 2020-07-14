@@ -19,7 +19,7 @@ class DashboardStock
 
                         $query->whereNotIsSet();
                         $query->where('status',true);
-                        $query->where('unit_type_id','!=', 'ZZ');
+                        $query->where('unit_type_id','!=', 1);
                         
                     })
                     ->where('stock','<=', 20)

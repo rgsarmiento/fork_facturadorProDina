@@ -53,8 +53,8 @@
                                 <th>Estado</th>
                                 <th class="text-center">Moneda</th>
                                 <th class="text-center">Comprobantes</th> 
-                                <th>Cotización</th>
-                                <th>Caso</th>
+                                {{-- <th>Cotización</th>
+                                <th>Caso</th> --}}
                                 <th class="text-right">Total</th>
                             </tr>
                         </thead>
@@ -65,7 +65,7 @@
                                 <td>{{$value->date_of_issue->format('Y-m-d')}}</td>
                                 <td class="celda">{{$value->user->name}}</td>
                                 <td>{{$value->customer->name}}</td>
-                                <td>{{$value->identifier}}</td>
+                                <td>{{$value->number_full}}</td>
                                 <td>{{$value->state_type->description}}</td>
                                 <td>{{$value->currency_type_id}}</td>
                                 <td>
@@ -74,8 +74,8 @@
                                     @endforeach
                                 </td>
                                 
-                                <td class="celda">{{ ($value->quotation) ? $value->quotation->number_full : '' }}</td>
-                                <td class="celda">{{ isset($value->quotation->sale_opportunity) ? $value->quotation->sale_opportunity->number_full : '' }}</td>
+                                {{-- <td class="celda">{{ ($value->quotation) ? $value->quotation->number_full : '' }}</td>
+                                <td class="celda">{{ isset($value->quotation->sale_opportunity) ? $value->quotation->sale_opportunity->number_full : '' }}</td> --}}
 
                                 @if($value->state_type_id == '11')
                                     

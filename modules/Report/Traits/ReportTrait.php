@@ -204,13 +204,13 @@ trait ReportTrait
 
     public function getDataTableItem($request) {
 
-        $items = Item::where('description','like', "%{$request->input}%")
+        $items = Item::where('name','like', "%{$request->input}%")
                         ->orWhere('internal_id','like', "%{$request->input}%")
-                        ->orderBy('description')
+                        ->orderBy('name')
                         ->get()->transform(function($row) {
                             return [
                                 'id' => $row->id,
-                                'description' => ($row->internal_id) ? "{$row->internal_id} - {$row->description}" :$row->description,
+                                'description' => ($row->internal_id) ? "{$row->internal_id} - {$row->name}" :$row->name,
                             ];
                         });
 

@@ -186,4 +186,10 @@ class SaleNote extends ModelTenant
     {
         return $this->belongsTo(Quotation::class);
     }
+    
+    public function scopeWhereCurrency($query, $currency_id)
+    {
+        return $query->where('currency_id', $currency_id);
+    }
+
 }

@@ -15,26 +15,26 @@
                             <th>Estado</th>
                             <th class="text-center">Moneda</th>
                             <th class="text-center">Comprobantes</th>
-                            <th>Cotización</th>
-                            <th>Caso</th>
-                            <th class="text-right">Total</th>
+                            <!-- <th>Cotización</th>
+                            <th>Caso</th> -->
+                            <th class="text-center">Total</th>
                         <tr>
                         <tr slot-scope="{ index, row }">
                             <td>{{ index }}</td>  
                             <td>{{row.date_of_issue}}</td>
                             <td>{{row.user_name}}</td>
                             <td>{{row.customer_name}}</td>
-                            <td>{{row.identifier}}</td>
+                            <td>{{row.number_full}}</td>
                             <td>{{row.state_type_description}}</td>
-                            <td>{{row.currency_type_id}}</td>
-                            <td>
+                            <td class="text-center">{{row.currency_type_id}}</td>
+                            <td class="text-center">
                                 <template v-for="(doc,i) in row.documents">                                
                                     <label class="d-block"  :key="i">{{doc.number_full}}</label>
                                 </template>
                             </td>
-                            <td>{{row.quotation_number_full}}</td>
-                            <td>{{row.sale_opportunity_number_full}}</td>
-                            <td>{{ (row.state_type_id == '11') ? "0.00" : row.total}}</td>
+                            <!-- <td>{{row.quotation_number_full}}</td>
+                            <td>{{row.sale_opportunity_number_full}}</td> -->
+                            <td class="text-center">{{ (row.state_type_id == '11') ? "0.00" : row.total}}</td>
                             
                         </tr>
                         

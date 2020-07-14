@@ -30,6 +30,8 @@ class DashboardUtility
         $month_end = $request['month_end'];
         $enabled_expense = $request['enabled_expense'];
         $item_id = $request['item_id'];
+        $currency_id = $request['currency_id'];
+        
 
         $d_start = null;
         $d_end = null;
@@ -54,57 +56,62 @@ class DashboardUtility
         }
 
         return [
-            'utilities' => $this->utilities_totals($establishment_id, $d_start, $d_end, $enabled_expense, $item_id),
+            'utilities' => $this->utilities_totals($establishment_id, $d_start, $d_end, $enabled_expense, $item_id, $currency_id),
         ];
 
     }
 
 
 
-    private function utilities_totals($establishment_id, $d_start, $d_end, $enabled_expense, $item_id){
+    private function utilities_totals($establishment_id, $d_start, $d_end, $enabled_expense, $item_id, $currency_id){
 
 
         if($d_start && $d_end){
 
-            $document_items = DocumentItem::whereHas('document',function($query) use($establishment_id, $d_start, $d_end){
-
+            $document_items = DocumentItem::whereHas('document',function($query) use($establishment_id, $d_start, $d_end, $currency_id){
                                                 $query->where('establishment_id', $establishment_id)
-                                                        //->whereIn('state_type_id', ['01','03','05','07','13'])
+                                                        ->whereStateTypeAccepted()
+                                                        ->whereCurrency($currency_id)
                                                         ->whereBetween('date_of_issue', [$d_start, $d_end]);
                                             })
                                             ->get();
 
 
-            $sale_note_items = SaleNoteItem::whereHas('sale_note', function($query) use($establishment_id, $d_start, $d_end){
+            $sale_note_items = SaleNoteItem::whereHas('sale_note', function($query) use($establishment_id, $d_start, $d_end, $currency_id){
 
                                                 $query->where([['establishment_id', $establishment_id],['changed',false]])
-                                                       // ->whereIn('state_type_id', ['01','03','05','07','13'])
+                                                        ->whereStateTypeAccepted()
+                                                        ->whereCurrency($currency_id)
                                                         ->whereBetween('date_of_issue', [$d_start, $d_end]);
                                             })
                                             ->get();
 
-            $expenses = ($enabled_expense) ? Expense::where('establishment_id', $establishment_id)->whereBetween('date_of_issue', [$d_start, $d_end])->get():null;
+            $expenses = ($enabled_expense) ? Expense::where('establishment_id', $establishment_id)
+                                                    ->whereCurrency($currency_id)
+                                                    ->whereStateTypeAccepted()
+                                                    ->whereBetween('date_of_issue', [$d_start, $d_end])->get():null;
 
 
         }else{
 
-            $document_items = DocumentItem::whereHas('document', function($query) use($establishment_id){
+            $document_items = DocumentItem::whereHas('document', function($query) use($establishment_id, $currency_id){
+                                                $query->where('establishment_id', $establishment_id)
+                                                    ->whereStateTypeAccepted()
+                                                    ->whereCurrency($currency_id); 
+                                                })
+                                                ->get();
 
-                                                $query->where('establishment_id', $establishment_id);
-                                                        //->whereIn('state_type_id', ['01','03','05','07','13']);
+
+            $sale_note_items = SaleNoteItem::whereHas('sale_note', function($query) use($establishment_id, $currency_id){
+                                                $query->where([['establishment_id', $establishment_id],['changed',false]])
+                                                    ->whereStateTypeAccepted()
+                                                    ->whereCurrency($currency_id);
                                             })
                                             ->get();
 
 
-            $sale_note_items = SaleNoteItem::whereHas('sale_note', function($query) use($establishment_id){
+            $expenses = ($enabled_expense) ? Expense::where('establishment_id', $establishment_id)->whereCurrency($currency_id)->whereStateTypeAccepted()->get():null;
 
-                                                $query->where([['establishment_id', $establishment_id],['changed',false]]);
-                                                       // ->whereIn('state_type_id', ['01','03','05','07','13']);
-                                            })
-                                            ->get();
-
-
-            $expenses = ($enabled_expense) ? Expense::where('establishment_id', $establishment_id)->get():null;
 
         }
 
@@ -153,10 +160,11 @@ class DashboardUtility
 
         if($expenses){
 
-            $total = 0;
-            foreach ($expenses as $ex) {
-                $total += ($ex->currency_type_id == 'USD') ? $ex->total * $ex->exchange_rate_sale: $ex->total;
-            }
+            $total = $expenses->sum('total');
+
+            // foreach ($expenses as $ex) {
+            //     $total += ($ex->currency_type_id == 'USD') ? $ex->total * $ex->exchange_rate_sale: $ex->total;
+            // }
 
             return number_format($total, 2, ".", "");
         }
@@ -165,11 +173,11 @@ class DashboardUtility
     }
 
 
-    private function getPurchaseUnitPrice($record){
+    private function getPurchaseUnitPrice($record, $currency_id){
 
         $purchase_unit_price = 0;
 
-        if($record->item->unit_type_id != 'ZZ'){
+        if($record->item->unit_type_id != 1){
 
             if($record->relation_item->purchase_unit_price > 0){
 
@@ -177,7 +185,14 @@ class DashboardUtility
 
             }else{
 
-                $purchase_item = PurchaseItem::select('unit_price')->where('item_id', $record->item_id)->latest('id')->first();
+                $purchase_item = PurchaseItem::select('unit_price')
+                                            ->whereHas('purchase', function($query) use($currency_id){
+                                                $query->whereCurrency($currency_id);
+                                            })
+                                            ->where('item_id', $record->item_id)
+                                            ->latest('id')
+                                            ->first();
+
                 $purchase_unit_price = ($purchase_item) ? $purchase_item->unit_price : $record->unit_price;
 
             }
@@ -196,48 +211,24 @@ class DashboardUtility
         $sale_note_purchase_total_pen = 0;
         $sale_note_utility_total_pen = 0;
 
-        //USD
-        $sale_note_sale_total_usd = 0;
-        $sale_note_purchase_total_usd = 0;
-        $sale_note_utility_total_usd = 0;
 
         foreach ($sale_note_items as $sln) {
 
-            $purchase_unit_price = $this->getPurchaseUnitPrice($sln);
+            $purchase_unit_price = $this->getPurchaseUnitPrice($sln, $sln->sale_note->currency_id);
 
             $sln_total_purchase = $purchase_unit_price * $sln->quantity;
 
-            if($sln->sale_note->currency_type_id === 'PEN'){
-
-                    $sale_note_purchase_total_pen += $sln_total_purchase;
-                    $sale_note_sale_total_pen += $sln->total;
-
-            }else{
-
-                $sale_note_purchase_total_usd += $sln_total_purchase;
-                $sale_note_sale_total_usd += $sln->total * $sln->sale_note->exchange_rate_sale;
-
-            }
+            $sale_note_purchase_total_pen += $sln_total_purchase;
+            $sale_note_sale_total_pen += $sln->total;
 
         }
 
         $sale_note_utility_total_pen = $sale_note_sale_total_pen - $sale_note_purchase_total_pen;
-        $sale_note_utility_total_usd = $sale_note_sale_total_usd - $sale_note_purchase_total_usd;
-
 
         return [
 
-            // 'sale_note_sale_total_pen' => round($sale_note_sale_total_pen, 2),
-            // 'sale_note_purchase_total_pen' => round($sale_note_purchase_total_pen, 2),
-
-            // 'sale_note_purchase_total_usd' => round($sale_note_purchase_total_usd, 2),
-            // 'sale_note_sale_total_usd' => round($sale_note_sale_total_usd, 2),
-
-            // 'sale_note_utility_total_pen' => round($sale_note_utility_total_pen, 2),
-            // 'sale_note_utility_total_usd' => round($sale_note_utility_total_usd, 2),
-
-            'sale_note_sale_total' => $sale_note_sale_total_usd + $sale_note_sale_total_pen,
-            'sale_note_purchase_total' => $sale_note_purchase_total_usd + $sale_note_purchase_total_pen,
+            'sale_note_sale_total' => $sale_note_sale_total_pen,
+            'sale_note_purchase_total' => $sale_note_purchase_total_pen,
 
         ];
     }
@@ -254,85 +245,37 @@ class DashboardUtility
         $document_purchase_total_pen = 0;
         $document_utility_total_pen = 0;
 
-        //USD
-        $document_total_note_credit_usd = 0;
-        $document_sale_total_usd = 0;
-        $document_purchase_total_usd = 0;
-        $document_utility_total_usd = 0;
-
         foreach ($document_items as $doc_it) {
 
-            //compra por item
-            // if($doc_it->relation_item->purchase_unit_price > 0){
-
-            //     $purchase_unit_price = $doc_it->relation_item->purchase_unit_price;
-            //     // $purchase_currency_type = $doc_it->relation_item->currency_type_id;
-
-            // }else{
-
-            //     $purchase_item = PurchaseItem::select('unit_price')->where('item_id', $doc_it->item_id)->last();
-            //     $purchase_unit_price = ($purchase_item) ? $purchase_item->unit_price : $doc_it->unit_price;
-            //     // $purchase_currency_type = ($purchase_item) ? $purchase_item->purchase->currency_type_id : $doc_it->document->currency_type_id;
-
-            // }
-            $purchase_unit_price = $this->getPurchaseUnitPrice($doc_it);
-
+            $purchase_unit_price = $this->getPurchaseUnitPrice($doc_it, $doc_it->document->currency_id);
 
             $doc_total_purchase = $purchase_unit_price * $doc_it->quantity;
 
-            if($doc_it->document->currency_type_id === 'PEN'){
+            if(in_array($doc_it->document->type_document_id,[1,2])){
 
-                // $doc_total_purchase_pen = ($purchase_currency_type == 'PEN') ? ($purchase_unit_price * $doc_it->quantity):($purchase_unit_price * $doc_it->quantity * $doc_it->document->exchange_rate_sale);
-
-                if(in_array($doc_it->document->document_type_id,['01','03','08'])){
-
-                    $document_purchase_total_pen += $doc_total_purchase;
-                    $document_sale_total_pen += $doc_it->total;
-
-                }else{
-
-                    $document_purchase_total_pen -= $doc_total_purchase;
-                    $document_sale_total_pen -= $doc_it->total;
-
-                }
+                $document_purchase_total_pen += $doc_total_purchase;
+                $document_sale_total_pen += $doc_it->total;
 
             }else{
 
-
-                if(in_array($doc_it->document->document_type_id,['01','03','08'])){
-
-                    $document_purchase_total_usd += $doc_total_purchase;
-                    $document_sale_total_usd += $doc_it->total * $doc_it->document->exchange_rate_sale;
-
-                }else{
-
-                    $document_purchase_total_usd -= $doc_total_purchase;
-                    $document_sale_total_usd -= $doc_it->total * $doc_it->document->exchange_rate_sale;
-                }
+                $document_purchase_total_pen -= $doc_total_purchase;
+                $document_sale_total_pen -= $doc_it->total;
 
             }
-
-
 
         }
 
         $document_utility_total_pen = $document_sale_total_pen - $document_purchase_total_pen;
-        $document_utility_total_usd = $document_sale_total_usd - $document_purchase_total_usd;
 
 
         return [
 
             'document_sale_total_pen' => round($document_sale_total_pen, 2),
             'document_purchase_total_pen' => round($document_purchase_total_pen, 2),
-
-            'document_purchase_total_usd' => round($document_purchase_total_usd, 2),
-            'document_sale_total_usd' => round($document_sale_total_usd, 2),
-
             'document_utility_total_pen' => round($document_utility_total_pen, 2),
-            'document_utility_total_usd' => round($document_utility_total_usd, 2),
 
-            'document_sale_total' => $document_sale_total_usd + $document_sale_total_pen,
-            'document_purchase_total' => $document_purchase_total_usd + $document_purchase_total_pen,
+            'document_sale_total' => $document_sale_total_pen,
+            'document_purchase_total' => $document_purchase_total_pen,
 
         ];
     }

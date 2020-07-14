@@ -402,15 +402,7 @@ trait CompanyTrait
  
 
         DB::connection('tenant')->table('series')->insert([
-            ['establishment_id' => 1, 'document_type_id' => '01', 'number' => 'F001'],
-            ['establishment_id' => 1, 'document_type_id' => '03', 'number' => 'B001'],
-            ['establishment_id' => 1, 'document_type_id' => '07', 'number' => 'FC01'],
-            ['establishment_id' => 1, 'document_type_id' => '07', 'number' => 'BC01'],
-            ['establishment_id' => 1, 'document_type_id' => '08', 'number' => 'FD01'],
-            ['establishment_id' => 1, 'document_type_id' => '08', 'number' => 'BD01'],
-            ['establishment_id' => 1, 'document_type_id' => '20', 'number' => 'R001'],
-            ['establishment_id' => 1, 'document_type_id' => '09', 'number' => 'T001'],
-            ['establishment_id' => 1, 'document_type_id' => '40', 'number' => 'P001'],
+            ['establishment_id' => 1, 'document_type_id' => '80', 'number' => 'NV01'], 
         ]);
 
     }

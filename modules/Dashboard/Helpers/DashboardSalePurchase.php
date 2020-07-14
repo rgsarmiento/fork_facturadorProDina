@@ -23,6 +23,7 @@ class DashboardSalePurchase
         $month_end = $request['month_end'];
         $enabled_move_item = $request['enabled_move_item'];
         $enabled_transaction_customer = $request['enabled_transaction_customer'];
+        $currency_id = $request['currency_id'];
 
         $d_start = null;
         $d_end = null;
@@ -47,36 +48,40 @@ class DashboardSalePurchase
         }
 
         return [
-            'purchase' => $this->purchase_totals($establishment_id, $d_start, $d_end),
-            'items_by_sales' => $this->items_by_sales($establishment_id, $d_start, $d_end, $enabled_move_item),
-            'top_customers' => $this->top_customers($establishment_id, $d_start, $d_end, $enabled_transaction_customer),
+            'purchase' => $this->purchase_totals($establishment_id, $d_start, $d_end, $currency_id),
+            'items_by_sales' => $this->items_by_sales($establishment_id, $d_start, $d_end, $enabled_move_item, $currency_id),
+            'top_customers' => $this->top_customers($establishment_id, $d_start, $d_end, $enabled_transaction_customer, $currency_id),
         ];
     }
 
-    private function top_customers($establishment_id, $d_start, $d_end, $enabled_transaction_customer){
+    private function top_customers($establishment_id, $d_start, $d_end, $enabled_transaction_customer, $currency_id){
 
         // $documents = Document::get();
         // $sale_notes = SaleNote::get();
         if($d_start && $d_end){
 
             $documents = Document::query()->where('establishment_id', $establishment_id)
-                                    //->whereIn('state_type_id', ['01','03','05','07','13'])
+                                    ->whereStateTypeAccepted()
+                                    ->whereCurrency($currency_id)
                                     ->whereBetween('date_of_issue', [$d_start, $d_end])->get();
 
 
             $sale_notes = SaleNote::query()->where([['establishment_id', $establishment_id],['changed',false]])
-                                    //->whereIn('state_type_id', ['01','03','05','07','13'])
+                                    ->whereStateTypeAccepted()
+                                    ->whereCurrency($currency_id)
                                     ->whereBetween('date_of_issue', [$d_start, $d_end])->get();
         }else{
 
             $documents = Document::query()->where('establishment_id', $establishment_id)
-                    //->whereIn('state_type_id', ['01','03','05','07','13'])
-                    ->get();
+                                    ->whereStateTypeAccepted()
+                                    ->whereCurrency($currency_id)
+                                    ->get();
 
 
             $sale_notes = SaleNote::query()->where([['establishment_id', $establishment_id],['changed',false]])
-                    //->whereIn('state_type_id', ['01','03','05','07','13'])
-                    ->get();
+                                    ->whereStateTypeAccepted()
+                                    ->whereCurrency($currency_id)
+                                    ->get();
 
         }
 
@@ -95,14 +100,14 @@ class DashboardSalePurchase
             // $customers es un cliente con todos sus documentos generados
             // dd($customers[0]->total);
 
-            $transaction_quantity_sale = $customers->whereIn('document_type_id', ['01','03','08'])->count() + $customers->where('prefix', 'NV')->count();
-            $transaction_quantity_credit_note =$customers->where('document_type_id', '07')->count();
+            $transaction_quantity_sale = $customers->whereIn('type_document_id', [1,2])->count() + $customers->where('prefix', 'NV')->count();
+            $transaction_quantity_credit_note =$customers->where('type_document_id', 3)->count();
 
             $transaction_quantity = $transaction_quantity_sale - $transaction_quantity_credit_note;
 
             $customer = Person::where('type','customers')->find($customers[0]->customer_id);
 
-            $totals = $customers->whereIn('document_type_id', ['01','03','08'])->sum(function ($row) {
+            $totals = $customers->whereIn('type_document_id', [1,2])->sum(function ($row) {
                 return $this->calculateTotalCurrency($row->currency_type_id, $row->exchange_rate_sale, $row->total);//count($product['colors']);
             });    //('total');
 
@@ -113,7 +118,7 @@ class DashboardSalePurchase
             });
 
 
-            $total_credit_note = $customers->where('document_type_id','07')->sum('total');
+            $total_credit_note = $customers->where('type_document_id', 3)->sum('total');
 
             $difference = ($totals + $totals_sale_note) - $total_credit_note;
 
@@ -136,13 +141,14 @@ class DashboardSalePurchase
 
 
 
-    private function purchase_totals($establishment_id, $d_start, $d_end)
+    private function purchase_totals($establishment_id, $d_start, $d_end, $currency_id)
     {
         // $purchases = Purchase::get();
         $purchases = Purchase::query()
-       // ->whereIn('state_type_id', ['01','03','05','07','13'])
-        ->where('establishment_id', $establishment_id)
-        ->get();
+                            ->whereIn('state_type_id', ['01','03','05','07','13'])
+                            ->where('establishment_id', $establishment_id)
+                            ->whereCurrency($currency_id)
+                            ->get();
 
         $purchases_total = round($purchases->sum('total'),2);
         $purchases_total_perception = round($purchases->sum('total_perception'),2);
@@ -199,30 +205,34 @@ class DashboardSalePurchase
 
 
 
-    private function items_by_sales($establishment_id, $d_start, $d_end, $enabled_move_item){
+    private function items_by_sales($establishment_id, $d_start, $d_end, $enabled_move_item, $currency_id){
 
         // $document_items = DocumentItem::get();
         // $sale_note_items = SaleNoteItem::get();
         if($d_start && $d_end){
 
             $documents = Document::query()->where('establishment_id', $establishment_id)
-                       // ->whereIn('state_type_id', ['01','03','05','07','13'])
-                        ->whereBetween('date_of_issue', [$d_start, $d_end])->get();
+                                    ->whereStateTypeAccepted()
+                                    ->whereCurrency($currency_id)
+                                    ->whereBetween('date_of_issue', [$d_start, $d_end])->get();
 
 
             $sale_notes = SaleNote::query()->where([['establishment_id', $establishment_id],['changed',false]])
-                        //->whereIn('state_type_id', ['01','03','05','07','13'])
-                        ->whereBetween('date_of_issue', [$d_start, $d_end])->get();
+                                    ->whereStateTypeAccepted()
+                                    ->whereCurrency($currency_id)
+                                    ->whereBetween('date_of_issue', [$d_start, $d_end])->get();
         }else{
 
             $documents = Document::query()->where('establishment_id', $establishment_id)
-                        //->whereIn('state_type_id', ['01','03','05','07','13'])
-                        ->get();
+                                    ->whereStateTypeAccepted()
+                                    ->whereCurrency($currency_id)
+                                    ->get();
 
 
             $sale_notes = SaleNote::query()->where([['establishment_id', $establishment_id],['changed',false]])
-                        //->whereIn('state_type_id', ['01','03','05','07','13'])
-                        ->get();
+                                    ->whereStateTypeAccepted()
+                                    ->whereCurrency($currency_id)
+                                    ->get();
 
         }
 
@@ -258,17 +268,15 @@ class DashboardSalePurchase
 
             $item = Item::where('status',true)->find($items[0]->item_id);
 
-
             $totals = 0;
             $total_credit_note = 0;
             $move_quantity = 0;
-
+            
             foreach ($items as $it) {
 
                 if($it->document){
 
-                    if(in_array($it->document->document_type_id,['01','03','08'])){
-
+                    if(in_array($it->document->document_type_id,[1,2])){
 
                         $totals += $this->calculateTotalCurrency($it->document->currency_type_id, $it->document->exchange_rate_sale, $it->document->total);
                         $move_quantity += $it->quantity;
@@ -277,7 +285,6 @@ class DashboardSalePurchase
 
                         $total_credit_note += $this->calculateTotalCurrency($it->document->currency_type_id, $it->document->exchange_rate_sale, $it->document->total);
                         $move_quantity -= $it->quantity;
-
                     }
 
                 }else{
@@ -294,7 +301,7 @@ class DashboardSalePurchase
             if($item && $difference > 0){
                 $items_by_sales->push([
                     'total' => number_format($difference, 2, ".", ""),
-                    'description' => $item->description,
+                    'description' => $item->name,
                     'internal_id' => $item->internal_id,
                     'move_quantity' => number_format($move_quantity, 2, ".", ""),
                    // 'currency' => $item->currency_type->symbol
@@ -334,13 +341,7 @@ class DashboardSalePurchase
 
     private function calculateTotalCurrency($currency_type_id, $exchange_rate_sale,  $total)
     {
-        if($currency_type_id == 'USD')
-        {
-            return $total * $exchange_rate_sale;
-        }
-        else{
-            return $total;
-        }
+        return $total;
     }
 
 

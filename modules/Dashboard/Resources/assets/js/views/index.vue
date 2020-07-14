@@ -37,7 +37,7 @@
                 </el-select>
               </div>
               <template v-if="form.period === 'month' || form.period === 'between_months'">
-                <div class="col-md-3">
+                <div class="col-md-6">
                   <label class="control-label">Mes de</label>
                   <el-date-picker
                     v-model="form.month_start"
@@ -50,7 +50,7 @@
                 </div>
               </template>
               <template v-if="form.period === 'between_months'">
-                <div class="col-md-3">
+                <div class="col-md-6">
                   <label class="control-label">Mes al</label>
                   <el-date-picker
                     v-model="form.month_end"
@@ -64,7 +64,7 @@
                 </div>
               </template>
               <template v-if="form.period === 'date' || form.period === 'between_dates'">
-                <div class="col-md-3">
+                <div class="col-md-6">
                   <label class="control-label">Fecha del</label>
                   <el-date-picker
                     v-model="form.date_start"
@@ -77,7 +77,7 @@
                 </div>
               </template>
               <template v-if="form.period === 'between_dates'">
-                <div class="col-md-3">
+                <div class="col-md-6">
                   <label class="control-label">Fecha al</label>
                   <el-date-picker
                     v-model="form.date_end"
@@ -90,6 +90,16 @@
                   ></el-date-picker>
                 </div>
               </template>
+              <div class="col-md-6">
+                <label class="control-label">Moneda
+                    <el-tooltip class="item" effect="dark" content="Filtra por moneda del documento emitido" placement="top-start">
+                        <i class="fa fa-info-circle"></i>
+                    </el-tooltip>
+                </label>
+                <el-select v-model="form.currency_id" filterable @change="loadAll">
+                    <el-option v-for="option in currencies" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                </el-select>
+              </div>
             </div>
           </div>
         </section>
@@ -150,7 +160,7 @@
                             <br />Pagado
                           </h4>
                           <div class="info">
-                            <strong class="amount text-info">S/ {{ sale_note.totals.total_payment }}</strong>
+                            <strong class="amount text-info">{{ sale_note.totals.total_payment }}</strong>
                           </div>
                         </div>
                       </div>
@@ -163,7 +173,7 @@
                           <div class="info">
                             <strong
                               class="amount text-danger"
-                            >S/ {{ sale_note.totals.total_to_pay }}</strong>
+                            >{{ sale_note.totals.total_to_pay }}</strong>
                           </div>
                         </div>
                       </div>
@@ -174,7 +184,7 @@
                             <br />&nbsp;
                           </h4>
                           <div class="info">
-                            <strong class="amount">S/ {{ sale_note.totals.total }}</strong>
+                            <strong class="amount">{{ sale_note.totals.total }}</strong>
                           </div>
                         </div>
                       </div>
@@ -205,7 +215,7 @@
                             <br />Pagado
                           </h4>
                           <div class="info">
-                            <strong class="amount text-info">S/ {{ document.totals.total_payment }}</strong>
+                            <strong class="amount text-info">{{ document.totals.total_payment }}</strong>
                           </div>
                         </div>
                       </div>
@@ -216,7 +226,7 @@
                             <br />por Pagar
                           </h4>
                           <div class="info">
-                            <strong class="amount text-danger">S/ {{ document.totals.total_to_pay }}</strong>
+                            <strong class="amount text-danger">{{ document.totals.total_to_pay }}</strong>
                           </div>
                         </div>
                       </div>
@@ -227,7 +237,7 @@
                             <br />&nbsp;
                           </h4>
                           <div class="info">
-                            <strong class="amount">S/ {{ document.totals.total }}</strong>
+                            <strong class="amount">{{ document.totals.total }}</strong>
                           </div>
                         </div>
                       </div>
@@ -261,7 +271,7 @@
                             <div class="info">
                               <strong
                                 class="amount text-danger"
-                              >S/ {{ general.totals.total_sale_notes }}</strong>
+                              >{{ general.totals.total_sale_notes }}</strong>
                             </div>
                           </div>
                         </div>
@@ -274,7 +284,7 @@
                             <div class="info">
                               <strong
                                 class="amount text-info"
-                              >S/ {{ general.totals.total_documents }}</strong>
+                              >{{ general.totals.total_documents }}</strong>
                             </div>
                           </div>
                         </div>
@@ -285,7 +295,7 @@
                               <br />&nbsp;
                             </h4>
                             <div class="info">
-                              <strong class="amount">S/ {{ general.totals.total }}</strong>
+                              <strong class="amount">{{ general.totals.total }}</strong>
                             </div>
                           </div>
                         </div>
@@ -318,16 +328,16 @@
                             Totales
                             <el-popover placement="right" width="100%" trigger="hover">
                               <p><span class="custom-badge">T. Ventas - T. Compras/Gastos</span></p>
-                              <p>Total comprobantes:<span class="custom-badge pull-right">S/ {{ balance.totals.total_document }}</span></p>
-                              <p>Total notas de venta:<span class="custom-badge pull-right">S/ {{ balance.totals.total_sale_note }}</span></p>
-                              <p>Total compras:<span class="custom-badge pull-right">- S/ {{ balance.totals.total_purchase }}</span></p>
-                              <p>Total gastos:<span class="custom-badge pull-right">- S/ {{ balance.totals.total_expense }}</span></p>
+                              <p>Total comprobantes:<span class="custom-badge pull-right">{{ balance.totals.total_document }}</span></p>
+                              <p>Total notas de venta:<span class="custom-badge pull-right">{{ balance.totals.total_sale_note }}</span></p>
+                              <p>Total compras:<span class="custom-badge pull-right">- {{ balance.totals.total_purchase }}</span></p>
+                              <p>Total gastos:<span class="custom-badge pull-right">- {{ balance.totals.total_expense }}</span></p>
                               <el-button icon="el-icon-view" type="primary" size="mini" slot="reference" circle></el-button>
                             </el-popover>
                             <br />
                           </h4>
                           <div class="info">
-                            <strong class="amount text-info">S/ {{ balance.totals.all_totals }}</strong>
+                            <strong class="amount text-info">{{ balance.totals.all_totals }}</strong>
                           </div>
                         </div>
                       </div>
@@ -337,16 +347,16 @@
                             Total Pagos
                             <el-popover placement="right" width="100%" trigger="hover">
                               <p><span class="custom-badge">T. Pagos Ventas - T. Pagos Compras/Gastos</span></p>
-                              <p>Total pagos comprobantes:<span class="custom-badge pull-right">S/ {{ balance.totals.total_payment_document }}</span></p>
-                              <p>Total pagos notas de venta:<span class="custom-badge pull-right">S/ {{ balance.totals.total_payment_sale_note }}</span></p>
-                              <p>Total pagos compras:<span class="custom-badge pull-right">- S/ {{ balance.totals.total_payment_purchase }}</span></p>
-                              <p>Total pagos gastos:<span class="custom-badge pull-right">- S/ {{ balance.totals.total_payment_expense }}</span></p>
+                              <p>Total pagos comprobantes:<span class="custom-badge pull-right">{{ balance.totals.total_payment_document }}</span></p>
+                              <p>Total pagos notas de venta:<span class="custom-badge pull-right">{{ balance.totals.total_payment_sale_note }}</span></p>
+                              <p>Total pagos compras:<span class="custom-badge pull-right">- {{ balance.totals.total_payment_purchase }}</span></p>
+                              <p>Total pagos gastos:<span class="custom-badge pull-right">- {{ balance.totals.total_payment_expense }}</span></p>
                               <el-button icon="el-icon-view" type="danger" size="mini" slot="reference" circle></el-button>
                             </el-popover>
                             <br />
                           </h4>
                           <div class="info">
-                            <strong class="amount text-danger">S/ {{ balance.totals.all_totals_payment }}</strong>
+                            <strong class="amount text-danger">{{ balance.totals.all_totals_payment }}</strong>
                           </div>
                         </div>
                       </div>
@@ -357,7 +367,7 @@
                             <br />&nbsp;
                           </h4>
                           <div class="info">
-                            <strong class="amount">S/ {{ balance.totals.total }}</strong>
+                            <strong class="amount">{{ balance.totals.total }}</strong>
                           </div>
                         </div>
                       </div> -->
@@ -389,7 +399,7 @@
                             Ingreso
                           </h4>
                           <div class="info">
-                            <strong class="amount text-info">S/ {{ utilities.totals.total_income }}</strong>
+                            <strong class="amount text-info">{{ utilities.totals.total_income }}</strong>
                           </div>
                         </div>
                       </div>
@@ -399,7 +409,7 @@
                             Egreso
                           </h4>
                           <div class="info">
-                            <strong class="amount text-danger">S/ {{ utilities.totals.total_egress }}</strong>
+                            <strong class="amount text-danger">{{ utilities.totals.total_egress }}</strong>
                           </div>
                         </div>
                       </div>
@@ -410,7 +420,7 @@
                             <br />&nbsp;
                           </h4>
                           <div class="info">
-                            <strong class="amount">S/ {{ utilities.totals.utility }}</strong>
+                            <strong class="amount">{{ utilities.totals.utility }}</strong>
                           </div>
                         </div>
                       </div>
@@ -486,7 +496,7 @@
                             <div class="info">
                               <strong
                                 class="amount text-danger"
-                              >S/ {{ purchase.totals.purchases_total_perception }}</strong>
+                              >{{ purchase.totals.purchases_total_perception }}</strong>
                             </div>
                           </div>
                         </div>
@@ -499,7 +509,7 @@
                             <div class="info">
                               <strong
                                 class="amount text-info"
-                              >S/ {{ purchase.totals.purchases_total }}</strong>
+                              >{{ purchase.totals.purchases_total }}</strong>
                             </div>
                           </div>
                         </div>
@@ -510,7 +520,7 @@
                               <br />&nbsp;
                             </h4>
                             <div class="info">
-                              <strong class="amount">S/ {{ purchase.totals.total }}</strong>
+                              <strong class="amount">{{ purchase.totals.total }}</strong>
                             </div>
                           </div>
                         </div>
@@ -702,13 +712,15 @@ export default {
       showDialogSaleNotePayments: false,
       filter_item:false,
       all_items: [],
-      items:[]
+      items:[],
+      currencies:[],
     };
   },
   async created() {
     this.initForm();
     await this.$http.get(`/${this.resource}/filter`).then(response => {
       this.establishments = response.data.establishments;
+      this.currencies = response.data.currencies;
       this.form.establishment_id =
         this.establishments.length > 0 ? this.establishments[0].id : null;
     });
@@ -771,12 +783,13 @@ export default {
     },
     initForm() {
       this.form = {
+        currency_id: 170,
         item_id: null,
         establishment_id: null,
         enabled_expense: null,
         enabled_move_item:false,
         enabled_transaction_customer:false,
-        period: "all",
+        period: "month",
         date_start: moment().format("YYYY-MM-DD"),
         date_end: moment().format("YYYY-MM-DD"),
         month_start: moment().format("YYYY-MM"),

@@ -288,4 +288,8 @@ class Purchase extends ModelTenant
         return $this->belongsTo(Person::class, 'customer_id');
     }
 
+    public function scopeWhereCurrency($query, $currency_id)
+    {
+        return $query->where('currency_id', $currency_id);
+    }
 }

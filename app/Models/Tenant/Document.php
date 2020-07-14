@@ -490,4 +490,9 @@ class Document extends ModelTenant
         return $query->whereIn('state_document_id', [1, 2, 3, 4, 5]);
         // return $query->whereIn('state_type_id', ['01','03','05','07','13']);
     }
+    
+    public function scopeWhereCurrency($query, $currency_id)
+    {
+        return $query->where('currency_id', $currency_id);
+    }
 }
