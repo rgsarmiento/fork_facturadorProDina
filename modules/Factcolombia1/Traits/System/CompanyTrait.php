@@ -178,7 +178,7 @@ trait CompanyTrait
         self::updateTypeUnits();
         self::updateTaxes();
 
-        DB::connection('tenant')->table('establishments')->first()->update([
+        DB::connection('tenant')->table('establishments')->where('id', 1)->update([
             'country_id' => 47,
             'department_id' => 779,
             'city_id' => 12688,
