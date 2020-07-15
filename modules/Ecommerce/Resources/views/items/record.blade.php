@@ -8,8 +8,9 @@
             <div class="product-slider-container product-item">
                 <div class="product-single-carousel owl-carousel owl-theme">
                     <div class="product-item">
-                        <img class="product-single-image" src="{{ asset('storage/uploads/items/'.$record->image) }}"
-                            data-zoom-image="{{ asset('storage/uploads/items/'.$record->image) }}" />
+                        <img class="product-single-image" src="{{ ($record->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$record->image): asset("/logo/{$record->image}") }}"
+                            data-zoom-image="{{ ($record->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$record->image): asset("/logo/{$record->image}") }}" />
+ 
                     </div>
                     @foreach($record->images as $row)
 
@@ -39,11 +40,11 @@
             </div>
             <div class="prod-thumbnail row owl-dots" id='carousel-custom-dots'>
                 <div class="col-3 owl-dot">
-                    <img src="{{ asset('storage/uploads/items/'.$record->image) }}" />
+                    <img src="{{ ($record->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$record->image): asset("/logo/{$record->image}") }}" />
                 </div>
                 @foreach($record->images as $row)
                     <div class="col-3 owl-dot">
-                        <img src="{{ asset('storage/uploads/items/'.$row->image) }}" />
+                        <img src="{{ ($record->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$record->image): asset("/logo/{$record->image}") }}" />
                     </div>
                 @endforeach
                 <!--<div class="col-3 owl-dot">
@@ -59,10 +60,8 @@
         </div><!-- End .col-lg-7 -->
 
         <div class="col-lg-5 col-md-6">
-            <div class="product-single-details">
-                <h1 class="product-title">{{$record->description}}</h1>
-
-
+            <div class="product-single-details"> 
+                <h1 class="product-title">{{$record->name}}</h1>
 
                 <div class="ratings-container">
                     <div class="product-ratings">
@@ -73,8 +72,8 @@
                 </div><!-- End .product-container -->
 
                 <div class="price-box">
-                    <!-- <span class="old-price">S/ {{ number_format( ($record->sale_unit_price * 1.2 ) , 2 )}}</span> -->
-                    <span class="product-price">S/ {{ number_format($record->sale_unit_price, 2 )}}</span>
+                    {{-- <!-- <span class="old-price">S/ {{ number_format( ($record->sale_unit_price * 1.2 ) , 2 )}}</span> --> --}}
+                    <span class="product-price">$ {{ number_format($record->sale_unit_price, 2 )}}</span>
                 </div><!-- End .price-box -->
 
                 <div class="product-desc">
@@ -136,8 +135,8 @@
         <div class="tab-pane fade show active" id="product-desc-content" role="tabpanel"
             aria-labelledby="product-tab-desc">
             <div class="product-desc-content">
-                <p> {{ $record->description}} </p>
                 <p> {{ $record->name}} </p>
+                <p> {{ $record->description}} </p>
                 {{-- <ul>
                     <li><i class="icon-ok"></i>Any Product types that You want - Simple,
                         Configurable</li>

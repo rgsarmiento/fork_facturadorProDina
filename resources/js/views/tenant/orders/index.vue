@@ -27,7 +27,7 @@
             <th>Total</th>
             <th>Fecha Emision</th>
             <th>Medio Pago</th>
-            <th>Estatus del Pedido</th>
+            <th>Estado del Pedido</th>
             <th>Comprobante Electronico</th>
           </tr>
           <tr></tr>
@@ -201,14 +201,16 @@ export default {
             await this.$refs.form_document.sendDocument(record)
            // await this.sendDocument(record.purchase)
         } else if (record.status_order_id === 3) {
-            this.totalProduct = await this.products(record.items)
-            await this.$http
-            .post(`/orders/warehouse`, { item_id: this.totalProduct })
-            .then(response => {
-                this.warehouses = response.data.data
-                this.showDialog = true
-            });
-            return;
+            // this.totalProduct = await this.products(record.items)
+            // await this.$http
+            // .post(`/orders/warehouse`, { item_id: this.totalProduct })
+            // .then(response => {
+            //     this.warehouses = response.data.data
+            //     this.showDialog = true
+            // });
+            // return;
+            this.saveUpdateStatus()
+
         } else {
             this.saveUpdateStatus()
         }

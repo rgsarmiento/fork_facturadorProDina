@@ -14,23 +14,28 @@ class EstablishmentInput
             'country_id' => $establishment->country_id,
             'country' => [
                 'id' => $establishment->country_id,
-                'description' => $establishment->country->description,
+                'name' => $establishment->country->name,
             ],
             'department_id' => $establishment->department_id,
             'department' => [
                 'id' => $establishment->department_id,
-                'description' => $establishment->department->description,
+                'name' => $establishment->department->name,
             ],
-            'province_id' => $establishment->province_id,
-            'province' => [
-                'id' => $establishment->province_id,
-                'description' => $establishment->province->description,
+            'city_id' => $establishment->city_id,
+            'city' => [
+                'id' => $establishment->city_id,
+                'name' => $establishment->city->name,
             ],
-            'district_id' => $establishment->district_id,
-            'district' => [
-                'id' => $establishment->district_id,
-                'description' => $establishment->district->description,
-            ],
+            // 'province_id' => $establishment->province_id,
+            // 'province' => [
+            //     'id' => $establishment->province_id,
+            //     'description' => $establishment->province->description,
+            // ],
+            // 'district_id' => $establishment->district_id,
+            // 'district' => [
+            //     'id' => $establishment->district_id,
+            //     'description' => $establishment->district->description,
+            // ],
             'urbanization' => $establishment->urbanization,
             'address' => $establishment->address,
             'email' => $establishment->email,

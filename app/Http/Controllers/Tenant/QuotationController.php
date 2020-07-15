@@ -22,6 +22,7 @@ use App\Models\Tenant\Catalogs\PriceType;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Company;
+use Modules\Factcolombia1\Models\Tenant\Company as CoCompany;
 use App\Http\Requests\Tenant\QuotationRequest;
 use App\Models\Tenant\Warehouse;
 use Illuminate\Support\Str;
@@ -526,7 +527,8 @@ class QuotationController extends Controller
         $pdf = new Mpdf();
 
         $document = ($quotation != null) ? $quotation : $this->quotation;
-        $company = ($this->company != null) ? $this->company : Company::active();
+        // $company = ($this->company != null) ? $this->company : Company::active();
+        $company = CoCompany::active();
         $filename = ($filename != null) ? $filename : $this->quotation->filename;
 
         $configuration = Configuration::first();

@@ -603,11 +603,11 @@
 
         methods: {
             setDefaultConfiguration(){
-                this.form.sale_affectation_igv_type_id = (this.configuration) ? this.configuration.affectation_igv_type_id : '10'
+                // this.form.sale_affectation_igv_type_id = (this.configuration) ? this.configuration.affectation_igv_type_id : '10'
 
-                this.$http.get(`/configurations/record`) .then(response => {
-                    this.form.has_igv = response.data.data.include_igv
-                })
+                // this.$http.get(`/configurations/record`) .then(response => {
+                //     this.form.has_igv = response.data.data.include_igv
+                // })
             },
             clickAddAttribute() {
                 this.form.attributes.push({

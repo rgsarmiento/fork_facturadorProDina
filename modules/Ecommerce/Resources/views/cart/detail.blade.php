@@ -19,14 +19,15 @@
                         <td class="product-col">
                             <figure class="product-image-container">
                                 <a href="#" class="product-image">
-                                    <img :src=" '/storage/uploads/items/' + row.image" alt="product">
+                                    <img :src=" '/storage/uploads/items/' + row.image" alt="product" v-if="row.image !=='imagen-no-disponible.jpg'">
+                                    <img :src=" '/logo/' + row.image" alt="product" v-else>
                                 </a>
                             </figure>
                             <h2 class="product-title">
                                 <a href="#">@{{ row.name }}</a>
                             </h2>
                         </td>
-                        <td>S/ @{{ row.sale_unit_price }}</td>
+                        <td>$ @{{ row.sale_unit_price }}</td>
                         <td>
                             <input class="vertical-quantity form-control input_quantity" :data-product="row.id"
                                 type="text">
@@ -65,23 +66,25 @@
             <table class="table table-totals">
                 <tbody>
 
-                    <tr v-if="summary.total_exonerated > 0">
-                        <td>OP.EXONERADAS</td>
-                        <td>S/ @{{ summary.total_exonerated }}</td>
+                    <tr v-if="summary.sale > 0">
+                        <td>TOTAL VENTA</td>
+                        <td>$ @{{ summary.sale }}</td>
                     </tr>
-                    <tr v-if="summary.total_taxed > 0">
-                        <td>OP.GRAVADA</td>
-                        <td>S/ @{{ summary.total_taxed }}</td>
-                    </tr>
-                    <tr v-if="summary.total_igv > 0">
-                        <td>IGV</td>
-                        <td>S/ @{{ summary.total_igv }}</td>
-                    </tr>
+                    <template v-for="(tax, index) in summary.taxes">
+                        <tr v-if="((tax.total > 0) && (!tax.is_retention))" :key="index">
+                            <td>@{{tax.name}}(+)</td>
+                            <td>$ @{{Number(tax.total).toFixed(2)}}</td>
+                        </tr>
+                    </template> 
+                    {{-- <tr v-if="summary.subtotal > 0">
+                        <td>SUBTOTAL</td> 
+                        <td>$ @{{ summary.subtotal }}</td>
+                    </tr> --}}
                 </tbody>
                 <tfoot>
                     <tr>
                         <td>Orden Total</td>
-                        <td>S/ @{{summary.total}}</td>
+                        <td>$ @{{summary.total}}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -98,7 +101,7 @@
                 <div v-show="payment_cash.clicked" style="margin: 3%" class="form-group">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">S/</span>
+                            <span class="input-group-text">$</span>
                         </div>
                         <input readonly placeholder="0.0" v-model="payment_cash.amount" type="text"
                             onkeypress="return isNumberKey(event)" maxlength="14" class="form-control"
@@ -174,7 +177,9 @@
             records_old: [],
             order_generated: {},
             summary: {
-                subtotal: '0.0',
+                subtotal:'0.0',
+                sale:'0.0',
+                taxes: [],
                 tax: '0.0',
                 total: '0.0'
             },
@@ -186,19 +191,22 @@
             typeDocumentSelected: '',
             response_order_total:0,
             errors: {},
+            taxes: [],
 
         },
         computed: {
             maxLength: function () {
-                if (this.formIdentity.identity_document_type_id === '6') {
-                    return 11
-                }
-                if (this.formIdentity.identity_document_type_id === '1') {
-                    return 8
-                }
+                // if (this.formIdentity.identity_document_type_id === '6') {
+                //     return 11
+                // }
+                // if (this.formIdentity.identity_document_type_id === '1') {
+                //     return 8
+                // }
             }
         },
-        mounted() {
+        async mounted() {
+
+            await this.getTaxes()
 
             let contex = this
             $(".input_quantity").change(function (e) {
@@ -209,9 +217,11 @@
                 row.cantidad = value
                 contex.calculateSummary()
             });
-            this.calculateSummary()
+            await this.calculateSummary()
         },
         created() {
+
+
             this.user = @json(Auth::user());
             let array = localStorage.getItem('products_cart');
             array = JSON.parse(array)
@@ -228,6 +238,11 @@
 
         },
         methods: {
+            async getTaxes(){
+                await axios.get(`/ecommerce/table/taxes`).then(response => { 
+                    this.taxes = response.data
+                })
+            },
             getFormPaymentCash() {
 
                 const customer = this.getCustomer()
@@ -269,6 +284,7 @@
                 });
 
                 let url_finally = '{{ route("tenant_ecommerce_payment_cash")}}';
+                
                 let response = await axios.post(url_finally, this.getFormPaymentCash(), this.getHeaderConfig()).then(response => {
                 if (response.data.success) {
                     this.saveContactDataUser()
@@ -279,17 +295,20 @@
                         text: "En breve le enviaremos un correo electronico con los detalles de su compra.",
                         type: "success"
                     }).then((x) => {
-                      app_cart.order_generated = order
+                    //   app_cart.order_generated = order
                         //askedDocument(response.data.order);
                     })
                 }
+
               }).catch(error => {
+
                 swal("Pago No realizado", 'Sucedio algo inesperado.', "error");
                 if (error.response.status === 422) {
                   this.errors = error.response.data;
                 } else {
                   console.log(error);
                 }
+                
               });
 
             },
@@ -310,14 +329,6 @@
                 this.form_document.items = await this.getItemsDocument()
                 this.form_document.totales = await this.getTotales()
 
-                if (this.formIdentity.identity_document_type_id === '6') {
-                    this.form_document.serie_documento = 'F001'
-                    this.form_document.codigo_tipo_documento = '01'
-                }
-                if (this.formIdentity.identity_document_type_id === '1') {
-                    this.form_document.serie_documento = 'B001'
-                    this.form_document.codigo_tipo_documento = '03'
-                }
                 return this.form_document
             },
             async getTotales() {
@@ -418,7 +429,7 @@
 
                 this.form_document = {
                     type_document_id: 1,
-                    currency_id: null,
+                    currency_id: 170,
                     date_issue: moment().format('YYYY-MM-DD'),
                     date_expiration: null,
                     type_invoice_id: 1,
@@ -485,58 +496,167 @@
                 let total_igv = 0
                 let total = 0
 
-                this.records.forEach(function (item) {
-                    //console.log(item)
-                    subtotal += parseFloat(item.sub_total)
+                // this.records.forEach(function (item) {
+                //     //console.log(item)
+                //     subtotal += parseFloat(item.sub_total)
 
-                    let unit_price = item.sub_total
-                    let unit_value = unit_price
-                    let percentage_igv = 18
+                //     let unit_price = item.sub_total
+                //     let unit_value = unit_price
+                //     let percentage_igv = 18
 
-                    if (item.sale_affectation_igv_type_id === '10') {
-                        unit_value = item.sub_total / (1 + percentage_igv / 100)
-                        total_taxed += parseFloat(unit_value)
-                        total_igv += parseFloat(unit_price - unit_value)
-                    }
-                    if (item.sale_affectation_igv_type_id === '20') {
-                        total_exonerated += parseFloat(unit_value)
-                    }
+                //     if (item.sale_affectation_igv_type_id === '10') {
+                //         unit_value = item.sub_total / (1 + percentage_igv / 100)
+                //         total_taxed += parseFloat(unit_value)
+                //         total_igv += parseFloat(unit_price - unit_value)
+                //     }
+                //     if (item.sale_affectation_igv_type_id === '20') {
+                //         total_exonerated += parseFloat(unit_value)
+                //     }
 
-                    total_value = total_taxed + total_exonerated
-                    total += parseFloat(unit_price)
-                })
+                //     total_value = total_taxed + total_exonerated
+                //     total += parseFloat(unit_price)
+                // })
 
                 // console.log(total_taxed, total_exonerated, total_igv)
 
-                this.summary.total_taxed = total_taxed.toFixed(2)
-                this.summary.total_exonerated = total_exonerated.toFixed(2)
-                this.summary.total_igv = total_igv.toFixed(2)
-                this.summary.total_value = total_value.toFixed(2)
-                this.summary.total = total.toFixed(2)
-                this.aux_totals = this.summary
+                // this.summary.total_taxed = total_taxed.toFixed(2)
+                // this.summary.total_exonerated = total_exonerated.toFixed(2)
+                // this.summary.total_igv = total_igv.toFixed(2)
+                // this.summary.total_value = total_value.toFixed(2)
+                // this.summary.total = total.toFixed(2)
+                // this.aux_totals = this.summary
                 // console.log(this.summary)
+
+                this.setDataTotals()
 
 
                 $("#total_amount").data('total', this.summary.total);
 
                 this.payment_cash.amount = this.summary.total;
+ 
+            },
+            setDataTotals() {
 
-                // let x =
-                // console.log(x)
+                // console.log(val)
+                let val = this.summary
+                val.taxes = JSON.parse(JSON.stringify(this.taxes));
+                // console.log(this.taxes, val, this.records)
 
-                // let subtotal = 0.00
-                // this.records.forEach(function (item) {
-                //     //console.log(item)
-                //     subtotal += parseFloat(item.sub_total)
-                // })
+                this.records.forEach(item => {
+                    item.tax = this.taxes.find(tax => tax.id == item.tax_id);
 
-                // this.summary.subtotal = subtotal.toFixed(2)
-                // let tax = (subtotal * 0.18)
-                // this.summary.tax = tax.toFixed(2)
-                // this.summary.total = (subtotal + tax).toFixed(2)
-                // $("#total_amount").data('total', this.summary.total);
+                    if (
+                        item.discount == null ||
+                        item.discount == "" ||
+                        item.discount > item.sale_unit_price * item.cantidad
+                    )
+                        this.$set(item, "discount", 0);
 
-                // this.payment_cash.amount = this.summary.total
+                    item.total_tax = 0;
+
+                    if (item.tax != null) {
+                        let tax = val.taxes.find(tax => tax.id == item.tax.id);
+
+                        if (item.tax.is_fixed_value)
+
+                            item.total_tax = (
+                                item.tax.rate * item.cantidad -
+                                (item.discount < item.sale_unit_price * item.cantidad ? item.discount : 0)
+                            ).toFixed(2);
+
+                        if (item.tax.is_percentage)
+
+                            item.total_tax = (
+                                (item.sale_unit_price * item.cantidad -
+                                (item.discount < item.sale_unit_price * item.cantidad
+                                    ? item.discount
+                                    : 0)) *
+                                (item.tax.rate / item.tax.conversion)
+                            ).toFixed(2);
+
+                        if (!tax.hasOwnProperty("total"))
+                            tax.total = Number(0).toFixed(2);
+
+                        tax.total = (Number(tax.total) + Number(item.total_tax)).toFixed(2);
+                    }
+
+                    item.subtotal = (
+                        Number(item.sale_unit_price * item.cantidad) + Number(item.total_tax)
+                    ).toFixed(2);
+
+                    this.$set(
+                        item,
+                        "total",
+                        (Number(item.subtotal) - Number(item.discount)).toFixed(2)
+                    );
+
+                });
+
+                val.subtotal = this.records
+                    .reduce(
+                        (p, c) => Number(p) + (Number(c.subtotal) - Number(c.discount)),
+                        0
+                    )
+                    .toFixed(2);
+                    val.sale = this.records
+                    .reduce(
+                        (p, c) =>
+                        Number(p) + Number(c.sale_unit_price * c.cantidad) - Number(c.discount),
+                        0
+                    )
+                    .toFixed(2);
+                    val.total_discount = this.records
+                    .reduce((p, c) => Number(p) + Number(c.discount), 0)
+                    .toFixed(2);
+                    val.total_tax = this.records
+                    .reduce((p, c) => Number(p) + Number(c.total_tax), 0)
+                    .toFixed(2);
+
+                let total = this.records
+                    .reduce((p, c) => Number(p) + Number(c.total), 0)
+                    .toFixed(2);
+
+                let totalRetentionBase = Number(0);
+
+                // this.taxes.forEach(tax => {
+                val.taxes.forEach(tax => {
+                    if (tax.is_retention && tax.in_base && tax.apply) {
+                        tax.retention = (
+                        Number(val.sale) *
+                        (tax.rate / tax.conversion)
+                        ).toFixed(2);
+
+                        totalRetentionBase =
+                        Number(totalRetentionBase) + Number(tax.retention);
+
+                        if (Number(totalRetentionBase) >= Number(val.sale))
+                        this.$set(tax, "retention", Number(0).toFixed(2));
+
+                        total -= Number(tax.retention).toFixed(2);
+                    }
+
+                    if (
+                        tax.is_retention &&
+                        !tax.in_base &&
+                        tax.in_tax != null &&
+                        tax.apply
+                    ) {
+                        let row = val.taxes.find(row => row.id == tax.in_tax);
+
+                        tax.retention = Number(
+                        Number(row.total) * (tax.rate / tax.conversion)
+                        ).toFixed(2);
+
+                        if (Number(tax.retention) > Number(row.total))
+                        this.$set(tax, "retention", Number(0).toFixed(2));
+
+                        row.retention = Number(tax.retention).toFixed(2);
+                        total -= Number(tax.retention).toFixed(2);
+                    }
+                });
+
+                val.total = Number(total).toFixed(2)
+
             },
             saveContactDataUser()
             {

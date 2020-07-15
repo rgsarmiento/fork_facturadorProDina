@@ -27,6 +27,12 @@ class Company extends Model
      */
     protected $dates = ['deleted_at'];
     
+    
+    public static function active()
+    {
+        return Company::first();
+    }
+
     /**
     * Get the type identity document belongs to
     */

@@ -19,7 +19,10 @@ class PromotionResource extends JsonResource
             'description' => $this->description,
             'name' => $this->name,
             'status' => $this->status,
-            'type'=> $this->type
+            'type'=> $this->type,
+            'item_id'=> $this->item_id,
+            'image' => $this->image,
+            'image_url' => asset('storage'.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'promotions'.DIRECTORY_SEPARATOR.$this->image),
         ];
     }
 }

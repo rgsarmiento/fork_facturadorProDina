@@ -8,6 +8,7 @@ use App\Models\Tenant\Person;
 use Modules\Sale\Http\Resources\TechnicalServiceCollection;
 use Modules\Sale\Http\Resources\TechnicalServiceResource;
 use Illuminate\Support\Facades\DB;
+use Modules\Factcolombia1\Models\Tenant\Company as CoCompany;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use Modules\Sale\Http\Requests\TechnicalServiceRequest;
@@ -225,7 +226,7 @@ class TechnicalServiceController extends Controller
         $pdf = new Mpdf();
 
         $document = ($technical_service != null) ? $technical_service : $this->technical_service;
-        $company = ($this->company != null) ? $this->company : Company::active();
+        $company = CoCompany::active();
         $filename = ($filename != null) ? $filename : $this->technical_service->filename;
 
         $configuration = Configuration::first();

@@ -22,8 +22,8 @@
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.country_id}">
                             <label class="control-label">País</label>
-                            <el-select v-model="form.country_id" filterable>
-                                <el-option v-for="option in countries" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                            <el-select v-model="form.country_id" filterable @change="departmentss()">
+                                <el-option v-for="option in countries" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.country_id" v-text="errors.country_id[0]"></small>
                         </div>
@@ -31,24 +31,24 @@
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.department_id}">
                             <label class="control-label">Departamento</label>
-                            <el-select v-model="form.department_id" filterable @change="filterProvince">
-                                <el-option v-for="option in all_departments" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                            <el-select v-model="form.department_id" filterable @change="citiess()">
+                                <el-option v-for="option in departments" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.department_id" v-text="errors.department_id[0]"></small>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group" :class="{'has-danger': errors.province_id}">
-                            <label class="control-label">Provincia</label>
-                            <el-select v-model="form.province_id" filterable @change="filterDistrict">
-                                <el-option v-for="option in provinces" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                        <div class="form-group" :class="{'has-danger': errors.city_id}">
+                            <label class="control-label">Ciudad</label>
+                            <el-select v-model="form.city_id" filterable >
+                                <el-option v-for="option in cities" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
-                            <small class="form-control-feedback" v-if="errors.province_id" v-text="errors.province_id[0]"></small>
+                            <small class="form-control-feedback" v-if="errors.city_id" v-text="errors.city_id[0]"></small>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.province_id}">
                             <label class="control-label">Distrito</label>
                             <el-select v-model="form.district_id" filterable>
@@ -56,8 +56,8 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.district_id" v-text="errors.district_id[0]"></small>
                         </div>
-                    </div>
-                    <div class="col-md-8">
+                    </div> -->
+                    <div class="col-md-12">
                         <div class="form-group" :class="{'has-danger': errors.address}">
                             <label class="control-label">Dirección Fiscal</label>
                             <el-input v-model="form.address"></el-input>
@@ -128,7 +128,8 @@
                 errors: {},
                 form: {},
                 countries: [],
-                all_departments: [],
+                departments: [],
+                cities: [],
                 all_provinces: [],
                 all_districts: [],
                 provinces: [],
@@ -140,21 +141,39 @@
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     this.countries = response.data.countries
-                    this.all_departments = response.data.departments
-                    this.all_provinces = response.data.provinces
-                    this.all_districts = response.data.districts
+                    // this.all_departments = response.data.departments
+                    // this.all_provinces = response.data.provinces
+                    // this.all_districts = response.data.districts
                 })
         },
         methods: {
+            getDepartment(val) {
+                return axios
+                            .post(`/departments/${val}`).then(response => {
+                                return response.data;
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            });
+            },
+
+            getCities(val) {
+                return axios
+                            .post(`/cities/${val}`).then(response => {
+                                return response.data;
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            });
+            },
             initForm() {
                 this.errors = {}
                 this.form = {
                     id: null,
                     description: null,
-                    country_id: 'PE',
+                    country_id: null,
                     department_id: null,
-                    province_id: null,
-                    district_id: null,
+                    city_id: null,
                     address: null,
                     telephone: null,
                     email: null,
@@ -163,6 +182,28 @@
                     web_address: null,
                     aditional_information: null,
                 }
+                
+                this.departmentss();
+                this.citiess();
+            },
+            departmentss(edit = false) {
+                if (!edit) {
+                    // console.log("s")
+                    this.form.department_id = null;
+                    this.form.city_id = null;
+                    this.departments = [];
+                    this.cities = [];
+                }
+
+                if (this.form.country_id != null) this.getDepartment(this.form.country_id).then(rows => this.departments = rows);
+            },
+            citiess(edit = false) {
+                if (!edit) {
+                    this.form.city_id = null;
+                    this.cities = [];
+                }
+
+                if (this.form.department_id != null) this.getCities(this.form.department_id).then(rows => this.cities = rows);
             },
             async create() {
                 this.titleDialog = (this.recordId)? 'Editar Establecimiento':'Nuevo Establecimiento'
@@ -171,8 +212,11 @@
                         .then(response => {
                             if (response.data !== '') {
                                 this.form = response.data.data
-                                this.filterProvinces()
-                                this.filterDistricts()
+                                // this.filterProvinces()
+                                // this.filterDistricts()
+                                
+                                this.departmentss(true);
+                                this.citiess(true);
                             }
                         })
                 }

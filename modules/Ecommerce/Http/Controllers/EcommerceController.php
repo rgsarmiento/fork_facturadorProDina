@@ -20,6 +20,9 @@ use App\Mail\Tenant\CulqiEmail;
 use App\Http\Controllers\Tenant\Api\ServiceController;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Tenant\Document;
+use Modules\Factcolombia1\Models\Tenant\{
+    Tax,
+};
 
 class EcommerceController extends Controller
 {
@@ -49,8 +52,7 @@ class EcommerceController extends Controller
     public function item($id)
     {
         $row = Item::find($id);
-        $exchange_rate_sale = $this->getExchangeRateSale();
-        $sale_unit_price = ($row->has_igv) ? $row->sale_unit_price : $row->sale_unit_price*1.18;
+        $sale_unit_price = $row->sale_unit_price;
 
         $record = (object)[
             'id' => $row->id,
@@ -59,11 +61,10 @@ class EcommerceController extends Controller
             'description' => $row->description,
             'name' => $row->name,
             'second_name' => $row->second_name,
-            'sale_unit_price' => ($row->currency_type_id === 'PEN') ? $sale_unit_price : ($sale_unit_price * $exchange_rate_sale),
+            'sale_unit_price' => $sale_unit_price,
             'currency_type_id' => $row->currency_type_id,
-            'has_igv' => (bool) $row->has_igv,
             // 'sale_unit_price' => $row->sale_unit_price,
-            'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+            'tax_id' => $row->tax_id,
             'currency_type_symbol' => $row->currency_type->symbol,
             'image' =>  $row->image,
             'image_medium' => $row->image_medium,
@@ -215,7 +216,7 @@ class EcommerceController extends Controller
             //1. confirmar dato de compriante en order
             $order_generated = Order::find($request->orderId);
             $order_generated->document_external_id = $document->external_id;
-            $order_generated->number_document = $document->number; //$document->series."-".$document->number;
+            $order_generated->number_document = $document->prefix."-".$document->number;
             $order_generated->status_order_id = $request->status_order_id;
             $order_generated->save();
 
@@ -360,6 +361,38 @@ class EcommerceController extends Controller
 
 
 
+
+    public function table($table)
+    {
+
+        switch ($table) {
+            case 'taxes':
+
+                return Tax::all()->transform(function($row) {
+                    return [
+                        'id' => $row->id,
+                        'name' => $row->name,
+                        'code' => $row->code,
+                        'rate' =>  $row->rate,
+                        'conversion' =>  $row->conversion,
+                        'is_percentage' =>  $row->is_percentage,
+                        'is_fixed_value' =>  $row->is_fixed_value,
+                        'is_retention' =>  $row->is_retention,
+                        'in_base' =>  $row->in_base,
+                        'in_tax' =>  $row->in_tax,
+                        'type_tax_id' =>  $row->type_tax_id,
+                        'type_tax' =>  $row->type_tax,
+                        'retention' =>  0,
+                        'total' =>  0,
+                    ];
+                });
+                break;
+
+                return [];
+
+                break;
+        }
+    }
 
 
 

@@ -4,16 +4,27 @@
             <div class="product-slider-container product-item">
                 <div class="product-single-carousel owl-carousel owl-theme">
                     <div class="product-item">
-                        <img class="product-single-image" src="{{ asset('storage/uploads/items/'.$record->image) }}"
-                            data-zoom-image="{{ asset('storage/uploads/items/'.$record->image) }}" />
+                        {{-- <img class="product-single-image" src="{{ asset('storage/uploads/items/'.$record->image) }}"
+                            data-zoom-image="{{ asset('storage/uploads/items/'.$record->image) }}" /> --}}
+
+                        <img class="product-single-image" 
+                            src="{{ ($record->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$record->image): asset("/logo/{$record->image}") }}" 
+                            data-zoom-image="{{ ($record->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$record->image): asset("/logo/{$record->image}") }}" 
+                            alt="product" >
+
                     </div>
 
                     @foreach($record->images as $row)
 
                     <div class="product-item">
-                        <img class="product-single-image"
+                        {{-- <img class="product-single-image"
                             src="{{ asset('storage/uploads/items/'.$row->image) }}"
-                            data-zoom-image="{{ asset('storage/uploads/items/'.$row->image) }}" />
+                            data-zoom-image="{{ asset('storage/uploads/items/'.$row->image) }}" /> --}}
+                            
+                        <img class="product-single-image" 
+                            src="{{ ($row->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$row->image): asset("/logo/{$row->image}") }}" 
+                            data-zoom-image="{{ ($row->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$row->image): asset("/logo/{$row->image}") }}" 
+                            alt="product" >
                     </div>
 
                     @endforeach
@@ -29,13 +40,16 @@
             </div>
             <div class="prod-thumbnail row owl-dots" id='carousel-custom-dots'>
                 <div class="col-3 owl-dot">
-                    <img src="{{ asset('storage/uploads/items/'.$record->image) }}" />
+                    {{-- <img src="{{ asset('storage/uploads/items/'.$record->image) }}" /> --}}
+                    
+                    <img  src="{{ ($record->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$record->image): asset("/logo/{$record->image}") }}" alt="product" >
                 </div>
 
                 @foreach($record->images as $row)
 
                     <div class="col-3 owl-dot">
-                        <img src="{{ asset('storage/uploads/items/'.$row->image) }}" />
+                        {{-- <img src="{{ asset('storage/uploads/items/'.$row->image) }}" /> --}}
+                        <img  src="{{ ($row->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$row->image): asset("/logo/{$row->image}") }}" alt="product" >
                     </div>
 
                 @endforeach

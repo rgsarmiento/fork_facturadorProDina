@@ -15,7 +15,8 @@
                         <div class="product product-sm">
                             <figure class="product-image-container">
                                 <a href="/ecommerce/item/{{ $item->id }}" class="product-image">
-                                    <img src="{{ asset('storage/uploads/items/'.$item->image) }}" alt="product">
+                                    <img src="{{ ($item->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$item->image): asset("/logo/{$item->image}") }}" alt="product" >
+                                    {{-- <img src="{{ asset('storage/uploads/items/'.$item->image) }}" alt="product"> --}}
                                 </a>
                             </figure>
                             <div class="product-details">
@@ -29,7 +30,7 @@
                                     </div><!-- End .product-ratings -->
                                 </div><!-- End .product-container -->
                                 <div class="price-box">
-                                    <span class="product-price">S/ {{ number_format($item->sale_unit_price, 2) }}</span>
+                                    <span class="product-price">$ {{ number_format($item->sale_unit_price, 2) }}</span>
                                 </div><!-- End .price-box -->
                             </div><!-- End .product-details -->
                         </div><!-- End .product -->
@@ -45,7 +46,8 @@
                         <div class="product product-sm">
                             <figure class="product-image-container">
                                 <a href="/ecommerce/item/{{ $item->id }}" class="product-image">
-                                    <img src="{{ asset('storage/uploads/items/'.$item->image) }}" alt="product">
+                                    <img src="{{ ($item->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$item->image): asset("/logo/{$item->image}") }}" alt="product" >
+                                    {{-- <img src="{{ asset('storage/uploads/items/'.$item->image) }}" alt="product"> --}}
                                 </a>
                             </figure>
                             <div class="product-details">
@@ -59,7 +61,7 @@
                                     </div><!-- End .product-ratings -->
                                 </div><!-- End .product-container -->
                                 <div class="price-box">
-                                    <span class="product-price">S/
+                                    <span class="product-price">$
                                         {{ number_format($item->sale_unit_price, 2) }}</span>
                                 </div><!-- End .price-box -->
                             </div><!-- End .product-details -->

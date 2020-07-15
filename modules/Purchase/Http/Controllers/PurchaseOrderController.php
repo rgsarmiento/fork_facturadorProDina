@@ -8,6 +8,7 @@ use App\Models\Tenant\Person;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use Illuminate\Support\Facades\DB;
+use Modules\Factcolombia1\Models\Tenant\Company as CoCompany;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Warehouse;
 use Illuminate\Support\Str;
@@ -372,7 +373,7 @@ class PurchaseOrderController extends Controller
         $pdf = new Mpdf();
 
         $document = ($purchase_order != null) ? $purchase_order : $this->purchase_order;
-        $company = ($this->company != null) ? $this->company : Company::active();
+        $company = CoCompany::active();
         $filename = ($filename != null) ? $filename : $this->purchase_order->filename;
 
         $base_template = config('tenant.pdf_template');

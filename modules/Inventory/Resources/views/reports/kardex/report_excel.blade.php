@@ -36,7 +36,8 @@
                     <td>
                         <p><strong>Establecimiento: </strong></p>
                     </td>
-                    <td align="center">{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</td>
+                    <td align="center">{{$establishment->address}} - {{$establishment->address}} - {{$establishment->country->name}} - {{$establishment->department->name}} - {{$establishment->city->name}}</td>
+                   
                 </tr>
             </table>
         </div>

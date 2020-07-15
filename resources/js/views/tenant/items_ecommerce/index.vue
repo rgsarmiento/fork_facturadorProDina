@@ -49,8 +49,8 @@
             <td>{{ index }}</td>
             <td>{{ row.internal_id }}</td>
             <td>{{ row.unit_type_id }}</td>
-            <td>{{ row.description }}</td>
             <td>{{ row.name }}</td>
+            <td>{{ row.description }}</td>
             <td class="text-center">{{ row.sale_unit_price }}</td>
             <td class="text-center">
               <a @click="viewImages(row)" href="#">

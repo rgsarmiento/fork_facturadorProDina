@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\Tenant;
 
-use App\Models\Tenant\Catalogs\Country;
 use App\Models\Tenant\Catalogs\Department;
 use App\Models\Tenant\Catalogs\District;
 use App\Models\Tenant\Catalogs\Province;
@@ -11,6 +10,14 @@ use App\Http\Requests\Tenant\EstablishmentRequest;
 use App\Http\Resources\Tenant\EstablishmentResource;
 use App\Http\Resources\Tenant\EstablishmentCollection;
 use App\Models\Tenant\Warehouse;
+
+use Modules\Factcolombia1\Models\Tenant\{
+    TypeIdentityDocument,
+    TypePerson,
+    TypeRegime,
+    Country,
+};
+
 
 class EstablishmentController extends Controller
 {
@@ -26,12 +33,12 @@ class EstablishmentController extends Controller
 
     public function tables()
     {
-        $countries = Country::whereActive()->orderByDescription()->get();
-        $departments = Department::whereActive()->orderByDescription()->get();
-        $provinces = Province::whereActive()->orderByDescription()->get();
-        $districts = District::whereActive()->orderByDescription()->get();
+        $countries = Country::get();
+        // $departments = Department::whereActive()->orderByDescription()->get();
+        // $provinces = Province::whereActive()->orderByDescription()->get();
+        // $districts = District::whereActive()->orderByDescription()->get();
 
-        return compact('countries', 'departments', 'provinces', 'districts');
+        return compact('countries');
     }
 
     public function record($id)

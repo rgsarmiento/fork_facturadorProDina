@@ -20,15 +20,15 @@ class EstablishmentRequest extends FormRequest
                 'required',
                 Rule::unique('tenant.establishments')->ignore($id),
             ],
+            'country_id' => [
+                'required',
+            ],
             'department_id' => [
                 'required',
             ],
-            'province_id' => [
+            'city_id' => [
                 'required',
-            ],
-            'district_id' => [
-                'required',
-            ],
+            ], 
             'address' => [
                 'required',
             ],

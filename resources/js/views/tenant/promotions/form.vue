@@ -47,10 +47,10 @@
               <small class="form-control-feedback" v-if="errors.image" v-text="errors.image[0]"></small>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-9">
             <div class="form-group" :class="{'has-danger': errors.item_id}">
               <label class="control-label">Link a Producto</label>
-              <el-select v-model="form.item_id" dusk="item_id">
+              <el-select v-model="form.item_id" dusk="item_id" filterable>
                 <el-option
                   v-for="option in items"
                   :key="option.id"

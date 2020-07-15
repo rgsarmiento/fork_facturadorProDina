@@ -70,7 +70,7 @@
                         <p><strong>N° Documento: </strong>{{$company->number}}</p>
                     </td>
                     <td>
-                        <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
+                        <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->country->name}} - {{$establishment->department->name}} - {{$establishment->city->name}}</p>
                     </td>
                 </tr>
             </table>

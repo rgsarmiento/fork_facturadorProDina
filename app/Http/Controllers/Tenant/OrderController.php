@@ -36,23 +36,23 @@ class OrderController extends Controller
     public function updateStatusOrders(Request $request)
     {
       
-      if ($request->record['status_order_id'] == 3) {
-        for ($i=0; $i <= count($request->discount)-1; $i++) {
-          if (isset($request->discount[$i]['id'])) {
-            $itemWarehouse = ItemWarehouse::where('id', $request->discount[$i]['id'])->first();
+      // if ($request->record['status_order_id'] == 3) {
+      //   for ($i=0; $i <= count($request->discount)-1; $i++) {
+      //     if (isset($request->discount[$i]['id'])) {
+      //       $itemWarehouse = ItemWarehouse::where('id', $request->discount[$i]['id'])->first();
 
-            //if ($itemWarehouse->stock >= $request->discount[$i]['cantidad']) {
-              ItemWarehouse::where('id', $itemWarehouse->id)->update(['stock' => ($itemWarehouse->stock - $request->discount[$i]['cantidad'])]);
+      //       //if ($itemWarehouse->stock >= $request->discount[$i]['cantidad']) {
+      //         ItemWarehouse::where('id', $itemWarehouse->id)->update(['stock' => ($itemWarehouse->stock - $request->discount[$i]['cantidad'])]);
 
-            //}
-          }
-        }
-        Order::where('id', $request->record['id'])->update(['status_order_id' => $request->record['status_order_id']]);
+      //       //}
+      //     }
+      //   }
+      //   Order::where('id', $request->record['id'])->update(['status_order_id' => $request->record['status_order_id']]);
 
-        return [
-          'message' => 'Estatus y Stock actualizado'
-        ];
-      }
+      //   return [
+      //     'message' => 'Estatus y Stock actualizado'
+      //   ];
+      // }
 
       Order::where('id', $request->record['id'])->update(['status_order_id' => $request->record['status_order_id']]);
       return [

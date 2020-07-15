@@ -67,6 +67,8 @@
 				
 			array.forEach(element => {
 				
+				let src_image = (element.image_small !== 'imagen-no-disponible.jpg') ? `/storage/uploads/items/${element.image_small}`:`/logo/${element.image_small}`
+
 				$(".dropdown-cart-products").append( `
 						<div class="product">
 							<div class="product-details">
@@ -79,7 +81,7 @@
 							</div>
 							<figure class="product-image-container">
 								<a href="#" class="product-image">
-									<img alt="product" src="/storage/uploads/items/${element.image_small}" />
+									<img alt="product" src="${src_image}" />
 								</a>
 								<a href="#" onclick="remove(${element.id})" class="btn-remove" title="Remove Product">
 									<i class="icon-cancel"></i>

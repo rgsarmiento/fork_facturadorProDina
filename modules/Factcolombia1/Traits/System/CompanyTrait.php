@@ -390,10 +390,9 @@ trait CompanyTrait
 
         $establishment_id = DB::connection('tenant')->table('establishments')->insertGetId([
             'description' => 'Oficina Principal',
-            'country_id' => 'PE',
-            'department_id' => '15',
-            'province_id' => '1501',
-            'district_id' => '150101',
+            'country_id' => 47,
+            'department_id' => 779,
+            'city_id' => 12688,
             'address' => '-',
             'email' => $request->input('email'),
             'telephone' => '-',

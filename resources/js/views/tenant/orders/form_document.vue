@@ -38,8 +38,8 @@ export default {
                     this.currencies = response.data.currencies
                     this.payment_methods = response.data.payment_methods
                     this.payment_forms = response.data.payment_forms
-                    this.form.currency_id = (this.currencies.length > 0)?this.currencies[0].id:null;
-                    this.form.type_invoice_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null;
+                    // this.form.currency_id = (this.currencies.length > 0)?this.currencies[0].id:null;
+                    // this.form.type_invoice_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null;
                     this.form.payment_form_id = (this.payment_forms.length > 0)?this.payment_forms[0].id:null;
                     this.form.payment_method_id = (this.payment_methods.length > 0)?this.payment_methods[0].id:null;
         })
@@ -55,7 +55,7 @@ export default {
         initForm() {
             this.form = {
                 type_document_id: 1,
-                currency_id: null,
+                currency_id: 170,
                 date_issue: moment().format("YYYY-MM-DD"),
                 date_expiration: null,
                 type_invoice_id: 1,
@@ -96,6 +96,14 @@ export default {
                 };
         },
         async sendDocument({id, items, customer, status_order_id}) {
+
+            console.log(items)
+            await items.forEach(it => {
+                it.item_id = it.id
+                it.price = it.sale_unit_price
+                it.quantity = it.cantidad
+            });
+
             this.purchase.items = items
             this.purchase.customer = customer
             this.form.service_invoice = await this.createInvoiceService();
@@ -116,6 +124,7 @@ export default {
 
             }catch(error)
             {
+                this.$emit('handleLoader', false);
                 this.$message.error("Error en validaciòn de datos.");
             }
 
@@ -275,16 +284,17 @@ export default {
                 val.total = Number(total).toFixed(2)
 
         },
-        getFormItem(id, quantity)
+        getFormItem(id, quantity, item)
         {
             const record = this.initFormItem()
             record.item = _.find(this.all_items, {'id': id});
-            record.item_unit_types = _.find(this.all_items, {'id': id}).item_unit_types
+            record.item_unit_types = []
             record.id = id
-            record.unit_type_id = record.item.unit_type_id
+            record.item_id = id
+            record.unit_type_id = item.unit_type_id
 
-            record.tax_id = 1
-            record.tax = _.find(this.taxes, {'id': 1})
+            record.tax_id = item.tax_id
+            record.tax = _.find(this.taxes, {'id': item.tax_id})
 
             record.price = record.item.sale_unit_price;
             record.quantity = quantity;
@@ -311,7 +321,7 @@ export default {
             const {items} = this.purchase
 
             this.form.items = items.map( x=> {
-                return context.getFormItem(x.id, x.cantidad)
+                return context.getFormItem(x.id, x.cantidad, x)
             })
 
             await context.calculateTotal()

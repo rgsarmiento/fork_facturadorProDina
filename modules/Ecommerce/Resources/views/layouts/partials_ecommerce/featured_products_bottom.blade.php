@@ -16,7 +16,7 @@ $item_id = (isset($path[2])) ? $path[2] : 0;
                     <div class="product">
                         <figure class="product-image-container">
                             <a href="/ecommerce/item/{{ $item->id }}" class="product-image">
-                                <img src="{{ asset('storage/uploads/items/'.$item->image) }}" alt="product">
+                                <img src="{{ ($item->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$item->image): asset("/logo/{$item->image}") }}" alt="product" >
                             </a>
                             <a href="{{route('item_partial', ['id' => $item->id])}}" class="btn-quickview">Vista Rápida</a>
                         </figure>

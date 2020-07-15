@@ -498,6 +498,8 @@ function(e) {
 			count = array.length;
 				
 			array.forEach(element => {
+
+				let src_image = (element.image_small !== 'imagen-no-disponible.jpg') ? `/storage/uploads/items/${element.image_small}`:`/logo/${element.image_small}`
 				
 				jQuery(".dropdown-cart-products").append( `
 						<div class="product">
@@ -511,7 +513,7 @@ function(e) {
 							</div>
 							<figure class="product-image-container">
 								<a href="#" class="product-image">
-									<img alt="product" src="/storage/uploads/items/${element.image_small}" />
+									<img alt="product" src="${src_image}" />
 								</a>
 								<a href="#" onclick="remove(${element.id})" class="btn-remove" title="Remove Product">
 									<i class="icon-cancel"></i>
@@ -534,6 +536,7 @@ function(e) {
 
 				let item = jQuery(this).data('product')
 				let found = array.find( x=> x.id == item.id)
+
 				if(!found)
 				{
 					array.push( jQuery(this).data('product') );
@@ -545,13 +548,15 @@ function(e) {
 					$('#product_added').html(`
 						<h1 class="product-title">${item.name}</h1>
 						<div class="price-box">
-							<span class="product-price">S/ ${ Number(item.sale_unit_price).toFixed(2) }</span>
+							<span class="product-price">$ ${ Number(item.sale_unit_price).toFixed(2) }</span>
 						</div>
 						<div class="product-desc">
 							<p> ${item.description}  </p>
 						</div>	`);
 
-					$('#product_added_image').html( `<img src="/storage/uploads/items/${item.image_medium}" class="img" alt="product">`)
+					let src_image = (item.image_medium !== 'imagen-no-disponible.jpg') ? `/storage/uploads/items/${item.image_medium}`:`/logo/${item.image_medium}`
+
+					$('#product_added_image').html( `<img src="${src_image}" class="img" alt="product">`)
 				}
 				else{
 					contex.alreadyProductCart();

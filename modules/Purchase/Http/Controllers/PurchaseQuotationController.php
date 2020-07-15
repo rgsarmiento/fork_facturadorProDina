@@ -24,6 +24,7 @@ use Modules\Purchase\Models\PurchaseQuotation;
 use Modules\Purchase\Http\Resources\PurchaseQuotationCollection;
 use Modules\Purchase\Http\Resources\PurchaseQuotationResource;
 use Modules\Purchase\Mail\PurchaseQuotationEmail;
+use Modules\Factcolombia1\Models\Tenant\Company as CoCompany;
 
 
 class PurchaseQuotationController extends Controller
@@ -249,7 +250,7 @@ class PurchaseQuotationController extends Controller
         $pdf = new Mpdf();
 
         $document = ($purchase_quotation != null) ? $purchase_quotation : $this->purchase_quotation;
-        $company = ($this->company != null) ? $this->company : Company::active();
+        $company = CoCompany::active();
         $filename = ($filename != null) ? $filename : $this->purchase_quotation->filename;
 
         $base_template = config('tenant.pdf_template');

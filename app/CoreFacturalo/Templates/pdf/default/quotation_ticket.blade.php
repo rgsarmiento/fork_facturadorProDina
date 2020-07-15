@@ -29,14 +29,14 @@
         <td class="text-center"><h5>{{ $company->name }}</h5></td>
     </tr>
     <tr>
-        <td class="text-center"><h5>{{ 'RUC '.$company->number }}</h5></td>
+        <td class="text-center"><h5>{{$company->identification_number }}</h5></td>
     </tr>
     <tr>
         <td class="text-center">
             {{ ($establishment->address !== '-')? $establishment->address : '' }}
-            {{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}
-            {{ ($establishment->province_id !== '-')? ', '.$establishment->province->description : '' }}
-            {{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}
+            {{ ($establishment->city_id !== '-')? ', '.$establishment->city->name : '' }}
+            {{ ($establishment->department_id !== '-')? '- '.$establishment->department->name : '' }}
+            {{ ($establishment->country_id !== '-')? ', '.$establishment->country->name : '' }}
             
             @isset($establishment->trade_address)
                 <h6>{{ ($establishment->trade_address !== '-')? 'D. Comercial: '.$establishment->trade_address : '' }}</h6>

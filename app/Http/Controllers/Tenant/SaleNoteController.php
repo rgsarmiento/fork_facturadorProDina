@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Tenant\Catalogs\PriceType;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\AttributeType;
+use Modules\Factcolombia1\Models\Tenant\Company as CoCompany;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Dispatch;
 use App\Http\Requests\Tenant\SaleNoteRequest;
@@ -374,7 +375,7 @@ class SaleNoteController extends Controller
         $template = new Template();
         $pdf = new Mpdf();
 
-        $this->company = ($this->company != null) ? $this->company : Company::active();
+        $this->company = CoCompany::active();
         $this->document = ($sale_note != null) ? $sale_note : $this->sale_note;
 
         $this->configuration = Configuration::first();

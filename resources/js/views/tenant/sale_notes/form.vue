@@ -17,7 +17,7 @@
                                 <span class="font-weight-bold d-block">NV-XXX</span>
                                 <span class="font-weight-bold">{{company.name}}</span>
                                 <br>
-                                <div v-if="establishment.address != '-'">{{ establishment.address }}, </div> {{ establishment.district.description }}, {{ establishment.province.description }}, {{ establishment.department.description }} - {{ establishment.country.description }}
+                                <div v-if="establishment.address != '-'">{{ establishment.address }}, </div> {{ establishment.city.name }}, {{ establishment.department.name }} - {{ establishment.country.name }}
                                 <br>
                                 {{establishment.email}} - <span v-if="establishment.telephone != '-'">{{establishment.telephone}}</span>
                             </address>

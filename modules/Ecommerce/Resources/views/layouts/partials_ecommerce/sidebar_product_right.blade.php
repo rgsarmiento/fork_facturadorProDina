@@ -37,7 +37,8 @@
                             
                     <figure class="product-image-container boxing">
                         <a href="/ecommerce/item/{{ $data->id }}" class="product-image">
-                            <img src="{{ asset('storage/uploads/items/'.$data->image) }}" alt="product" class="image">
+                            <img src="{{ ($data->image !== 'imagen-no-disponible.jpg') ? asset('storage/uploads/items/'.$data->image): asset("/logo/{$data->image}") }}" alt="product" >
+                            {{-- <img src="{{ asset('storage/uploads/items/'.$data->image) }}" alt="product" class="image"> --}}
                         </a>
                         <a href="{{route('item_partial', ['id' => $data->id])}}" class="btn-quickview">Vista Rápida</a>
                      <span class="product-label label-hot">New Sales Recent</span>
