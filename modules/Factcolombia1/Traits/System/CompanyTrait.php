@@ -178,6 +178,12 @@ trait CompanyTrait
         self::updateTypeUnits();
         self::updateTaxes();
 
+        DB::connection('tenant')->table('establishments')->first()->update([
+            'country_id' => 47,
+            'department_id' => 779,
+            'city_id' => 12688,
+        ]);
+ 
     }
 
 
@@ -390,9 +396,9 @@ trait CompanyTrait
 
         $establishment_id = DB::connection('tenant')->table('establishments')->insertGetId([
             'description' => 'Oficina Principal',
-            'country_id' => 47,
-            'department_id' => 779,
-            'city_id' => 12688,
+            'country_id' => null,
+            'department_id' => null,
+            'city_id' => null,
             'address' => '-',
             'email' => $request->input('email'),
             'telephone' => '-',
