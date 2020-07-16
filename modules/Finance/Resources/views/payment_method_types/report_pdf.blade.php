@@ -83,7 +83,7 @@
                             <tr>
                                 <th class="">#</th>
                                 <th class="">Método de pago / Total pagos</th>
-                                <th class="">CPE</th>
+                                <th class="">Factura Electrónica</th>
                                 <th class="">NV</th>
                                 <th class="">COT</th>
                                 {{-- <th class="">Contrato</th> --}}

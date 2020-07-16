@@ -130,7 +130,7 @@ trait FinanceTrait
     public function getCollectionPaymentTypes(){
 
         return [
-            ['id'=> DocumentPayment::class, 'description' => 'COMPROBANTES (CPE)'],
+            ['id'=> DocumentPayment::class, 'description' => 'FACTURA ELECTRÓNICA'],
             ['id'=> SaleNotePayment::class, 'description' => 'NOTAS DE VENTA'],
             ['id'=> PurchasePayment::class, 'description' => 'COMPRAS'],
             ['id'=> ExpensePayment::class, 'description' => 'GASTOS'],

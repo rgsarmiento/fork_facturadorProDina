@@ -51,6 +51,8 @@ class PersonResource extends JsonResource
             'city_id' => $this->city_id,
             'code' => $this->code,
             'dv' => $this->dv,
+            'contact_name' => $this->contact_name,
+            'contact_phone' => $this->contact_phone,
 
             // 'more_address' =>  $this->more_address,
         ];

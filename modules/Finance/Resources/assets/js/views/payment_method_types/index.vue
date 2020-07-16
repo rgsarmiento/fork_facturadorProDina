@@ -9,7 +9,7 @@
                         <tr slot="heading">
                             <th class="">#</th>
                             <th class=""><strong>Método de pago / Total pagos</strong></th>
-                            <th class="text-center"><strong>CPE</strong></th>
+                            <th class="text-center"><strong>Factura Electrónica</strong></th>
                             <th class="text-center"><strong>N. Venta</strong></th>
                             <th class="text-center"><strong>Cotización</strong></th>
                             <!-- <th class="text-center"><strong>Contrato</strong></th> -->

@@ -116,7 +116,8 @@ class GlobalPayment extends ModelTenant
         
         switch ($this->instance_type) {
             case 'document':
-                $description = 'CPE';
+                $description = 'FACTURA ELECTRÓNICA';
+                // $description = 'CPE';
                 break;
             case 'sale_note':
                 $description = 'NOTA DE VENTA';

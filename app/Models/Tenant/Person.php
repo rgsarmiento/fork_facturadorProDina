@@ -49,6 +49,8 @@ class Person extends ModelTenant
         'city_id',
         'code',
         'dv',
+        'contact_name',
+        'contact_phone',
 
 
     ];

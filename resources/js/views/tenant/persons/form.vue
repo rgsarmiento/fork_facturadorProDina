@@ -197,6 +197,24 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row border-top mt-2">
+                    <div class="col-12">
+                        <h4>Contacto</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" >
+                            <label class="control-label">Nombre y Apellido</label>
+                            <el-input v-model="form.contact_name"></el-input>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" >
+                            <label class="control-label">Teléfono</label>
+                            <el-input v-model="form.contact_phone"></el-input>
+                        </div>
+                    </div>
+                </div>
                 <!-- <div class="row m-t-10">
                     <div class="col-md-12 text-center">
                         <el-button size="mini" icon="el-icon-plus" @click.prevent="clickAddAddress()">Agregar dirección</el-button>
@@ -371,6 +389,8 @@
                     city_id: null, 
                     code: null, 
                     dv: null, 
+                    contact_phone: null,
+                    contact_name: null,
                 }
                 
                 this.departmentss();
