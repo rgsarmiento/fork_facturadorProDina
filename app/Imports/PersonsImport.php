@@ -22,21 +22,19 @@ class PersonsImport implements ToCollection
             foreach ($rows as $row)
             {
                 $type = request()->input('type');
-                $identity_document_type_id = $row[0];
-                $number = $row[1];
-                $name = $row[2];
-                $trade_name = $row[3];
-                $country_id = ($row[4])?:'PE';
-                $location_id = $row[5];
-                $department_id = null;
-                $province_id = null;
-                if($location_id) {
-                    $department_id = substr($location_id, 0, 2);
-                    $province_id = substr($location_id, 0, 4);
-                }
-                $address = $row[6];
-                $email = $row[7];
-                $telephone = $row[8];
+                $type_person_id = $row[0];
+                $type_regime_id = $row[1];
+                $identity_document_type_id = $row[2];
+                $number = $row[3];
+                $dv = $row[4];
+                $code = $row[5];
+                $name = $row[6];
+                $country_id = $row[7];
+                $department_id = $row[8];
+                $city_id = $row[9];
+                $address = $row[10];
+                $telephone = $row[11];
+                $email = $row[12];
 
                 $person = Person::where('type', $type)
                                 ->where('identity_document_type_id', $identity_document_type_id)
@@ -44,22 +42,48 @@ class PersonsImport implements ToCollection
                                 ->first();
 
                 if(!$person) {
+
                     Person::create([
                         'type' => $type,
+                        'type_person_id' => $type_person_id,
                         'identity_document_type_id' => $identity_document_type_id,
+                        'type_regime_id' => $type_regime_id,
                         'number' => $number,
+                        'dv' => $dv,
+                        'code' => $code,
                         'name' => $name,
-                        'trade_name' => $trade_name,
                         'country_id' => $country_id,
                         'department_id' => $department_id,
-                        'province_id' => $province_id,
-                        'district_id' => $location_id,
+                        'city_id' => $city_id, 
                         'address' => $address,
-                        'email' => $email,
                         'telephone' => $telephone,
+                        'email' => $email,
                     ]);
                     $registered += 1;
+
+                }else{
+
+                    $person->update([
+                        'type' => $type,
+                        'type_person_id' => $type_person_id,
+                        'identity_document_type_id' => $identity_document_type_id,
+                        'type_regime_id' => $type_regime_id,
+                        'number' => $number,
+                        'dv' => $dv,
+                        'code' => $code,
+                        'name' => $name,
+                        'country_id' => $country_id,
+                        'department_id' => $department_id,
+                        'city_id' => $city_id, 
+                        'address' => $address,
+                        'telephone' => $telephone,
+                        'email' => $email,
+                    ]);
+                    
+                    $registered += 1;
+
                 }
+
             }
             $this->data = compact('total', 'registered');
 

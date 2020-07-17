@@ -180,6 +180,9 @@ class CompanyController extends Controller
     public function record($id)
     {
         $company = Company::findOrFail($id);
+        $tenancy = app(Environment::class);
+        $tenancy->tenant($company->hostname->website);
+        $company->modules = DB::connection('tenant')->table('module_user')->where('user_id', 1)->get();
         
         return new CompanyResource($company);
     }
@@ -208,10 +211,16 @@ class CompanyController extends Controller
 
         $company->update([
             'limit_documents' => $request->limit_documents,
+            'limit_users' => $request->limit_users,
             'economic_activity_code' => $request->economic_activity_code,
             'ica_rate' => $request->ica_rate
 
         ]);
+
+        $tenancy = app(Environment::class);
+        $tenancy->tenant($company->hostname->website);
+        DB::connection('tenant')->table('configurations')->where('id', 1)->update(['limit_users' => $company->limit_users]);
+
 
         ServiceCompany::where('identification_number', $company->identification_number)->first()
             ->update(
@@ -260,6 +269,35 @@ class CompanyController extends Controller
                 ]
             );
         
+        //modules
+        DB::connection('tenant')->table('module_user')->where('user_id', 1)->delete();
+        DB::connection('tenant')->table('module_level_user')->where('user_id', 1)->delete();
+
+        $array_modules = [];
+
+        foreach ($request->modules as $module) {
+            if($module['checked']){
+                $array_modules[] = ['module_id' => $module['id'], 'user_id' => 1];
+
+                if($module['id'] == 1){
+                    DB::connection('tenant')->table('module_level_user')->insert([
+                        ['module_level_id' => 1, 'user_id' => 1],
+                        ['module_level_id' => 2, 'user_id' => 1],
+                        // ['module_level_id' => 3, 'user_id' => 1],
+                        // ['module_level_id' => 4, 'user_id' => 1],
+                        ['module_level_id' => 5, 'user_id' => 1],
+                        // ['module_level_id' => 6, 'user_id' => 1],
+                        ['module_level_id' => 7, 'user_id' => 1],
+                        ['module_level_id' => 8, 'user_id' => 1],
+                        ['module_level_id' => 9, 'user_id' => 1],
+                    ]);
+                }
+            }
+        }
+
+        DB::connection('tenant')->table('module_user')->insert($array_modules);
+        //modules
+
 
         return [
             'message' => "Se actualizo con éxito la compañía {$company->name}.",
@@ -332,7 +370,7 @@ class CompanyController extends Controller
           //  'type_currency' => ServiceTypeCurrency::all(),
             'type_organizations' => ServiceTypeOrganization::all(),
             'type_regimes' => ServiceTypeRegime::all(),
-            'modules' => Module::orderBy('description')->get(),
+            'modules' => Module::whereIn('id', [1,2,4,5,6,7,8,10,12])->orderBy('description')->get(),
             'url_base' => '.'.config('tenant.app_url_base'),
         //  'type_liability' => ServiceTypeLiability::all()
           
@@ -385,5 +423,61 @@ class CompanyController extends Controller
         }
 
     }
+
+    
+
+    public function lockedUser(Request $request){
+
+        $company = Company::findOrFail($request->id);
+        $company->locked_users = $request->locked_users;
+        $company->save();
+
+        $tenancy = app(Environment::class);
+        $tenancy->tenant($company->hostname->website);
+        DB::connection('tenant')->table('configurations')->where('id', 1)->update(['locked_users' => $company->locked_users]);
+
+        return [
+            'success' => true,
+            'message' => ($company->locked_users) ? 'Limitar creación de usuarios activado' : 'Limitar creación de usuarios desactivado'
+        ];
+
+    }
+
+
+    public function lockedEmission(Request $request){
+
+        $company = Company::findOrFail($request->id);
+        $company->locked_emission = $request->locked_emission;
+        $company->save();
+
+        $tenancy = app(Environment::class);
+        $tenancy->tenant($company->hostname->website);
+        DB::connection('tenant')->table('configurations')->where('id', 1)->update(['locked_emission' => $company->locked_emission]);
+
+        return [
+            'success' => true,
+            'message' => ($company->locked_emission) ? 'Limitar emisión de documentos activado' : 'Limitar emisión de documentos desactivado'
+        ];
+
+    }
+
+
+    public function lockedTenant(Request $request){
+
+        $company = Company::findOrFail($request->id);
+        $company->locked_tenant = $request->locked_tenant;
+        $company->save();
+
+        $tenancy = app(Environment::class);
+        $tenancy->tenant($company->hostname->website);
+        DB::connection('tenant')->table('configurations')->where('id', 1)->update(['locked_tenant' => $company->locked_tenant]);
+
+        return [
+            'success' => true,
+            'message' => ($company->locked_tenant) ? 'Cuenta bloqueada' : 'Cuenta desbloqueada'
+        ];
+
+    }
+
 
 }

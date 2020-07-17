@@ -24,34 +24,21 @@ class ItemsImport implements ToCollection
             unset($rows[0]);
             foreach ($rows as $row)
             {
-                $description = $row[0];
+
+                $name = $row[0];
                 $item_type_id = '01';
                 $internal_id = ($row[1])?:null;
-                $item_code = ($row[2])?:null;
-                $unit_type_id = $row[3];
-                $currency_type_id = $row[4];
-                $sale_unit_price = $row[5];
-                $sale_affectation_igv_type_id = $row[6];
-                // $has_igv = (strtoupper($row[7]) === 'SI')?true:false;
+                $unit_type_id = $row[2];
+                $currency_type_id = $row[3];
+                $sale_unit_price = $row[4];
+                $tax_id = $row[5];
 
-                $affectation_igv_types_exonerated_unaffected = ['20','21','30','31','32','33','34','35','36','37'];
-
-                if(in_array($sale_affectation_igv_type_id, $affectation_igv_types_exonerated_unaffected)) {
-
-                    $has_igv = true;
-
-                }else{
-
-                    $has_igv = (strtoupper($row[7]) === 'SI')?true:false;
-
-                }
-
-                $purchase_unit_price = ($row[8])?:0;
-                $purchase_affectation_igv_type_id = ($row[9])?:null;
-                $stock = $row[10];
-                $stock_min = $row[11];
-                $category_name = $row[12];
-                $brand_name = $row[13];
+                $purchase_unit_price = ($row[6])?:0;
+                $purchase_tax_id = ($row[7])?:null;
+                $stock = $row[8];
+                $stock_min = $row[9];
+                $category_name = $row[10];
+                $brand_name = $row[11];
 
 
                 if($internal_id) {
@@ -71,17 +58,15 @@ class ItemsImport implements ToCollection
 
 
                     Item::create([
-                        'description' => $description,
+                        'name' => $name,
                         'item_type_id' => $item_type_id,
                         'internal_id' => $internal_id,
-                        'item_code' => $item_code,
                         'unit_type_id' => $unit_type_id,
                         'currency_type_id' => $currency_type_id,
                         'sale_unit_price' => $sale_unit_price,
-                        'sale_affectation_igv_type_id' => $sale_affectation_igv_type_id,
-                        'has_igv' => $has_igv,
+                        'tax_id' => $tax_id,
                         'purchase_unit_price' => $purchase_unit_price,
-                        'purchase_affectation_igv_type_id' => $purchase_affectation_igv_type_id,
+                        'purchase_tax_id' => $purchase_tax_id,
                         'stock' => $stock,
                         'stock_min' => $stock_min,
                         'category_id' => $category->id,
@@ -94,17 +79,15 @@ class ItemsImport implements ToCollection
                 }else{
 
                     $item->update([
-                        'description' => $description,
+                        'name' => $name,
                         'item_type_id' => $item_type_id,
                         'internal_id' => $internal_id,
-                        'item_code' => $item_code,
                         'unit_type_id' => $unit_type_id,
                         'currency_type_id' => $currency_type_id,
                         'sale_unit_price' => $sale_unit_price,
-                        'sale_affectation_igv_type_id' => $sale_affectation_igv_type_id,
-                        'has_igv' => $has_igv,
+                        'tax_id' => $tax_id,
                         'purchase_unit_price' => $purchase_unit_price,
-                        'purchase_affectation_igv_type_id' => $purchase_affectation_igv_type_id,
+                        'purchase_tax_id' => $purchase_tax_id,
                         'stock_min' => $stock_min,
                     ]);
 
@@ -120,4 +103,5 @@ class ItemsImport implements ToCollection
     {
         return $this->data;
     }
+    
 }

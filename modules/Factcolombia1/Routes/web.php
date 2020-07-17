@@ -4,7 +4,7 @@ $current_hostname = app(Hyn\Tenancy\Contracts\CurrentHostname::class);
 
 if($current_hostname) {
     Route::domain($current_hostname->fqdn)->group(function () {
-        Route::middleware(['auth'])->group(function () {
+        Route::middleware(['auth', 'locked.tenant'])->group(function () {
             Route::post('/client/configuration/storeServiceCompanieSoftware', 'Tenant\ConfigurationController@storeServiceSoftware');
             Route::post('/client/configuration/storeServiceCompanieResolution', 'Tenant\ConfigurationController@storeServiceResolution');
             Route::post('/client/configuration/storeServiceCompanieCertificate', 'Tenant\ConfigurationController@storeServiceCertificate');
@@ -113,6 +113,10 @@ if($current_hostname) {
                 Route::get('records', 'System\CompanyController@records');
                 Route::get('record/{id}', 'System\CompanyController@record');
                 Route::delete('{company}', 'System\CompanyController@destroy');
+
+                // Route::post('locked_emission', 'System\CompanyController@lockedEmission');
+                Route::post('locked_tenant', 'System\CompanyController@lockedTenant');
+                Route::post('locked_user', 'System\CompanyController@lockedUser');
 
             });
 

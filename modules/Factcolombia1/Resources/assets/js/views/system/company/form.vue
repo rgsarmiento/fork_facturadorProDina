@@ -78,7 +78,7 @@
                         <h4><b>Datos generales</b></h4>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': (errors.limit_documents)}">
                             <label class="control-label">Límite de documentos</label>
                             <el-input  v-model="form.limit_documents"></el-input>
@@ -86,7 +86,15 @@
                         </div>
                     </div>
                      
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': (errors.limit_users)}">
+                            <label class="control-label">Límite de usuarios</label>
+                            <el-input  v-model="form.limit_users"></el-input>
+                            <small class="form-control-feedback" v-if="errors.limit_users" v-text="errors.limit_users[0]"></small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': (errors.economic_activity_code)}">
                             <label class="control-label">Actividad económica</label>
                             <el-input  v-model="form.economic_activity_code"></el-input>
@@ -94,7 +102,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': (errors.ica_rate)}">
                             <label class="control-label">Tasa ICA</label>
                             <el-input  v-model="form.ica_rate"></el-input>
@@ -179,6 +187,18 @@
                     </div>
 
                 </div>     
+                <div class="row mt-2">
+                    <div class="col-md-12" >
+                        <div class="form-group">
+                            <label class="control-label">Módulos</label>
+                            <div class="row">
+                                <div class="col-4" v-for="(module,ind) in form.modules" :key="ind">
+                                    <el-checkbox v-model="module.checked">{{ module.description }}</el-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="form-actions text-right pt-2">
                 <el-button @click.prevent="close()">Cancelar</el-button>
@@ -275,6 +295,7 @@
                     economic_activity_code: null,
                     ica_rate: null, 
                     limit_documents: null,
+                    limit_users: 1,
                     type_document_identification_id: null,
                     dv: 1,
                     language_id: 79,

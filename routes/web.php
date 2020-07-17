@@ -149,6 +149,7 @@ if ($hostname) {
             Route::delete('persons/{person}', 'Tenant\PersonController@destroy');
             Route::post('persons/import', 'Tenant\PersonController@import');
             Route::get('persons/enabled/{type}/{person}', 'Tenant\PersonController@enabled');
+            Route::get('persons/co-export/{type}', 'Tenant\PersonController@coExport');
 
             //Documents
             Route::post('documents/categories', 'Tenant\DocumentController@storeCategories');

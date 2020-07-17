@@ -4,7 +4,7 @@
             <div class="form-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <a href="/formats/persons.xlsx" target="_new">Descargar formato</a>
+                        <a href="/formats/co-persons.xlsx" target="_new" class="grey lighten-2 btn btn-sm">Descargar formato</a>
                     </div>
                     <div class="col-md-12 mt-4">
                         <div class="form-group text-center" :class="{'has-danger': errors.file}">

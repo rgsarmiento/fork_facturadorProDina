@@ -32,6 +32,8 @@ if($hostname) {
 
             Route::post('items/import/item-price-lists', 'ItemController@importItemPriceLists');
 
+            Route::get('items/co-export', 'ItemController@coExport');
+
         });
     });
 }

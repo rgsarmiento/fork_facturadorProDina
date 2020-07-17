@@ -68,6 +68,9 @@ class DocumentController extends Controller
 
     public function index()
     {
+
+        return redirect('/co-documents');
+
         $is_client = $this->getIsClient();
         $import_documents = config('tenant.import_documents');
         $import_documents_second = config('tenant.import_documents_second_format');
@@ -123,7 +126,9 @@ class DocumentController extends Controller
     public function create()
     {
         if(auth()->user()->type == 'integrator')
-            return redirect('/documents');
+            return redirect('/co-documents');
+
+        return redirect('/co-documents');
 
         $configuration = Configuration::first();
         $is_contingency = 0;

@@ -18,7 +18,21 @@ class Company extends Model
      *
      * @var array
      */
-    protected $fillable = ['identification_number', 'name', 'email', 'subdomain', 'limit_documents', 'hostname_id', 'economic_activity_code', 'ica_rate'];
+    protected $fillable = [
+        'identification_number', 
+        'name', 
+        'email', 
+        'subdomain', 
+        'limit_documents', 
+        'hostname_id', 
+        'economic_activity_code', 
+        'ica_rate',
+        'locked',
+        'locked_emission',
+        'locked_tenant',
+        'locked_users',
+        'limit_users',
+    ];
     
     /**
      * The attributes that should be mutated to dates.

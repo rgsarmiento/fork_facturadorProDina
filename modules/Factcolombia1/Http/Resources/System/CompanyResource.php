@@ -19,6 +19,19 @@ class CompanyResource extends JsonResource
     public function toArray($request)
     { 
 
+        $all_modules = Module::whereIn('id', [1,2,4,5,6,7,8,10,12])->orderBy('description')->get();
+        $modules_in_user = $this->modules->pluck('module_id')->toArray();
+        // dd($all_modules,$modules_in_user);
+        $modules = [];
+        foreach ($all_modules as $module)
+        {
+            $modules[] = [
+                'id' => $module->id,
+                'description' => $module->description,
+                'checked' => (bool) in_array($module->id, $modules_in_user)
+            ];
+        }
+
         $service_company = ServiceCompany::where('identification_number', $this->identification_number)->first();
 
         return [
@@ -28,6 +41,7 @@ class CompanyResource extends JsonResource
             'email' => $this->email,
             'subdomain' => $this->subdomain, 
             'limit_documents' => $this->limit_documents, 
+            'limit_users' => $this->limit_users, 
             'hostname_id' => $this->hostname_id, 
             'ica_rate' => $this->ica_rate, 
             'economic_activity_code' => $this->economic_activity_code, 
@@ -49,6 +63,7 @@ class CompanyResource extends JsonResource
             'merchant_registration' => $service_company->merchant_registration, 
             'address' => $service_company->address, 
             'phone' => $service_company->phone, 
+            'modules' => $modules,
 
 
         ];

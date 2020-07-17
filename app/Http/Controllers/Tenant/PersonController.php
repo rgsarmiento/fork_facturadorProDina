@@ -23,6 +23,8 @@ use Modules\Factcolombia1\Models\Tenant\{
     TypeRegime,
     Country as CoCountry,
 };
+use App\Exports\PersonExport;
+use Carbon\Carbon;
 
 
 class PersonController extends Controller
@@ -209,6 +211,20 @@ class PersonController extends Controller
             'success' => true,
             'message' => "Cliente {$type_message} con éxito"
         ];
+
+    }
+
+    
+    public function coExport($type)
+    {
+        $records = Person::where('type', $type)
+                            ->get();
+
+        $name = $type == "customers" ? "Clientes":"Proveedores";
+
+        return (new PersonExport)
+                ->records($records)
+                ->download($name.Carbon::now().'.xlsx');
 
     }
 

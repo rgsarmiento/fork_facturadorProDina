@@ -29,6 +29,7 @@ class CompanyRequest extends FormRequest
             'subdomain' => 'required|max:10|unique:co_companies,subdomain',
             'password' => 'required|confirmed|max:20',
             'limit_documents' => 'required|numeric|between:0,99999999999',
+            'limit_users' => 'required|numeric|between:0,99999999999',
             //'language_id' => 'required',
             //'tax_id' => 'required',
           //  'type_environment_id'  => 'required',

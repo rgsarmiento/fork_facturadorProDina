@@ -10,6 +10,8 @@ use Illuminate\Routing\Controller;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use Modules\Item\Imports\ItemListPriceImport;
 use Maatwebsite\Excel\Excel;
+use Modules\Item\Exports\ItemExport;
+use Carbon\Carbon;
 
 class ItemController extends Controller
 {
@@ -32,6 +34,17 @@ class ItemController extends Controller
         ];
 
         return response()->download($temp, "{$item->internal_id}.png", $headers);
+
+    }
+
+
+    public function coExport()
+    {
+        $records = Item::get();
+
+        return (new ItemExport)
+                ->records($records)
+                ->download('Productos'.Carbon::now().'.xlsx');
 
     }
 
