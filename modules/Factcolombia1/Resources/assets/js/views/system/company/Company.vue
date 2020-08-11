@@ -642,7 +642,7 @@ export default {
         // type_currency_id: this.type_currency_id.id,
         type_organization_id: this.type_organization_id.id,
         type_regime_id: this.type_regime_id.id,
-        type_liability_id: 19,
+        type_liability_id: 14,
         department_id: this.department_id.id,
         municipality_id: this.municipality_id.id,
         merchant_registration: this.merchant_registration,

@@ -18,7 +18,7 @@ trait CompanyTrait
 
 
     public function createSystemCompany($request, $hostname){
-        
+
         $company = Company::create([
             'identification_number' => $request->identification_number,
             'name' => $request->name,
@@ -45,7 +45,7 @@ trait CompanyTrait
             'type_currency_id' =>  35,
             'type_organization_id' => $request->type_organization_id,
             'type_regime_id' => $request->type_regime_id,
-            'type_liability_id' => 19,
+            'type_liability_id' => 14,
             'municipality_id' => $request->municipality_id,
             'merchant_registration' => $request->merchant_registration,
             'address' => $request->address,
@@ -92,12 +92,12 @@ trait CompanyTrait
             'Content-Type: application/json',
             'Accept: application/json',
         ));
-        
+
         $response = curl_exec($ch);
         curl_close($ch);
-        
+
         return json_decode($response);
-    
+
     }
 
 
@@ -107,7 +107,7 @@ trait CompanyTrait
         \Artisan::call('db:seed', array('--class' => 'DataMasterTenantSeeder'));
         //lleno data mestra del servicio
         \Artisan::call('db:seed', array('--class' => 'DataServiceMasterTenantSeeder'));
-        
+
         $user_id = DB::connection('tenant')
             ->table('users')
             ->insert([
@@ -122,7 +122,7 @@ trait CompanyTrait
                 'updated_at' => Carbon::now()
             ]);
 
-    
+
         self::createAccessModules($request, $user_id);
 
 
@@ -167,7 +167,7 @@ trait CompanyTrait
                 'type_currency_id' => 35,
                 'type_organization_id' => $request->type_organization_id,
                 'type_regime_id' => $request->type_regime_id,
-                'type_liability_id' => 19,
+                'type_liability_id' => 14,
                 'municipality_id' => $request->municipality_id,
                 'merchant_registration' => $request->merchant_registration,
                 'address' => $request->address,
@@ -183,7 +183,7 @@ trait CompanyTrait
             'department_id' => 779,
             'city_id' => 12688,
         ]);
- 
+
     }
 
 
@@ -404,13 +404,13 @@ trait CompanyTrait
             'telephone' => '-',
             'code' => '0000'
         ]);
- 
+
 
         DB::connection('tenant')->table('series')->insert([
-            ['establishment_id' => 1, 'document_type_id' => '80', 'number' => 'NV01'], 
+            ['establishment_id' => 1, 'document_type_id' => '80', 'number' => 'NV01'],
         ]);
 
     }
 
- 
+
 }

@@ -13,7 +13,7 @@ use DateTime;
 
 class Company extends Model
 {
-    
+
     use  UsesTenantConnection;
     protected $table = 'co_service_companies';
     /**
@@ -179,9 +179,9 @@ class Company extends Model
     {
         return $this->belongsTo(TypeLiability::class)
             ->withDefault([
-                'id' => 22,
-                'name' => 'Otro tipo de obligado',
-                'code' => 'O-99',
+                'id' => 117,
+                'name' => 'No Responsable',
+                'code' => 'R-99-PN',
             ]);
     }
 
@@ -236,7 +236,7 @@ class Company extends Model
         else{
             return null;
         }
-       
+
     }
 
     protected $appends = ['resolution_model_api'];

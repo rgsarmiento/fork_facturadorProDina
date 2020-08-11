@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
-    
+
     use UsesSystemConnection;
-    
+
     protected $table = 'co_service_companies';
     /**
      * With default model.
@@ -171,11 +171,11 @@ class Company extends Model
      */
     public function type_liability()
     {
-        return $this->belongsTo(TypeLiability::class)
+        return $this->belongsTo(Typey::class)
             ->withDefault([
-                'id' => 22,
-                'name' => 'Otro tipo de obligado',
-                'code' => 'O-99',
+                'id' => 117,
+                'name' => 'No Responsable',
+                'code' => 'R-99-PN',
             ]);
     }
 
