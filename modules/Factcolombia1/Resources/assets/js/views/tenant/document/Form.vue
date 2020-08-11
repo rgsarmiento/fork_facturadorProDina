@@ -1089,7 +1089,7 @@ export default {
         return {
           tax_id: x.type_tax_id,
           tax_amount: this.cadenaDecimales(x.retention),
-          percent: this.cadenaDecimales(x.rate),
+          percent: this.cadenaDecimales(x.rate / (x.conversion / 100)),
           taxable_amount: this.cadenaDecimales(total),
         };
       });
