@@ -56,6 +56,11 @@ class ConfigurationController extends Controller
         return view('configuration.tenant.documents');
     }
 
+    public function production() {
+        return view('configuration.tenant.production');
+    }
+
+
     /**
      * All
      * @return \Illuminate\Http\Response
@@ -360,6 +365,118 @@ class ConfigurationController extends Controller
             //'resolution' => $response_resolution
         ];
     }
+
+    public function changeEnvironmentProduction(string $environment){
+        $company = ServiceCompany::firstOrFail();
+        $base_url = env("SERVICE_FACT", "");
+        $ch = curl_init("{$base_url}ubl2.1/config/environment");
+        if($environment == 'P')
+            $data = [
+                "type_environment_id" => 1,
+            ];
+        else
+            $data = [
+                "type_environment_id" => 2,
+            ];
+
+        $data_production = json_encode($data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($ch, CURLOPT_POSTFIELDS,($data_production));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            "Authorization: Bearer {$company->api_token}"
+        ));
+        $response_change = curl_exec($ch);
+        $err = curl_error($ch);
+        $respuesta = json_decode($response_change);
+
+        if($err)
+        {
+            return [
+                'message' => "Error en peticion Api.",
+                'success' => false,
+            ];
+        }
+        else{
+            if(property_exists($respuesta, 'message'))
+            {
+                if($environment == 'P')
+                    return [
+                        'message' => "Se cambio satisfactoriamente a ambiente de PRODUCCION.",
+                        'success' => true,
+                    ];
+                else
+                    return [
+                        'message' => "Se cambio satisfactoriamente a HABILITACION.",
+                        'success' => true,
+                    ];
+            }
+            else{
+                return [
+                    'message' => "Error en validacion de datos Api.",
+                    'success' => false,
+                ];
+            }
+        }
+    }
+
+    public function queryTechnicalKey(){
+        $company = ServiceCompany::firstOrFail();
+        $base_url = env("SERVICE_FACT", "");
+        $ch = curl_init("{$base_url}ubl2.1/numbering-range");
+        $data = [
+            "Nit" => $company->identification_number,
+            "IDSoftware" => $company->id_software,
+        ];
+        $data_production = json_encode($data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS,($data_production));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            "Authorization: Bearer {$company->api_token}"
+        ));
+        $response_query = curl_exec($ch);
+        $err = curl_error($ch);
+        $respuesta = json_decode($response_query);
+        if($err)
+        {
+            return [
+                'message' => "Error en peticion Api.",
+                'success' => false,
+            ];
+        }
+        else{
+            if(property_exists($respuesta, 'ResponseDian'))
+            {
+//                $message = $respuesta->ResponseDian->Envelope->Body->GetNumberingRangeResponse->GetNumberingRangeResult->OperationDescription;
+                $message = $respuesta->ResponseDian;
+//                if($respuesta->ResponseDian->Envelope->Body->GetNumberingRangeResponse->GetNumberingRangeResult->OperationCode == '301'){
+//                    $success = false;
+//                    $technicalkey = "No existe clave tecnica, tal vez no se ha asociado un prefijo al software en la pagina DIAN.";
+//                }
+//                else{
+                    $success = true;
+                    $technicalkey = $message;
+//                }
+                return [
+                    'message' => $message,
+                    'success' => $success,
+                    'technicalkey' => $technicalkey,
+                ];
+            }
+            else{
+                return [
+                    'message' => "Error en validacion de datos Api.",
+                    'success' => false,
+                ];
+            }
+        }
+    }
+
 
 
     public function storeServiceSoftware(ConfigurationServiceSoftwareCompanyRequest $request)

@@ -24,6 +24,7 @@
                     <span>Documentos</span>
                 </a>
             </li>
+            <li><a class="{{ ($path[0] === 'client' && $path[1] === 'configuration' && $path[2] === 'production')?'sidebar-list-item active':'sidebar-list-item' }}" href="{{route('tenant.configuration.production')}}">Pasar a produccion</a></li>
             <li class="active">
                 <a class="{{ ($path[0] === 'client' && $path[1] === 'quotations')?'sidebar-list-item active':'sidebar-list-item' }}" href="{{route('tenant.quotation')}}">
                     <i class="fas fa-calculator"></i>
@@ -59,6 +60,8 @@
                 <ul>
                     <li><a class="{{ ($path[0] === 'client' && $path[1] === 'configuration' && $path[2] === '')?'sidebar-list-item active':'sidebar-list-item' }}" href="{{route('tenant.configuration')}}">Empresa</a></li>
                     <li><a class="{{ ($path[0] === 'client' && $path[1] === 'configuration' && $path[2] === 'documents')?'sidebar-list-item active':'sidebar-list-item' }}" href="{{route('tenant.configuration.documents')}}">Documentos</a></li>
+                    <li><a class="{{ ($path[0] === 'client' && $path[1] === 'configuration' && $path[2] === 'production')?'sidebar-list-item active':'sidebar-list-item' }}" href="{{route('tenant.configuration.production')}}">Cambiar Ambiente</a></li>
+
                 </ul>
             </li>
         </ul>
