@@ -124,6 +124,18 @@
                           </v-btn>
                         </v-list-tile-action>
                       </v-list-tile>
+                       <v-list-tile>
+                        <v-list-tile-title>Attached Document</v-list-tile-title>
+                        <v-list-tile-action>
+                          <v-btn
+                            icon
+                            :href="`${api_download}${props.item.response_api_invoice.urlinvoiceattached}`"
+                            target="_blank"
+                          >
+                            <v-icon small>fas fa-download</v-icon>
+                          </v-btn>
+                        </v-list-tile-action>
+                      </v-list-tile>
                       <v-list-tile v-if="props.item.type_document_id == 1">
                         <v-list-tile-title>Nota</v-list-tile-title>
                         <v-list-tile-action>

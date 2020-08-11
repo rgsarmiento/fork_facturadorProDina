@@ -13,7 +13,7 @@ class Document extends Model
     use SoftDeletes, HasJsonRelationships, UsesTenantConnection;
 
     protected $table = 'co_documents';
-    
+
 
     /**
      * The attributes that should be cast to native types.
@@ -185,22 +185,33 @@ class Document extends Model
                 'message' => '',
                 'urlinvoicepdf' => '',
                 'urlinvoicexml' => '',
+                'urlinvoiceattached' => '',
             ];
         }
 
         $model = json_decode($this->response_api);
-        if(array_key_exists('urlinvoicepdf', $model))
+        if(array_key_exists('urlinvoiceattached', $model))
             return (object)[
                 'message' => $model->message,
                 'urlinvoicepdf' => $model->urlinvoicepdf,
                 'urlinvoicexml' => $model->urlinvoicexml,
+                'urlinvoiceattached' => $model->urlinvoiceattached,
             ];
         else
-            return (object)[
-                'message' => '',
-                'urlinvoicepdf' => '',
-                'urlinvoicexml' => '',
-            ];
+            if(array_key_exists('urlinvoicepdf', $model))
+                return (object)[
+                    'message' => $model->message,
+                    'urlinvoicepdf' => $model->urlinvoicepdf,
+                    'urlinvoicexml' => $model->urlinvoicexml,
+                    'urlinvoiceattached' => ''
+                ];
+            else
+                return (object)[
+                    'message' => '',
+                    'urlinvoicepdf' => '',
+                    'urlinvoicexml' => '',
+                    'urlinvoiceattached' => '',
+                ];
 }
 
     public function getResponseApiInvoiceStatusAttribute()
