@@ -14,7 +14,7 @@
             <div class="card-body">
                 <form autocomplete="off" @submit.prevent="submit">
                     <div class="form-body">
-                        <div class="row">
+                        <!--<div class="row">
                             <div class="col-md-6">
                                 <div class="form-group" :class="{'has-danger': errors.number}">
                                     <label class="control-label">Número</label>
@@ -29,12 +29,12 @@
                                     <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group" :class="{'has-danger': errors.trade_name}">
                                     <label class="control-label">Nombre comercial <span class="text-danger">*</span></label>
-                                    <el-input v-model="form.trade_name"></el-input>
+                                    <el-input :disabled="true" v-model="form.trade_name"></el-input>
                                     <small class="form-control-feedback" v-if="errors.trade_name" v-text="errors.trade_name[0]"></small>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
                                     <div class="sub-title text-danger"><small>Se recomienda resoluciones 700x300</small></div>
                                 </div>
                             </div> -->
-                            <div class="col-md-6">
+                           <!-- <div class="col-md-6">
                                 <div class="form-group" :class="{'has-danger': errors.detraction_account}">
                                     <label class="control-label">N° Cuenta de detracción</label>
                                     <el-input v-model="form.detraction_account"></el-input>
@@ -81,10 +81,10 @@
                                 <div class="form-group" :class="{'has-danger': errors.operation_amazonia}">
                                     <el-checkbox v-model="form.operation_amazonia">¿Emite en la Amazonía?</el-checkbox>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
 
-                        <div class="row">
+                        <!--<div class="row">
                             <div class="col-md-12 mt-2">
                                 <h4 class="border-bottom">Entorno del sistema</h4>
                             </div>
@@ -147,7 +147,7 @@
                                     <small class="form-control-feedback" v-if="errors.soap_url" v-text="errors.soap_url[0]"></small>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="form-actions text-right pt-2">
                         <el-button type="primary" native-type="submit" :loading="loading_submit">Guardar</el-button>
