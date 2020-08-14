@@ -96,10 +96,10 @@
                                             Listado de comprobantes
                                         </a>
                                     </li> --}}
-                                    
+
                                     <li class="{{ ($path[0] === 'co-documents'  && $path[1] != 'create'  )?'nav-active':'' }}">
                                         <a class="nav-link" href="{{route('tenant.co-documents.index')}}">
-                                            Listado de comprobantes 
+                                            Listado de comprobantes
                                         </a>
                                     </li>
                                 @endif
@@ -709,6 +709,11 @@
                                     Análisis comercial
                                 </a>
                             </li> -->
+                            <li class="{{(($path[0] === 'reports') && ($path[1] === 'purchases')) ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.reports.taxes')}}">
+                                    Impuestos
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     @endif
@@ -800,7 +805,7 @@
                         <ul class="nav nav-children" style="">
                             <li class="{{($path[0] === 'co-configuration') ? 'nav-active': ''}}">
                                 <a class="nav-link" href="{{route('tenant.configuration')}}">
-                                    Empresa 
+                                    Empresa
                                 </a>
                             </li>
                             {{-- <li class="{{($path[0] === 'companies') ? 'nav-active': ''}}">
