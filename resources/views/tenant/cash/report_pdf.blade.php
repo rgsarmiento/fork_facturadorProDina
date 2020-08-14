@@ -142,7 +142,7 @@ $cash_final_balance = $final_balance + $cash->beginning_balance;
                         <p><strong>N° Documento: </strong>{{$company->number}}</p>
                     </td>
                     <td class="td-custom">
-                        <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
+                        <p><strong>Establecimiento: </strong>{{$establishment->description}} </p> {{-- $establishment->department->description}} - {{$establishment->district->description --}}
                     </td>
                 </tr>
 

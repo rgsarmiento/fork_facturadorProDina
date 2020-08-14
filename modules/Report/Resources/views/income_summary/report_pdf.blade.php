@@ -1,9 +1,9 @@
 @php
 
 $establishment = $cash->user->establishment;
- 
+
 $cash_documents = $cash->cash_documents;
- 
+
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -18,38 +18,38 @@ $cash_documents = $cash->cash_documents;
                 font-family: sans-serif;
                 font-size: 12px;
             }
-            
+
             table {
                 width: 100%;
                 border-spacing: 0;
                 border: 1px solid black;
             }
-            
+
             .celda {
                 text-align: center;
                 padding: 5px;
                 border: 0.1px solid black;
             }
-            
+
             th {
                 padding: 5px;
                 text-align: center;
                 border-color: #0088cc;
                 border: 0.1px solid black;
             }
-            
+
             .title {
                 font-weight: bold;
                 padding: 5px;
                 font-size: 20px !important;
                 text-decoration: underline;
             }
-            
+
             p>strong {
                 margin-left: 5px;
                 font-size: 12px;
             }
-            
+
             thead {
                 font-weight: bold;
                 background: #0088cc;
@@ -64,7 +64,7 @@ $cash_documents = $cash->cash_documents;
             <p align="center" class="title"><strong>Resúmen de ingresos por métodos de pago</strong></p>
         </div>
         <div style="margin-top:20px; margin-bottom:20px;">
-            <table> 
+            <table>
                 <tr>
                     <td class="td-custom">
                         <p><strong>Empresa: </strong>{{$company->name}}</p>
@@ -78,10 +78,10 @@ $cash_documents = $cash->cash_documents;
                         <p><strong>N° Documento: </strong>{{$company->number}}</p>
                     </td>
                     <td class="td-custom">
-                        <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
+                        <p><strong>Establecimiento: </strong>{{$establishment->description}} {{-- $establishment->department->description}} - {{$establishment->district->description --}}</p>
                     </td>
                 </tr>
-                
+
                 <tr>
                     <td class="td-custom">
                         <p><strong>Vendedor: </strong>{{$cash->user->name}}</p>
@@ -99,8 +99,8 @@ $cash_documents = $cash->cash_documents;
                         <p><strong>Fecha y hora cierre: </strong>{{$cash->date_closed}} {{$cash->time_closed}}</p>
                     </td>
                     @endif
-                </tr> 
-            </table> 
+                </tr>
+            </table>
         </div>
         @if($cash_documents->count())
             <div class="">
@@ -112,7 +112,7 @@ $cash_documents = $cash->cash_documents;
                                 <th>Fecha y hora emisión</th>
                                 <th>Tipo documento</th>
                                 <th>Documento</th>
-                                <th>Método de pago</th> 
+                                <th>Método de pago</th>
                                 <th>Moneda</th>
                                 <th>Importe</th>
                                 <th>Vuelto</th>
@@ -121,21 +121,21 @@ $cash_documents = $cash->cash_documents;
                         </thead>
                         <tbody>
                             @foreach($cash_documents as $value)
-                            
+
                                 @php
-                                    
+
                                     $type_transaction =  null;
                                     $document_type_description = null;
                                     $number = null;
                                     $date_time_of_issue = null;
                                     $payment_method_description = null;
-                                    $total = null;  
+                                    $total = null;
                                     $currency_type_id = null;
 
                                 @endphp
 
                                 @if($value->sale_note)
- 
+
                                     @foreach($value->sale_note->payments as $payment)
                                     <tr>
                                         @php
@@ -154,8 +154,8 @@ $cash_documents = $cash->cash_documents;
                                         <td class="celda">{{ $date_time_of_issue}}</td>
                                         <td class="celda">{{ $document_type_description }}</td>
                                         <td class="celda">{{ $number }}</td>
-                                        <td class="celda">{{$payment_method_description }}</td>  
-                                        <td class="celda">{{$currency_type_id }}</td>  
+                                        <td class="celda">{{$payment_method_description }}</td>
+                                        <td class="celda">{{$currency_type_id }}</td>
                                         <td class="celda">{{ number_format($value->sale_note->total,2) }}</td>
                                         <td class="celda">{{ number_format($payment->change,2) }}</td>
                                         <td class="celda">{{ number_format($total,2) }}</td>
@@ -164,7 +164,7 @@ $cash_documents = $cash->cash_documents;
                                     @endforeach
 
                                 @elseif($value->document)
-                                 
+
                                     @foreach($value->document->payments as $payment)
                                     <tr>
                                         @php
@@ -183,8 +183,8 @@ $cash_documents = $cash->cash_documents;
                                         <td class="celda">{{ $date_time_of_issue}}</td>
                                         <td class="celda">{{ $document_type_description }}</td>
                                         <td class="celda">{{ $number }}</td>
-                                        <td class="celda">{{$payment_method_description }}</td>  
-                                        <td class="celda">{{$currency_type_id }}</td>  
+                                        <td class="celda">{{$payment_method_description }}</td>
+                                        <td class="celda">{{$currency_type_id }}</td>
                                         <td class="celda">{{ number_format($value->document->total,2) }}</td>
                                         <td class="celda">{{ number_format($payment->change,2) }}</td>
                                         <td class="celda">{{ number_format($total,2) }}</td>
