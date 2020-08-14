@@ -42,9 +42,9 @@
 
 
                 </div>
-                    
+
                 <div class="row">
-                    
+
                     <div class="col-md-12 mb-2">
                         <h4><b>Datos usuario</b></h4>
                     </div>
@@ -71,9 +71,9 @@
                     </div>
                 </div>
 
- 
+
                 <div class="row">
-                    
+
                     <div class="col-md-12 mb-2">
                         <h4><b>Datos generales</b></h4>
                     </div>
@@ -85,7 +85,7 @@
                             <small class="form-control-feedback" v-if="errors.limit_documents" v-text="errors.limit_documents[0]"></small>
                         </div>
                     </div>
-                     
+
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': (errors.limit_users)}">
                             <label class="control-label">Límite de usuarios</label>
@@ -119,7 +119,7 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.type_document_identification_id" v-text="errors.type_document_identification_id[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="col-md-6">
                         <div  class="form-group" :class="{'has-danger': errors.department_id}">
@@ -129,8 +129,8 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.department_id" v-text="errors.department_id[0]"></small>
                         </div>
-                    </div> 
-                    
+                    </div>
+
                     <div class="col-md-6">
                         <div  class="form-group" :class="{'has-danger': errors.municipality_id}">
                             <label class="control-label">Seleccionar Municipio</label>
@@ -139,8 +139,8 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.municipality_id" v-text="errors.municipality_id[0]"></small>
                         </div>
-                    </div> 
-                    
+                    </div>
+
                     <div class="col-md-6">
                         <div  class="form-group" :class="{'has-danger': errors.type_organization_id}">
                             <label class="control-label">Seleccionar Tipo Organizacion</label>
@@ -149,8 +149,8 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.type_organization_id" v-text="errors.type_organization_id[0]"></small>
                         </div>
-                    </div> 
-                    
+                    </div>
+
                     <div class="col-md-6">
                         <div  class="form-group" :class="{'has-danger': errors.type_regime_id}">
                             <label class="control-label">Seleccionar Regimen</label>
@@ -159,9 +159,9 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.type_regime_id" v-text="errors.type_regime_id[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
-                    
+
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': (errors.merchant_registration)}">
                             <label class="control-label">Registro mercantil</label>
@@ -169,7 +169,7 @@
                             <small class="form-control-feedback" v-if="errors.merchant_registration" v-text="errors.merchant_registration[0]"></small>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': (errors.address)}">
                             <label class="control-label">Dirección</label>
@@ -177,7 +177,7 @@
                             <small class="form-control-feedback" v-if="errors.address" v-text="errors.address[0]"></small>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': (errors.phone)}">
                             <label class="control-label">Teléfono</label>
@@ -186,7 +186,7 @@
                         </div>
                     </div>
 
-                </div>     
+                </div>
                 <div class="row mt-2">
                     <div class="col-md-12" >
                         <div class="form-group">
@@ -247,13 +247,13 @@
 
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
-                    this.modules = response.data.modules 
-                    this.departments = response.data.departments 
-                    this.all_municipalities = response.data.municipalities 
-                    this.type_document_identifications = response.data.type_document_identifications 
-                    this.type_organizations = response.data.type_organizations 
-                    this.type_regimes = response.data.type_regimes 
-                    this.url_base = response.data.url_base 
+                    this.modules = response.data.modules
+                    this.departments = response.data.departments
+                    this.all_municipalities = response.data.municipalities
+                    this.type_document_identifications = response.data.type_document_identifications
+                    this.type_organizations = response.data.type_organizations
+                    this.type_regimes = response.data.type_regimes
+                    this.url_base = response.data.url_base
                 })
 
             await this.initForm()
@@ -275,7 +275,7 @@
 
                 this.errors = {}
                 this.form = {
-                    
+
                     id: null,
                     is_update: false,
                     identification_number: null,
@@ -284,7 +284,7 @@
                     email: null,
                     password: null,
                     password_confirmation: null,
-                    
+
                     department_id: null,
                     municipality_id: null,
                     type_organization_id: null,
@@ -293,14 +293,14 @@
                     address: null,
                     phone: null,
                     economic_activity_code: null,
-                    ica_rate: null, 
+                    ica_rate: null,
                     limit_documents: null,
                     limit_users: 1,
                     type_document_identification_id: null,
                     dv: 1,
                     language_id: 79,
                     country_id: 46,
-                    type_liability_id: 19,
+                    type_liability_id: 14,
                     id_service: null,
                     modules: []
                 }

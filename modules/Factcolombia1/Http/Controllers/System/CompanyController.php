@@ -58,7 +58,7 @@ use Modules\Factcolombia1\Http\Resources\System\{
 
 class CompanyController extends Controller
 {
-    
+
     use CompanyTrait;
 
 
@@ -76,9 +76,9 @@ class CompanyController extends Controller
 
 
         DB::connection('system')->beginTransaction();
-        
+
         try {
-            
+
             $subDom = strtolower($request->input('subdomain'));
             $uuid = config('tenant.prefix_database').'_'.$subDom;
             $fqdn = $subDom.'.'.config('tenant.app_url_base');
@@ -88,42 +88,42 @@ class CompanyController extends Controller
             $website->uuid = $uuid;
 
             $this->validateWebsite($uuid, $website);
-            
+
             app(WebsiteRepository::class)->create($website);
-            
+
             // Hostname
             $hostname = new Hostname;
             $hostname->fqdn = $fqdn;
             $hostname = app(HostnameRepository::class)->create($hostname);
-            
+
             app(HostnameRepository::class)->attach($hostname, $website);
-            
+
             $company = $this->createSystemCompany($request, $hostname);
-            
+
             // Switch
             $tenancy = app(Environment::class);
             $tenancy->tenant($website);
-            
+
             DB::connection('tenant')->beginTransaction();
 
         }
         catch (Exception $e) {
 
             DB::connection('system')->rollBack();
-            
+
             return [
                 'success' => false,
                 'message' => $e->getMessage()
             ];
 
         }
-        
+
         try {
 
             $this->runTenantPeruSeeder($request);
             $this->runTenantSeeder($request, $response, $company);
 
-            
+
             DB::connection('system')->commit();
             DB::connection('tenant')->commit();
 
@@ -132,22 +132,22 @@ class CompanyController extends Controller
 
             DB::connection('system')->rollBack();
             DB::connection('tenant')->rollBack();
-            
+
             return [
                 'success' => false,
                 'message' => $e->getMessage()
             ];
 
         }
-        
+
         // Switch
         $tenancy = app(Environment::class);
         $tenancy->tenant(app(\Hyn\Tenancy\Environment::class)->website());
-        
+
         config(['database.default' => 'system']);
-        
+
         //dispatch((new ConfigureTenantJob)->onTenant($website->id)); ya no estara en cola
-        
+
         return [
             'message' => "Se registro con éxito la compañía {$company->name}.",
             'company' => $company,
@@ -167,23 +167,23 @@ class CompanyController extends Controller
 
     }
 
-    
+
     public function records()
     {
 
         $records = Company::latest()->get();
- 
+
         return new CompanyCollection($records);
     }
 
-    
+
     public function record($id)
     {
         $company = Company::findOrFail($id);
         $tenancy = app(Environment::class);
         $tenancy->tenant($company->hostname->website);
         $company->modules = DB::connection('tenant')->table('module_user')->where('user_id', 1)->get();
-        
+
         return new CompanyResource($company);
     }
 
@@ -198,7 +198,7 @@ class CompanyController extends Controller
                     'servicecompany' => ServiceCompany::all()
                 ];
     }
-    
+
     /**
      * Update
      * @param  \App\Models\System\Company $company
@@ -236,17 +236,17 @@ class CompanyController extends Controller
                 ]
             );
 
-        
+
         app(Environment::class)
             ->tenant($company->hostname->website);
-        
+
         TenantCompany::firstOrFail()
             ->update([
                 'limit_documents' => $request->limit_documents,
                 'economic_activity_code' => $request->economic_activity_code,
                 'ica_rate' => $request->ica_rate
             ]);
-        
+
         if ($request->password != null) {
             User::firstOrFail()
                 ->update([
@@ -268,7 +268,7 @@ class CompanyController extends Controller
                     'phone' => $request->phone,
                 ]
             );
-        
+
         //modules
         DB::connection('tenant')->table('module_user')->where('user_id', 1)->delete();
         DB::connection('tenant')->table('module_level_user')->where('user_id', 1)->delete();
@@ -305,7 +305,7 @@ class CompanyController extends Controller
         ];
 
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -316,13 +316,13 @@ class CompanyController extends Controller
 
         $hostname = Hostname::findOrFail($company->hostname_id);
         $website = Website::findOrFail($hostname->website_id);
-        
+
         app(HostnameRepository::class)
             ->delete($hostname, true);
-        
+
         app(WebsiteRepository::class)
             ->delete($website, true);
-        
+
         DB::table('co_service_companies')->where('identification_number', $company->identification_number)->delete();
         Company::destroy($company->id);
 
@@ -373,7 +373,7 @@ class CompanyController extends Controller
             'modules' => Module::whereIn('id', [1,2,4,5,6,7,8,10,12])->orderBy('description')->get(),
             'url_base' => '.'.config('tenant.app_url_base'),
         //  'type_liability' => ServiceTypeLiability::all()
-          
+
         ];
     }
 
@@ -424,7 +424,7 @@ class CompanyController extends Controller
 
     }
 
-    
+
 
     public function lockedUser(Request $request){
 

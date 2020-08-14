@@ -3,11 +3,11 @@
         <div class="page-header pr-0">
             <h2><a href="/dashboard"><i class="fas fa-tachometer-alt"></i></a></h2>
             <ol class="breadcrumbs">
-                <li class="active"><span>Listado de documentos</span> </li>
+                <li class="active"><span>Listado de docusmentos</span> </li>
                 <!-- <li><span class="text-muted">Facturas - Notas <small>(crédito y débito)</small> - Boletas - Anulaciones</span></li> -->
-            </ol> 
+            </ol>
             <div class="right-wrapper pull-right" >
-                
+
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
             </div>
         </div>
@@ -60,33 +60,33 @@
                         <td class="text-right">{{ row.total_tax }}</td>
                         <td class="text-right">{{ row.subtotal }}</td>
                         <td class="text-right">{{ row.total }}</td>
-                       
+
                         <td class="text-center">
                             <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickPayment(row.id)">Pagos</button>
                         </td>
-                        <td class="text-right" > 
+                        <td class="text-right" >
                             <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickDownload(row.download_xml)"
                                    >XML</button>
                             <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickDownload(row.download_pdf)"
                                    >PDF</button>
- 
+
                         </td>
-                        <td class="text-right" > 
-                                   
+                        <td class="text-right" >
+
                             <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2"
                                >Nota</a>
 
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickOptions(row.id)">Opciones</button>
- 
+
                         </td>
                     </tr>
                 </data-table>
             </div>
- 
+
             <document-payments :showDialog.sync="showDialogPayments"
                                :documentId="recordId"></document-payments>
 
@@ -99,7 +99,7 @@
 </template>
 
 <script>
- 
+
     import DataTable from '@components/DataTable.vue'
     import DocumentOptions from './partials/options.vue'
     import DocumentPayments from './partials/payments.vue'
@@ -116,7 +116,7 @@
                 resource: 'co-documents',
                 recordId: null,
                 showDialogOptions: false,
-                showDialogPayments: false, 
+                showDialogPayments: false,
             }
         },
         created() {
@@ -132,11 +132,11 @@
             },
             clickDownload(download) {
                 window.open(download, '_blank');
-            }, 
+            },
             clickOptions(recordId = null) {
                 this.recordId = recordId
                 this.showDialogOptions = true
-            }, 
+            },
         }
     }
 </script>

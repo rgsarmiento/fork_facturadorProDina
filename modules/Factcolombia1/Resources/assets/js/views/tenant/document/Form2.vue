@@ -37,7 +37,7 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
                                 </div>
-                            </div> 
+                            </div>
 
                             <div class="col-lg-4 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.type_invoice_id}">
@@ -959,7 +959,7 @@
                     return {
                         tax_id: x.type_tax_id,
                         tax_amount: this.cadenaDecimales(x.retention),
-                        percent: this.cadenaDecimales(x.rate),
+                        percent: this.cadenaDecimales(x.rate / (x.conversion / 100)),
                         taxable_amount: this.cadenaDecimales(total),
                     };
                 });
