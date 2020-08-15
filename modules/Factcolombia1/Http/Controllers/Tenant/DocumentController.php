@@ -597,6 +597,7 @@ class DocumentController extends Controller
         ));
 
         $response = curl_exec($ch2);
+        return ($response);
         $respuesta = json_decode($response);
         curl_close($ch2);
 
