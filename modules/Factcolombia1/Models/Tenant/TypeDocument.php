@@ -11,8 +11,8 @@ class TypeDocument extends Model
     use SoftDeletes, UsesTenantConnection;
 
     protected $table = 'co_type_documents';
-    
-    
+
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -20,16 +20,17 @@ class TypeDocument extends Model
      */
     protected $casts = [
         'from' => 'integer',
-        'to' => 'integer'
+        'to' => 'integer',
+        'generated' => 'integer'
     ];
-    
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['name', 'code', 'template', 'resolution_number', 'resolution_date', 'resolution_date_end', 'technical_key', 'prefix', 'from', 'to'];
-    
+    protected $fillable = ['name', 'code', 'template', 'resolution_number', 'resolution_date', 'resolution_date_end', 'technical_key', 'prefix', 'from', 'to', 'generated'];
+
     /**
      * The attributes that should be mutated to dates.
      *

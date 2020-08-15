@@ -101,6 +101,8 @@ Vue.component('tenant-configuration-general-data', require('@viewsModuleProColom
 Vue.component('tenant-configuration-software', require('@viewsModuleProColombia/tenant/configuration/Software.vue'));
 Vue.component('tenant-configuration-certificate', require('@viewsModuleProColombia/tenant/configuration/Certificate.vue'));
 Vue.component('tenant-configuration-resolution', require('@viewsModuleProColombia/tenant/configuration/Resolution.vue'));
+Vue.component('tenant-configuration-documents', require('@viewsModuleProColombia/tenant/configuration/Documents.vue'));
+
 
 
 //colombia
@@ -220,6 +222,9 @@ Vue.component('tenant-report-sales-consolidated-index', require('../../modules/R
 
 Vue.component('tenant-report-user-commissions-index', require('../../modules/Report/Resources/assets/js/views/user_commissions/index.vue'));
 
+Vue.component('tenant-report-tax-index', require('../../modules/Report/Resources/assets/js/views/taxes/index.vue'));
+
+
 Vue.component('tenant-categories-index', require('../../modules/Item/Resources/assets/js/views/categories/index.vue'));
 Vue.component('tenant-brands-index', require('../../modules/Item/Resources/assets/js/views/brands/index.vue'));
 Vue.component('tenant-incentives-index', require('../../modules/Item/Resources/assets/js/views/incentives/index.vue'));
@@ -318,6 +323,8 @@ Vue.component('tenant-account-configuration-index', require('./views/tenant/acco
 
 //auto update
 Vue.component('system-update', require('./views/system/update/index.vue'));
+
+
 
 
 

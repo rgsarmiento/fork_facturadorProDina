@@ -53,7 +53,7 @@ class ConfigurationController extends Controller
     }
 
     public function document() {
-        return view('configuration.tenant.documents');
+        return view('factcolombia1::configuration.tenant.documents');
     }
 
     public function production() {
@@ -188,6 +188,9 @@ class ConfigurationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function updateTypeDocument(ConfigurationTypeDocumentRequest $request, TypeDocument $typeDocument) {
+
+        $base_url = env("SERVICE_FACT", "");
+        $servicecompany = ServiceCompany::firstOrFail();
         $typeDocument->update([
             'resolution_number' => $request->resolution_number,
             'resolution_date' => $request->resolution_date,
@@ -195,12 +198,56 @@ class ConfigurationController extends Controller
             'technical_key' => $request->technical_key,
             'prefix' => mb_strtoupper($request->prefix),
             'from' => $request->from,
-            'to' => $request->to
+            'to' => $request->to,
+            'generated' => $request->generated
         ]);
 
-        return [
-            'success' => true
+        $ch = curl_init("{$base_url}ubl2.1/config/generateddocuments");
+        $data = [
+            'identification_number' => $servicecompany->identification_number,
+            'type_document_id' => $typeDocument->code,
+            'prefix' => mb_strtoupper($request->prefix),
+            'number' => $request->generated
         ];
+
+        $data_initial_number = json_encode($data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($ch, CURLOPT_POSTFIELDS,($data_initial_number));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            "Authorization: Bearer {$servicecompany->api_token}"
+        ));
+        $response_initial_number = curl_exec($ch);
+
+//        return $response_initial_number;
+
+        $err = curl_error($ch);
+        $respuesta = json_decode($response_initial_number);
+
+        if($err)
+        {
+            return [
+                'message' => "Error en peticion Api.",
+                'success' => false,
+            ];
+        }
+        else{
+            if(property_exists($respuesta, 'success'))
+            {
+                return [
+                    'message' => "Se ajusto satisfactoriamente el numero inicial.",
+                    'success' => true,
+                ];
+            }
+            else{
+                return [
+                    'message' => "Error en validacion de datos Api.",
+                    'success' => false,
+                ];
+            }
+        }
     }
 
     /**
@@ -661,6 +708,7 @@ class ConfigurationController extends Controller
 
     public function storeServiceResolution(ConfigurationServiceResolutionCompanyRequest $request)
     {
+
         try{
             $company = ServiceCompany::firstOrFail();
          //   $base_url = env("SERVICE_FACT", "");
@@ -696,7 +744,7 @@ class ConfigurationController extends Controller
             curl_close($ch3);
             $respuesta = json_decode($response_resolution);
 
-            return json_encode($respuesta);
+            //return json_encode($respuesta);
 
             if($err)
             {

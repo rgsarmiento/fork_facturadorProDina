@@ -89,6 +89,11 @@ if($current_hostname) {
             });
 
             Route::get('/co-configuration', 'Tenant\ConfigurationController@index')->name('tenant.configuration');
+            Route::get('/co-configuration-documents', 'Tenant\ConfigurationController@document')->name('tenant.configuration.documents');
+            Route::get('/co-configuration-all', 'Tenant\ConfigurationController@all');
+            Route::post('/configuration/type_document/{type_document}', 'Tenant\ConfigurationController@updateTypeDocument');
+
+
             Route::post('/company', 'Tenant\ConfigurationController@company');
         });
     });

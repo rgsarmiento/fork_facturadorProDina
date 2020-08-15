@@ -37,7 +37,7 @@ class DataMasterTenantSeeder extends Seeder
         ],
         'co_type_regimes' => [
             'file' => 'csv'.DIRECTORY_SEPARATOR.'type_regimes.csv',
-            'columns' => 'id, code, name, @created_at, @updated_at'
+            'columns' => 'id, name, code, @created_at, @updated_at'
         ],
         'co_type_obligations' => [
             'file' => 'csv'.DIRECTORY_SEPARATOR.'type_obligations.csv',
