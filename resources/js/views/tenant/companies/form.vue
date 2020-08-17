@@ -34,7 +34,7 @@
                             <div class="col-md-6">
                                 <div class="form-group" :class="{'has-danger': errors.trade_name}">
                                     <label class="control-label">Nombre comercial <span class="text-danger">*</span></label>
-                                    <el-input :disabled="true" v-model="form.trade_name"></el-input>
+                                    <el-input :disabled="true" v-model="form.name"></el-input>
                                     <small class="form-control-feedback" v-if="errors.trade_name" v-text="errors.trade_name[0]"></small>
                                 </div>
                             </div>
@@ -149,9 +149,9 @@
                             </div>
                         </div> -->
                     </div>
-                    <div class="form-actions text-right pt-2">
+                   <!-- <div class="form-actions text-right pt-2">
                         <el-button type="primary" native-type="submit" :loading="loading_submit">Guardar</el-button>
-                    </div>
+                    </div>-->
                 </form>
             </div>
         </div>

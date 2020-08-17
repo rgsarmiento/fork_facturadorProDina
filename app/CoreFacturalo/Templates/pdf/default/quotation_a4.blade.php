@@ -34,7 +34,7 @@
                     {{ ($establishment->department_id !== '-')? '- '.$establishment->department->name : '' }}
                     {{ ($establishment->country_id !== '-')? ', '.$establishment->country->name : '' }}
                 </h6>
-                
+
                 @isset($establishment->trade_address)
                     <h6>{{ ($establishment->trade_address !== '-')? 'D. Comercial: '.$establishment->trade_address : '' }}</h6>
                 @endisset
@@ -91,7 +91,7 @@
     <tr>
         <td class="align-top">T. Pago:</td>
         <td colspan="">
-            {{ $document->payment_method_type->description }} 
+            {{ $document->payment_method_type->description }}
         </td>
         @if($document->sale_opportunity)
             <td width="25%">O. Venta:</td>
@@ -103,15 +103,15 @@
     <tr>
         <td class="align-top">N° Cuenta:</td>
         <td colspan="3">
-            {{ $document->account_number }} 
-        </td> 
+            {{ $document->account_number }}
+        </td>
     </tr>
     @endif
     @if ($document->shipping_address)
     <tr>
         <td class="align-top">Dir. Envío:</td>
         <td colspan="3">
-            {{ $document->shipping_address }} 
+            {{ $document->shipping_address }}
         </td>
     </tr>
     @endif
@@ -119,14 +119,14 @@
     <tr>
         <td class="align-top">Teléfono:</td>
         <td colspan="3">
-            {{ $customer->telephone }} 
+            {{ $customer->telephone }}
         </td>
     </tr>
     @endif
     <tr>
         <td class="align-top">Vendedor:</td>
         <td colspan="3">
-            {{ $document->user->name }} 
+            {{ $document->user->name }}
         </td>
     </tr>
 </table>
@@ -138,7 +138,7 @@
             <td width="85%">{{ $document->description }}</td>
         </tr>
     @endif
-</table>  
+</table>
 
 @if ($document->guides)
 <br/>
@@ -192,7 +192,7 @@
                         <br/><span style="font-size: 9px">{{ $dtos->factor * 100 }}% {{$dtos->description }}</span>
                     @endforeach
                 @endif
-                
+
                 @if($row->item->is_set == 1)
                  <br>
                 @inject('itemSet', 'App\Services\ItemSetService')
@@ -209,7 +209,7 @@
         <tr>
             <td colspan="6" class="border-bottom"></td>
         </tr>
-    @endforeach 
+    @endforeach
         <tr>
             <td colspan="5" class="text-right font-bold">TOTAL VENTA: {{ $document->currency->symbol }}</td>
             <td class="text-right font-bold">{{ $document->sale }}</td>
@@ -242,18 +242,18 @@
 </table>
 <table class="full-width">
     {{-- <tr>
-        <td width="65%" style="text-align: top; vertical-align: top;"> 
+        <td width="65%" style="text-align: top; vertical-align: top;">
             <br>
             @foreach($accounts as $account)
                 <p>
-                <span class="font-bold">{{$account->bank->description}}</span> {{$account->currency->description}} 
-                <span class="font-bold">N°:</span> {{$account->number}} 
+                <span class="font-bold">{{$account->bank->description}}</span> {{$account->currency->description}}
+                <span class="font-bold">N°:</span> {{$account->number}}
                 @if($account->cci)
                 - <span class="font-bold">CCI:</span> {{$account->cci}}
                 @endif
                 </p>
             @endforeach
-        </td> 
+        </td>
     </tr> --}}
     <tr>
         {{-- <td width="65%">

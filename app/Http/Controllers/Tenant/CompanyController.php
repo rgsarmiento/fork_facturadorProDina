@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\CompanyRequest;
 use App\Http\Resources\Tenant\CompanyResource;
 use Illuminate\Http\Request;
+use Modules\Factcolombia1\Models\Tenant\Company as CoCompany;
+
 
 class CompanyController extends Controller
 {
@@ -26,7 +28,7 @@ class CompanyController extends Controller
 
     public function record()
     {
-        $company = Company::active();
+        $company = CoCompany::active();
         $record = new CompanyResource($company);
 
         return $record;
@@ -35,7 +37,7 @@ class CompanyController extends Controller
     public function store(CompanyRequest $request)
     {
         $id = $request->input('id');
-        $company = Company::find($id);
+        $company = CoCompany::find($id);
         $company->fill($request->all());
         $company->save();
 
@@ -49,7 +51,7 @@ class CompanyController extends Controller
     {
         if ($request->hasFile('file')) {
 
-            $company = Company::active();
+            $company = CoCompany::active();
 
             $type = $request->input('type');
 
