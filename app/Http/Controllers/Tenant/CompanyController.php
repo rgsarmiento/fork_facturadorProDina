@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Modules\Factcolombia1\Models\Tenant\Company as CoCompany;
 
 
+
 class CompanyController extends Controller
 {
     public function create()
@@ -57,7 +58,7 @@ class CompanyController extends Controller
 
             $file = $request->file('file');
             $ext = $file->getClientOriginalExtension();
-            $name = $type.'_'.$company->number.'.'.$ext;
+            $name = $type.'_'.$company->identification_number.'.'.$ext;
 
 
             if (($type === 'logo')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
@@ -72,6 +73,10 @@ class CompanyController extends Controller
             $company->$type = $name;
 
             $company->save();
+
+            $company_t = Company::active();
+            $company_t->$type = $name;
+            $company_t->save();
 
             return [
                 'success' => true,
