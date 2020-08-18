@@ -10,7 +10,7 @@
                             <th class="">#</th>
                             <th  class="text-left">Fecha emisión</th>
                             <th  class="text-center">Cliente</th>
-                            <th  class="text-center">Documento</th>
+                            <th  class="">Documento</th>
                             <th  class="text-center">Base</th>
                             <th  class="text-center">Descuento</th>
                         </tr>
@@ -18,12 +18,12 @@
                             <td>{{ index }}</td>
                             <td  class="text-left">{{row.created_at}}</td>
                             <td  class="text-center">{{row.customer.name}}</td>
-                            <td>
+                            <td class="">
                                 <div>{{row.type_document.name}}</div>
-                                <div>{{row.prefix}}{{row.number}}<template v-if="props.item.type_document_id != 1">({{row.reference.prefix}}{{row.reference.number}})</template></div>
+                                <div>{{row.prefix}}{{row.number}}<template v-if="row.type_document_id != 1">({{row.reference.prefix}}{{row.reference.number}})</template></div>
                             </td>
-                            <td>$ {{row.total}}</td>
-                            <td>$ {{row.total_discount}}</td>
+                            <td class="text-center">$ {{row.total}}</td>
+                            <td class="text-center">$ {{row.total_discount}}</td>
                         </tr>
                         <!--<tr slot="footing">
                             <td class="text-center" :colspan="(columns.length - 2)"><strong>Totales:</strong></td>

@@ -53,7 +53,7 @@
     </head>
     <body>
         <div>
-            <p align="center" class="title"><strong>Consolidado de items por cliente/vendedor</strong></p>
+            <p align="center" class="title"><strong>Reporte de impuestos</strong></p>
         </div>
         <div style="margin-top:20px; margin-bottom:20px;">
             <table>
@@ -81,12 +81,19 @@
                     <table class="">
                         <thead>
                             <tr>
-                            <th class="">#</th>
+                                <th class="">#</th>
                                 <th  class="text-left">Fecha emisión</th>
                                 <th  class="text-center">Cliente</th>
                                 <th  class="text-center">Documento</th>
                                 <th  class="text-center">Base</th>
+
                                 <th  class="text-center">Descuento</th>
+                                <th  class="text-center">IVA</th>
+                                <th  class="text-center">Rete.Ica</th>
+                                <th  class="text-center">Impuesto</th>
+                                <th  class="text-center">Rete.Fuente</th>
+
+                                <th  class="text-center">Rete.Iva</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -100,6 +107,13 @@
                                         <div>{{$value->prefix}}{{$value->number}}</div>
                                     </td>
                                     <td>$ {{$value->total}}</td>
+
+                                    <td>$ {{$value->total_discount}}</td>
+                                    <td>$ {{$value->total_discount}}</td>
+                                    <td>$ {{$value->total_discount}}</td>
+                                    <td>$ {{$value->total_discount}}</td>
+                                    <td>$ {{$value->total_discount}}</td>
+
                                     <td>$ {{$value->total_discount}}</td>
 
                                 </tr>

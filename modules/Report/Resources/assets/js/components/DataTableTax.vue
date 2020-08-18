@@ -42,7 +42,7 @@
                         <slot name="heading"></slot>
                         </thead>
                         <tbody>
-                            <slot v-for="(row, index) in records" :row="row" :index="customIndex(index)"></slot>
+                            <slot v-for="(row, index) in records" :row="row" :index="index + 1"></slot>
                         </tbody>
                         <tfoot>
                             <slot name="footing"></slot>
