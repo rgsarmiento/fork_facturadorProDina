@@ -1,60 +1,34 @@
 <template>
-  <main class="content">
-    <div class="container-fluid">
-      <v-app id="configuration">
-        <v-container>
-          <v-layout row wrap>
-            <v-flex lg12>
-              <v-card class="mb-2">
-                <v-list>
-                  <v-form data-vv-scope="production">
-                    <v-container>
-                      <v-layout row wrap>
-                        <v-flex xs12 sm12 md12 lg12 xl12>
-                          <h3>Cambiar Ambiente de Operacion - (HABILITACION - PRODUCCION)</h3>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12 lg12 xl12>
+<div class="card mb-0 pt-2 pt-md-0">
+        <div class="card-header bg-info">
+            <h3 class="my-0">Cambiar Ambiente de Operacion - (HABILITACION - PRODUCCION)</h3>
+        </div>
+        <div class="tab-content">
+            <div class="general-data">
+                    <div class="form-body">
+                        <div class="row mt-4 mb-4">
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    <label class="control-label">Numero de Identificacion</label>
+                                    <el-input
+                                        type="textarea"
+                                        :rows="5"
+                                        v-model="production.technicalkey"
+                                        >
+                                    </el-input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions text-right mt-4">
+                            <el-button :loading="loadingCompany" class="submit" type="primary" @click="validateProduction('H')" >Pasar a Habilitación</el-button>
+                            <el-button :loading="loadingCompany" class="submit" type="primary" @click="validateProduction('P')" >Pasar a Producción</el-button>
 
-                            <v-textarea
-                                v-model="production.technicalkey"
-                                rows=20
-                            >
-                                <template v-slot:label>
-                                    <div>
-                                        ResponseDian <small>(Seleccione de aqui la llave tecnica.)</small>
-                                    </div>
-                                </template>
-                            </v-textarea>
-<!--                          <v-text-field
-                            v-model="production.technicalkey"
-                            label="Llave Tecnica de la Resolucion de Facturacion."
-                          ></v-text-field>    -->
-                        </v-flex>
-                      </v-layout>
-                    </v-container>
-                  </v-form>
-                </v-list>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    class="bee darker text-white no-decoration"
-                    :loading="loadingCompany"
-                    @click="validateProduction('H')"
-                  >Pasar a Habilitación.</v-btn>
-                  <v-btn
-                    class="bee darker text-white no-decoration"
-                    :loading="loadingCompany"
-                    @click="validateProduction('P')"
-                  >Pasar a Producción.</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-flex>
-          </v-layout>
-          <textarea hidden id="base64" rows="5"></textarea>
-        </v-container>
-      </v-app>
+                        </div>
+                    </div>
+            </div>
+        </div>
     </div>
-  </main>
+
 </template>
 
 <script>
@@ -62,15 +36,11 @@ import Helper from "../../../mixins/Helper";
 
 export default {
   mixins: [Helper],
-  props: {
-    route: {
-      required: true
-    }
-  },
 
   data: () => ({
      loadingCompany: false,
      production: { technicalkey: ''},
+     route: 'co-configuration/production'
   }),
 
   methods: {
@@ -79,26 +49,36 @@ export default {
         axios
             .post(`${this.route}/changeEnvironmentProduction/${environment}`)
             .then(response => {
-                this.$setLaravelMessage(response.data);
+               // this.$setLaravelMessage(response.data);
+                this.$message.success(response.data)
             })
             .catch(error => {
-                this.$setLaravelValidationErrorsFromResponse(error.response.data);
-                this.$setLaravelErrors(error.response.data);
+               // this.$setLaravelValidationErrorsFromResponse(error.response.data);
+                //this.$setLaravelErrors(error.response.data);
+                this.$message.error(error.response.data)
             })
             .then(() => {
                 this.loadingCompany = false;
             });
         if(environment == 'P'){
-           this.loadingCompany = true;
+            this.loadingCompany = true;
             axios
                 .post(`${this.route}/queryTechnicalKey`)
                 .then(response => {
 //                    this.$setLaravelMessage(response.data);
-                    this.production.technicalkey = JSON.stringify(response.data, null, 2)
+                    if(response.data.success)
+                    {
+                        this.production.technicalkey = JSON.stringify(response.data, null, 2)
+
+                    }else{
+                        this.$message.error(response.data.message)
+                    }
                 })
                 .catch(error => {
-                    this.$setLaravelValidationErrorsFromResponse(error.response.data);
-                    this.$setLaravelErrors(error.response.data);
+                   // this.$setLaravelValidationErrorsFromResponse(error.response.data);
+                    //this.$setLaravelErrors(error.response.data);
+                    this.$message.error(error.response.data)
+
                 })
                 .then(() => {
                     this.loadingCompany = false;

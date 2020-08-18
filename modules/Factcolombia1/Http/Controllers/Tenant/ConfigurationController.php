@@ -60,6 +60,11 @@ class ConfigurationController extends Controller
         return view('configuration.tenant.production');
     }
 
+    public function changeAmbient()
+    {
+        return view('factcolombia1::configuration.tenant.change_ambient');
+    }
+
 
     /**
      * All
@@ -414,6 +419,7 @@ class ConfigurationController extends Controller
     }
 
     public function changeEnvironmentProduction(string $environment){
+
         $company = ServiceCompany::firstOrFail();
         $base_url = env("SERVICE_FACT", "");
         $ch = curl_init("{$base_url}ubl2.1/config/environment");
@@ -468,6 +474,7 @@ class ConfigurationController extends Controller
             }
         }
     }
+
 
     public function queryTechnicalKey(){
         $company = ServiceCompany::firstOrFail();

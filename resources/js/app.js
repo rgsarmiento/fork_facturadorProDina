@@ -102,6 +102,7 @@ Vue.component('tenant-configuration-software', require('@viewsModuleProColombia/
 Vue.component('tenant-configuration-certificate', require('@viewsModuleProColombia/tenant/configuration/Certificate.vue'));
 Vue.component('tenant-configuration-resolution', require('@viewsModuleProColombia/tenant/configuration/Resolution.vue'));
 Vue.component('tenant-configuration-documents', require('@viewsModuleProColombia/tenant/configuration/Documents.vue'));
+Vue.component('tenant-configuration-change-ambient', require('@viewsModuleProColombia/tenant/configuration/Production.vue'))
 
 
 

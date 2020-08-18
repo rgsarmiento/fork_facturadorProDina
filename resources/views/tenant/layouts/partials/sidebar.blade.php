@@ -802,7 +802,12 @@
                             <i class="fas fa-cogs" aria-hidden="true"></i>
                             <span>Configuración</span>
                         </a>
-                        <ul class="nav nav-children" style="">
+                        <ul class="nav nav-children">
+                            <li class="{{($path[0] === 'co-configuration-documents') ? 'nav-active': ''}}">
+                                <a class="nav-link" href="{{route('tenant.configuration.change.ambient')}}">
+                                    Cambiar ambiente
+                                </a>
+                            </li>
                             <li class="{{($path[0] === 'co-configuration-documents') ? 'nav-active': ''}}">
                                 <a class="nav-link" href="{{route('tenant.configuration.documents')}}">
                                     Documentos

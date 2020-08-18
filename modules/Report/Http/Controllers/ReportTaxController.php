@@ -29,11 +29,12 @@ class ReportTaxController extends Controller
 
         $documents = Document::query()
             ->with('type_document', 'reference')
-            ->whereBetween('created_at', [
-                Carbon::parse($request->date_from)->startOfDay()->format('Y-m-d H:m:s'),
-                Carbon::parse($request->date_up)->endOfDay()->format('Y-m-d H:m:s')
+            ->whereBetween('date_of_issue', [
+                Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
+                Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
             ])
             ->get();
+
 
         $documents->pluck('taxes')->each(function($taxes) use($taxesAll) {
             collect($taxes)->each(function($tax) use($taxesAll) {
