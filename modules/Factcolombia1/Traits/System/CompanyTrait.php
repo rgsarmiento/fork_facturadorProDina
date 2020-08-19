@@ -132,6 +132,8 @@ trait CompanyTrait
                 'identification_number' => $company->identification_number,
                 'name' => $company->name,
                 'email' => $company->email,
+                'address' => $request->address,
+                'phone' => $request->phone,
                 'subdomain' => $company->subdomain,
                 'limit_documents' => $company->limit_documents,
                 'created_at' => Carbon::now(),

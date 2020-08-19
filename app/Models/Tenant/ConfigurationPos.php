@@ -16,4 +16,8 @@ class ConfigurationPos extends ModelTenant
         'to'
     ];
 
+    protected $casts = [
+        'resolution_date' => 'date',
+    ];
+
 }

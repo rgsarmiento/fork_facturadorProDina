@@ -6,11 +6,12 @@
     $tittle = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
     $payments = $document->payments;
 
+    $config_pos = \App\Models\Tenant\ConfigurationPos::first();
+
 @endphp
 <html>
 <head>
-    {{--<title>{{ $tittle }}</title>--}}
-    {{--<link href="{{ $path_style }}" rel="stylesheet" />--}}
+
 </head>
 <body>
 
@@ -18,96 +19,65 @@
     <div class="text-center company_logo_box pt-5">
         <img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo_ticket contain">
     </div>
-{{--@else--}}
-    {{--<div class="text-center company_logo_box pt-5">--}}
-        {{--<img src="{{ asset('logo/logo.jpg') }}" class="company_logo_ticket contain">--}}
-    {{--</div>--}}
 @endif
 <table class="full-width">
     <tr>
         <td class="text-center"><h4>{{ $company->name }}</h4></td>
     </tr>
     <tr>
-        <td class="text-center"><h5>{{ $company->identification_number }}</h5></td>
+        <td><h5>Nit: {{ $company->identification_number }} - {{ $company->type_regime->name}} </h5></td>
     </tr>
     <tr>
-        <td class="text-center">
-            {{ ($establishment->address !== '-')? $establishment->address : '' }}
-            {{ ($establishment->city_id !== '-')? ', '.$establishment->city->name : '' }}
-            {{ ($establishment->department_id !== '-')? '- '.$establishment->department->name : '' }}
-            {{ ($establishment->country_id !== '-')? ', '.$establishment->country->name : '' }}
-        </td>
+        <td><h5>  {{ ($establishment->address !== '-')? $establishment->address : '' }} </h5></td>
     </tr>
     <tr>
-        <td class="text-center">{{ ($establishment->email !== '-')? $establishment->email : '' }}</td>
+        <td> <h6>Telefonos: {{ ($establishment->telephone !== '-')? $establishment->telephone : '' }}</h6> </td>
     </tr>
     <tr>
-        <td class="text-center pb-3">{{ ($establishment->telephone !== '-')? $establishment->telephone : '' }}</td>
+        <td> <h6>Email: {{ ($establishment->email !== '-')? $establishment->email : '' }}</h6> </td>
     </tr>
     <tr>
-        <td class="text-center pt-3 border-top"><h4>POS</h4></td>
+        <td> <h6>Factura de Venta: {{ $tittle }}</h6> </td>
     </tr>
     <tr>
-        <td class="text-center pb-3 border-bottom"><h3>{{ $tittle }}</h3></td>
+        <td> <h6>Vendedor:  {{ $document->user->name }} </h6></td>
     </tr>
-</table>
-<table class="full-width">
     <tr>
-        <td width="" class="pt-3"><p class="desc">F. Emisión:</p></td>
-        <td width="" class="pt-3"><p class="desc">{{ $document->date_of_issue->format('Y-m-d') }}</p></td>
+        <td><h6>Caja: 01</h6></td>
+    </tr>
+    <tr>
+        <td><h6>Fecha: {{ $document->date_of_issue->format('d-m-Y')}} Vence: {{$document->date_of_issue->format('d-m-Y') }}</h6></td>
     </tr>
 
+    <tr>
+        <td> <h6>Doc Cliente: {{ $customer->code }} </h6></td>
+    </tr>
+    <tr>
+        <td><h6> Nombre: {{ $customer->name }}</h6></td>
+    </tr>
+    <tr>
+        <td> <h6>Direccion: {{ $customer->address }} </h6></td>
+    </tr>
+    <tr>
+        <td> <h6>Ciudad: {{ ($customer->city_id)? ''.$customer->city->name : '' }} </h6></td>
+    </tr>
+    <tr>
+        <td> <h6>Tipo Venta: CONTADO 0 días </h6></td>
+    </tr>
 
-    <tr>
-        <td class="align-top"><p class="desc">Cliente:</p></td>
-        <td><p class="desc">{{ $customer->name }}</p></td>
-    </tr>
-    <tr>
-        <td><p class="desc">{{ $customer->identity_document_type->name }}:</p></td>
-        <td><p class="desc">{{ $customer->number }}</p></td>
-    </tr>
-    @if ($customer->address !== '')
-        <tr>
-            <td class="align-top"><p class="desc">Dirección:</p></td>
-            <td>
-                <p class="desc">
-                    {{ $customer->address }}
-                    {{ ($customer->country_id)? ', '.$customer->country->name : '' }}
-                    {{ ($customer->department_id)? ', '.$customer->department->name : '' }}
-                    {{ ($customer->city_id)? '- '.$customer->city->name : '' }}
-                </p>
-            </td>
-        </tr>
-    @endif
-    @if ($document->purchase_order)
-        <tr>
-            <td><p class="desc">Orden de Compra:</p></td>
-            <td><p class="desc">{{ $document->purchase_order }}</p></td>
-        </tr>
-    @endif
 </table>
 
 <table class="full-width mt-10 mb-10">
     <thead class="">
     <tr>
-        <th class="border-top-bottom desc-9 text-left">CANT.</th>
-        <th class="border-top-bottom desc-9 text-left">UNIDAD</th>
+        <th class="border-top-bottom desc-9 text-left">CODIGO</th>
         <th class="border-top-bottom desc-9 text-left">DESCRIPCIÓN</th>
-        <th class="border-top-bottom desc-9 text-left">P.UNIT</th>
-        <th class="border-top-bottom desc-9 text-left">TOTAL</th>
     </tr>
     </thead>
     <tbody>
     @foreach($document->items as $row)
         <tr>
-            <td class="text-center desc-9 align-top">
-                @if(((int)$row->quantity != $row->quantity))
-                    {{ $row->quantity }}
-                @else
-                    {{ number_format($row->quantity, 0) }}
-                @endif
-            </td>
-            <td class="text-center desc-9 align-top">{{ $row->item->unit_type->name }}</td>
+            <td class="desc-9 align-top"> {{ $row->item->internal_id }}</td>
             <td class="text-left desc-9 align-top">
                 {!!$row->item->name!!} @if (!empty($row->item->presentation)) {!!$row->item->presentation->description!!} @endif
                 @if($row->attributes)
@@ -120,43 +90,11 @@
                 {{ $row->discount }}
                 @endif
             </td>
-            <td class="text-right desc-9 align-top">{{ number_format($row->unit_price, 2) }}</td>
-            <td class="text-right desc-9 align-top">{{ number_format($row->total, 2) }}</td>
         </tr>
         <tr>
-            <td colspan="5" class="border-bottom"></td>
+            <td colspan="2" class="border-bottom"></td>
         </tr>
     @endforeach
-
-        <tr>
-            <td colspan="4" class="text-right font-bold desc">TOTAL VENTA: {{ $document->currency->symbol }}</td>
-            <td class="text-right font-bold desc">{{ $document->sale }}</td>
-        </tr>
-        <tr >
-            <td colspan="4" class="text-right font-bold desc">TOTAL DESCUENTO (-): {{ $document->currency->symbol }}</td>
-            <td class="text-right font-bold desc">{{ $document->total_discount }}</td>
-        </tr>
-
-        @foreach ($document->taxes as $tax)
-            @if ((($tax->total > 0) && (!$tax->is_retention)))
-                <tr >
-                    <td colspan="4" class="text-right font-bold desc">
-                        {{$tax->name}}(+): {{ $document->currency->symbol }}
-                    </td>
-                    <td class="text-right font-bold desc">{{number_format($tax->total, 2)}} </td>
-                </tr>
-            @endif
-        @endforeach
-
-        <tr>
-            <td colspan="4" class="text-right font-bold desc">SUBTOTAL: {{ $document->currency->symbol }}</td>
-            <td class="text-right font-bold desc">{{ $document->subtotal }}</td>
-        </tr>
-
-        <tr>
-            <td colspan="4" class="text-right font-bold desc">TOTAL A PAGAR: {{ $document->currency_type->symbol }}</td>
-            <td class="text-right font-bold desc">{{ number_format($document->total, 2) }}</td>
-        </tr>
     </tbody>
 </table>
 <table class="full-width">
@@ -179,7 +117,38 @@
 
 </table>
 <table class="full-width">
-    <tr><td><strong>PAGOS:</strong> </td></tr>
+    <tr>
+            <td colspan="2" class="text-right font-bold desc">TOTAL VENTA: {{ $document->currency->symbol }}</td>
+            <td class="text-right font-bold desc">{{ $document->sale }}</td>
+        </tr>
+        <tr >
+            <td colspan="2" class="text-right font-bold desc">TOTAL DESCUENTO (-): {{ $document->currency->symbol }}</td>
+            <td class="text-right font-bold desc">{{ $document->total_discount }}</td>
+        </tr>
+
+        @foreach ($document->taxes as $tax)
+            @if ((($tax->total > 0) && (!$tax->is_retention)))
+                <tr >
+                    <td colspan="2" class="text-right font-bold desc">
+                        {{$tax->name}}(+): {{ $document->currency->symbol }}
+                    </td>
+                    <td class="text-right font-bold desc">{{number_format($tax->total, 2)}} </td>
+                </tr>
+            @endif
+        @endforeach
+
+        <tr>
+            <td colspan="2" class="text-right font-bold desc">SUBTOTAL: {{ $document->currency->symbol }}</td>
+            <td class="text-right font-bold desc">{{ $document->subtotal }}</td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="text-right font-bold desc">TOTAL A PAGAR: {{ $document->currency_type->symbol }}</td>
+            <td class="text-right font-bold desc">{{ number_format($document->total, 2) }}</td>
+        </tr>
+</table>
+<table class="full-width">
+    <tr><td><h6>PAGOS:</h6> </td></tr>
     @php
         $payment = 0;
     @endphp
@@ -189,7 +158,26 @@
             $payment += (float) $row->payment;
         @endphp
     @endforeach
-    <tr><td><strong>SALDO:</strong> {{ $document->currency_type->symbol }} {{ number_format($document->total - $payment, 2) }}</td></tr>
+    <tr><td><h6>SALDO:</h6> {{ $document->currency_type->symbol }} {{ number_format($document->total - $payment, 2) }}</td></tr>
+</table>
+<table style="margin-top:3px" class="full-width">
+    <tr>
+        <td> <h6>Resol. DIAN #: {{ $config_pos->resolution_number }} de {{ $config_pos->resolution_date->format('d-m-Y') }}</h6> </td>
+    </tr>
+    <tr>
+        <td>
+            <h6>  Desde la
+            Factura: {{ $config_pos->from }} a la
+            Factura: {{ $config_pos->to }}
+            </h6>
+        </td>
+    </tr>
+    <tr>
+        <td>Vigencia: 24 Meses.</td>
+    </tr>
+    <tr>
+        <td class="text-center">GRACIAS POR SU COMPRA</td>
+    </tr>
 </table>
 </body>
 </html>

@@ -391,7 +391,7 @@ class DocumentPosController extends Controller
         $configuration = $this->configuration->formats;
         $base_template = $configuration;
 
-        $html = $template->pdf($base_template, "sale_note", $this->company, $this->document, $format_pdf);
+        $html = $template->pdf($base_template, "document_pos", $this->company, $this->document, $format_pdf);
 
         if (($format_pdf === 'ticket') OR ($format_pdf === 'ticket_58')) {
 
@@ -548,10 +548,10 @@ class DocumentPosController extends Controller
         $pdf->WriteHTML($stylesheet, HTMLParserMode::HEADER_CSS);
         $pdf->WriteHTML($html, HTMLParserMode::HTML_BODY);
 
-        if(config('tenant.pdf_template_footer')) {
+        /*if(config('tenant.pdf_template_footer')) {
             $html_footer = $template->pdfFooter($base_template);
             $pdf->SetHTMLFooter($html_footer);
-        }
+        }*/
 
         $this->uploadFile($this->document->filename, $pdf->output('', 'S'), 'sale_note');
     }
