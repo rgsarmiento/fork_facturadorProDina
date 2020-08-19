@@ -32,6 +32,10 @@ use Modules\Factcolombia1\Models\Tenant\{
     TypeInvoice,
 };
 use Carbon\Carbon;
+use App\Models\Tenant\ConfigurationPos;
+use App\Http\Requests\Tenant\ConfigurationPosRequest;
+
+
 
 class PosController extends Controller
 {
@@ -44,12 +48,42 @@ class PosController extends Controller
 
         if(!$cash) return redirect()->route('tenant.cash.index');
 
+        $configuration_pos_document = ConfigurationPos::first();
+        if(!$configuration_pos_document) return redirect()->route('tenant.pos.configuration');
+
         $configuration = Configuration::first();
 
         $company = Company::select('soap_type_id')->first();
         $soap_company  = $company->soap_type_id;
 
         return view('tenant.pos.index', compact('configuration', 'soap_company'));
+    }
+
+    public function configuration()
+    {
+        $configuration = ConfigurationPos::first();
+        return view('tenant.pos.configuration', compact('configuration'));
+    }
+
+    public function configuration_store(ConfigurationPosRequest $request)
+    {
+        $id = null;
+
+        $configuration_f = ConfigurationPos::first();
+        if($configuration_f)
+        {
+            $id=$configuration_f->id;
+        }
+
+        $configuration = ConfigurationPos::firstOrNew(['id' => $id]);
+        $configuration->fill($request->all());
+        $configuration->save();
+
+        return [
+            'success' => true,
+            'message' => 'Cambios guardados correctamente.',
+        ];
+
     }
 
     public function index_full()
@@ -156,7 +190,7 @@ class PosController extends Controller
 
                                 $typeDocument->alert_date = ($typeDocument->resolution_date_end == null) ? false : Carbon::parse($typeDocument->resolution_date_end)->subMonth(1)->lt(Carbon::now());
                             });
-                            
+
         $payment_methods = PaymentMethod::all();
 
         $payment_forms = PaymentForm::all();
@@ -172,7 +206,7 @@ class PosController extends Controller
 
     public function table($table)
     {
-        
+
         if ($table === 'taxes') {
 
             return Tax::all()->transform(function($row) {

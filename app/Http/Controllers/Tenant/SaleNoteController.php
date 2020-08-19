@@ -968,10 +968,10 @@ class SaleNoteController extends Controller
                     $ilt = ItemLot::find($it->id);
                     $ilt->has_sale = false;
                     $ilt->save();
-                    
+
                 }
 
-            } 
+            }
         }
 
     }

@@ -336,6 +336,11 @@
                                         Conjuntos/Packs/Promociones
                                     </a>
                                 </li>
+                                <li class="{{ ($path[0] === 'item-sets'  )?'nav-active':'' }}">
+                                    <a class="nav-link" href="{{route('tenant.pos.configuration')}}">
+                                        Configuración
+                                    </a>
+                                </li>
 
                             </ul>
                         </li>

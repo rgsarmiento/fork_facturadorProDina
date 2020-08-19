@@ -247,11 +247,11 @@
                     <td class="font-weight-semibold">SUBTOTAL</td>
                     <td class="font-weight-semibold">:</td>
                     <td class="text-right text-blue">{{currency.symbol}} {{ form.subtotal }}</td>
-                </tr> 
+                </tr>
 
             </table>
             </div>
- 
+
 
           </div>
           <div
@@ -688,7 +688,7 @@
             });
           },
           initForm() {
-            
+
               this.form = {
                   document_type_id: '01',
                   series_id: null,
@@ -730,7 +730,7 @@
           initFormItem() {
 
               this.form_item = {
-            
+
                   id: null,
                   item_id: null,
                   item: {},
@@ -785,7 +785,7 @@
             this.setFormPosLocalStorage()
           },
           async clickAddItem(item, index, input = false) {
-            
+
               this.loading = true;
               // let exchangeRateSale = this.form.exchange_rate_sale;
               let exist_item = _.find(this.form.items, { item_id: item.item_id });
@@ -1057,7 +1057,7 @@
               // this.currency = _.find(this.currencys, {'id': this.form.currency_id})
               // this.changeCurrencyType();
               this.initCurrencyType()
-  
+
               this.filterItems();
               this.changeDateOfIssue();
               this.changeExchangeRate()

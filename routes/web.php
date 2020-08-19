@@ -391,6 +391,13 @@ if ($hostname) {
             Route::get('sale-notes/dispatches', 'Tenant\SaleNoteController@dispatches');
             Route::delete('sale-notes/destroy_sale_note_item/{sale_note_item}', 'Tenant\SaleNoteController@destroy_sale_note_item');
 
+            Route::post('document-pos', 'Tenant\DocumentPosController@store');
+            Route::get('document-pos/record/{salenote}', 'Tenant\DocumentPosController@record');
+            Route::get('document-pos/print/{external_id}/{format?}', 'Tenant\DocumentPosController@toPrint');
+
+
+
+
            Route::get('sale_note_payments/records/{sale_note}', 'Tenant\SaleNotePaymentController@records');
            Route::get('sale_note_payments/document/{sale_note}', 'Tenant\SaleNotePaymentController@document');
            Route::get('sale_note_payments/tables', 'Tenant\SaleNotePaymentController@tables');
@@ -403,9 +410,15 @@ if ($hostname) {
 
            Route::get('sale-notes/downloadExternal/{external_id}', 'Tenant\SaleNoteController@downloadExternal');
 
+           Route::post('document_pos_payments', 'Tenant\DocumentPosPaymentController@store');
+
+
 
            //POS
            Route::get('pos', 'Tenant\PosController@index')->name('tenant.pos.index');
+           Route::get('pos/configuration', 'Tenant\PosController@configuration')->name('tenant.pos.configuration');
+           Route::post('pos/configuration', 'Tenant\PosController@configuration_store');
+
            Route::get('pos_full', 'Tenant\PosController@index_full')->name('tenant.pos_full.index');
 
            Route::get('pos/search_items', 'Tenant\PosController@search_items');
