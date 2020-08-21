@@ -13,7 +13,7 @@ use App\Models\Tenant\SaleNoteItem;
 use App\CoreFacturalo\Requests\Inputs\Common\LegendInput;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\Series;
-use App\Http\Resources\Tenant\SaleNoteCollection;
+use App\Http\Resources\Tenant\DocumentPosCollection;
 use App\Http\Resources\Tenant\SaleNoteResource;
 use App\Http\Resources\Tenant\SaleNoteResource2;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
@@ -73,10 +73,7 @@ class DocumentPosController extends Controller
 
     public function index()
     {
-        $company = Company::select('soap_type_id')->first();
-        $soap_company  = $company->soap_type_id;
-
-        return view('tenant.sale_notes.index', compact('soap_company'));
+        return view('tenant.pos.documents');
     }
 
 
@@ -102,15 +99,10 @@ class DocumentPosController extends Controller
     public function records(Request $request)
     {
         $records = DocumentPos::where($request->column, 'like', "%{$request->value}%")
-                            ->whereTypeUser()
                             ->latest('id');
 
-        if($request->series)
-        {
-            $records = $records->where('series', 'like', '%' . $request->series . '%');
-        }
 
-        return new SaleNoteCollection($records->paginate(config('tenant.items_per_page')));
+        return new DocumentPosCollection($records->paginate(config('tenant.items_per_page')));
     }
 
     public function searchCustomers(Request $request)
@@ -880,7 +872,7 @@ class DocumentPosController extends Controller
     public function downloadExternal($external_id)
     {
         $document = DocumentPos::where('external_id', $external_id)->first();
-        $this->reloadPDF($document, 'a4', null);
+        $this->reloadPDF($document, 'ticket', null);
         return $this->downloadStorage($document->filename, 'sale_note');
 
     }

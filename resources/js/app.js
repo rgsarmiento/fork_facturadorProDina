@@ -180,6 +180,8 @@ Vue.component('tenant-sale-notes-index', require('./views/tenant/sale_notes/inde
 Vue.component('tenant-sale-notes-form', require('./views/tenant/sale_notes/form.vue'));
 Vue.component('tenant-pos-index', require('./views/tenant/pos/index.vue'));
 Vue.component('tenant-pos-configuration', require('./views/tenant/pos/configuration.vue'));
+Vue.component('tenant-pos-documents', require('./views/tenant/pos/documents.vue'));
+
 
 Vue.component('cash-index', require('./views/tenant/cash/index.vue'));
 Vue.component('tenant-card-brands-index', require('./views/tenant/card_brands/index.vue'));

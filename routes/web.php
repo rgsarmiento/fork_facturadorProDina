@@ -394,7 +394,10 @@ if ($hostname) {
             Route::post('document-pos', 'Tenant\DocumentPosController@store');
             Route::get('document-pos/record/{salenote}', 'Tenant\DocumentPosController@record');
             Route::get('document-pos/print/{external_id}/{format?}', 'Tenant\DocumentPosController@toPrint');
-
+            Route::get('document-pos/records', 'Tenant\DocumentPosController@records');
+            Route::get('document-pos/index', 'Tenant\DocumentPosController@index')->name('tenant.document_pos.index');
+            Route::get('document-pos/columns', 'Tenant\DocumentPosController@columns');
+            Route::get('document-pos/downloadExternal/{external_id}', 'Tenant\DocumentPosController@downloadExternal');
 
 
 
@@ -428,6 +431,7 @@ if ($hostname) {
            Route::get('pos/payment', 'Tenant\PosController@payment')->name('tenant.pos.payment');
            Route::get('pos/status_configuration', 'Tenant\PosController@status_configuration');
            Route::get('pos/validate_stock/{item}/{quantity}', 'Tenant\PosController@validate_stock');
+
 
            Route::get('cash', 'Tenant\CashController@index')->name('tenant.cash.index');
            Route::get('cash/columns', 'Tenant\CashController@columns');

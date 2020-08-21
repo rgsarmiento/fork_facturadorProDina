@@ -341,6 +341,14 @@
                                         Configuración
                                     </a>
                                 </li>
+                                <li class="{{ ($path[0] === 'item-sets'  )?'nav-active':'' }}">
+                                    <a class="nav-link" href="{{route('tenant.document_pos.index')}}">
+                                        Lista Documentos
+                                    </a>
+                                </li>
+
+
+
 
                             </ul>
                         </li>
