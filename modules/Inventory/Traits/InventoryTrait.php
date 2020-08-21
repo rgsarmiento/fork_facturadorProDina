@@ -13,7 +13,8 @@ use App\Models\Tenant\{
     Configuration,
     Establishment,
     SaleNoteItem,
-    Item
+    Item,
+    DocumentPosItem
 };
 use Exception;
 use Modules\Item\Models\ItemLotsGroup;
@@ -250,6 +251,9 @@ trait InventoryTrait
     public function findSaleNoteItem($sale_note_item_id) {
         return SaleNoteItem::find($sale_note_item_id);
     }
+    public function findDocumentPosItem($sale_note_item_id) {
+        return DocumentPosItem::find($sale_note_item_id);
+    }
 
     private function createInventoryKardexSaleNote($model, $item_id, $quantity, $warehouse_id, $sale_note_item_id) {
 
@@ -260,7 +264,23 @@ trait InventoryTrait
             'quantity' => $quantity,
         ]);
 
+
         $sale_note_item = $this->findSaleNoteItem($sale_note_item_id);
+        $sale_note_item->inventory_kardex_id = $sale_note_kardex->id;
+        $sale_note_item->update();
+    }
+
+    private function createInventoryKardexDocumentPos($model, $item_id, $quantity, $warehouse_id, $sale_note_item_id) {
+
+        $sale_note_kardex = $model->inventory_kardex()->create([
+            'date_of_issue' => date('Y-m-d'),
+            'item_id' => $item_id,
+            'warehouse_id' => $warehouse_id,
+            'quantity' => $quantity,
+        ]);
+
+
+        $sale_note_item = $this->findDocumentPosItem($sale_note_item_id);
         $sale_note_item->inventory_kardex_id = $sale_note_kardex->id;
         $sale_note_item->update();
     }
@@ -275,9 +295,9 @@ trait InventoryTrait
     }
 
     private function updateDataLots($document_item){
-        
+
         // dd($document_item);
-        
+
         if(isset($document_item->item->IdLoteSelected) )
         {
             if($document_item->item->IdLoteSelected != null)
@@ -299,12 +319,12 @@ trait InventoryTrait
                     $r->save();
                 }
 
-            } 
+            }
         }
 
     }
 
-    
+
     private function deleteItemLots($item){
 
         $i_lots_group = isset($item->item->lots_group) ? $item->item->lots_group:[];
@@ -330,12 +350,12 @@ trait InventoryTrait
                     $ilt = ItemLot::find($it->id);
                     $ilt->has_sale = false;
                     $ilt->save();
-                    
+
                 }
 
-            } 
+            }
         }
 
     }
-    
+
 }
