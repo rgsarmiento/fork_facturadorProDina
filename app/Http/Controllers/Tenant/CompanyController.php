@@ -69,14 +69,27 @@ class CompanyController extends Controller
 
             $file->storeAs(($type === 'logo_store') ? 'public/uploads/logos' : 'certificates', $name);
 
+            if (($type === 'logo_login')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 
-            $company->$type = $name;
+            if($type === 'logo_login')
+            {
+                $file->storeAs(($type === 'logo_login') ? 'public/uploads/logos' : 'certificates', $name);
 
-            $company->save();
+                $company_t = Company::active();
+                $company_t->$type = $name;
+                $company_t->save();
 
-            $company_t = Company::active();
-            $company_t->$type = $name;
-            $company_t->save();
+            }
+            else
+            {
+                $company->$type = $name;
+                $company->save();
+
+                $company_t = Company::active();
+                $company_t->$type = $name;
+                $company_t->save();
+            }
+
 
             return [
                 'success' => true,

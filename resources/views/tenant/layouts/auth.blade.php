@@ -21,7 +21,23 @@
         <link rel="stylesheet" href="{{ asset('theme/custom_styles.css') }}" />
     @endif
 
-    @if (file_exists(public_path('theme/background/bkg_store.jpeg')))
+        @if($vc_company->logo_login)
+                
+            <style>
+                .app{
+                    background: url('{{ asset('storage/uploads/logos/'.$vc_company->logo) }}') center center / cover;
+                }
+            </style>
+        @else
+            <style>
+                .app{
+                    background: url('{{ asset('porto-light/background/bkg_store.jpeg') }}') center center / cover;
+                }
+            </style>
+        @endif
+
+
+    {{-- @if (file_exists(public_path('theme/background/bkg_store.jpeg')))
         <style>
             .app{
                 background: url('{{ asset('theme/background/bkg_store.jpeg') }}') center center / cover;
@@ -33,7 +49,7 @@
                 background: url('{{ asset('porto-light/background/bkg_store.jpeg') }}') center center / cover;
             }
         </style>
-    @endif
+    @endif --}}
 
 </head>
 

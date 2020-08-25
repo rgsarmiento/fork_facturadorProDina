@@ -259,14 +259,14 @@
                                     </a>
                                 </li> --}}
 
-                                @if(in_array('sale_notes', $vc_module_levels))
+                                {{--@if(in_array('sale_notes', $vc_module_levels))
 
                                     <li class="{{ ($path[0] === 'sale-notes')?'nav-active':'' }}">
                                         <a class="nav-link" href="{{route('tenant.sale_notes.index')}}">
                                             Notas de Venta
                                         </a>
                                     </li>
-                                @endif
+                                @endif --}}
 
                                 <li class="{{ ($path[0] === 'technical-services')?'nav-active':'' }}">
                                     <a class="nav-link" href="{{route('tenant.technical_services.index')}}">
@@ -314,6 +314,7 @@
                         {{ ($path[0] === 'pos')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'cash')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'item-sets')?'nav-active nav-expanded':'' }}
+                        {{ ($path[0] === 'document-pos')?'nav-active nav-expanded':'' }}
                         ">
                             <a class="nav-link" href="#">
                                 <span class="float-right badge badge-red badge-danger mr-3">Nuevo</span>
@@ -341,7 +342,7 @@
                                         Configuración
                                     </a>
                                 </li>
-                                <li class="{{ ($path[0] === 'item-sets'  )?'nav-active':'' }}">
+                                <li class="{{ ($path[0] === 'document-pos'  )?'nav-active':'' }}">
                                     <a class="nav-link" href="{{route('tenant.document_pos.index')}}">
                                         Lista Documentos
                                     </a>
@@ -580,7 +581,7 @@
                     @endif --}}
 
                     @if(in_array('reports', $vc_modules))
-                    <li class="nav-parent {{  ($path[0] === 'reports' && in_array($path[1], ['purchases', 'search','sales','customers','items',
+                    <li class="nav-parent {{  ($path[0] === 'reports' && in_array($path[1], ['report-taxes','purchases', 'search','sales','customers','items',
                                         'general-items','consistency-documents', 'quotations', 'sale-notes','cash','commissions','document-hotels',
                                         'validate-documents', 'document-detractions','commercial-analysis', 'order-notes-consolidated',
                                         'order-notes-general', 'sales-consolidated', 'user-commissions'])) ? 'nav-active nav-expanded' : ''}}">
@@ -631,11 +632,11 @@
                                             Cotizaciones
                                         </a>
                                     </li>
-                                    <li class="{{(($path[0] === 'reports') && ($path[1] == 'sale-notes')) ? 'nav-active' : ''}}">
+                                   <!-- <li class="{{(($path[0] === 'reports') && ($path[1] == 'sale-notes')) ? 'nav-active' : ''}}">
                                         <a class="nav-link" href="{{route('tenant.reports.sale_notes.index')}}">
                                             Notas de Venta
                                         </a>
-                                    </li>
+                                    </li>-->
                                     {{-- @if($vc_company->soap_type_id != '03')
                                     <li class="{{(($path[0] === 'reports') && ($path[1] == 'document-detractions')) ? 'nav-active' : ''}}">
                                         <a class="nav-link" href="{{route('tenant.reports.document_detractions.index')}}">
@@ -722,7 +723,7 @@
                                     Análisis comercial
                                 </a>
                             </li> -->
-                            <li class="{{(($path[0] === 'reports') && ($path[1] === 'purchases')) ? 'nav-active' : ''}}">
+                            <li class="{{(($path[0] === 'reports') && ($path[1] === 'report-taxes')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.reports.taxes')}}">
                                     Impuestos
                                 </a>
