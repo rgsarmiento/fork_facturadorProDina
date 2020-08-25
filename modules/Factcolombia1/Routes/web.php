@@ -127,6 +127,9 @@ if($current_hostname) {
                 // Route::post('locked_emission', 'System\CompanyController@lockedEmission');
                 Route::post('locked_tenant', 'System\CompanyController@lockedTenant');
                 Route::post('locked_user', 'System\CompanyController@lockedUser');
+                Route::post('locked_emission', 'System\CompanyController@lockedEmission');
+                Route::post('set_billing_cycle', 'System\CompanyController@startBillingCycle');
+
 
             });
 

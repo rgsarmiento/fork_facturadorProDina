@@ -5,7 +5,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\System\ClientPaymentRequest;
 use App\Http\Requests\System\DocumentRequest;
 use App\Http\Resources\System\ClientPaymentCollection;
-use App\Models\System\Client;
+//use App\Models\System\Client;
+use Modules\Factcolombia1\Models\System\Company as Client;
+
 use App\Models\System\ClientPayment;
 use App\Models\System\PaymentMethodType;
 use App\Models\System\CardBrand;
@@ -14,7 +16,7 @@ class AccountStatusController extends Controller
 {
     public function records($client_id)
     {
-        $records = ClientPayment::where('client_id', $client_id)->get();
+        $records = ClientPayment::where('companie_id', $client_id)->get();
 
         return new ClientPaymentCollection($records);
     }
@@ -44,11 +46,11 @@ class AccountStatusController extends Controller
                 'total' => $total,
                 'total_difference' => $total_difference,
             ],
-            'client' => $client, 
+            'client' => $client,
             'image_url' => $image_url
         ];
 
-    } 
+    }
 
 
 }

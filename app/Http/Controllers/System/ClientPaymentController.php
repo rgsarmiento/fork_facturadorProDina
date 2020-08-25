@@ -5,12 +5,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\System\ClientPaymentRequest;
 use App\Http\Requests\System\DocumentRequest;
 use App\Http\Resources\System\ClientPaymentCollection;
-use App\Models\System\Client;
+//use App\Models\System\Client;
 use App\Models\System\ClientPayment;
 use App\Models\System\PaymentMethodType;
 use App\Models\System\CardBrand;
 use Hyn\Tenancy\Environment;
 use Illuminate\Support\Facades\DB;
+use Modules\Factcolombia1\Models\System\Company as Client;
 
 
 
@@ -18,7 +19,7 @@ class ClientPaymentController extends Controller
 {
     public function records($client_id)
     {
-        $records = ClientPayment::where('client_id', $client_id)->get();
+        $records = ClientPayment::where('companie_id', $client_id)->get();
 
         return new ClientPaymentCollection($records);
     }
@@ -41,7 +42,7 @@ class ClientPaymentController extends Controller
 
         return [
             'name' => $client->name,
-            'pricing' => $client->plan->pricing,
+            //'pricing' => $client->plan->pricing,
             'total_paid' => $total_paid,
             'total' => $total,
             'total_difference' => $total_difference
@@ -56,14 +57,14 @@ class ClientPaymentController extends Controller
         $record->fill($request->all());
         $record->save();
 
-        $client = Client::findOrFail($request->client_id);
+        /*$client = Client::findOrFail($request->client_id);
         $tenancy = app(Environment::class);
         $tenancy->tenant($client->hostname->website);
 
         DB::connection('tenant')->table('account_payments')->insert(
 
             ['date_of_payment' => $record->date_of_payment, 'reference_id' => $record->id, 'payment_method_type_id'=> $record->payment_method_type_id, 'card_brand_id' =>$record->card_brand_id, 'reference' => $record->reference, 'payment' => $record->payment, 'state' => 0, 'created_at' => date('Y-m-d H:i:s')]
-        );
+        );*/
 
         return [
             'success' => true,
@@ -82,22 +83,22 @@ class ClientPaymentController extends Controller
         ];
     }
 
-    
+
     public function cancel_payment($client_payment_id)
     {
         $client_payment = ClientPayment::find($client_payment_id);
         $client_payment->state = true;
         $client_payment->save();
 
-        $client = Client::findOrFail($client_payment->client_id);
+        /*$client = Client::findOrFail($client_payment->client_id);
         $tenancy = app(Environment::class);
         $tenancy->tenant($client->hostname->website);
-        DB::connection('tenant')->table('account_payments')->where('reference_id', $client_payment->id)->update(['state' => 1, 'date_of_payment_real' => date('Y-m-d')]);
+        DB::connection('tenant')->table('account_payments')->where('reference_id', $client_payment->id)->update(['state' => 1, 'date_of_payment_real' => date('Y-m-d')]);*/
 
         return [
             'success' => true,
-            'message' => 'Monto pagado', 
+            'message' => 'Monto pagado',
         ];
 
-    } 
+    }
 }

@@ -8,8 +8,10 @@ class ClientPayment extends Model
 {
     protected $with = ['payment_method_type', 'card_brand'];
 
+    protected $table = 'co_companies_payments';
+
     protected $fillable = [
-        'client_id',
+        'companie_id',
         'date_of_payment',
         'payment_method_type_id',
         'has_card',

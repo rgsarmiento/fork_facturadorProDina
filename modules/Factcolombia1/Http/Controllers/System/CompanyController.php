@@ -173,6 +173,37 @@ class CompanyController extends Controller
 
         $records = Company::latest()->get();
 
+        foreach ($records as &$row) {
+            $tenancy = app(Environment::class);
+            $tenancy->tenant($row->hostname->website);
+            // $row->count_doc = DB::connection('tenant')->table('documents')->count();
+            $row->count_doc = DB::connection('tenant')->table('configurations')->first()->quantity_documents;
+            //$row->count_user = DB::connection('tenant')->table('users')->count();
+
+            if($row->start_billing_cycle)
+            {
+                $day_start_billing = date_format($row->start_billing_cycle, 'j');
+                $day_now = (int)date('j');
+
+
+                if( $day_now <= $day_start_billing  )
+                {
+                    $init = Carbon::parse( date('Y').'-'.((int)date('n') -1).'-'.$day_start_billing );
+                    $end = Carbon::parse(date('Y-m-d'));
+
+                    $row->count_doc_month = DB::connection('tenant')->table('documents')->whereBetween('date_of_issue', [ $init, $end  ])->count();
+                }
+                else{
+
+                    $init = Carbon::parse( date('Y').'-'.((int)date('n') ).'-'.$day_start_billing );
+                    $end = Carbon::parse(date('Y-m-d'));
+                    $row->count_doc_month = DB::connection('tenant')->table('documents')->whereBetween('date_of_issue', [ $init, $end  ])->count();
+
+                }
+
+            }
+        }
+
         return new CompanyCollection($records);
     }
 
@@ -477,6 +508,18 @@ class CompanyController extends Controller
             'message' => ($company->locked_tenant) ? 'Cuenta bloqueada' : 'Cuenta desbloqueada'
         ];
 
+    }
+
+    public function startBillingCycle(Request $request)
+    {
+        $client = Company::findOrFail($request->id);
+        $client->start_billing_cycle = $request->start_billing_cycle;
+        $client->save();
+
+        return [
+            'success' => true,
+            'message' => ($client->start_billing_cycle) ? 'Ciclo de Facturacion definido.' : 'No se pudieron guardar los cambios.'
+        ];
     }
 
 
