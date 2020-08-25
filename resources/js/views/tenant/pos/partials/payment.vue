@@ -169,7 +169,7 @@
 
                         <div class="card-body text-center">
                             <p class="my-0"><small>Monto a cobrar</small></p>
-                            <h1 class="mb-2 mt-0">{{currencyTypeActive.symbol}} {{ form.total }}</h1>
+                            <h1 class="mb-2 mt-0">{{currencyTypeActive.symbol}} {{ Number(form.total).toFixed(3) }}</h1>
                         </div>
                     </div>
                 </div>
@@ -268,16 +268,16 @@
                                 <div class="col-lg-12" v-if="form_payment.payment_method_type_id=='01'">
                                     <div class="row">
                                         <div class="col-lg-3">
-                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(10)">{{currencyTypeActive.symbol}}10</button>
+                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(10.000)">{{currencyTypeActive.symbol}}10.000</button>
                                         </div>
                                         <div class="col-lg-3">
-                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(20)" >{{currencyTypeActive.symbol}}20</button>
+                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(20.000)" >{{currencyTypeActive.symbol}}20.000</button>
                                         </div>
                                         <div class="col-lg-3">
-                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(50)"  >{{currencyTypeActive.symbol}}50</button>
+                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(50.000)"  >{{currencyTypeActive.symbol}}50.000</button>
                                         </div>
                                         <div class="col-lg-3">
-                                            <button class="btn btn-block btn-secondary"  @click="setAmountCash(100)" >{{currencyTypeActive.symbol}}100</button>
+                                            <button class="btn btn-block btn-secondary"  @click="setAmountCash(100.000)" >{{currencyTypeActive.symbol}}100.000</button>
                                         </div>
                                     </div>
                                 </div>
