@@ -356,7 +356,20 @@ export default {
             // this.document.customer_id = this.form.quotation.customer_id;
             // this.changeCustomer();
           } else {
-            this.$message.error(response.data.message);
+
+            //this.$message.error(response.data.message);
+
+            if(response.data.errors){
+
+                const mhtl = this.parseMesaageError(response.data.errors)
+                this.$message({
+                    duration: 6000,
+                    type: 'error',
+                    dangerouslyUseHTMLString: true,
+                    message: mhtl
+                });
+            }
+
           }
         })
         .catch(error => {
@@ -369,6 +382,18 @@ export default {
         .then(() => {
           this.loading_submit = false;
         });
+    },
+    parseMesaageError(errors)
+    {
+        let ht = `Validación de datos <br><br> <ul>`
+        for(var key in errors) {
+            //var value = objects[key];
+            ht += `<li>${key}: ${errors[key][0]}</li>`
+        }
+
+        ht += `</ul>`
+
+        return ht
     },
     async assignDocument() {
       let q = this.form.quotation;

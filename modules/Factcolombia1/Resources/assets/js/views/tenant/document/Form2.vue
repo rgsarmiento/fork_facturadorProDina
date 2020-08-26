@@ -800,7 +800,31 @@
                         this.showDialogOptions = true;
                     }
                     else {
-                        this.$message.error(response.data.message);
+
+
+                        if(response.data.errors){
+                            const mhtl = this.parseMesaageError(response.data.errors)
+                            this.$message({
+                                duration: 6000,
+                                type: 'error',
+                                dangerouslyUseHTMLString: true,
+                                message: mhtl
+                            });
+                        }
+                        else if(response.data.error){
+                            const ht = `<strong>${response.data.message}</strong> <br> <strong>${response.data.error.string} </strong> `
+                            this.$message({
+                                duration: 6000,
+                                type: 'error',
+                                dangerouslyUseHTMLString: true,
+                                message: ht
+                            });
+                        }
+                        else{
+                            this.$message.error(response.data.message);
+                        }
+
+
                     }
                 }).catch(error => {
 
@@ -810,9 +834,23 @@
                     else {
                         this.$message.error(error.response.data.message);
                     }
+
+
                 }).then(() => {
                     this.loading_submit = false;
                 });
+            },
+            parseMesaageError(errors)
+            {
+                let ht = `Validación de datos <br><br> <ul>`
+                for(var key in errors) {
+                    //var value = objects[key];
+                    ht += `<li>${key}: ${errors[key][0]}</li>`
+                }
+
+                ht += `</ul>`
+
+                return ht
             },
 
             async createInvoiceService() {

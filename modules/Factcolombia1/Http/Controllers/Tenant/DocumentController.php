@@ -231,10 +231,19 @@ class DocumentController extends Controller
             $response = curl_exec($ch);
             curl_close($ch);
 
-
+            //return($response);
             $response_model = json_decode($response);
 
             $zip_key = null;
+
+            if(property_exists($response_model, 'errors'))
+            {
+                return [
+                    'success' => false,
+                    'errors' => $response_model->errors,
+                    'message' => 'Errores de validación de datos.'
+                ];
+            }
 
 
                 if(property_exists($response_model, 'urlinvoicepdf') && property_exists($response_model, 'urlinvoicexml'))
