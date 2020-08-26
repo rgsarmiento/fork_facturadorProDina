@@ -811,13 +811,13 @@
                     @endif
 
                     @if(in_array('configuration', $vc_modules))
-                    <li class="nav-parent {{in_array($path[0], ['co-configuration', 'co-configuration-documents', 'companies', 'catalogs', 'advanced', 'tasks', 'inventories','company_accounts','bussiness_turns','offline-configurations','series-configurations','configurations']) ? 'nav-active nav-expanded' : ''}}">
+                    <li class="nav-parent {{in_array($path[0], ['co-configuration-change-ambient', 'co-configuration', 'co-configuration-documents', 'companies', 'catalogs', 'advanced', 'tasks', 'inventories','company_accounts','bussiness_turns','offline-configurations','series-configurations','configurations']) ? 'nav-active nav-expanded' : ''}}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-cogs" aria-hidden="true"></i>
                             <span>Configuración</span>
                         </a>
                         <ul class="nav nav-children">
-                            <li class="{{($path[0] === 'co-configuration-documents') ? 'nav-active': ''}}">
+                            <li class="{{($path[0] === 'co-configuration-change-ambient') ? 'nav-active': ''}}">
                                 <a class="nav-link" href="{{route('tenant.configuration.change.ambient')}}">
                                     Cambiar ambiente
                                 </a>
