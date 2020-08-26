@@ -226,7 +226,7 @@ class ConfigurationController extends Controller
         ));
         $response_initial_number = curl_exec($ch);
 
-//        return $response_initial_number;
+       return ($response_initial_number);
 
         $err = curl_error($ch);
         $respuesta = json_decode($response_initial_number);
