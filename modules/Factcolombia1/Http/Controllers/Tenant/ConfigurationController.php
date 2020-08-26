@@ -194,7 +194,8 @@ class ConfigurationController extends Controller
      */
     public function updateTypeDocument(ConfigurationTypeDocumentRequest $request, TypeDocument $typeDocument) {
 
-        $base_url = env("SERVICE_FACT", "");
+       // $base_url = env("SERVICE_FACT", "");
+        $base_url = config("tenant.service_fact", "");
         $servicecompany = ServiceCompany::firstOrFail();
         $typeDocument->update([
             'resolution_number' => $request->resolution_number,
