@@ -22,10 +22,10 @@
     @endif
 
         @if($vc_company->logo_login)
-                
+
             <style>
                 .app{
-                    background: url('{{ asset('storage/uploads/logos/'.$vc_company->logo) }}') center center / cover;
+                    background: url('{{ asset('storage/uploads/logos/'.$vc_company->logo_login) }}') center center / cover;
                 }
             </style>
         @else
