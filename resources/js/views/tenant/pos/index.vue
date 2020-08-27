@@ -412,6 +412,10 @@
             colors: ['#1cb973', '#bf7ae6', '#fc6304', '#9b4db4', '#77c1f3']
           };
         },
+        mounted()
+        {
+
+        },
         async created() {
           await this.initForm();
           await this.getTables();
@@ -421,9 +425,16 @@
           // await this.initCurrencyType()
           this.customer = await this.getLocalStorageIndex('customer')
 
+          /*if(!this.customer)
+          {
+              this.customer = _.find(this.all_customers, { 'number': '222222222222'}) ?? null
+          }*/
+
+
            if(document.querySelector('.sidebar-toggle')){
                document.querySelector('.sidebar-toggle').click()
            }
+
         },
 
         computed:{
@@ -492,12 +503,21 @@
               this.currency = _.find(this.currencies, {'id': this.form.currency_id})
           },
           getFormPosLocalStorage(){
-
             let form_pos = localStorage.getItem('form_pos');
             form_pos = JSON.parse(form_pos)
             if (form_pos) {
               this.form = form_pos
               // this.calculateTotal()
+            }
+
+            if(!this.form.customer_id)
+            {
+                const customer_default = _.find(this.all_customers, { 'number': '222222222222'}) ?? null
+                if(customer_default)
+                {
+                    this.form.customer_id = customer_default.id
+                    this.changeCustomer()
+                }
             }
 
           },
@@ -633,6 +653,7 @@
             // this.calculateTotal();
           },
           changeCustomer() {
+              debugger
             let customer = _.find(this.all_customers, { id: this.form.customer_id });
             this.customer = customer;
             // this.form.document_type_id = customer.identity_document_type_id == "1" ? "03" : "01";
@@ -690,6 +711,7 @@
           initForm() {
 
               this.form = {
+                  customer_id: null,
                   document_type_id: '01',
                   series_id: null,
                   establishment_id: null,
@@ -1063,6 +1085,8 @@
               this.changeExchangeRate()
 
             });
+
+
           },
           renderCategories(source)
           {

@@ -500,7 +500,7 @@
             },
             setAmountCash(amount)
             {
-                debugger
+                
                 let row = _.last(this.payments, { 'payment_method_type_id' : '01' })
                 row.payment = parseFloat(row.payment) + parseFloat(amount)
                 // console.log(row.payment)
