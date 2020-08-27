@@ -26,9 +26,8 @@ class DocumentPosResource extends JsonResource
             'identifier' => $this->identifier,
             'date_of_issue' => $this->date_of_issue->format('Y-m-d'),
             'print_ticket' => url('')."/document-pos/print/{$this->external_id}/ticket",
-           // 'print_a4' => url('')."/sale-notes/print/{$this->external_id}/a4",
-            //'print_a5' => url('')."/sale-notes/print/{$this->external_id}/a5",
-            // 'print_a5' => url('')."/sale-notes/print-a5/{$this->id}/a5",
+            'print_a4' => url('')."/document-pos/print/{$this->external_id}/a4",
+            'print_a5' => url('')."/document-pos/print/{$this->external_id}/a5",
             'document_pos' => $sale_note,
             'serie' => $this->series,
             'number' => $this->number

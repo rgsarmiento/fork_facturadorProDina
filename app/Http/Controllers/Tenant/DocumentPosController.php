@@ -190,13 +190,13 @@ class DocumentPosController extends Controller
     public function store(Request $request)
     {
 
+
         DB::connection('tenant')->transaction(function () use ($request) {
 
             $data = $this->mergeData($request);
 
-            $this->sale_note =  DocumentPos::updateOrCreate(
-                ['id' => $request->input('id')],
-                $data);
+
+            $this->sale_note =  DocumentPos::create($data);
 
 
             // $this->sale_note->payments()->delete();
@@ -302,21 +302,15 @@ class DocumentPosController extends Controller
 
         $number = null;
 
-        if($inputs['id'])
-        {
-            $number = $inputs['number'];
-        }
-        else{
 
-            $document = DocumentPos::select('number')
-                                //->where('soap_type_id', $this->company->soap_type_id)
-                                //->where('series', $series)
-                                ->orderBy('number', 'desc')
-                                ->first();
 
-            $number = ($document) ? $document->number + 1 : 1;
+        $document = DocumentPos::select('id', 'number')
+            //->where('soap_type_id', $this->company->soap_type_id)
+            //->where('series', $series)
+            ->orderBy('id', 'desc')
+            ->first();
 
-        }
+            $number = ($document) ? (int)$document->number + 1 : 1;
 
         $values = [
             //'automatic_date_of_issue' => $automatic_date_of_issue,

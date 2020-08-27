@@ -653,7 +653,6 @@
             // this.calculateTotal();
           },
           changeCustomer() {
-              debugger
             let customer = _.find(this.all_customers, { id: this.form.customer_id });
             this.customer = customer;
             // this.form.document_type_id = customer.identity_document_type_id == "1" ? "03" : "01";

@@ -186,6 +186,41 @@ trait CompanyTrait
             'city_id' => 12688,
         ]);
 
+        DB::connection('tenant')->table('persons')->insert([
+            [   'type' => 'customers',
+                'dv' => 7,
+                'code' => '222222222222',
+                'type_regime_id' => 2,
+                'type_person_id' => 2,
+                'identity_document_type_id' => 3,
+                'number' => '222222222222',
+                'name' => 'Cliente POS',
+                'country_id' => 47,
+                'department_id' => 779,
+                'city_id' => 12688,
+                'address' => 'direccion POS',
+                'email' => 'clientepos@gmail.com',
+                'telephone' => '999993333',
+                'contact_phone' => '999993333',
+                'contact_name' => 'contact pos',
+                'percentage_perception' => '0.0',
+                'enabled' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+        ]);
+
+        DB::connection('tenant')->table('co_taxes')->insert([
+            [
+                'name' => 'EXCENTO',
+                'code' => '07',
+                'rate' => '0.00',
+                'conversion' => '100.00',
+                'type_tax_id' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+        ]);
     }
 
 

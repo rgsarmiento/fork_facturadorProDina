@@ -13,7 +13,7 @@ class TenantAddDataToCoTaxesExcento extends Migration
      */
     public function up()
     {
-        DB::table('co_taxes')->insert([
+        /*DB::table('co_taxes')->insert([
             [
                 'name' => 'EXCENTO',
                 'code' => '07',
@@ -23,7 +23,7 @@ class TenantAddDataToCoTaxesExcento extends Migration
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
-        ]);
+        ]);*/
     }
 
     /**
@@ -33,6 +33,6 @@ class TenantAddDataToCoTaxesExcento extends Migration
      */
     public function down()
     {
-        DB::table('co_taxes')->where('code','07')->delete();
+       // DB::table('co_taxes')->where('code','07')->delete();
     }
 }

@@ -13,7 +13,7 @@ class TenantAddDataToPersonClientDefault extends Migration
      */
     public function up()
     {
-        DB::table('persons')->insert([
+        /*DB::table('persons')->insert([
             [   'type' => 'customers',
                 'dv' => 7,
                 'code' => '222222222222',
@@ -35,7 +35,7 @@ class TenantAddDataToPersonClientDefault extends Migration
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
-        ]);
+        ]);*/
     }
 
     /**
@@ -45,6 +45,6 @@ class TenantAddDataToPersonClientDefault extends Migration
      */
     public function down()
     {
-        DB::table('persons')->where('number','222222222222')->delete();
+        //DB::table('persons')->where('number','222222222222')->delete();
     }
 }
