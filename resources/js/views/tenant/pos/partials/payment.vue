@@ -195,7 +195,7 @@
                                     <!-- <el-input v-model="difference" :disabled="true">
                                         <template slot="prepend">{{currencyTypeActive.symbol}}</template>
                                     </el-input> -->
-                                    <h4 class="control-label font-weight-semibold m-0 text-center m-b-0">{{currencyTypeActive.symbol}} {{difference}}</h4>
+                                    <h4 class="control-label font-weight-semibold m-0 text-center m-b-0">{{currencyTypeActive.symbol}} {{ Number(difference).toFixed(3)}}</h4>
                                 </div>
                             </div>
                             </div>
@@ -495,11 +495,12 @@
             setAmount(amount){
                 // this.amount = parseFloat(this.amount) + parseFloat(amount)
                 this.amount =  parseFloat(amount) //+ parseFloat(amount)
-                this.enter_amount =  parseFloat(amount) //+ parseFloat(amount)
+                this.enter_amount =  parseFloat(amount).toFixed(3) //+ parseFloat(amount)
                 this.inputAmount()
             },
             setAmountCash(amount)
             {
+                debugger
                 let row = _.last(this.payments, { 'payment_method_type_id' : '01' })
                 row.payment = parseFloat(row.payment) + parseFloat(amount)
                 // console.log(row.payment)
