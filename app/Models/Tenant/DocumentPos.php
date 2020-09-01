@@ -194,4 +194,19 @@ class DocumentPos extends ModelTenant
         return $query->where('currency_id', $currency_id);
     }
 
+    public function getTypeDocumentAttribute()
+    {
+        return ['name'=> 'Factura POS'];
+    }
+
+    public function getReferenceAttribute()
+    {
+        return null;
+    }
+
+    protected $appends = [
+        'type_document',
+        'reference'
+    ];
+
 }

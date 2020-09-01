@@ -77,7 +77,7 @@
                       <div>
                         {{row.prefix}}{{row.number}}
                         <template
-                          v-if="row.type_document_id != 1"
+                          v-if="row.type_document_id && row.type_document_id != 1"
                         >({{row.reference.prefix}}{{row.reference.number}})</template>
                       </div>
                     </td>

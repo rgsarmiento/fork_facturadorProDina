@@ -10,6 +10,8 @@ use App\Models\Tenant\Company;
 use Carbon\Carbon;
 use Modules\Report\Http\Resources\OrderNoteConsolidatedCollection;
 use App\Models\Tenant\Document;
+use App\Models\Tenant\DocumentPos;
+
 use Modules\Report\Exports\TaxExport;
 
 
@@ -36,7 +38,6 @@ class ReportTaxController extends Controller
             ])
             ->get();
 
-
         $documents->pluck('taxes')->each(function($taxes) use($taxesAll) {
             collect($taxes)->each(function($tax) use($taxesAll) {
                 $taxesAll->push($tax);
@@ -45,9 +46,19 @@ class ReportTaxController extends Controller
 
         $taxTitles = $taxesAll->unique('id');
 
+        $documents_pos = DocumentPos::query()
+            ->whereBetween('date_of_issue', [
+                Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
+                Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
+            ])
+            ->get();
+
+       // $union = $documents->union( $documents_pos );
+
+
         return [
             'success' => true,
-            'data' => $documents,
+            'data' => array_merge($documents->toArray(), $documents_pos->toArray()),
             'taxTitles' => $taxTitles->values(),
             'taxesAll' => $taxesAll
         ];
@@ -63,8 +74,8 @@ class ReportTaxController extends Controller
 
         $taxesAll = collect();
 
-        $documents = Document::query()
-            ->with('type_document', 'reference')
+        $documents = Document::
+            with('type_document', 'reference')
             ->whereBetween('date_of_issue', [
                 Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
                 Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
@@ -78,12 +89,19 @@ class ReportTaxController extends Controller
             });
         });
 
+        $documents_pos = DocumentPos::
+            whereBetween('date_of_issue', [
+                Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
+                Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
+            ])
+            ->get();
+
         $taxTitles = $taxesAll->unique('id')->values();
 
-        $records = $documents;
+        //$records =  //(object)array_merge($documents->toArray(), $documents_pos->toArray());
 
         return (new TaxExport)
-                ->records($records)
+                ->records($documents)
                 ->company($company)
                 ->establishment($establishment)
                 ->taxitles($taxTitles)
