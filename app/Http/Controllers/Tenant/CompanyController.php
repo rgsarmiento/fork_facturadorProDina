@@ -8,6 +8,11 @@ use App\Http\Requests\Tenant\CompanyRequest;
 use App\Http\Resources\Tenant\CompanyResource;
 use Illuminate\Http\Request;
 use Modules\Factcolombia1\Models\Tenant\Company as CoCompany;
+use Modules\Factcolombia1\Models\TenantService\{
+    Company as ServiceTenantCompany
+};
+use Illuminate\Support\Facades\Storage;
+
 
 
 
@@ -90,6 +95,27 @@ class CompanyController extends Controller
                 $company_t->save();
             }
 
+            if($type == 'logo')
+            {
+                //$path = 'public/uploads/logos/'.$name;
+                $contents = Storage::get('public/uploads/logos/'.$name);
+
+                $cor = ServiceTenantCompany::firstOrFail();
+                $payload = json_encode(['logo' => base64_encode( $contents ) ]);
+                $base_url = config('tenant.service_fact');
+                $ch = curl_init("{$base_url}ubl2.1/config/logo");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                curl_setopt($ch, CURLOPT_POSTFIELDS,($payload));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    "Authorization: Bearer {$cor->api_token}"
+                ));
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+            }
 
             return [
                 'success' => true,
