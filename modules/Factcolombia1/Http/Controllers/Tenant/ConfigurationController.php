@@ -717,13 +717,10 @@ class ConfigurationController extends Controller
     public function storeServiceResolution(ConfigurationServiceResolutionCompanyRequest $request)
     {
 
+
         try{
             $company = ServiceCompany::firstOrFail();
-         //   $base_url = env("SERVICE_FACT", "");
             $base_url = config("tenant.service_fact", "");
-
-           // return json_encode($base_url);
-
 
             $ch3 = curl_init("{$base_url}ubl2.1/config/resolution");
             $data = [
@@ -891,7 +888,7 @@ class ConfigurationController extends Controller
         DB::connection('tenant')->beginTransaction();
         try {
             $company = ServiceCompany::firstOrFail();
-            $base_url = env("SERVICE_FACT", "");
+            $base_url = config("tenant.service_fact", "");
             //NOTA CREDITO
             $ch5 = curl_init("{$base_url}ubl2.1/config/resolution");
             $data_c = [
