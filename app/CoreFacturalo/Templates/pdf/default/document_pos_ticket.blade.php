@@ -126,6 +126,11 @@
             <td class="text-right font-bold desc">{{ $document->total_discount }}</td>
         </tr>
 
+        <tr>
+            <td colspan="2" class="text-right font-bold desc">SUBTOTAL: {{ $document->currency->symbol }}</td>
+            <td class="text-right font-bold desc">{{ $document->subtotal }}</td>
+        </tr>
+        
         @foreach ($document->taxes as $tax)
             @if ((($tax->total > 0) && (!$tax->is_retention)))
                 <tr >
@@ -137,10 +142,7 @@
             @endif
         @endforeach
 
-        <tr>
-            <td colspan="2" class="text-right font-bold desc">SUBTOTAL: {{ $document->currency->symbol }}</td>
-            <td class="text-right font-bold desc">{{ $document->subtotal }}</td>
-        </tr>
+
 
         <tr>
             <td colspan="2" class="text-right font-bold desc">TOTAL A PAGAR: {{ $document->currency_type->symbol }}</td>
