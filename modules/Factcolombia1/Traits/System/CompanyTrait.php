@@ -27,7 +27,8 @@ trait CompanyTrait
             'limit_documents' => $request->limit_documents,
             'hostname_id' => $hostname->id,
             'economic_activity_code' => $request->economic_activity_code,
-            'ica_rate' => $request->ica_rate
+            'ica_rate' => $request->ica_rate,
+            'type_identity_document_id' => $request->type_document_identification_id,
 
         ]);
 
@@ -140,8 +141,8 @@ trait CompanyTrait
                 'updated_at' => Carbon::now(),
                 'version_ubl_id' => 1,
                 'ambient_id' => 1,
-                'type_identity_document_id' => 1,
-                'type_regime_id' => 1, // estos valores son por default
+                'type_identity_document_id' => $request->type_document_identification_id,
+                'type_regime_id' => $request->type_regime_id, // estos valores son por default
                 'currency_id' => 170, //// estos valores son por default
                 'economic_activity_code' => $request->economic_activity_code,
                 'ica_rate' => $request->ica_rate

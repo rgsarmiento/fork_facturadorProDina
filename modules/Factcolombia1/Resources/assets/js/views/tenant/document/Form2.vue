@@ -927,7 +927,7 @@
                 let tax_incl_am = 0;
                 let allowance_total_amount = 0;
                 this.form.items.forEach(element => {
-                    line_ext_am += (Number(element.price) * Number(element.quantity)) - Number(element.discount);
+                    line_ext_am += (Number(element.price) * Number(element.quantity)) - Number(element.discount) ;
                     allowance_total_amount += Number(element.discount);
                 });
 
@@ -944,7 +944,7 @@
                     tax_inclusive_amount: this.cadenaDecimales(tax_incl_am),
                     allowance_total_amount: this.cadenaDecimales(allowance_total_amount),
                     charge_total_amount: "0.00",
-                    payable_amount: this.cadenaDecimales(tax_incl_am - allowance_total_amount)
+                    payable_amount: this.cadenaDecimales(tax_incl_am)
                 };
 
             },
@@ -997,13 +997,24 @@
                     return {
                         tax_id: x.type_tax_id,
                         tax_amount: this.cadenaDecimales(x.retention),
-                        percent: this.cadenaDecimales(x.rate / (x.conversion / 100)),
+                        percent: this.cadenaDecimales(this.roundNumber(x.rate / (x.conversion / 100), 6)),
                         taxable_amount: this.cadenaDecimales(total),
                     };
                 });
 
             },
-
+            roundNumber(num, decimales = 2) {
+                var signo = (num >= 0 ? 1 : -1);
+                num = num * signo;
+                if (decimales === 0) //con 0 decimales
+                    return signo * Math.round(num);
+                // round(x * 10 ^ decimales)
+                num = num.toString().split('e');
+                num = Math.round(+(num[0] + 'e' + (num[1] ? (+num[1] + decimales) : decimales)));
+                // x * 10 ^ (-decimales)
+                num = num.toString().split('e');
+                return signo * (num[0] + 'e' + (num[1] ? (+num[1] - decimales) : -decimales));
+            },
             createAllowanceCharge(amount, base) {
                 return [
                     {
