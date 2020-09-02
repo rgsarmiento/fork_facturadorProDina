@@ -110,6 +110,10 @@ class ReportTaxController extends Controller
 
     }
 
+
+
+
+
     /*public function pdf(Request $request) {
 
         $company = Company::first();
@@ -123,6 +127,34 @@ class ReportTaxController extends Controller
 
         return $pdf->download($filename.'.pdf');
     }*/
+    public function downloadDocumentPos(Request $request) {
 
+        $company = Company::first();
+        $establishment = ($request->establishment_id) ? Establishment::findOrFail($request->establishment_id) : auth()->user()->establishment;
+
+        $taxesAll = collect();
+
+        $records = Document::query()
+            ->with('type_document', 'reference')
+            ->whereBetween('date_of_issue', [
+                Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
+                Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
+            ])
+            ->get();
+
+        $records->pluck('taxes')->each(function($taxes) use($taxesAll) {
+            collect($taxes)->each(function($tax) use($taxesAll) {
+                $taxesAll->push($tax);
+            });
+        });
+
+        $taxTitles = $taxesAll->unique('id');
+
+        $pdf = PDF::loadView('report::tax.report_pos_pdf', compact("records", "company", "establishment", "taxTitles", "taxesAll"));
+
+        $filename = 'Informe_Fiscal_'.date('YmdHis');
+
+        return $pdf->download($filename.'.pdf');
+    }
 
 }

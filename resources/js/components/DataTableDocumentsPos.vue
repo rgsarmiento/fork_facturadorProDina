@@ -34,6 +34,11 @@
                             </el-input>
                         </template>
                     </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12 pb-2">
+                         <el-button v-if="records.length > 0" class="submit" type="success" @click.prevent="clickDownload()">
+                            <i class="fa fa-file-excel"></i> Descargar Informe
+                        </el-button>
+                    </div>
                 </div>
 
             </div>
@@ -159,7 +164,10 @@
             changeClearInput(){
                 this.search.value = ''
                 this.getRecords()
-            }
+            },
+            clickDownload(type) {
+                window.open(`/reports/report-taxes/pdf/?${this.getQueryParameters()}`, '_blank');
+            },
         }
     }
 </script>

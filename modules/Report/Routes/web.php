@@ -121,6 +121,7 @@ if($current_hostname) {
                 Route::get('taxes/excel', 'ReportTaxController@excel');
 
                 Route::get('/report-taxes', 'ReportTaxController@index')->name('tenant.reports.taxes');
+                Route::get('/report-taxes/pdf', 'ReportTaxController@downloadDocumentPos');
 
 
             });
