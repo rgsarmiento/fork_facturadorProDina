@@ -136,7 +136,7 @@
 
         <tr>
             <td colspan="2" class="text-right font-bold desc">SUBTOTAL: {{ $document->currency->symbol }}</td>
-            <td class="text-right font-bold desc">{{ $document->subtotal }}</td>
+            <td class="text-right font-bold desc">{{ number_format($document->subtotal - $document->total_tax, 2) }}</td>
         </tr>
 
         @foreach ($document->taxes as $tax)

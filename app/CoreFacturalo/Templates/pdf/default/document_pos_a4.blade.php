@@ -220,7 +220,7 @@
         </tr>
         <tr>
             <td colspan="5" class="text-right font-bold">SUBTOTAL: {{ $document->currency->symbol }}</td>
-            <td class="text-right font-bold">{{ $document->subtotal }}</td>
+            <td class="text-right font-bold">{{ number_format($document->subtotal - $document->total_tax, 2) }}</td>
         </tr>
         @foreach ($document->taxes as $tax)
             @if ((($tax->total > 0) && (!$tax->is_retention)))
