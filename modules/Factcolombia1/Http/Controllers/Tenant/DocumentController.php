@@ -503,7 +503,8 @@ class DocumentController extends Controller
             else
                 return [
                     'success' => false,
-                    'message' => "Error de ZipKey."
+                    'message' => "Error de ZipKey.",
+                    'response_server' => $response
                 ];
 
             ///-------------------------------
