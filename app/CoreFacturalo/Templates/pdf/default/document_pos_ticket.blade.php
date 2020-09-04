@@ -70,6 +70,7 @@
 <table class="full-width mt-10 mb-10">
     <thead class="">
     <tr>
+        <th class="border-top-bottom desc-9 text-left">CANT.</th>
         <th class="border-top-bottom desc-9 text-left">CODIGO</th>
         <th class="border-top-bottom desc-9 text-left">DESCRIPCIÓN</th>
     </tr>
@@ -77,6 +78,13 @@
     <tbody>
     @foreach($document->items as $row)
         <tr>
+            <td class="text-center align-top">
+                @if(((int)$row->quantity != $row->quantity))
+                    {{ $row->quantity }}
+                @else
+                    {{ number_format($row->quantity, 0) }}
+                @endif
+            </td>
             <td class="desc-9 align-top"> {{ $row->item->internal_id }}</td>
             <td class="text-left desc-9 align-top">
                 {!!$row->item->name!!} @if (!empty($row->item->presentation)) {!!$row->item->presentation->description!!} @endif
@@ -92,7 +100,7 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2" class="border-bottom"></td>
+            <td colspan="3" class="border-bottom"></td>
         </tr>
     @endforeach
     </tbody>
@@ -130,7 +138,7 @@
             <td colspan="2" class="text-right font-bold desc">SUBTOTAL: {{ $document->currency->symbol }}</td>
             <td class="text-right font-bold desc">{{ $document->subtotal }}</td>
         </tr>
-        
+
         @foreach ($document->taxes as $tax)
             @if ((($tax->total > 0) && (!$tax->is_retention)))
                 <tr >
