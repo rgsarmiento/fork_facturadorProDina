@@ -778,7 +778,7 @@ class ConfigurationController extends Controller
                     'to' => $request->to
                 ]);
 
-                $this->storeResolutionNote();
+                $response_redit_debit =  $this->storeResolutionNote();
 
                 if ($request->prefix == 'SETP')
                     $this->changeEnvironment('HABILITACION');
@@ -788,7 +788,8 @@ class ConfigurationController extends Controller
                 return [
                     'message' => "Se guardaron los cambios.",
                     'success' => true,
-                    'resolution' => $response_resolution
+                    'resolution' => $response_resolution,
+                    'response_redit_debit' => $response_redit_debit
                 ];
         }
         else{
@@ -833,47 +834,6 @@ class ConfigurationController extends Controller
             $response = curl_exec($ch);
             array_push($response_invoice, $response);
 
-       // }
-
-        /*//envio 20 notas de credito
-        $json_credit_note = '';
-        $response_credit_note = array();
-        for ($i=1; $i <=20 ; $i++) {
-            $ch = curl_init("{$base_url}ubl2.1/credit-note/{$id_test}");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS,($json_credit_note));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Accept: application/json',
-                "Authorization: Bearer {$company->api_token}"
-            ));
-
-            $response = curl_exec($ch);
-            array_push($response_credit_note, $response);
-
-        }
-
-
-        //envio 20 notas de debito
-        $json_debit_note = '';
-        $response_debit_note = array();
-        for ($i=1; $i <=20 ; $i++) {
-            $ch = curl_init("{$base_url}ubl2.1/debit-note/{$id_test}");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS,($json_debit_note));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Accept: application/json',
-                "Authorization: Bearer {$company->api_token}"
-            ));
-
-            $response = curl_exec($ch);
-            array_push($response_debit_note, $response);
-
-        }*/
-
 
         return [
             '60_times_invoice' =>  $response_invoice,
@@ -885,6 +845,9 @@ class ConfigurationController extends Controller
 
     public function storeResolutionNote()
     {
+
+        $response = [];
+
         DB::connection('tenant')->beginTransaction();
         try {
             $company = ServiceCompany::firstOrFail();
@@ -909,6 +872,7 @@ class ConfigurationController extends Controller
             ));
 
             $response_credit = curl_exec($ch5);
+            $response["credit"] = $response_credit;
             curl_close($ch5);
             $company->response_resolution_credit = $response_credit;
 
@@ -951,6 +915,8 @@ class ConfigurationController extends Controller
             ]);
 
             $response_debit = curl_exec($ch4);
+            $response["debit"] = $response_debit;
+
             curl_close($ch4);
             $company->response_resolution_debit = $response_debit;
             $company->save();
@@ -960,7 +926,8 @@ class ConfigurationController extends Controller
 
             return [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'data' => $response
             ];
         }
 
@@ -969,6 +936,7 @@ class ConfigurationController extends Controller
         return [
             'success' => true,
             'message' => "Se registraron con éxito las resoluciones para notas contables.",
+            'data' => $response
         ];
 
     }
