@@ -877,7 +877,7 @@ class ConfigurationController extends Controller
             $company->response_resolution_credit = $response_credit;
 
             TypeDocument::updateOrCreate([
-                'code' => 3
+                'code' => 4
             ], [
                 'resolution_date' => NULL,
                 'resolution_date_end' => NULL,
@@ -905,7 +905,7 @@ class ConfigurationController extends Controller
             ));
 
             TypeDocument::updateOrCreate([
-                'code' => 2
+                'code' => 5
             ], [
                 'resolution_date' => NULL,
                 'resolution_date_end' => NULL,
