@@ -415,7 +415,7 @@ class DocumentController extends Controller
             $data_document = json_encode($note_service);
             // dd($data_document);
 
-           // return $data_document;
+            //return $data_document;
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
