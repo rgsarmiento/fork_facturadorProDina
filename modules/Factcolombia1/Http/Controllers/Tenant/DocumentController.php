@@ -427,7 +427,7 @@ class DocumentController extends Controller
             ));
             $response = curl_exec($ch);
             curl_close($ch);
-            // return $response;
+            return $response;
 
             $response_model = json_decode($response);
             $zip_key = null;
