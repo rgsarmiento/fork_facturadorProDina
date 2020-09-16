@@ -9,10 +9,10 @@
                         <div class="row mt-4 mb-4">
                             <div class="col-lg-8">
                                 <div class="form-group">
-                                    <label class="control-label">Numero de Identificacion</label>
+                                    <label class="control-label">ResponseDian <small>(Seleccione de aqui la llave tecnica.)</small></label>
                                     <el-input
                                         type="textarea"
-                                        :rows="5"
+                                        :autosize="{ minRows: 20, maxRows: 20}"
                                         v-model="production.technicalkey"
                                         >
                                     </el-input>
@@ -22,7 +22,6 @@
                         <div class="form-actions text-right mt-4">
                             <el-button :loading="loadingCompany" class="submit" type="primary" @click="validateProduction('H')" >Pasar a Habilitación</el-button>
                             <el-button :loading="loadingCompany" class="submit" type="primary" @click="validateProduction('P')" >Pasar a Producción</el-button>
-
                         </div>
                     </div>
             </div>
@@ -49,12 +48,9 @@ export default {
         axios
             .post(`${this.route}/changeEnvironmentProduction/${environment}`)
             .then(response => {
-               // this.$setLaravelMessage(response.data);
                 this.$message.success(response.data)
             })
             .catch(error => {
-               // this.$setLaravelValidationErrorsFromResponse(error.response.data);
-                //this.$setLaravelErrors(error.response.data);
                 this.$message.error(error.response.data)
             })
             .then(() => {
