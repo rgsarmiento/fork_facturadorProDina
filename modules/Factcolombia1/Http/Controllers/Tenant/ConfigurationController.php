@@ -721,6 +721,7 @@ class ConfigurationController extends Controller
 
             $ch3 = curl_init("{$base_url}ubl2.1/config/resolution");
             $data = [
+                "delete_all_type_resolutions" => true,
                 "type_document_id"=> $request->type_document_id,
                 "prefix"=> $request->prefix,
                 "resolution"=> $request->resolution,

@@ -231,33 +231,23 @@ class DocumentController extends Controller
             $response = curl_exec($ch);
             curl_close($ch);
 
-            //return($response);
             $response_model = json_decode($response);
-
             $zip_key = null;
+            $invoice_status_api = null;
 
-            if(property_exists($response_model, 'errors'))
-            {
-                return [
-                    'success' => false,
-                    'errors' => $response_model->errors,
-                    'message' => 'Errores de validación de datos.'
-                ];
-            }
+//                        $file = fopen("C:\\FRS\\DEBUG.TXT", "w");
+//                        fwrite($file, json_encode($response_model));
+//                        fclose($file);
 
-
-                if(property_exists($response_model, 'urlinvoicepdf') && property_exists($response_model, 'urlinvoicexml'))
+            if($company->type_environment_id == 2){
+                if(array_key_exists('urlinvoicepdf', $response_model) && array_key_exists('urlinvoicexml', $response_model))
                 {
-                //   dd("uno");
                     if(!is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey))
                     {
-                    //  dd("dos");
                         if(is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->Success))
                         {
-                        // dd("tres");
                             if($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->Success == 'false')
                             {
-                            // dd("cuatro");
                                 return [
                                     'success' => false,
                                     'message' => $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->ProcessedMessage
@@ -272,53 +262,86 @@ class DocumentController extends Controller
                         }
                 }
 
-            //declaro variuable response status en null
-            $response_status = null;
-            //compruebo zip_key para ejecutar servicio de status document
+//                return $zip_key;
 
-            if(!$zip_key)
-            {
-                return [
-                    'success' => false,
-                    'message' => "Error de ZipKey.",
-                    'response_server' => $response
-                ];
-            }
+                //declaro variuable response status en null
+                $response_status = null;
+                //compruebo zip_key para ejecutar servicio de status document
 
-                //espero 3 segundos para ejecutar sevcio de status document
-                sleep(3);
-
-                $ch2 = curl_init("{$base_url}ubl2.1/status/zip/{$zip_key}");
-                curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "POST");
-
-                if(file_exists(storage_path('sendmail.api'))){
-                    curl_setopt($ch2, CURLOPT_POSTFIELDS, json_encode(array("sendmail" => true)));
-                }
-                curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
-                    'Content-Type: application/json',
-                    'Accept: application/json',
-                    "Authorization: Bearer {$company->api_token}"
-                ));
-                $response_status = curl_exec($ch2);
-
-                curl_close($ch2);
-                $response_status_decoded = json_decode($response_status);
-
-                if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == "true")
+                if($zip_key)
                 {
-                    $this->setStateDocument(1, $correlative_api);
+                    //espero 3 segundos para ejecutar sevcio de status document
+                    sleep(3);
+
+                    $ch2 = curl_init("{$base_url}ubl2.1/status/zip/{$zip_key}");
+                    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "POST");
+
+                    if(file_exists(storage_path('sendmail.api'))){
+                        curl_setopt($ch2, CURLOPT_POSTFIELDS, json_encode(array("sendmail" => true)));
+                    }
+                    curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Accept: application/json',
+                        "Authorization: Bearer {$company->api_token}"
+                    ));
+                    $response_status = curl_exec($ch2);
+                    curl_close($ch2);
+                    $response_status_decoded = json_decode($response_status);
+
+//                    return $response_status;
+
+                    if(property_exists($response_status_decoded, 'ResponseDian')){
+                        if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == "true")
+                            $this->setStateDocument(1, $correlative_api);
+                        else
+                        {
+                            if(is_array($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string))
+                                $mensajeerror = implode(",", $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string);
+                            else
+                                $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string;
+                            if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == 'false')
+                            {
+                                return [
+                                    'success' => false,
+                                    'message' => "Error al Validar Factura Nro: {$correlative_api} Errores: ".$mensajeerror
+                                ];
+                            }
+                        }
+                    }
+                    else{
+                        $mensajeerror = $response_status_decoded->message;
+                        return [
+                            'success' => false,
+                            'message' => "Error al Validar Factura Nro: {$correlative_api} Errores: ".$mensajeerror
+                        ];
+
+                    }
                 }
                 else
-                {
-                    $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage;
                     return [
                         'success' => false,
-                        'message' => "Error al Validar Factura Nro: {$correlative_api}",
-                        'error' => $mensajeerror
+                        'message' => "Error de ZipKey."
                     ];
-
+            }
+            else{
+                if($response_model->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->IsValid == "true")
+                    $this->setStateDocument(1, $correlative_api);
+                else
+                {
+                    if(is_array($response_model->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->ErrorMessage->string))
+                        $mensajeerror = implode(",", $response_model->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->ErrorMessage->string);
+                    else
+                        $mensajeerror = $response_model->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->ErrorMessage->string;
+                    if($response_model->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->IsValid == 'false')
+                    {
+                        return [
+                            'success' => false,
+                            'message' => "Error al Validar Factura Nro: {$correlative_api} Errores: ".$mensajeerror
+                        ];
+                    }
                 }
+            }
 
             $nextConsecutive = FacadeDocument::nextConsecutive($request->type_document_id);
             $this->company = Company::query()
