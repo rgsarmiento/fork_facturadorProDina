@@ -455,6 +455,7 @@ class DocumentController extends Controller
             $response_model = json_decode($response);
             $zip_key = null;
             $invoice_status_api = null;
+            $response_status = null;
 
             // return $response_model;
 
