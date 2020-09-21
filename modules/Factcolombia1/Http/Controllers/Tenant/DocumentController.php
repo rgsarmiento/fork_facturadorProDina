@@ -350,8 +350,8 @@ class DocumentController extends Controller
 
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents)) throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
 
-            $demo = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
-            return $demo;
+            $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
+//            return $demo;
             $payments = (new DocumentHelper())->savePayments($this->document, $request->payments);
 
 
