@@ -145,7 +145,6 @@ class DocumentController extends Controller
         DB::connection('tenant')->beginTransaction();
 
         try {
-
             if(!$request->customer_id)
             {
                 $customer = (object)$request->service_invoice['customer'];
@@ -166,10 +165,7 @@ class DocumentController extends Controller
                 ]);
 
                 $request['customer_id'] = $person->id;
-
             }
-
-
 
             $response =  null;
             $response_status =  null;
@@ -218,6 +214,9 @@ class DocumentController extends Controller
             $data_document = json_encode($service_invoice);
 
             //return ($data_document);
+                        $file = fopen(storage_path("DEBUG.TXT"), "w");
+                        fwrite($file, json_encode($data_document));
+                        fclose($file);
 
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

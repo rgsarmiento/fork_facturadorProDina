@@ -112,7 +112,7 @@
                                             type="textarea"
                                             autosize
                                             :rows="1"
-                                            v-model="form.additional_information">
+                                            v-model="form.observation">
                                     </el-input>
                                 </div>
                             </div>
