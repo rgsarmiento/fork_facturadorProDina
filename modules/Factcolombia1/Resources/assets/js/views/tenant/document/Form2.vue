@@ -336,7 +336,6 @@
                 total_global_discount:0,
                 loading_search:false,
                 taxes:  [],
-
             }
         },
         async created() {
@@ -479,6 +478,7 @@
                     taxes: [],
                     total: 0,
                     sale: 0,
+                    observation: null,
                     time_days_credit: 0,
                     service_invoice: {},
                     payment_form_id: null,
