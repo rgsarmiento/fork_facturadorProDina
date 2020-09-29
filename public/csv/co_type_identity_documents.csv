@@ -1,10 +1,10 @@
-1	R-00-PN	No obligado a registrarse en el RUT PN
-2	11	Registro civil
-3	12	Tarjeta de identidad
-4	13	Cédula de ciudadanía
-5	21	Tarjeta de extranjería
-6	22	Cédula de extranjería
-7	31	NIT
-8	41	Pasaporte
-9	42	Documento de identificación extranjero
+1	11	Registro civil
+2	12	Tarjeta de identidad
+3	13	Cédula de ciudadanía
+4	21	Tarjeta de extranjería
+5	22	Cédula de extranjería
+6	31	NIT
+7	41	Pasaporte
+8	42	Documento de identificación extranjero
+9	50	NIT de otro país
 10	91	NUIP *

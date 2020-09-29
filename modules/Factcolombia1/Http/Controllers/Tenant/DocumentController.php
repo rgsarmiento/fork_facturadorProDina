@@ -214,9 +214,9 @@ class DocumentController extends Controller
             $data_document = json_encode($service_invoice);
 
             //return ($data_document);
-                        $file = fopen(storage_path("DEBUG.TXT"), "w");
-                        fwrite($file, json_encode($data_document));
-                        fclose($file);
+//                        $file = fopen(storage_path("DEBUG.TXT"), "w");
+//                        fwrite($file, json_encode($data_document));
+//                        fclose($file);
 
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -437,7 +437,10 @@ class DocumentController extends Controller
             $data_document = json_encode($note_service);
             // dd($data_document);
 
-            //return $data_document;
+            $file = fopen(storage_path("DEBUG.TXT"), "w");
+            fwrite($file, json_encode($data_document));
+            fclose($file);
+//            return $data_document;
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");

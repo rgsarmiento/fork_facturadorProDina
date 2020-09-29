@@ -435,6 +435,7 @@
                     taxes: [],
                     total: 0,
                     sale: 0,
+                    observation: null,
                     time_days_credit: 0,
                     id: this.note.id,
                     reference_id: this.note.id,
