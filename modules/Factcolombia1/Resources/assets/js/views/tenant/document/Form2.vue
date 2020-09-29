@@ -855,12 +855,12 @@
 
             async createInvoiceService() {
                 // let resol = this.resolution.resolution; //TODO
-                const invoice = {
+                let invoice = {
                     number: 0,
                     type_document_id: 1
                 };
 
-                invoice.customer = await this.getCustomer();
+                invoice.customer =  this.getCustomer();
                 invoice.tax_totals = await this.getTaxTotal();
                 invoice.legal_monetary_totals = await this.getLegacyMonetaryTotal();
                 invoice.allowance_charges = await this.createAllowanceCharge(invoice.legal_monetary_totals.allowance_total_amount, invoice.legal_monetary_totals.line_extension_amount );
@@ -871,7 +871,6 @@
                 return invoice;
             },
             getCustomer() {
-
                 let customer = this.customers.find(x => x.id == this.form.customer_id);
                 let obj = {
                     identification_number: customer.number,
@@ -879,7 +878,11 @@
                     phone: customer.telephone,
                     address: customer.address,
                     email: customer.email,
-                    merchant_registration: "000000"
+                    merchant_registration: "000000",
+                    type_document_identification_id: customer.identity_document_type_id,
+                    type_organization_id: customer.type_person_id,
+                    municipality_id_fact: customer.city_id,
+                    type_regime_id: customer.type_regime_id
                 };
 
                 this.form.customer_id = customer.id

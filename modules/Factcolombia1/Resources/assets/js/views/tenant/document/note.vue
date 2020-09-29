@@ -447,7 +447,6 @@
                 }
 
                 this.noteService.customer = {
-
                     identification_number: this.note.customer.number,
                     name: this.note.customer.name,
                     phone: this.note.customer.telephone,
@@ -456,9 +455,8 @@
                     merchant_registration: "0000-00",
                     type_document_identification_id: this.note.customer.identity_document_type_id,
                     type_organization_id: this.note.customer.type_person_id,
-                    municipality_id: 149,
-                    type_regime_id: 2
-
+                    municipality_id_fact: this.note.customer.municipality_id,
+                    type_regime_id: this.client.customer.type_regime_id
                 }
 
                 this.errors = {}

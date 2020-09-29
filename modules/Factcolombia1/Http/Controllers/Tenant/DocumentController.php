@@ -214,9 +214,9 @@ class DocumentController extends Controller
             $data_document = json_encode($service_invoice);
 
             //return ($data_document);
-//                        $file = fopen(storage_path("DEBUG.TXT"), "w");
-//                        fwrite($file, json_encode($data_document));
-//                        fclose($file);
+                        $file = fopen(storage_path("DEBUG.TXT"), "w");
+                        fwrite($file, json_encode($data_document));
+                        fclose($file);
 
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -234,7 +234,7 @@ class DocumentController extends Controller
             $zip_key = null;
             $invoice_status_api = null;
 
-//                        $file = fopen("C:\\FRS\\DEBUG.TXT", "w");
+//                        $file = fopen(storage_path("DEBUG.TXT"), "w");
 //                        fwrite($file, json_encode($response_model));
 //                        fclose($file);
 
@@ -855,7 +855,9 @@ class DocumentController extends Controller
                     'address' =>  $row->address,
                     'email' =>  $row->email,
                     'telephone' =>  $row->telephone,
-
+                    'type_person_id' => $row->type_person_id,
+                    'type_regime_id' => $row->type_regime_id,
+                    'city_id' => $row->city_id
 
                 ];
             });
