@@ -456,7 +456,7 @@
                     type_document_identification_id: this.note.customer.identity_document_type_id,
                     type_organization_id: this.note.customer.type_person_id,
                     municipality_id_fact: this.note.customer.municipality_id,
-                    type_regime_id: this.client.customer.type_regime_id
+                    type_regime_id: this.note.customer.type_regime_id
                 }
 
                 this.errors = {}
