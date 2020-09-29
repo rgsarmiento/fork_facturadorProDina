@@ -1,65 +1,6 @@
 <template>
     <div>
-        <div class="row">
-
-            <div class="col-md-12 col-lg-12 col-xl-12 ">
-
-                <div class="row mt-2">
-
-                        <div class="col-md-3">
-                            <label class="control-label">Fecha desde</label>
-                            <el-date-picker v-model="form.date_start" type="date"
-                                            @change="changeDisabledDates"
-                                            value-format="yyyy-MM-dd" format="dd/MM/yyyy" :clearable="true"></el-date-picker>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="control-label">Fecha hasta</label>
-                            <el-date-picker v-model="form.date_end" type="date"
-                                            :picker-options="pickerOptionsDates"
-                                            value-format="yyyy-MM-dd" format="dd/MM/yyyy" :clearable="true"></el-date-picker>
-                        </div>
-
-                        <div class="col-md-6" style="margin-top:29px">
-                            <el-button class="submit" type="primary" @click.prevent="getRecordsByFilter" :loading="loading_submit" icon="el-icon-search" >Buscar</el-button>
-                            <template>
-
-
-                                <el-button class="submit" type="success" @click.prevent="clickDownload('excel')"><i class="fa fa-file-excel" ></i>  Exportal Excel</el-button>
-
-                            </template>
-                        </div>
-                </div>
-                <div class="row mt-1 mb-4">
-
-                </div>
-            </div>
-
-
-            <div class="col-md-12">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <slot name="heading"></slot>
-                        </thead>
-                        <tbody>
-                            <slot v-for="(row, index) in records" :row="row" :index="customIndex(index)"></slot>
-                        </tbody>
-                        <tfoot>
-                            <slot name="footing"></slot>
-                        </tfoot>
-                    </table>
-                    <div>
-                        <el-pagination
-                                @current-change="getRecords"
-                                layout="total, prev, pager, next"
-                                :total="pagination.total"
-                                :current-page.sync="pagination.current_page"
-                                :page-size="pagination.per_page">
-                        </el-pagination>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
 
     </div>
 </template>
@@ -96,9 +37,21 @@
                         return this.form.date_start > time
                     }
                 },
+                resource: 'reports/taxes'
             }
         },
-        computed: {
+        computed:{
+
+            columnsTitles() {
+                let titles = [];
+
+                this.taxTitles.forEach(tax => titles.push({
+                    text: `${tax.name} (${tax.rate})`,
+                    value: null
+                }));
+
+                return titles;
+            }
         },
         created() {
             this.initForm()
@@ -137,10 +90,6 @@
                     date_start:null,
                     date_end:null,
                 }
-
-            },
-            customIndex(index) {
-                return (this.pagination.per_page * (this.pagination.current_page - 1)) + index + 1
             },
             async getRecordsByFilter(){
 

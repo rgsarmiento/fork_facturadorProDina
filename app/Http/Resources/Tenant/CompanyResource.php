@@ -4,6 +4,8 @@ namespace App\Http\Resources\Tenant;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Tenant\Configuration;
+use App\Models\Tenant\Company;
+
 
 
 class CompanyResource extends JsonResource
@@ -17,6 +19,7 @@ class CompanyResource extends JsonResource
     public function toArray($request)
     {
         $configuration = Configuration::first();
+        $company_t = Company::active();
         return [
             'id' => $this->id,
             'number' => $this->number,
@@ -31,6 +34,7 @@ class CompanyResource extends JsonResource
             'logo' => $this->logo,
             'detraction_account' => $this->detraction_account,
             'logo_store' => $this->logo_store,
+            'logo_login' => $company_t->logo_login,
             'operation_amazonia' => (bool) $this->operation_amazonia,
             'config_system_env' => (bool)$configuration->config_system_env
 

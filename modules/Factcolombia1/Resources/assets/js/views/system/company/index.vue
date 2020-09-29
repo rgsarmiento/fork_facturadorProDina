@@ -98,11 +98,14 @@
 
                                 <th class="text-center">Bloquear cuenta</th>
 
-                                <!-- <th class="text-right">Limitar Doc.</th> -->
+                                <th class="text-right">Limitar Doc.</th>
                                 <th class="text-center">Limitar Usuarios</th>
+                                <th class="text-center">Pagos</th>
+                                <th class="text-right">E. Cuenta</th>
+                                <th class="text-right">Inicio Ciclo Facturacion</th>
                                 <th class="text-right">Acciones</th>
                                 <!-- <th class="text-right">Pagos</th> -->
-                                <!-- <th class="text-right">E. Cuenta</th> -->
+
                                 <!-- <th class="text-right">Editar</th> -->
                                 <!-- <th class="text-right">Inicio Ciclo Facturacion</th>
                                 <th class="text-center">Comprobantes Ciclo Facturacion</th>-->
@@ -190,13 +193,13 @@
                                     </template>
                                 </td>
 
-                                <!-- <td class="text-center">
+                                 <td class="text-center">
                                     <el-switch
                                       style="display: block"
                                       v-model="row.locked_emission"
                                       @change="changeLockedEmission(row)"
                                     ></el-switch>
-                                </td> -->
+                                </td>
 
                                     <td class="text-center">
                                         <el-switch
@@ -205,7 +208,35 @@
                                           @change="changeLockedUser(row)"
                                         ></el-switch>
                                     </td>
-
+                                <td class="text-right">
+                                    <button
+                                        type="button"
+                                        class="btn waves-effect waves-light btn-xs btn-warning m-1__2"
+                                        @click.prevent="clickPayments(row.id)"
+                                    >Pagos</button>
+                                </td>
+                                <td class="text-right">
+                                    <button
+                                        type="button"
+                                        class="btn waves-effect waves-light btn-xs btn-primary m-1__2"
+                                        @click.prevent="clickAccountStatus(row.id)"
+                                    >E. Cuenta</button>
+                                </td>
+                                <td class="text-right">
+                                    <template v-if="row.start_billing_cycle">
+                                        <span></span>
+                                        <span>{{row.start_billing_cycle}}</span>
+                                    </template>
+                                    <template v-else>
+                                        <el-date-picker
+                                        @change="setStartBillingCycle($event, row.id)"
+                                        v-model="row.select_date_billing"
+                                        value-format="yyyy-MM-dd"
+                                        type="date"
+                                        placeholder="..."
+                                        ></el-date-picker>
+                                    </template>
+                                </td>
                                 <td class="text-right">
                                     <template v-if="!row.locked">
                                         <button
@@ -274,13 +305,15 @@
         </div>
 
         <companies-form :showDialog.sync="showDialog" :recordId="recordId"></companies-form>
+        <client-payments :showDialog.sync="showDialogPayments" :clientId="recordId"></client-payments>
+
 
         <!--<system-clients-form-edit :showDialog.sync="showDialogEdit"
         :recordId="recordId"></system-clients-form-edit>-->
 
-        <!-- <client-payments :showDialog.sync="showDialogPayments" :clientId="recordId"></client-payments>
+        <!-- <client-payments :showDialog.sync="showDialogPayments" :clientId="recordId"></client-payments>-->
 
-        <account-status :showDialog.sync="showDialogAccountStatus" :clientId="recordId"></account-status>-->
+        <account-status :showDialog.sync="showDialogAccountStatus" :clientId="recordId"></account-status>
     </div>
 </template>
 
@@ -289,13 +322,17 @@ import CompaniesForm from "./form.vue";
 //   import CompaniesFormEdit from './form_edit.vue'
 import { deletable } from "@mixins/deletable";
 import { changeable } from "@mixins/changeable";
+import ClientPayments from "@viewsSystem/clients/partials/payments";
+import AccountStatus from "@viewsSystem/clients/partials/account_status";
+
+
 // import ChartLine from "./charts/Line";
 // import ClientPayments from "./partials/payments.vue";
 // import AccountStatus from "./partials/account_status.vue";
 
 export default {
     mixins: [deletable, changeable],
-    components: { CompaniesForm },
+    components: { CompaniesForm, ClientPayments, AccountStatus },
     data() {
         return {
             selectBillingDate: "",
@@ -320,7 +357,7 @@ export default {
                         data: null
                     }
                 ]
-            }
+            },
         };
     },
     async mounted() {

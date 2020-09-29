@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="Content-Type" content="application/pdf; charset=utf-8" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Reporte impuestos</title>
+        <title>Document</title>
         <style>
             html {
                 font-family: sans-serif;
@@ -53,7 +53,7 @@
     </head>
     <body>
         <div>
-            <p align="center" class="title"><strong>Consolidado de items por cliente/vendedor</strong></p>
+            <p align="center" class="title"><strong>Informe Fiscal</strong></p>
         </div>
         <div style="margin-top:20px; margin-bottom:20px;">
             <table>
@@ -62,12 +62,15 @@
                         <p><strong>Empresa: </strong>{{$company->name}}</p>
                     </td>
                     <td>
-                        <p><strong>Ruc: </strong>{{$company->number}}</p>
+                        <p><strong>Fecha: </strong>{{date('Y-m-d')}}</p>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <p><strong>Establecimiento: </strong>{{$establishment->description}}</p>
+                        <p><strong>N° Documento: </strong>{{$company->number}}</p>
+                    </td>
+                    <td>
+                        <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->country->name}} - {{$establishment->department->name}} - {{$establishment->city->name}}</p>
                     </td>
                 </tr>
             </table>
@@ -75,44 +78,12 @@
         @if(!empty($records))
             <div class="">
                 <div class=" ">
-                    @php
-                        $acum_total=0;
-                    @endphp
                     <table class="">
                         <thead>
-                            <tr>
-                            <th class="">#</th>
-                                <th  class="text-left">Fecha emisión</th>
-                                <th  class="text-center">Cliente</th>
-                                <th  class="text-center">Documento</th>
-                                <th  class="text-center">Base</th>
-                                <th  class="text-center">Descuento</th>
-                            </tr>
+                           
                         </thead>
                         <tbody>
-                            @foreach($records as $key => $value)
-                                <tr>
-                                    <td class="celda">{{$loop->iteration}}</td>
-                                    <td class="celda">{{$value->created_at}}</td>
-                                    <td class="celda">{{$value->customer->name}}</td>
-                                    <td>
-                                        <div>{{$value->type_document->name}}</div>
-                                        <div>{{$value->prefix}}{{$value->number}}</div>
-                                    </td>
-                                    <td>$ {{$value->total}}</td>
-                                    <td>$ {{$value->total_discount}}</td>
 
-                                </tr>
-
-                                @php
-                                    $acum_total += $value->total;
-                                @endphp
-                            @endforeach
-                            <tr>
-                                <td class="celda" colspan="3"></td>
-                                <td class="celda" ><strong>Total</strong></td>
-                                <td class="celda">{{$acum_total}}</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>

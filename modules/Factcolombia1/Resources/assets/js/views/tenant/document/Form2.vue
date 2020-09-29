@@ -112,7 +112,7 @@
                                             type="textarea"
                                             autosize
                                             :rows="1"
-                                            v-model="form.additional_information">
+                                            v-model="form.observation">
                                     </el-input>
                                 </div>
                             </div>
@@ -336,7 +336,6 @@
                 total_global_discount:0,
                 loading_search:false,
                 taxes:  [],
-
             }
         },
         async created() {
@@ -479,6 +478,7 @@
                     taxes: [],
                     total: 0,
                     sale: 0,
+                    observation: null,
                     time_days_credit: 0,
                     service_invoice: {},
                     payment_form_id: null,
@@ -800,7 +800,31 @@
                         this.showDialogOptions = true;
                     }
                     else {
-                        this.$message.error(response.data.message);
+
+
+                        if(response.data.errors){
+                            const mhtl = this.parseMesaageError(response.data.errors)
+                            this.$message({
+                                duration: 6000,
+                                type: 'error',
+                                dangerouslyUseHTMLString: true,
+                                message: mhtl
+                            });
+                        }
+                        else if(response.data.error){
+                            const ht = `<strong>${response.data.message}</strong> <br> <strong>${response.data.error.string} </strong> `
+                            this.$message({
+                                duration: 6000,
+                                type: 'error',
+                                dangerouslyUseHTMLString: true,
+                                message: ht
+                            });
+                        }
+                        else{
+                            this.$message.error(response.data.message);
+                        }
+
+
                     }
                 }).catch(error => {
 
@@ -810,19 +834,33 @@
                     else {
                         this.$message.error(error.response.data.message);
                     }
+
+
                 }).then(() => {
                     this.loading_submit = false;
                 });
             },
+            parseMesaageError(errors)
+            {
+                let ht = `Validación de datos <br><br> <ul>`
+                for(var key in errors) {
+                    //var value = objects[key];
+                    ht += `<li>${key}: ${errors[key][0]}</li>`
+                }
+
+                ht += `</ul>`
+
+                return ht
+            },
 
             async createInvoiceService() {
                 // let resol = this.resolution.resolution; //TODO
-                const invoice = {
+                let invoice = {
                     number: 0,
                     type_document_id: 1
                 };
 
-                invoice.customer = await this.getCustomer();
+                invoice.customer =  this.getCustomer();
                 invoice.tax_totals = await this.getTaxTotal();
                 invoice.legal_monetary_totals = await this.getLegacyMonetaryTotal();
                 invoice.allowance_charges = await this.createAllowanceCharge(invoice.legal_monetary_totals.allowance_total_amount, invoice.legal_monetary_totals.line_extension_amount );
@@ -833,7 +871,6 @@
                 return invoice;
             },
             getCustomer() {
-
                 let customer = this.customers.find(x => x.id == this.form.customer_id);
                 let obj = {
                     identification_number: customer.number,
@@ -841,7 +878,11 @@
                     phone: customer.telephone,
                     address: customer.address,
                     email: customer.email,
-                    merchant_registration: "000000"
+                    merchant_registration: "000000",
+                    type_document_identification_id: customer.identity_document_type_id,
+                    type_organization_id: customer.type_person_id,
+                    municipality_id_fact: customer.city_id,
+                    type_regime_id: customer.type_regime_id
                 };
 
                 this.form.customer_id = customer.id
@@ -889,7 +930,7 @@
                 let tax_incl_am = 0;
                 let allowance_total_amount = 0;
                 this.form.items.forEach(element => {
-                    line_ext_am += (Number(element.price) * Number(element.quantity)) - Number(element.discount);
+                    line_ext_am += (Number(element.price) * Number(element.quantity)) - Number(element.discount) ;
                     allowance_total_amount += Number(element.discount);
                 });
 
@@ -906,7 +947,7 @@
                     tax_inclusive_amount: this.cadenaDecimales(tax_incl_am),
                     allowance_total_amount: this.cadenaDecimales(allowance_total_amount),
                     charge_total_amount: "0.00",
-                    payable_amount: this.cadenaDecimales(tax_incl_am - allowance_total_amount)
+                    payable_amount: this.cadenaDecimales(tax_incl_am)
                 };
 
             },
@@ -959,13 +1000,24 @@
                     return {
                         tax_id: x.type_tax_id,
                         tax_amount: this.cadenaDecimales(x.retention),
-                        percent: this.cadenaDecimales(x.rate / (x.conversion / 100)),
+                        percent: this.cadenaDecimales(this.roundNumber(x.rate / (x.conversion / 100), 6)),
                         taxable_amount: this.cadenaDecimales(total),
                     };
                 });
 
             },
-
+            roundNumber(num, decimales = 2) {
+                var signo = (num >= 0 ? 1 : -1);
+                num = num * signo;
+                if (decimales === 0) //con 0 decimales
+                    return signo * Math.round(num);
+                // round(x * 10 ^ decimales)
+                num = num.toString().split('e');
+                num = Math.round(+(num[0] + 'e' + (num[1] ? (+num[1] + decimales) : decimales)));
+                // x * 10 ^ (-decimales)
+                num = num.toString().split('e');
+                return signo * (num[0] + 'e' + (num[1] ? (+num[1] - decimales) : -decimales));
+            },
             createAllowanceCharge(amount, base) {
                 return [
                     {

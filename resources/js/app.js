@@ -102,6 +102,7 @@ Vue.component('tenant-configuration-software', require('@viewsModuleProColombia/
 Vue.component('tenant-configuration-certificate', require('@viewsModuleProColombia/tenant/configuration/Certificate.vue'));
 Vue.component('tenant-configuration-resolution', require('@viewsModuleProColombia/tenant/configuration/Resolution.vue'));
 Vue.component('tenant-configuration-documents', require('@viewsModuleProColombia/tenant/configuration/Documents.vue'));
+Vue.component('tenant-configuration-change-ambient', require('@viewsModuleProColombia/tenant/configuration/Production.vue'))
 
 
 
@@ -178,6 +179,10 @@ Vue.component('tenant-quotations-edit', require('./views/tenant/quotations/form_
 Vue.component('tenant-sale-notes-index', require('./views/tenant/sale_notes/index.vue'));
 Vue.component('tenant-sale-notes-form', require('./views/tenant/sale_notes/form.vue'));
 Vue.component('tenant-pos-index', require('./views/tenant/pos/index.vue'));
+Vue.component('tenant-pos-configuration', require('./views/tenant/pos/configuration.vue'));
+Vue.component('tenant-pos-documents', require('./views/tenant/pos/documents.vue'));
+
+
 Vue.component('cash-index', require('./views/tenant/cash/index.vue'));
 Vue.component('tenant-card-brands-index', require('./views/tenant/card_brands/index.vue'));
 

@@ -107,8 +107,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <el-radio-group v-model="form.document_type_id" size="small" @change="filterSeries">
-                                        <el-radio-button label="01" >FACTURA  </el-radio-button>
-                                        <el-radio-button label="80">NOTA DE VENTA  </el-radio-button>
+                                      <!--  <el-radio-button label="01" >FACTURA  </el-radio-button>
+                                        <el-radio-button label="80">NOTA DE VENTA  </el-radio-button>-->
+                                        <el-radio-button label="90">POS  </el-radio-button>
                                     </el-radio-group>
                                 </div>
                                 <div class="col-lg-2 col-md-2" >
@@ -131,7 +132,7 @@
                                         </el-select>
                                         <small class="form-control-feedback" v-if="errors.type_document_id" v-text="errors.type_document_id[0]"></small>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group" :class="{'has-danger': errors.payment_form_id}">
                                         <label class="control-label">Forma de pago</label>
@@ -140,7 +141,7 @@
                                         </el-select>
                                         <small class="form-control-feedback" v-if="errors.payment_form_id" v-text="errors.payment_form_id[0]"></small>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group" :class="{'has-danger': errors.payment_method_id}">
                                         <label class="control-label">Medio de pago</label>
@@ -149,7 +150,7 @@
                                         </el-select>
                                         <small class="form-control-feedback" v-if="errors.payment_method_id" v-text="errors.payment_method_id[0]"></small>
                                     </div>
-                                </div>  
+                                </div>
                                 <div class="col-md-6" v-show="form.payment_form_id == 2">
                                     <div class="form-group" :class="{'has-danger': errors.time_days_credit}">
                                         <label class="control-label">Plazo Credito</label>
@@ -168,7 +169,7 @@
 
                         <div class="card-body text-center">
                             <p class="my-0"><small>Monto a cobrar</small></p>
-                            <h1 class="mb-2 mt-0">{{currencyTypeActive.symbol}} {{ form.total }}</h1>
+                            <h1 class="mb-2 mt-0">{{currencyTypeActive.symbol}} {{ Number(form.total).toFixed(3) }}</h1>
                         </div>
                     </div>
                 </div>
@@ -194,7 +195,7 @@
                                     <!-- <el-input v-model="difference" :disabled="true">
                                         <template slot="prepend">{{currencyTypeActive.symbol}}</template>
                                     </el-input> -->
-                                    <h4 class="control-label font-weight-semibold m-0 text-center m-b-0">{{currencyTypeActive.symbol}} {{difference}}</h4>
+                                    <h4 class="control-label font-weight-semibold m-0 text-center m-b-0">{{currencyTypeActive.symbol}} {{ Number(difference).toFixed(3)}}</h4>
                                 </div>
                             </div>
                             </div>
@@ -263,20 +264,20 @@
                                             </div>
                                         </template>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="col-lg-12" v-if="form_payment.payment_method_type_id=='01'">
                                     <div class="row">
                                         <div class="col-lg-3">
-                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(10)">{{currencyTypeActive.symbol}}10</button>
+                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(10000)">{{currencyTypeActive.symbol}}10.000</button>
                                         </div>
                                         <div class="col-lg-3">
-                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(20)" >{{currencyTypeActive.symbol}}20</button>
+                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(20000)" >{{currencyTypeActive.symbol}}20.000</button>
                                         </div>
                                         <div class="col-lg-3">
-                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(50)"  >{{currencyTypeActive.symbol}}50</button>
+                                            <button class="btn btn-block btn-secondary" @click="setAmountCash(50000)"  >{{currencyTypeActive.symbol}}50.000</button>
                                         </div>
                                         <div class="col-lg-3">
-                                            <button class="btn btn-block btn-secondary"  @click="setAmountCash(100)" >{{currencyTypeActive.symbol}}100</button>
+                                            <button class="btn btn-block btn-secondary"  @click="setAmountCash(100000)" >{{currencyTypeActive.symbol}}100.000</button>
                                         </div>
                                     </div>
                                 </div>
@@ -310,14 +311,19 @@
             @add="addRow"
             ></multiple-payment-form>
 
-        <sale-notes-options :showDialog.sync="showDialogSaleNote"
+        <!--<sale-notes-options :showDialog.sync="showDialogSaleNote"
                           :recordId="saleNotesNewId"
                           :originPos="true"
-                          :showClose="true"></sale-notes-options> 
+                          :showClose="true"></sale-notes-options>-->
 
         <card-brands-form   :showDialog.sync="showDialogNewCardBrand"
                             :external="true"
                             :recordId="null"></card-brands-form>
+
+         <document-pos-options :showDialog.sync="showDialogSaleNote"
+                          :recordId="saleNotesNewId"
+                          :originPos="true"
+                          :showClose="true"></document-pos-options>
     </div>
 </template>
 <style>
@@ -335,9 +341,10 @@
     import SaleNotesOptions from '../../sale_notes/partials/options.vue'
     import OptionsForm from './options.vue'
     import MultiplePaymentForm from './multiple_payment.vue'
+    import DocumentPosOptions from './document_pos_options.vue'
 
     export default {
-        components: {OptionsForm, CardBrandsForm, SaleNotesOptions, MultiplePaymentForm},
+        components: {OptionsForm, CardBrandsForm, SaleNotesOptions, MultiplePaymentForm, DocumentPosOptions},
 
         props:['form','customer', 'currencyTypeActive', 'exchangeRateSale', 'is_payment', 'soapCompany'],
         data() {
@@ -488,11 +495,12 @@
             setAmount(amount){
                 // this.amount = parseFloat(this.amount) + parseFloat(amount)
                 this.amount =  parseFloat(amount) //+ parseFloat(amount)
-                this.enter_amount =  parseFloat(amount) //+ parseFloat(amount)
+                this.enter_amount =  parseFloat(amount).toFixed(3) //+ parseFloat(amount)
                 this.inputAmount()
             },
             setAmountCash(amount)
             {
+
                 let row = _.last(this.payments, { 'payment_method_type_id' : '01' })
                 row.payment = parseFloat(row.payment) + parseFloat(amount)
                 // console.log(row.payment)
@@ -604,21 +612,23 @@
 
                 this.form_cash_document = {
                     document_id:null,
-                    sale_note_id:null
+                    sale_note_id:null,
+                    document_pos_id:null
                 }
 
             },
 
             filterSeries() {
-                this.form.series_id = null
+                this.form.document_type_id = '90'
+                /*this.form.series_id = null
                 this.series = _.filter(this.all_series, {'document_type_id': this.form.document_type_id });
                 this.form.series_id = (this.series.length > 0)?this.series[0].id:null
 
-                
+
                 if(!this.form.series_id && this.form.document_type_id == '80')
                 {
                    return this.$message.warning('El establecimiento no tiene series disponibles para el comprobante');
-                }
+                }*/
             },
             async clickCancel(){
 
@@ -638,10 +648,10 @@
             sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             },
-            async clickPayment(){ 
+            async clickPayment(){
 
-                if (this.form.document_type_id === "80") {
-                    
+                /*if (this.form.document_type_id === "80") {
+
                     if(!this.form.series_id){
                         return this.$message.warning('El establecimiento no tiene series disponibles para el comprobante');
                     }
@@ -660,13 +670,23 @@
                     this.resource_documents = "co-documents";
                     this.resource_payments = "document_payments";
                     this.resource_options = this.resource_documents;
-                }
+                }*/
+
+                    //this.form.prefix = "NV";
+                    this.form.paid = 1;
+                    this.resource_documents = "document-pos";
+                    this.resource_payments = "document_pos_payments";
+                    this.resource_options = this.resource_documents;
 
                 this.loading_submit = true
                 await this.$http.post(`/${this.resource_documents}`, this.form).then(response => {
                     if (response.data.success) {
 
-                        if (this.form.document_type_id === "80") {
+                        this.form_cash_document.document_pos_id = response.data.data.id;
+                        this.saleNotesNewId = response.data.data.id;
+                        this.showDialogSaleNote = true;
+
+                        /*if (this.form.document_type_id === "80") {
 
                             // this.form_payment.sale_note_id = response.data.data.id;
                             this.form_cash_document.sale_note_id = response.data.data.id;
@@ -681,7 +701,7 @@
                             this.documentNewId = response.data.data.id;
                             this.showDialogOptions = true;
 
-                        }
+                        }*/
 
 
                         // this.savePaymentMethod();
@@ -749,7 +769,7 @@
                     })
 
             },
-            
+
             async createInvoiceService() {
                 // let resol = this.resolution.resolution; //TODO
                 const invoice = {
@@ -921,6 +941,6 @@
                     return amount.toString()+".00";
                 },
             }
-        
+
     }
 </script>

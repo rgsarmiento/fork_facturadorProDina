@@ -31,14 +31,14 @@
                             </div>
                         </div>-->
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group" :class="{'has-danger': errors.trade_name}">
                                     <label class="control-label">Nombre comercial <span class="text-danger">*</span></label>
-                                    <el-input :disabled="true" v-model="form.trade_name"></el-input>
+                                    <el-input :disabled="true" v-model="form.name"></el-input>
                                     <small class="form-control-feedback" v-if="errors.trade_name" v-text="errors.trade_name[0]"></small>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Logo</label>
                                     <el-input v-model="form.logo" :readonly="true">
@@ -52,6 +52,22 @@
                                         </el-upload>
                                     </el-input>
                                     <div class="sub-title text-danger"><small>Se recomienda resoluciones 700x300</small></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Logo login</label>
+                                    <el-input v-model="form.logo_login" :readonly="true">
+                                        <el-upload slot="append"
+                                                   :headers="headers"
+                                                   :data="{'type': 'logo_login'}"
+                                                   action="/companies/uploads"
+                                                   :show-file-list="false"
+                                                   :on-success="successUpload">
+                                            <el-button type="primary" icon="el-icon-upload"></el-button>
+                                        </el-upload>
+                                    </el-input>
+                                    <div class="sub-title text-danger"><small>Se recomienda resoluciones 1024x768</small></div>
                                 </div>
                             </div>
                             <!-- <div class="col-md-6">
@@ -149,9 +165,9 @@
                             </div>
                         </div> -->
                     </div>
-                    <div class="form-actions text-right pt-2">
+                   <!-- <div class="form-actions text-right pt-2">
                         <el-button type="primary" native-type="submit" :loading="loading_submit">Guardar</el-button>
-                    </div>
+                    </div>-->
                 </form>
             </div>
         </div>

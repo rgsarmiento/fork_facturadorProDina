@@ -1,11 +1,11 @@
 <template>
     <div class="card mb-0 pt-2 pt-md-0">
         <div class="card-header bg-info">
-            <h3 class="my-0">Consulta de Documentos</h3>
+            <h3 class="my-0">Consulta de Docusssssmentos</h3>
         </div>
         <div class="card mb-0">
                 <div class="card-body">
-                    <data-table :applyCustomer="true" :resource="resource">
+                    <data-table :applyCustomer="true" :resource="resource" :colspan="11">
                         <tr slot="heading">
                             <th class="">#</th>
                             <th class="">Usuario/Vendedor</th>
@@ -24,7 +24,7 @@
                             <th class="">Total Gravado</th>
 
                             <th class="">Total IGV</th> -->
-                            <th class="">Total</th>
+                            <th class="text-right">Total</th>
                         <tr>
                         <tr slot-scope="{ index, row }">
                             <td>{{ index }}</td>
@@ -54,7 +54,7 @@
                             <td>{{ (row.document_type_id == '07') ? ( (row.total_free == 0) ? '0.00': '-'+row.total_free) : ((row.document_type_id!='07' && (row.state_type_id =='11'||row.state_type_id =='09')) ? '0.00':row.total_free) }}</td>
                             <td>{{ (row.document_type_id == '07') ? ( (row.total_taxed == 0) ? '0.00': '-'+row.total_taxed) : ((row.document_type_id!='07' && (row.state_type_id =='11'||row.state_type_id =='09')) ? '0.00':row.total_taxed) }}</td>
                             <td>{{ (row.document_type_id == '07') ? ( (row.total_igv == 0) ? '0.00': '-'+row.total_igv) : ((row.document_type_id!='07' && (row.state_type_id =='11'||row.state_type_id =='09')) ? '0.00':row.total_igv) }}</td> -->
-                            <td>{{ (row.document_type_id == '07') ? ( (row.total == 0) ? '0.00': '-'+row.total) : ((row.document_type_id!='07' && (row.state_type_id =='11'||row.state_type_id =='09')) ? '0.00':row.total) }}</td>
+                            <td class="text-right">{{ (row.document_type_id == '07') ? ( (row.total == 0) ? '0.00': '-'+row.total) : ((row.document_type_id!='07' && (row.state_type_id =='11'||row.state_type_id =='09')) ? '0.00':row.total) }}</td>
 
 
                             <!-- <td>{{ (row.document_type_id == '07') ? -row.total_unaffected : ((row.document_type_id!='07' && (row.state_type_id =='11'||row.state_type_id =='09')) ? '0.00':row.total_unaffected) }}</td>

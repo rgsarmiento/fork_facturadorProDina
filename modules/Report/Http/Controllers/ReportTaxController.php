@@ -10,6 +10,9 @@ use App\Models\Tenant\Company;
 use Carbon\Carbon;
 use Modules\Report\Http\Resources\OrderNoteConsolidatedCollection;
 use App\Models\Tenant\Document;
+use App\Models\Tenant\DocumentPos;
+
+use Modules\Report\Exports\TaxExport;
 
 
 
@@ -29,9 +32,9 @@ class ReportTaxController extends Controller
 
         $documents = Document::query()
             ->with('type_document', 'reference')
-            ->whereBetween('created_at', [
-                Carbon::parse($request->date_from)->startOfDay()->format('Y-m-d H:m:s'),
-                Carbon::parse($request->date_up)->endOfDay()->format('Y-m-d H:m:s')
+            ->whereBetween('date_of_issue', [
+                Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
+                Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
             ])
             ->get();
 
@@ -43,10 +46,20 @@ class ReportTaxController extends Controller
 
         $taxTitles = $taxesAll->unique('id');
 
+        $documents_pos = DocumentPos::query()
+            ->whereBetween('date_of_issue', [
+                Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
+                Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
+            ])
+            ->get();
+
+       // $union = $documents->union( $documents_pos );
+
+
         return [
             'success' => true,
-            'data' => $documents,
-            'taxTitles' => $taxTitles,
+            'data' => array_merge($documents->toArray(), $documents_pos->toArray()),
+            'taxTitles' => $taxTitles->values(),
             'taxesAll' => $taxesAll
         ];
 
@@ -54,23 +67,21 @@ class ReportTaxController extends Controller
 
 
 
-
     public function excel(Request $request)
     {
         $company = Company::first();
         $establishment = ($request->establishment_id) ? Establishment::findOrFail($request->establishment_id) : auth()->user()->establishment;
-        /**
-         * to do
-         * crear una funcion para obtener records
-         */
+
         $taxesAll = collect();
-        $documents = Document::query()
-            ->with('type_document', 'reference')
-            ->whereBetween('created_at', [
-                Carbon::parse($request->date_from)->startOfDay()->format('Y-m-d H:m:s'),
-                Carbon::parse($request->date_up)->endOfDay()->format('Y-m-d H:m:s')
+
+        $documents = Document::
+            with('type_document', 'reference')
+            ->whereBetween('date_of_issue', [
+                Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
+                Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
             ])
             ->get();
+
 
         $documents->pluck('taxes')->each(function($taxes) use($taxesAll) {
             collect($taxes)->each(function($tax) use($taxesAll) {
@@ -78,16 +89,30 @@ class ReportTaxController extends Controller
             });
         });
 
-        $records = $documents;
-       // $records = $this->getRecordsOrderNotes($request->all(), OrderNoteItem::class)->get();
-        //$params = $request->all();
+        $documents_pos = DocumentPos::
+            whereBetween('date_of_issue', [
+                Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
+                Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
+            ])
+            ->get();
 
-        $pdf = PDF::loadView('report::tax.report_pdf', compact("records", "company", "establishment"));
+        $taxTitles = $taxesAll->unique('id')->values();
 
-        $filename = 'Reporte_Consolidado_Items_'.date('YmdHis');
+        //$records =  //(object)array_merge($documents->toArray(), $documents_pos->toArray());
 
-        return $pdf->download($filename.'.pdf');
+        return (new TaxExport)
+                ->records($documents)
+                ->company($company)
+                ->establishment($establishment)
+                ->taxitles($taxTitles)
+                ->taxesall($taxesAll)
+                ->download('Reporte_Impuestos_'.Carbon::now().'.xlsx');
+
     }
+
+
+
+
 
     /*public function pdf(Request $request) {
 
@@ -102,6 +127,34 @@ class ReportTaxController extends Controller
 
         return $pdf->download($filename.'.pdf');
     }*/
+    public function downloadDocumentPos(Request $request) {
 
+        $company = Company::first();
+        $establishment = ($request->establishment_id) ? Establishment::findOrFail($request->establishment_id) : auth()->user()->establishment;
+
+        $taxesAll = collect();
+
+        $records = Document::query()
+            ->with('type_document', 'reference')
+            ->whereBetween('date_of_issue', [
+                Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
+                Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
+            ])
+            ->get();
+
+        $records->pluck('taxes')->each(function($taxes) use($taxesAll) {
+            collect($taxes)->each(function($tax) use($taxesAll) {
+                $taxesAll->push($tax);
+            });
+        });
+
+        $taxTitles = $taxesAll->unique('id');
+
+        $pdf = PDF::loadView('report::tax.report_pos_pdf', compact("records", "company", "establishment", "taxTitles", "taxesAll"));
+
+        $filename = 'Informe_Fiscal_'.date('YmdHis');
+
+        return $pdf->download($filename.'.pdf');
+    }
 
 }

@@ -13,6 +13,9 @@ use Modules\Order\Models\OrderNote;
 use Modules\Order\Models\OrderNoteItem;
 use Modules\Item\Models\ItemLotsGroup;
 use Modules\Item\Models\ItemLot;
+use App\Models\Tenant\DocumentPosItem;
+
+
 
 
 
@@ -32,6 +35,8 @@ class InventoryKardexServiceProvider extends ServiceProvider
         $this->sale_document_type_03_delete();
         $this->order_note();
         $this->order_note_item_delete();
+        $this->document_pos();
+
     }
 
     private function purchase() {
@@ -63,7 +68,7 @@ class InventoryKardexServiceProvider extends ServiceProvider
                 //$this->createInventory($document_item->item_id, $factor * $document_item->quantity, $warehouse->id);
                 $this->createInventoryKardex($document_item->document, $document_item->item_id, ($factor * ($document_item->quantity * $presentationQuantity)), $warehouse->id);
                 if(!$document_item->document->sale_note_id && !$document_item->document->order_note_id) $this->updateStock($document_item->item_id, ($factor * ($document_item->quantity * $presentationQuantity)), $warehouse->id);
-            
+
             }
             else{
 
@@ -78,7 +83,7 @@ class InventoryKardexServiceProvider extends ServiceProvider
                     $warehouse = $this->findWarehouse();
                     $this->createInventoryKardex($document_item->document, $ind_item->id, ($factor * ($document_item->quantity * $presentationQuantity)), $warehouse->id);
                     if(!$document_item->document->sale_note_id && !$document_item->document->order_note_id) $this->updateStock($ind_item->id, ($factor * ($document_item->quantity * $presentationQuantity)), $warehouse->id);
-                
+
                 }
 
             }
@@ -156,6 +161,41 @@ class InventoryKardexServiceProvider extends ServiceProvider
             }
 
         });
+    }
+
+    private function document_pos()
+    {
+        DocumentPosItem::created(function ($document_pos_item) {
+
+            if(!$document_pos_item->item->is_set){
+
+                $presentationQuantity = (!empty($document_pos_item->item->presentation)) ? $document_pos_item->item->presentation->quantity_unit : 1;
+
+                $warehouse = $this->findWarehouse($document_pos_item->document_pos->establishment_id);
+                // $this->createInventoryKardex($document_pos_item->document_pos, $document_pos_item->item_id, (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
+                $this->createInventoryKardexDocumentPos($document_pos_item->document_pos, $document_pos_item->item_id, (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id, $document_pos_item->id);
+               // if(!$document_pos_item->document_pos->order_note_id) $this->updateStock($document_pos_item->item_id, (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
+               $this->updateStock($document_pos_item->item_id, (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
+
+            }else{
+
+                $item = Item::findOrFail($document_pos_item->item_id);
+
+                foreach ($item->sets as $it) {
+
+                    $ind_item  = $it->individual_item;
+                    $presentationQuantity = 1;
+                    $warehouse = $this->findWarehouse($document_pos_item->document_pos->establishment_id);
+                    // $this->createInventoryKardex($document_pos_item->document_pos, $ind_item->id , (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
+                    $this->createInventoryKardexDocumentPos($document_pos_item->document_pos, $ind_item->id , (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id, $document_pos_item->id);
+                    //if(!$document_pos_item->document_pos->order_note_id) $this->updateStock($ind_item->id , (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
+                    $this->updateStock($ind_item->id , (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
+
+                }
+
+            }
+
+            });
     }
 
 
@@ -251,14 +291,14 @@ class InventoryKardexServiceProvider extends ServiceProvider
         });
     }
 
-    
-    
+
+
     private function order_note() {
 
         OrderNoteItem::created(function ($order_note_item) {
 
             $presentationQuantity = (!empty($order_note_item->item->presentation)) ? $order_note_item->item->presentation->quantity_unit : 1;
-            
+
             $warehouse = $this->findWarehouse($order_note_item->order_note->establishment_id);
             $this->createInventoryKardex($order_note_item->order_note, $order_note_item->item_id, (-1 * ($order_note_item->quantity * $presentationQuantity)), $warehouse->id);
             $this->updateStock($order_note_item->item_id, (-1 * ($order_note_item->quantity * $presentationQuantity)), $warehouse->id);
@@ -266,14 +306,14 @@ class InventoryKardexServiceProvider extends ServiceProvider
         });
     }
 
-    
+
     private function order_note_item_delete() {
-        
+
         OrderNoteItem::deleted(function ($order_note_item) {
 
             // dd($order_note_item);
             $presentationQuantity = (!empty($order_note_item->item->presentation)) ? $order_note_item->item->presentation->quantity_unit : 1;
-            
+
             $warehouse = $this->findWarehouse($order_note_item->order_note->establishment_id);
 
             $this->createInventoryKardex($order_note_item->order_note, $order_note_item->item_id , (1 * ($order_note_item->quantity * $presentationQuantity)), $warehouse->id);
@@ -284,5 +324,5 @@ class InventoryKardexServiceProvider extends ServiceProvider
         });
     }
 
-    
+
 }

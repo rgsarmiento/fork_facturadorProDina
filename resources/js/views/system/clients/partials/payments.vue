@@ -35,7 +35,7 @@
                                             Pagado
                                         </template>
 
-                                        
+
                                     </td>
                                     <td class="series-table-actions text-right">
                                         <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
@@ -52,7 +52,7 @@
                                                             value-format="yyyy-MM-dd"></el-date-picker>
                                             <small class="form-control-feedback" v-if="row.errors.date_of_payment" v-text="row.errors.date_of_payment[0]"></small>
                                         </div>
-                                    </td> 
+                                    </td>
                                     <td>
                                         <div class="form-group mb-0" :class="{'has-danger': row.errors.payment_method_type_id}">
                                             <el-select v-model="row.payment_method_type_id" @change="changePaymentMethodType(row)">
@@ -69,7 +69,7 @@
                                             <small class="form-control-feedback" v-if="row.errors.card_brand_id" v-text="row.errors.card_brand_id[0]"></small>
                                         </div>
                                     </td>
-                                    <td v-else> 
+                                    <td v-else>
                                     </td>
                                     <td>
                                         <div class="form-group mb-0" :class="{'has-danger': row.errors.reference}">
@@ -77,7 +77,7 @@
                                             <small class="form-control-feedback" v-if="row.errors.reference" v-text="row.errors.reference[0]"></small>
                                         </div>
                                     </td>
-                                    
+
                                     <td>
                                         <div class="form-group mb-0" :class="{'has-danger': row.errors.payment}">
                                             <!-- <el-input v-model="row.payment"></el-input> -->
@@ -184,10 +184,10 @@
             },
             async clickCancelPayment(client_payment_id){
                 await this.$http.get(`/${this.resource}/cancel_payment/${client_payment_id}`)
-                    .then(response => { 
+                    .then(response => {
                         if (response.data.success) {
                             this.$message.success(response.data.message);
-                            this.getData(); 
+                            this.getData();
                         } else {
                             this.$message.error(response.data.message);
                         }
@@ -218,7 +218,7 @@
                 }
                 let form = {
                     id: this.records[index].id,
-                    client_id: this.clientId,
+                    companie_id: this.clientId,
                     date_of_payment: this.records[index].date_of_payment,
                     payment_method_type_id: this.records[index].payment_method_type_id,
                     card_brand_id: this.records[index].card_brand_id,
@@ -243,7 +243,7 @@
                             console.log(error);
                         }
                     })
-            }, 
+            },
             close() {
                 this.$emit('update:showDialog', false);
                 // this.initDocumentTypes()

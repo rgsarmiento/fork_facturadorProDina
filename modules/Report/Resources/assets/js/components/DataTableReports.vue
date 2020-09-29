@@ -138,6 +138,12 @@
                         <tbody>
                             <slot v-for="(row, index) in records" :row="row" :index="customIndex(index)"></slot>
                         </tbody>
+                        <tfoot v-if="colspan">
+                            <tr>
+                                <td class="text-right" :colspan="colspan">Total calculado:</td>
+                                <td class="text-left">$ {{ returnTotal }}</td>
+                            </tr>
+                        </tfoot>
                         <!-- <tfoot v-if="resource == 'reports/sales' || resource == 'reports/purchases'">
                             <tr>
                                 <td :colspan="(resource == 'reports/sales') ? 10:8"></td>
@@ -192,7 +198,8 @@
     export default {
         props: {
             resource: String,
-            applyCustomer: { type : Boolean, required: false, default: false}
+            applyCustomer: { type : Boolean, required: false, default: false},
+            colspan: Number
         },
         data () {
             return {
@@ -227,6 +234,10 @@
             }
         },
         computed: {
+            returnTotal()
+            {
+                return _.sum(this.records.map(x=> parseFloat(x.total))).toFixed(3)
+            }
         },
         created() {
             this.initForm()

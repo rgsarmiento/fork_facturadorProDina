@@ -247,11 +247,11 @@
                     <td class="font-weight-semibold">SUBTOTAL</td>
                     <td class="font-weight-semibold">:</td>
                     <td class="text-right text-blue">{{currency.symbol}} {{ form.subtotal }}</td>
-                </tr> 
+                </tr>
 
             </table>
             </div>
- 
+
 
           </div>
           <div
@@ -412,6 +412,10 @@
             colors: ['#1cb973', '#bf7ae6', '#fc6304', '#9b4db4', '#77c1f3']
           };
         },
+        mounted()
+        {
+
+        },
         async created() {
           await this.initForm();
           await this.getTables();
@@ -421,9 +425,16 @@
           // await this.initCurrencyType()
           this.customer = await this.getLocalStorageIndex('customer')
 
+          /*if(!this.customer)
+          {
+              this.customer = _.find(this.all_customers, { 'number': '222222222222'}) ?? null
+          }*/
+
+
            if(document.querySelector('.sidebar-toggle')){
                document.querySelector('.sidebar-toggle').click()
            }
+
         },
 
         computed:{
@@ -492,12 +503,21 @@
               this.currency = _.find(this.currencies, {'id': this.form.currency_id})
           },
           getFormPosLocalStorage(){
-
             let form_pos = localStorage.getItem('form_pos');
             form_pos = JSON.parse(form_pos)
             if (form_pos) {
               this.form = form_pos
               // this.calculateTotal()
+            }
+
+            if(!this.form.customer_id)
+            {
+                const customer_default = _.find(this.all_customers, { 'number': '222222222222'}) ?? null
+                if(customer_default)
+                {
+                    this.form.customer_id = customer_default.id
+                    this.changeCustomer()
+                }
             }
 
           },
@@ -688,8 +708,9 @@
             });
           },
           initForm() {
-            
+
               this.form = {
+                  customer_id: null,
                   document_type_id: '01',
                   series_id: null,
                   establishment_id: null,
@@ -730,7 +751,7 @@
           initFormItem() {
 
               this.form_item = {
-            
+
                   id: null,
                   item_id: null,
                   item: {},
@@ -785,7 +806,7 @@
             this.setFormPosLocalStorage()
           },
           async clickAddItem(item, index, input = false) {
-            
+
               this.loading = true;
               // let exchangeRateSale = this.form.exchange_rate_sale;
               let exist_item = _.find(this.form.items, { item_id: item.item_id });
@@ -1057,12 +1078,14 @@
               // this.currency = _.find(this.currencys, {'id': this.form.currency_id})
               // this.changeCurrencyType();
               this.initCurrencyType()
-  
+
               this.filterItems();
               this.changeDateOfIssue();
               this.changeExchangeRate()
 
             });
+
+
           },
           renderCategories(source)
           {

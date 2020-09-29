@@ -27,7 +27,8 @@ trait CompanyTrait
             'limit_documents' => $request->limit_documents,
             'hostname_id' => $hostname->id,
             'economic_activity_code' => $request->economic_activity_code,
-            'ica_rate' => $request->ica_rate
+            'ica_rate' => $request->ica_rate,
+            'type_identity_document_id' => $request->type_document_identification_id,
 
         ]);
 
@@ -132,14 +133,16 @@ trait CompanyTrait
                 'identification_number' => $company->identification_number,
                 'name' => $company->name,
                 'email' => $company->email,
+                'address' => $request->address,
+                'phone' => $request->phone,
                 'subdomain' => $company->subdomain,
                 'limit_documents' => $company->limit_documents,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'version_ubl_id' => 1,
                 'ambient_id' => 1,
-                'type_identity_document_id' => 1,
-                'type_regime_id' => 1, // estos valores son por default
+                'type_identity_document_id' => $request->type_document_identification_id,
+                'type_regime_id' => $request->type_regime_id, // estos valores son por default
                 'currency_id' => 170, //// estos valores son por default
                 'economic_activity_code' => $request->economic_activity_code,
                 'ica_rate' => $request->ica_rate
@@ -184,6 +187,41 @@ trait CompanyTrait
             'city_id' => 12688,
         ]);
 
+        DB::connection('tenant')->table('persons')->insert([
+            [   'type' => 'customers',
+                'dv' => 7,
+                'code' => '222222222222',
+                'type_regime_id' => 2,
+                'type_person_id' => 2,
+                'identity_document_type_id' => 3,
+                'number' => '222222222222',
+                'name' => 'Cliente POS',
+                'country_id' => 47,
+                'department_id' => 779,
+                'city_id' => 12688,
+                'address' => 'direccion POS',
+                'email' => 'clientepos@gmail.com',
+                'telephone' => '999993333',
+                'contact_phone' => '999993333',
+                'contact_name' => 'contact pos',
+                'percentage_perception' => '0.0',
+                'enabled' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+        ]);
+
+        DB::connection('tenant')->table('co_taxes')->insert([
+            [
+                'name' => 'EXCENTO',
+                'code' => '07',
+                'rate' => '0.00',
+                'conversion' => '100.00',
+                'type_tax_id' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+        ]);
     }
 
 

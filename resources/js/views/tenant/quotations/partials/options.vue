@@ -100,7 +100,7 @@
 
         <div class="col-lg-12">
           <div class="form-group" :class="{'has-danger': errors.type_document_id}">
-            <label class="control-label">Tipo comprobante</label> 
+            <label class="control-label">Tipo comprobante</label>
             <el-select v-model="document.type_document_id" @change="changeDocumentType" :disabled="true" class="border-left rounded-left border-info">
                 <el-option v-for="option in type_documents" :key="option.id" :value="option.id" :label="option.name"></el-option>
                 <el-option key="nv" value="nv" label="NOTA DE VENTA"></el-option>
@@ -112,7 +112,7 @@
             ></small>
           </div>
         </div>
-         
+
 
         <div class="col-lg-6">
           <div class="form-group" :class="{'has-danger': errors.date_issue}">
@@ -151,7 +151,7 @@
           </div>
         </div>
         <br>
-          
+
       </div>
 
       <span slot="footer" class="dialog-footer">
@@ -356,7 +356,20 @@ export default {
             // this.document.customer_id = this.form.quotation.customer_id;
             // this.changeCustomer();
           } else {
-            this.$message.error(response.data.message);
+
+            //this.$message.error(response.data.message);
+
+            if(response.data.errors){
+
+                const mhtl = this.parseMesaageError(response.data.errors)
+                this.$message({
+                    duration: 6000,
+                    type: 'error',
+                    dangerouslyUseHTMLString: true,
+                    message: mhtl
+                });
+            }
+
           }
         })
         .catch(error => {
@@ -370,9 +383,21 @@ export default {
           this.loading_submit = false;
         });
     },
+    parseMesaageError(errors)
+    {
+        let ht = `Validación de datos <br><br> <ul>`
+        for(var key in errors) {
+            //var value = objects[key];
+            ht += `<li>${key}: ${errors[key][0]}</li>`
+        }
+
+        ht += `</ul>`
+
+        return ht
+    },
     async assignDocument() {
       let q = this.form.quotation;
- 
+
       this.document.date_issue =  moment().format('YYYY-MM-DD')//q.date_of_issue
       this.document.customer_id = q.customer_id
       this.document.customer = q.customer
@@ -380,7 +405,7 @@ export default {
       this.document.purchase_order = null
       this.document.total_discount = q.total_discount
       this.document.total_tax = q.total_tax
-      this.document.subtotal = q.subtotal 
+      this.document.subtotal = q.subtotal
       this.document.total = q.total
       this.document.sale = q.sale
       this.document.items = q.items
@@ -412,7 +437,7 @@ export default {
         });
     },
     async getRecord(){
-      
+
       await this.$http
         .get(`/${this.resource}/record2/${this.recordId}`)
         .then(response => {
@@ -497,7 +522,7 @@ export default {
           this.loading = false;
         });
     },
-    
+
     async createInvoiceService() {
         // let resol = this.resolution.resolution; //TODO
         const invoice = {
@@ -531,7 +556,7 @@ export default {
 
         // this.document.customer_id = customer.id
 
-        if (customer.type_person_id == 2) {
+        if (customer.type_person_id == 1) { //persona juridica
             obj.dv = customer.dv;
         }
 
@@ -670,6 +695,6 @@ export default {
             return amount.toString()+".00";
         },
     }
-  
+
 }
 </script>

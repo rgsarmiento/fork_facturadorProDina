@@ -92,6 +92,11 @@ if($current_hostname) {
             Route::get('/co-configuration-documents', 'Tenant\ConfigurationController@document')->name('tenant.configuration.documents');
             Route::get('/co-configuration-all', 'Tenant\ConfigurationController@all');
             Route::post('/configuration/type_document/{type_document}', 'Tenant\ConfigurationController@updateTypeDocument');
+            Route::get('/co-configuration-change-ambient', 'Tenant\ConfigurationController@changeAmbient')->name('tenant.configuration.change.ambient');
+            Route::post('/co-configuration/production/changeEnvironmentProduction/{environment}', 'Tenant\ConfigurationController@changeEnvironmentProduction');
+            Route::post('/co-configuration/production/queryTechnicalKey', 'Tenant\ConfigurationController@queryTechnicalKey');
+
+
 
 
             Route::post('/company', 'Tenant\ConfigurationController@company');
@@ -122,6 +127,9 @@ if($current_hostname) {
                 // Route::post('locked_emission', 'System\CompanyController@lockedEmission');
                 Route::post('locked_tenant', 'System\CompanyController@lockedTenant');
                 Route::post('locked_user', 'System\CompanyController@lockedUser');
+                Route::post('locked_emission', 'System\CompanyController@lockedEmission');
+                Route::post('set_billing_cycle', 'System\CompanyController@startBillingCycle');
+
 
             });
 

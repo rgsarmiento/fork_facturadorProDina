@@ -4,14 +4,14 @@
             Nueva Nota ({{ note.prefix }}-{{ note.number }})
         </div>
         <div class="tab-content" v-if="loading_form">
-            <div class="invoice"> 
+            <div class="invoice">
                 <form autocomplete="off" @submit.prevent="submit">
                     <div class="form-body">
                         <div class="row">
                         </div>
                         <div class="row mt-4">
-                            
-                        
+
+
                             <div class="col-md-4 col-lg-4 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.type_document_id}">
                                     <label class="control-label">Tipo de nota</label>
@@ -20,7 +20,7 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.type_document_id" v-text="errors.type_document_id[0]"></small>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="col-md-4 col-lg-4 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.note_concept_id}">
                                     <label class="control-label">Concepto</label>
@@ -29,7 +29,7 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.note_concept_id" v-text="errors.note_concept_id[0]"></small>
                                 </div>
-                            </div> 
+                            </div>
 
                             <div class="col-md-2 col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.date_issue}">
@@ -38,8 +38,8 @@
                                     <small class="form-control-feedback" v-if="errors.date_issue" v-text="errors.date_issue[0]"></small>
                                 </div>
                             </div>
-                            
-                             
+
+
                             <div class="col-md-2 col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.currency_id}">
                                     <label class="control-label">Moneda</label>
@@ -49,8 +49,8 @@
                                     <small class="form-control-feedback" v-if="errors.currency_id" v-text="errors.currency_id[0]"></small>
                                 </div>
                             </div>
-                            
-                            
+
+
                             <div class="col-md-6 col-lg-6 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.customer_id}">
                                     <label class="control-label">Cliente</label>
@@ -59,12 +59,12 @@
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
                                 </div>
-                            </div> 
- 
+                            </div>
+
                         </div>
 
                         <div class="row mt-2">
- 
+
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="control-label">Observaciones</label>
@@ -72,13 +72,13 @@
                                             type="textarea"
                                             autosize
                                             :rows="1"
-                                            v-model="form.additional_information">
+                                            v-model="form.observation">
                                     </el-input>
                                 </div>
-                            </div> 
+                            </div>
 
                         </div>
-  
+
                         <div class="row mt-4">
                             <div class="col-md-12">
                                 <div class="table-responsive">
@@ -99,7 +99,7 @@
                                         <tbody v-if="form.items.length > 0">
                                             <tr v-for="(row, index) in form.items" :key="index">
                                                 <td>{{index + 1}}</td>
-                                                <td>{{row.item.name}} 
+                                                <td>{{row.item.name}}
                                                     {{row.item.presentation.hasOwnProperty('description') ? row.item.presentation.description : ''}}
                                                     <br/>
                                                     <small>{{row.tax.name}}</small>
@@ -135,15 +135,15 @@
                                     <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddRetention">+ Agregar Retención</button>
                                 </div>
                             </div>
- 
+
                             <div class="col-md-12" style="display: flex; flex-direction: column; align-items: flex-end;" v-if="form.items.length > 0">
                                 <table>
- 
+
                                     <tr>
                                         <td>TOTAL VENTA</td>
                                         <td>:</td>
                                         <td class="text-right">{{ratePrefix()}} {{ form.sale }}</td>
-                                    </tr> 
+                                    </tr>
                                     <tr >
                                         <td>TOTAL DESCUENTO (-)</td>
                                         <td>:</td>
@@ -162,8 +162,8 @@
                                         <td>SUBTOTAL</td>
                                         <td>:</td>
                                         <td class="text-right">{{ratePrefix()}} {{ form.subtotal }}</td>
-                                    </tr> 
-                                    
+                                    </tr>
+
                                     <template v-for="(tax, index) in form.taxes">
                                         <tr v-if="((tax.is_retention) && (tax.apply))" :key="index">
 
@@ -216,7 +216,7 @@
                        :external="true"
                        :input_person="input_person"
                        :type_document_id = form.type_document_id></person-form>
- 
+
         <document-options :showDialog.sync="showDialogOptions"
                             :recordId="documentNewId"
                             :showDownload="true"
@@ -256,7 +256,7 @@
     import PersonForm from '@views/persons/form.vue'
     // import DocumentOptions from '../documents/partials/options.vue'
     // import {functions, exchangeRate} from '@mixins/functions'
-    // import {calculateRowItem} from '../../../helpers/functions' 
+    // import {calculateRowItem} from '../../../helpers/functions'
     // import Helper from "../../../mixins/Helper";
     import DocumentOptions from './partials/options.vue'
 
@@ -314,11 +314,11 @@
                     this.all_type_documents = response.data.type_documents;
                     this.currencies = response.data.currencies
                     this.payment_methods = response.data.payment_methods
-                    this.payment_forms = response.data.payment_forms 
+                    this.payment_forms = response.data.payment_forms
 
                     // this.filterCustomers();
                     this.typeNoteDocuments()
- 
+
                 })
 
             await this.initForm()
@@ -333,8 +333,8 @@
                 this.initInputPerson()
             })
 
-        }, 
-        methods: {   
+        },
+        methods: {
             getRecordCustomer(){
                 this.$http.get(`/${this.resource}/search/customer/${this.form.customer_id}`).then((response) => {
                     this.customers = response.data.customers
@@ -346,7 +346,7 @@
             },
             ratePrefix(tax = null) {
                 if ((tax != null) && (!tax.is_fixed_value)) return null;
-                
+
                 return (this.company.currency != null) ? this.company.currency.symbol : '$';
             },
             keyupCustomer(){
@@ -372,7 +372,7 @@
                         }
                     }
                 }
-            }, 
+            },
             clickAddItemInvoice(){
                 this.recordItem = null
                 this.showDialogAddItem = true
@@ -383,7 +383,7 @@
             getFormatUnitPriceRow(unit_price){
                 return _.round(unit_price, 6)
                 // return unit_price.toFixed(6)
-            },  
+            },
             ediItem(row, index)
             {
                 row.indexi = index
@@ -394,7 +394,7 @@
             searchRemoteCustomers(input) {
 
                 if (input.length > 0) {
-                    
+
                     this.loading_search = true
                     let parameters = `input=${input}&type_document_id=${this.form.type_document_id}&operation_type_id=${this.form.operation_type_id}`
 
@@ -418,7 +418,7 @@
             initForm() {
 
                 // console.log(this.note)
-                
+
                 this.form = {
                     customer_id: this.note.customer_id,
                     type_document_id: null,
@@ -435,6 +435,7 @@
                     taxes: [],
                     total: 0,
                     sale: 0,
+                    observation: null,
                     time_days_credit: 0,
                     id: this.note.id,
                     reference_id: this.note.id,
@@ -446,7 +447,6 @@
                 }
 
                 this.noteService.customer = {
-
                     identification_number: this.note.customer.number,
                     name: this.note.customer.name,
                     phone: this.note.customer.telephone,
@@ -455,12 +455,11 @@
                     merchant_registration: "0000-00",
                     type_document_identification_id: this.note.customer.identity_document_type_id,
                     type_organization_id: this.note.customer.type_person_id,
-                    municipality_id: 149,
-                    type_regime_id: 2
-
+                    municipality_id_fact: this.note.customer.municipality_id,
+                    type_regime_id: this.client.customer.type_regime_id
                 }
 
-                this.errors = {}  
+                this.errors = {}
                 this.$eventHub.$emit('eventInitForm')
 
                 this.initInputPerson()
@@ -479,7 +478,7 @@
             async changeOperationType() {
                 await this.filterCustomers();
                 await this.setDataDetraction();
-            }, 
+            },
             changeEstablishment() {
                 this.establishment = _.find(this.establishments, {'id': this.form.establishment_id})
                 this.filterSeries()
@@ -509,7 +508,7 @@
                 this.form.customer_id = null
                 // this.customers = []
             },
-            changeDateOfIssue() { 
+            changeDateOfIssue() {
                 this.form.date_expiration = this.form.date_of_issue
                 this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
                     this.form.exchange_rate_sale = response
@@ -528,9 +527,9 @@
                                                          'contingency': this.is_contingency});
                 this.form.series_id = (this.series.length > 0)?this.series[0].id:null
             },
-            filterCustomers() { 
+            filterCustomers() {
                 this.customers = this.all_customers
-            }, 
+            },
             addRow(row) {
                 if(this.recordItem)
                 {
@@ -551,12 +550,12 @@
                         tax.apply = true
                     }
                 });
-                
+
                 await this.calculateTotal()
 
             },
             cleanTaxesRetention(tax_id){
-                
+
                 this.taxes.forEach(tax => {
                     if(tax.id == tax_id){
                         tax.apply = false
@@ -587,10 +586,10 @@
                 // this.calculateTotal()
             },
             calculateTotal() {
-                
-                this.setDataTotals() 
 
-            }, 
+                this.setDataTotals()
+
+            },
             setDataTotals() {
 
                 // console.log(val)
@@ -629,7 +628,7 @@
                                 (item.tax.rate / item.tax.conversion)
                             ).toFixed(2);
 
-                        if (!tax.hasOwnProperty("total")) 
+                        if (!tax.hasOwnProperty("total"))
                             tax.total = Number(0).toFixed(2);
 
                         tax.total = (Number(tax.total) + Number(item.total_tax)).toFixed(2);
@@ -644,7 +643,7 @@
                         "total",
                         (Number(item.subtotal) - Number(item.discount)).toFixed(2)
                     );
-                    
+
                 });
 
                 val.subtotal = val.items
@@ -726,10 +725,10 @@
                     this.form.customer_id = customer_id
                 })
             },
-            changeCustomer() { 
+            changeCustomer() {
             },
             async submit() {
-                
+
                 if(!this.form.customer_id){
                     return this.$message.error('Debe seleccionar un cliente')
                 }
@@ -783,7 +782,7 @@
                 return id_service
             },
             async generateNoteService() {
-                
+
                 // let contex = this
                 this.noteService.number = 0;
                 this.noteService.type_document_id = await this.getTypeDocumentService(),
@@ -804,7 +803,7 @@
                     this.noteService.legal_monetary_totals = await this.getLegacyMonetaryTotal();
                     this.noteService.credit_note_lines = await this.getCreditNoteLines();
                     this.noteService.allowance_charges = await this.createAllowanceCharge(
-                        this.noteService.legal_monetary_totals.allowance_total_amount, this.noteService.legal_monetary_totals.line_extension_amount 
+                        this.noteService.legal_monetary_totals.allowance_total_amount, this.noteService.legal_monetary_totals.line_extension_amount
                     );
                 }
                 else if(this.noteService.type_document_id == 5)
@@ -812,12 +811,12 @@
                     this.noteService.requested_monetary_totals = await this.getLegacyMonetaryTotal();
                     this.noteService.debit_note_lines = await this.getCreditNoteLines();
 
-                    this.noteService.allowance_charges = await this.createAllowanceCharge(
-                        this.noteService.requested_monetary_totals.allowance_total_amount, this.noteService.requested_monetary_totals.line_extension_amount 
-                    );
+                    /*this.noteService.allowance_charges = await this.createAllowanceCharge(
+                        this.noteService.requested_monetary_totals.allowance_total_amount, this.noteService.requested_monetary_totals.line_extension_amount
+                    );*/
                 }
 
-            }, 
+            },
 
             // getCustomer() {
 
@@ -910,7 +909,7 @@
                     }
                 ]
             },
-            
+
             getCreditNoteLines() {
 
                 let data = this.form.items.map(x => {
@@ -965,7 +964,7 @@
                 });
 
             },
-            
+
             cadenaDecimales(amount){
                 if(amount.toString().indexOf(".") != -1)
                     return amount.toString();
@@ -973,6 +972,6 @@
                     return amount.toString()+".00";
                 },
             },
-            
+
     }
 </script>

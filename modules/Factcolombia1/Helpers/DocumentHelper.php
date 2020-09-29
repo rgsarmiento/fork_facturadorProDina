@@ -12,10 +12,10 @@ use Carbon\Carbon;
 use Modules\Factcolombia1\Models\Tenant\{
     Tax,
 };
-use Modules\Finance\Traits\FinanceTrait; 
+use Modules\Finance\Traits\FinanceTrait;
 
 class DocumentHelper{
-  
+
     use FinanceTrait;
 
     protected $apply_change;
@@ -23,6 +23,9 @@ class DocumentHelper{
 
     public static function createDocument($request, $nextConsecutive, $correlative_api, $company, $response, $response_status)
     {
+
+        try{
+
 
         $establishment = EstablishmentInput::set(auth()->user()->establishment_id);
 
@@ -70,11 +73,11 @@ class DocumentHelper{
 
         ]);
 
-        
+
         foreach ($request->items as $item) {
 
             $record_item = Item::find($item['item_id']);
-            
+
             $json_item = [
                 'name' => $record_item->name,
                 'description' => $record_item->description,
@@ -106,15 +109,26 @@ class DocumentHelper{
 
         return $document;
     }
+    catch(\Exception $e)
+    {
+        return [
+            'success' => false,
+            'message' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTrace(),
+        ];
+
+    }
+    }
 
 
     public function savePayments($document, $payments){
-         
+
         if($payments){
 
             $total = $document->total;
             $balance = $total - collect($payments)->sum('payment');
-            
+
             $search_cash = ($balance < 0) ? collect($payments)->firstWhere('payment_method_type_id', '01') : null;
 
             $this->apply_change = false;
@@ -122,16 +136,16 @@ class DocumentHelper{
             if($balance < 0 && $search_cash){
 
                 $payments = collect($payments)->map(function($row) use($balance){
-        
+
                     $change = null;
                     $payment = $row['payment'];
 
                     if($row['payment_method_type_id'] == '01' && !$this->apply_change){
-            
+
                         $change = abs($balance);
-                        $payment = $row['payment'] - abs($balance); 
-                        $this->apply_change = true; 
-        
+                        $payment = $row['payment'] - abs($balance);
+                        $this->apply_change = true;
+
                     }
 
                     return [
@@ -155,12 +169,12 @@ class DocumentHelper{
 
                 if($balance < 0 && !$this->apply_change){
                     $row['change'] = abs($balance);
-                    $row['payment'] = $row['payment'] - abs($balance); 
-                    $this->apply_change = true; 
+                    $row['payment'] = $row['payment'] - abs($balance);
+                    $this->apply_change = true;
                 }
 
                 $record = $document->payments()->create($row);
-                
+
                 //considerar la creacion de una caja chica cuando recien se crea el cliente
                 if(isset($row['payment_destination_id'])){
                     $this->createGlobalPayment($record, $row);

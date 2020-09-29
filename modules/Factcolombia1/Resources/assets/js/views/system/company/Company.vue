@@ -583,8 +583,7 @@ export default {
           this.tax = response.data.tax;
           //  this.type_enviroment = response.data.type_enviroment;
           this.type_operation = response.data.type_operation;
-          this.type_documentation_identification =
-            response.data.type_documentation_identification;
+          this.type_documentation_identification = response.data.type_documentation_identification;
           this.type_currency = response.data.type_currency;
           this.type_organization = response.data.type_organization;
           this.type_regime = response.data.type_regime;

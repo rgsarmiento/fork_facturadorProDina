@@ -7,6 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\CompanyRequest;
 use App\Http\Resources\Tenant\CompanyResource;
 use Illuminate\Http\Request;
+use Modules\Factcolombia1\Models\Tenant\Company as CoCompany;
+use Modules\Factcolombia1\Models\TenantService\{
+    Company as ServiceTenantCompany
+};
+use Illuminate\Support\Facades\Storage;
+
+
+
 
 class CompanyController extends Controller
 {
@@ -26,7 +34,7 @@ class CompanyController extends Controller
 
     public function record()
     {
-        $company = Company::active();
+        $company = CoCompany::active();
         $record = new CompanyResource($company);
 
         return $record;
@@ -35,7 +43,7 @@ class CompanyController extends Controller
     public function store(CompanyRequest $request)
     {
         $id = $request->input('id');
-        $company = Company::find($id);
+        $company = CoCompany::find($id);
         $company->fill($request->all());
         $company->save();
 
@@ -49,13 +57,13 @@ class CompanyController extends Controller
     {
         if ($request->hasFile('file')) {
 
-            $company = Company::active();
+            $company = CoCompany::active();
 
             $type = $request->input('type');
 
             $file = $request->file('file');
             $ext = $file->getClientOriginalExtension();
-            $name = $type.'_'.$company->number.'.'.$ext;
+            $name = $type.'_'.$company->identification_number.'.'.$ext;
 
 
             if (($type === 'logo')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
@@ -66,10 +74,48 @@ class CompanyController extends Controller
 
             $file->storeAs(($type === 'logo_store') ? 'public/uploads/logos' : 'certificates', $name);
 
+            if (($type === 'logo_login')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 
-            $company->$type = $name;
+            if($type === 'logo_login')
+            {
+                $file->storeAs(($type === 'logo_login') ? 'public/uploads/logos' : 'certificates', $name);
 
-            $company->save();
+                $company_t = Company::active();
+                $company_t->$type = $name;
+                $company_t->save();
+
+            }
+            else
+            {
+                $company->$type = $name;
+                $company->save();
+
+                $company_t = Company::active();
+                $company_t->$type = $name;
+                $company_t->save();
+            }
+
+            if($type == 'logo')
+            {
+                //$path = 'public/uploads/logos/'.$name;
+                $contents = Storage::get('public/uploads/logos/'.$name);
+
+                $cor = ServiceTenantCompany::firstOrFail();
+                $payload = json_encode(['logo' => base64_encode( $contents ) ]);
+                $base_url = config('tenant.service_fact');
+                $ch = curl_init("{$base_url}ubl2.1/config/logo");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                curl_setopt($ch, CURLOPT_POSTFIELDS,($payload));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    "Authorization: Bearer {$cor->api_token}"
+                ));
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+            }
 
             return [
                 'success' => true,

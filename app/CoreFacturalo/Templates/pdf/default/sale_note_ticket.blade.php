@@ -114,7 +114,7 @@
                     @foreach($row->attributes as $attr)
                         <br/>{!! $attr->description !!} : {{ $attr->value }}
                     @endforeach
-                @endif 
+                @endif
                 @if($row->discount > 0)
                 <br>
                 {{ $row->discount }}
@@ -127,7 +127,7 @@
             <td colspan="5" class="border-bottom"></td>
         </tr>
     @endforeach
-    
+
         <tr>
             <td colspan="4" class="text-right font-bold desc">TOTAL VENTA: {{ $document->currency->symbol }}</td>
             <td class="text-right font-bold desc">{{ $document->sale }}</td>

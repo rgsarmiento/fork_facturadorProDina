@@ -60,6 +60,11 @@ class ConfigurationController extends Controller
         return view('configuration.tenant.production');
     }
 
+    public function changeAmbient()
+    {
+        return view('factcolombia1::configuration.tenant.change_ambient');
+    }
+
 
     /**
      * All
@@ -189,7 +194,8 @@ class ConfigurationController extends Controller
      */
     public function updateTypeDocument(ConfigurationTypeDocumentRequest $request, TypeDocument $typeDocument) {
 
-        $base_url = env("SERVICE_FACT", "");
+       // $base_url = env("SERVICE_FACT", "");
+        $base_url = config("tenant.service_fact", "");
         $servicecompany = ServiceCompany::firstOrFail();
         $typeDocument->update([
             'resolution_number' => $request->resolution_number,
@@ -221,7 +227,7 @@ class ConfigurationController extends Controller
         ));
         $response_initial_number = curl_exec($ch);
 
-//        return $response_initial_number;
+       //return json_encode($response_initial_number);
 
         $err = curl_error($ch);
         $respuesta = json_decode($response_initial_number);
@@ -414,6 +420,7 @@ class ConfigurationController extends Controller
     }
 
     public function changeEnvironmentProduction(string $environment){
+
         $company = ServiceCompany::firstOrFail();
         $base_url = env("SERVICE_FACT", "");
         $ch = curl_init("{$base_url}ubl2.1/config/environment");
@@ -469,9 +476,11 @@ class ConfigurationController extends Controller
         }
     }
 
+
     public function queryTechnicalKey(){
         $company = ServiceCompany::firstOrFail();
         $base_url = env("SERVICE_FACT", "");
+
         $ch = curl_init("{$base_url}ubl2.1/numbering-range");
         $data = [
             "Nit" => $company->identification_number,
@@ -489,6 +498,11 @@ class ConfigurationController extends Controller
         $response_query = curl_exec($ch);
         $err = curl_error($ch);
         $respuesta = json_decode($response_query);
+
+//        $file = fopen(storage_path("DEBUG.TXT"), "w+");
+//        fwrite($file, json_encode($company));
+//        fclose($file);
+
         if($err)
         {
             return [
@@ -529,16 +543,13 @@ class ConfigurationController extends Controller
     public function storeServiceSoftware(ConfigurationServiceSoftwareCompanyRequest $request)
     {
         $company = ServiceCompany::firstOrFail();
-
-        $base_url = config("tenant.service_fact", "");
+        $base_url = env("SERVICE_FACT", "");
         $ch = curl_init("{$base_url}ubl2.1/config/software");
         $data = [
             "id"=> $request->id_software,
             "pin"=> $request->pin_software,
-            //"url" => $request->url_software,
         ];
         $data_software = json_encode($data);
-
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS,($data_software));
@@ -549,7 +560,6 @@ class ConfigurationController extends Controller
         ));
         $response_software = curl_exec($ch);
         $err = curl_error($ch);
-
         $respuesta = json_decode($response_software);
 
         if($err)
@@ -561,27 +571,22 @@ class ConfigurationController extends Controller
             ];
         }
         else{
-            if(property_exists($respuesta, 'success'))
+            if(property_exists( $respuesta, 'success'))
             {
                 $company->response_software = $response_software;
+                $company->id_software = $request->id_software;
+                $company->pin_software = $request->pin_software;
                 $company->test_id = $request->test_id;
                 $company->save();
-                if($respuesta->success)
-                   return [
-                        'message' => "Se guardaron los cambios.",
-                        'success' => true,
-                        'software' => $response_software
-                    ];
-                else
-                    return [
-                        'message' => "Error en validacion de datos API",
-                        'success' => false,
-                        'software' => $response_software
-                    ];
+                return [
+                    'message' => "Se guardaron los cambios.",
+                    'success' => true,
+                    'software' => $response_software
+                ];
             }
             else{
                 return [
-                    'message' => "Error en validacion de datos API",
+                    'message' => "Error en validacion de datos Api.",
                     'success' => false,
                     'software' => ''
                 ];
@@ -709,16 +714,14 @@ class ConfigurationController extends Controller
     public function storeServiceResolution(ConfigurationServiceResolutionCompanyRequest $request)
     {
 
+
         try{
             $company = ServiceCompany::firstOrFail();
-         //   $base_url = env("SERVICE_FACT", "");
             $base_url = config("tenant.service_fact", "");
-
-           // return json_encode($base_url);
-
 
             $ch3 = curl_init("{$base_url}ubl2.1/config/resolution");
             $data = [
+                "delete_all_type_resolutions" => true,
                 "type_document_id"=> $request->type_document_id,
                 "prefix"=> $request->prefix,
                 "resolution"=> $request->resolution,
@@ -773,7 +776,7 @@ class ConfigurationController extends Controller
                     'to' => $request->to
                 ]);
 
-                $this->storeResolutionNote();
+                $response_redit_debit =  $this->storeResolutionNote();
 
                 if ($request->prefix == 'SETP')
                     $this->changeEnvironment('HABILITACION');
@@ -783,7 +786,8 @@ class ConfigurationController extends Controller
                 return [
                     'message' => "Se guardaron los cambios.",
                     'success' => true,
-                    'resolution' => $response_resolution
+                    'resolution' => $response_resolution,
+                    'response_redit_debit' => $response_redit_debit
                 ];
         }
         else{
@@ -828,47 +832,6 @@ class ConfigurationController extends Controller
             $response = curl_exec($ch);
             array_push($response_invoice, $response);
 
-       // }
-
-        /*//envio 20 notas de credito
-        $json_credit_note = '';
-        $response_credit_note = array();
-        for ($i=1; $i <=20 ; $i++) {
-            $ch = curl_init("{$base_url}ubl2.1/credit-note/{$id_test}");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS,($json_credit_note));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Accept: application/json',
-                "Authorization: Bearer {$company->api_token}"
-            ));
-
-            $response = curl_exec($ch);
-            array_push($response_credit_note, $response);
-
-        }
-
-
-        //envio 20 notas de debito
-        $json_debit_note = '';
-        $response_debit_note = array();
-        for ($i=1; $i <=20 ; $i++) {
-            $ch = curl_init("{$base_url}ubl2.1/debit-note/{$id_test}");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS,($json_debit_note));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Accept: application/json',
-                "Authorization: Bearer {$company->api_token}"
-            ));
-
-            $response = curl_exec($ch);
-            array_push($response_debit_note, $response);
-
-        }*/
-
 
         return [
             '60_times_invoice' =>  $response_invoice,
@@ -880,10 +843,13 @@ class ConfigurationController extends Controller
 
     public function storeResolutionNote()
     {
+
+        $response = [];
+
         DB::connection('tenant')->beginTransaction();
         try {
             $company = ServiceCompany::firstOrFail();
-            $base_url = env("SERVICE_FACT", "");
+            $base_url = config("tenant.service_fact", "");
             //NOTA CREDITO
             $ch5 = curl_init("{$base_url}ubl2.1/config/resolution");
             $data_c = [
@@ -904,11 +870,12 @@ class ConfigurationController extends Controller
             ));
 
             $response_credit = curl_exec($ch5);
+            $response["credit"] = $response_credit;
             curl_close($ch5);
             $company->response_resolution_credit = $response_credit;
 
             TypeDocument::updateOrCreate([
-                'code' => 3
+                'code' => 4
             ], [
                 'resolution_date' => NULL,
                 'resolution_date_end' => NULL,
@@ -936,7 +903,7 @@ class ConfigurationController extends Controller
             ));
 
             TypeDocument::updateOrCreate([
-                'code' => 2
+                'code' => 5
             ], [
                 'resolution_date' => NULL,
                 'resolution_date_end' => NULL,
@@ -946,6 +913,8 @@ class ConfigurationController extends Controller
             ]);
 
             $response_debit = curl_exec($ch4);
+            $response["debit"] = $response_debit;
+
             curl_close($ch4);
             $company->response_resolution_debit = $response_debit;
             $company->save();
@@ -955,7 +924,8 @@ class ConfigurationController extends Controller
 
             return [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'data' => $response
             ];
         }
 
@@ -964,6 +934,7 @@ class ConfigurationController extends Controller
         return [
             'success' => true,
             'message' => "Se registraron con éxito las resoluciones para notas contables.",
+            'data' => $response
         ];
 
     }
