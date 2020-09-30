@@ -459,6 +459,9 @@
                     type_regime_id: this.note.customer.type_regime_id
                 }
 
+                if (this.note.customer.type_person_id == 1) {
+                    dv = this.note.customer.dv;
+                }
                 this.errors = {}
                 this.$eventHub.$emit('eventInitForm')
 

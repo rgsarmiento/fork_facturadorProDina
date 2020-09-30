@@ -887,7 +887,7 @@
 
                 this.form.customer_id = customer.id
 
-                if (customer.type_person_id == 2) {
+                if (customer.type_person_id == 1) {
                     obj.dv = customer.dv;
                 }
 
