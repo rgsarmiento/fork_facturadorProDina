@@ -302,7 +302,6 @@
                 type_documents: [],
                 all_type_documents: [],
                 noteService: {},
-
             }
         },
         async created() {
@@ -416,9 +415,7 @@
 
             },
             initForm() {
-
-                // console.log(this.note)
-
+//                console.log(this.note)
                 this.form = {
                     customer_id: this.note.customer_id,
                     type_document_id: null,
@@ -455,12 +452,12 @@
                     merchant_registration: "0000-00",
                     type_document_identification_id: this.note.customer.identity_document_type_id,
                     type_organization_id: this.note.customer.type_person_id,
-                    municipality_id_fact: this.note.customer.municipality_id,
+                    municipality_id_fact: this.note.customer.city_id,
                     type_regime_id: this.note.customer.type_regime_id
                 }
 
                 if (this.note.customer.type_person_id == 1) {
-                    dv = this.note.customer.dv;
+                    this.noteService.customer.dv = this.note.customer.dv;
                 }
                 this.errors = {}
                 this.$eventHub.$emit('eventInitForm')

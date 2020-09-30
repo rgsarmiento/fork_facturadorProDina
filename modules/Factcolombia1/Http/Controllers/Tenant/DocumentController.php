@@ -857,8 +857,8 @@ class DocumentController extends Controller
                     'telephone' =>  $row->telephone,
                     'type_person_id' => $row->type_person_id,
                     'type_regime_id' => $row->type_regime_id,
-                    'city_id' => $row->city_id
-
+                    'city_id' => $row->city_id,
+                    'dv' => $row->dv
                 ];
             });
             return $customers;

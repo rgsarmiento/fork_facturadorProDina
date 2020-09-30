@@ -343,6 +343,7 @@
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     this.all_customers = response.data.customers;
+                    this.customers = response.data.customers;
                     this.taxes = response.data.taxes
                     // console.log(this.taxes)
                     this.type_invoices = response.data.type_invoices;
@@ -565,7 +566,7 @@
                 //         }
                 //     }
                 // } else {
-                    this.customers = this.all_customers
+                //    this.customers = this.all_customers
                 // }
             },
             addRow(row) {
@@ -890,7 +891,6 @@
                 if (customer.type_person_id == 1) {
                     obj.dv = customer.dv;
                 }
-
                 return obj;
             },
 
