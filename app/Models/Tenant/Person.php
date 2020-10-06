@@ -43,7 +43,6 @@ class Person extends ModelTenant
         'person_type_id',
         'comment',
         'enabled',
-
         'type_person_id',
         'type_regime_id',
         'city_id',
@@ -51,8 +50,6 @@ class Person extends ModelTenant
         'dv',
         'contact_name',
         'contact_phone',
-
-
     ];
 
     // protected static function boot()
@@ -63,33 +60,33 @@ class Person extends ModelTenant
     //         $builder->where('status', 1);
     //     });
     // }
-    
+
     public function typePerson() {
         return $this->belongsTo(TypePerson::class);
     }
-    
+
     public function typeRegime() {
         return $this->belongsTo(TypeRegime::class);
     }
-    
+
     public function identity_document_type()
     {
         return $this->belongsTo(TypeIdentityDocument::class, 'identity_document_type_id');
     }
-    
+
     public function country() {
         return $this->belongsTo(Country::class);
     }
-    
+
     public function department() {
         return $this->belongsTo(Department::class);
     }
-    
+
     public function city() {
         return $this->belongsTo(City::class);
     }
 
-    
+
     public function addresses()
     {
         return $this->hasMany(PersonAddress::class);
@@ -144,7 +141,7 @@ class Person extends ModelTenant
     {
         return $this->belongsTo(PersonType::class);
     }
-    
+
     public function scopeWhereIsEnabled($query)
     {
         return $query->where('enabled', true);
