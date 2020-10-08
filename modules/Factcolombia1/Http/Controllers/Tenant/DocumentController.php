@@ -87,11 +87,19 @@ class DocumentController extends Controller
 
 
     public function create() {
-/*        $company = Company::with('type_regime', 'type_identity_document')->firstOrFail();
+        /*        $company = Company::with('type_regime', 'type_identity_document')->firstOrFail();
         return json_encode($company);   */
 
         return view('factcolombia1::document.tenant.create');
     }
+
+    public function create_aiu() {
+        /*        $company = Company::with('type_regime', 'type_identity_document')->firstOrFail();
+        return json_encode($company);   */
+
+        return view('factcolombia1::document.tenant.create_aiu');
+    }
+
 
     public function note($id) {
 
@@ -171,7 +179,6 @@ class DocumentController extends Controller
             $response_status =  null;
             $correlative_api = $this->getCorrelativeInvoice(1);
 
-            // return $correlative_api;
 
             if(!is_numeric($correlative_api)){
                 return [
@@ -213,7 +220,6 @@ class DocumentController extends Controller
 
             $data_document = json_encode($service_invoice);
 
-            //return ($data_document);
                         $file = fopen(storage_path("DEBUG.TXT"), "w");
                         fwrite($file, json_encode($data_document));
                         fclose($file);
@@ -233,10 +239,6 @@ class DocumentController extends Controller
             $response_model = json_decode($response);
             $zip_key = null;
             $invoice_status_api = null;
-
-//                        $file = fopen(storage_path("DEBUG.TXT"), "w");
-//                        fwrite($file, json_encode($response_model));
-//                        fclose($file);
 
             if($company->type_environment_id == 2){
                 if(array_key_exists('urlinvoicepdf', $response_model) && array_key_exists('urlinvoicexml', $response_model))
@@ -261,7 +263,6 @@ class DocumentController extends Controller
                         }
                 }
 
-//                return $zip_key;
 
                 //declaro variuable response status en null
                 $response_status = null;
@@ -288,7 +289,6 @@ class DocumentController extends Controller
                     curl_close($ch2);
                     $response_status_decoded = json_decode($response_status);
 
-//                    return $response_status;
 
                     if(property_exists($response_status_decoded, 'ResponseDian')){
                         if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == "true")
@@ -350,7 +350,6 @@ class DocumentController extends Controller
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents)) throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
 
             $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
-//            return $demo;
             $payments = (new DocumentHelper())->savePayments($this->document, $request->payments);
 
 
@@ -839,7 +838,9 @@ class DocumentController extends Controller
 
         $taxes = $this->table('taxes');
 
-        return compact('items', 'taxes');
+        $items_aiu  = $this->table('items_aiu');
+
+        return compact('items', 'taxes', 'items_aiu');
     }
 
     public function table($table)
@@ -892,7 +893,90 @@ class DocumentController extends Controller
 
             $items_u = ItemP::whereWarehouse()->whereIsActive()->whereNotIsSet()->orderBy('description')->take(20)->get();
             $items_s = ItemP::where('unit_type_id','ZZ')->whereIsActive()->orderBy('description')->take(10)->get();
+
+            $items_aiu = ItemP::whereIn('internal_id', ['aiu00001', 'aiu00002', 'aiu00003'])->get();
+
             $items = $items_u->merge($items_s);
+
+            //$items = $items->merge($items_aiu);
+
+            return collect($items)->transform(function($row) use($warehouse){
+                $detail = $this->getFullDescription($row, $warehouse);
+                return [
+                    'id' => $row->id,
+                    'name' => $row->name,
+                    'full_description' => $detail['full_description'],
+                    'brand' => $detail['brand'],
+                    'category' => $detail['category'],
+                    'stock' => $detail['stock'],
+                    'internal_id' => $row->internal_id,
+                    'description' => $row->description,
+                    'currency_type_id' => $row->currency_type_id,
+                    'currency_type_symbol' => $row->currency_type->symbol,
+                    'sale_unit_price' => round($row->sale_unit_price, 2),
+                    'purchase_unit_price' => $row->purchase_unit_price,
+                    'unit_type_id' => $row->unit_type_id,
+                    'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+                    'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
+                    'calculate_quantity' => (bool) $row->calculate_quantity,
+                    'has_igv' => (bool) $row->has_igv,
+                    'amount_plastic_bag_taxes' => $row->amount_plastic_bag_taxes,
+                    'item_unit_types' => collect($row->item_unit_types)->transform(function($row) {
+                        return [
+                            'id' => $row->id,
+                            'description' => "{$row->description}",
+                            'item_id' => $row->item_id,
+                            'unit_type_id' => $row->unit_type_id,
+                            'unit_type' => $row->unit_type,
+                            'quantity_unit' => $row->quantity_unit,
+                            'price1' => $row->price1,
+                            'price2' => $row->price2,
+                            'price3' => $row->price3,
+                            'price_default' => $row->price_default,
+                        ];
+                    }),
+                    'warehouses' => collect($row->warehouses)->transform(function($row) use($warehouse){
+                        return [
+                            'warehouse_description' => $row->warehouse->description,
+                            'stock' => $row->stock,
+                            'warehouse_id' => $row->warehouse_id,
+                            'checked' => ($row->warehouse_id == $warehouse->id) ? true : false,
+                        ];
+                    }),
+                    'attributes' => $row->attributes ? $row->attributes : [],
+                    'lots_group' => collect($row->lots_group)->transform(function($row){
+                        return [
+                            'id'  => $row->id,
+                            'code' => $row->code,
+                            'quantity' => $row->quantity,
+                            'date_of_due' => $row->date_of_due,
+                            'checked'  => false
+                        ];
+                    }),
+                    'lots' => $row->item_lots->where('has_sale', false)->where('warehouse_id', $warehouse->id)->transform(function($row) {
+                        return [
+                            'id' => $row->id,
+                            'series' => $row->series,
+                            'date' => $row->date,
+                            'item_id' => $row->item_id,
+                            'warehouse_id' => $row->warehouse_id,
+                            'has_sale' => (bool)$row->has_sale,
+                            'lot_code' => ($row->item_loteable_type) ? (isset($row->item_loteable->lot_code) ? $row->item_loteable->lot_code:null):null
+                        ];
+                    }),
+                    'lots_enabled' => (bool) $row->lots_enabled,
+                    'series_enabled' => (bool) $row->series_enabled,
+                    'unit_type' => $row->unit_type,
+                    'tax' => $row->tax,
+                ];
+            });
+        }
+
+        if($table == 'items_aiu')
+        {
+            $establishment_id = auth()->user()->establishment_id;
+            $warehouse = ModuleWarehouse::where('establishment_id', $establishment_id)->first();
+            $items = ItemP::whereIn('internal_id', ['aiu00001', 'aiu00002', 'aiu00003'])->get();
 
             return collect($items)->transform(function($row) use($warehouse){
                 $detail = $this->getFullDescription($row, $warehouse);
@@ -1202,5 +1286,240 @@ class DocumentController extends Controller
     public function searchExternalId($external_id)
     {
         return response()->json(Document::where('external_id', $external_id)->first());
+    }
+
+
+    public function store_aiu(DocumentRequest $request) {
+
+        DB::connection('tenant')->beginTransaction();
+
+        try {
+            if(!$request->customer_id)
+            {
+                $customer = (object)$request->service_invoice['customer'];
+
+                $person = Person::updateOrCreate([
+                    'type' => 'customers',
+                    'identity_document_type_id' => $customer->identity_document_type_id,
+                    'number' => $customer->identification_number,
+                ], [
+                    'code' => random_int(1000, 9999),
+                    'name' => $customer->name,
+                    'country_id' => 47,
+                    'department_id' => 779,
+                    'city_id' => 12688,
+                    'address' => $customer->address,
+                    'email' => $customer->email,
+                    'telephone' => $customer->phone,
+                ]);
+
+                $request['customer_id'] = $person->id;
+            }
+
+            $response =  null;
+            $response_status =  null;
+            $correlative_api = $this->getCorrelativeInvoice(1);
+
+
+            if(!is_numeric($correlative_api)){
+                return [
+                    'success' => false,
+                    'message' => 'Error al obtener correlativo Api.'
+                ];
+            }
+
+            $service_invoice = $request->service_invoice;
+            $service_invoice['number'] = $correlative_api;
+
+            $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
+            $company = ServiceTenantCompany::firstOrFail();
+
+            if(file_exists(storage_path('sendmail.api')))
+                $service_invoice['sendmail'] = true;
+            $service_invoice['ivaresponsable'] = $datoscompany->type_regime->name;
+            $service_invoice['nombretipodocid'] = $datoscompany->type_identity_document->name;
+            $service_invoice['tarifaica'] = $datoscompany->ica_rate;
+            $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;
+            $service_invoice['notes'] = $request->observation;
+            $service_invoice['date'] = date('Y-m-d');
+            $service_invoice['time'] = date('H:i:s');
+            $service_invoice['payment_form']['payment_form_id'] = $request->payment_form_id;
+            $service_invoice['payment_form']['payment_method_id'] = $request->payment_method_id;
+            if($request->payment_form_id == '1')
+                $service_invoice['payment_form']['payment_due_date'] = date('Y-m-d');
+            else
+                $service_invoice['payment_form']['payment_due_date'] = date('Y-m-d', strtotime($request->date_expiration));
+            $service_invoice['payment_form']['duration_measure'] = $request->time_days_credit;
+
+            $id_test = $company->test_id;
+            $base_url = config('tenant.service_fact');
+
+            if($company->type_environment_id == 2)
+                $ch = curl_init("{$base_url}ubl2.1/invoice-aiu/{$id_test}");
+            else
+                $ch = curl_init("{$base_url}ubl2.1/invoice-aiu");
+
+            $data_document = json_encode($service_invoice);
+
+                        $file = fopen(storage_path("DEBUG.TXT"), "w");
+                        fwrite($file, json_encode($data_document));
+                        fclose($file);
+
+
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_POSTFIELDS,($data_document));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Accept: application/json',
+                "Authorization: Bearer {$company->api_token}"
+            ));
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $response_model = json_decode($response);
+            $zip_key = null;
+            $invoice_status_api = null;
+            $response_status = null;
+
+            //return json_encode($response_model);
+
+            if($company->type_environment_id == 2){
+                if(array_key_exists('urlinvoicepdf', $response_model) && array_key_exists('urlinvoicexml', $response_model))
+                {
+                    if(!is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey))
+                    {
+                        if(is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->Success))
+                        {
+                            if($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->Success == 'false')
+                            {
+                                return [
+                                    'success' => false,
+                                    'message' => $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ErrorMessageList->XmlParamsResponseTrackId->ProcessedMessage
+                                ];
+                            }
+                        }
+                    }
+                    else
+                        if(is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey))
+                        {
+                            $zip_key = $response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey;
+                        }
+                }
+
+
+                //declaro variuable response status en null
+
+                //compruebo zip_key para ejecutar servicio de status document
+
+                if($zip_key)
+                {
+                    //espero 3 segundos para ejecutar sevcio de status document
+                    sleep(3);
+
+                    $ch2 = curl_init("{$base_url}ubl2.1/status/zip/{$zip_key}");
+                    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "POST");
+
+                    if(file_exists(storage_path('sendmail.api'))){
+                        curl_setopt($ch2, CURLOPT_POSTFIELDS, json_encode(array("sendmail" => true)));
+                    }
+                    curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Accept: application/json',
+                        "Authorization: Bearer {$company->api_token}"
+                    ));
+                    $response_status = curl_exec($ch2);
+                    curl_close($ch2);
+                    $response_status_decoded = json_decode($response_status);
+
+                   // return json_encode($response_status_decoded);
+
+
+                    if(property_exists($response_status_decoded, 'ResponseDian')){
+                        if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == "true")
+                            $this->setStateDocument(1, $correlative_api);
+                        else
+                        {
+                            if(is_array($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string))
+                                $mensajeerror = implode(",", $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string);
+                            else
+                                $mensajeerror = $response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->ErrorMessage->string;
+                            if($response_status_decoded->ResponseDian->Envelope->Body->GetStatusZipResponse->GetStatusZipResult->DianResponse->IsValid == 'false')
+                            {
+                                return [
+                                    'success' => false,
+                                    'message' => "Error al Validar Factura Nro: {$correlative_api} Errores: ".$mensajeerror
+                                ];
+                            }
+                        }
+                    }
+                    else{
+                        $mensajeerror = $response_status_decoded->message;
+                        return [
+                            'success' => false,
+                            'message' => "Error al Validar Factura Nro: {$correlative_api} Errores: ".$mensajeerror
+                        ];
+
+                    }
+                }
+                else
+                    return [
+                        'success' => false,
+                        'message' => "Error de ZipKey."
+                    ];
+            }
+            else{
+                if($response_model->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->IsValid == "true")
+                    $this->setStateDocument(1, $correlative_api);
+                else
+                {
+                    if(is_array($response_model->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->ErrorMessage->string))
+                        $mensajeerror = implode(",", $response_model->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->ErrorMessage->string);
+                    else
+                        $mensajeerror = $response_model->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->ErrorMessage->string;
+                    if($response_model->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->IsValid == 'false')
+                    {
+                        return [
+                            'success' => false,
+                            'message' => "Error al Validar Factura Nro: {$correlative_api} Errores: ".$mensajeerror
+                        ];
+                    }
+                }
+            }
+
+            $nextConsecutive = FacadeDocument::nextConsecutive($request->type_document_id);
+            $this->company = Company::query()
+                ->with('country', 'version_ubl', 'type_identity_document')
+                ->firstOrFail();
+
+            if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents)) throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
+
+            $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
+            $payments = (new DocumentHelper())->savePayments($this->document, $request->payments);
+
+
+        }
+        catch (\Exception $e) {
+            DB::connection('tenant')->rollBack();
+
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace(),
+            ];
+        }
+
+        DB::connection('tenant')->commit();
+
+        return [
+            'success' => true,
+            'message' => "Se registro con éxito el documento #{$this->document->prefix}",
+            'data' => [
+                'id' => $this->document->id
+            ]
+           //'data' => $data_document
+        ];
     }
 }

@@ -27,6 +27,8 @@ class DocumentHelper{
         try{
 
 
+
+
         $establishment = EstablishmentInput::set(auth()->user()->establishment_id);
 
         $document = Document::create([
@@ -106,6 +108,7 @@ class DocumentHelper{
             ]);
 
         }
+
 
         return $document;
     }

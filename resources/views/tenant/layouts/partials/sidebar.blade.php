@@ -57,6 +57,7 @@
                         {{ ($path[0] === 'co-items')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'co-clients')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'co-taxes')?'nav-active nav-expanded':'' }}
+                        {{ ($path[0] === 'co-documents-aiu')?'nav-active nav-expanded':'' }}
 
 
                         ">
@@ -74,6 +75,12 @@
                                         <li class="{{ ($path[0] === 'co-documents'  && $path[1] === 'create')?'nav-active':'' }}">
                                             <a class="nav-link" href="{{route('tenant.co-documents.create')}}">
                                                 Nuevo comprobante electrónico
+                                            </a>
+                                        </li>
+
+                                        <li class="{{ ($path[0] === 'co-documents-aiu'  && $path[1] === 'create')?'nav-active':'' }}">
+                                            <a class="nav-link" href="{{route('tenant.co-documents-aiu.create')}}">
+                                                Nuevo comprobante AIU
                                             </a>
                                         </li>
 

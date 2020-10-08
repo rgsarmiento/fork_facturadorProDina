@@ -29,8 +29,12 @@ if($current_hostname) {
                 Route::post('sendEmail', 'Tenant\DocumentController@sendEmailCoDocument');
                 Route::post('note', 'Tenant\DocumentController@storeNote');
                 Route::get('documents/search/externalId/{external_id}', 'Tenant\DocumentController@searchExternalId');
+                Route::post('store_aiu', 'Tenant\DocumentController@store_aiu');
 
+            });
 
+            Route::prefix('co-documents-aiu')->group(function () {
+                Route::get('create', 'Tenant\DocumentController@create_aiu')->name('tenant.co-documents-aiu.create');
             });
 
             Route::prefix('co-items')->group(function () {

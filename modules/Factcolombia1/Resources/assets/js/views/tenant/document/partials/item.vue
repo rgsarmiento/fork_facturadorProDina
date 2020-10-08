@@ -3,16 +3,6 @@
         <form autocomplete="off" @submit.prevent="clickAddItem">
             <div class="form-body">
                 <div class="row">
-                    
-                    <!-- <div class="col-lg-7 pb-2">
-                        <div class="form-group" :class="{'has-danger': errors.customer_id}">
-                            <label class="control-label">Producto/Servicio</label>
-                            <el-select v-model="form.item_id" filterable @change="changeItem" :disabled="recordItem != null" popper-class="el-select-document_type" dusk="item_id" class="border-left rounded-left border-info">
-                                <el-option v-for="option in items" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.item_id" v-text="errors.item_id[0]"></small>
-                        </div>
-                    </div>  -->
                     <div class="col-md-7 col-lg-7 col-xl-7 col-sm-7">
                         <div class="form-group" id="custom-select" :class="{'has-danger': errors.item_id}">
                             <label class="control-label">
@@ -90,8 +80,8 @@
                             </template>
                             <small class="form-control-feedback" v-if="errors.item_id" v-text="errors.item_id[0]"></small>
                         </div>
-                    </div>  
-                    
+                    </div>
+
                     <div class="col-md-5">
                         <div class="form-group" :class="{'has-danger': errors.tax_id}">
                             <label class="control-label">Impuesto</label>
@@ -138,7 +128,7 @@
                             <small class="form-control-feedback" v-if="errors.total_item" v-text="errors.total_item[0]"></small>
                         </div>
                     </div>
-                    
+
 
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group"  :class="{'has-danger': errors.discount}">
@@ -192,8 +182,8 @@
                                 </tbody>
                             </table>
                             </div>
-                        </div> 
- 
+                        </div>
+
                     </template>
                 </div>
             </div>
@@ -283,6 +273,7 @@
                 lots:[],
                 all_taxes:[],
                 taxes:[],
+                items_aiu: []
 
             }
         },
@@ -313,6 +304,7 @@
                // console.log('tablas new edit')
                 this.taxes = response.data.taxes;
                 this.all_items = response.data.items
+                this.items_aiu = response.data.items_aiu
                 this.filterItems()
 
             })
@@ -436,7 +428,7 @@
                     this.form.quantity = this.recordItem.quantity
                     this.form.price = this.recordItem.price
                     this.form.discount = this.recordItem.discount
-                    
+
                     this.form.warehouse_id = this.recordItem.warehouse_id
                     this.isUpdateWarehouseId = this.recordItem.warehouse_id
 
@@ -458,6 +450,7 @@
             },
             async changeItem() {
 
+
                 this.form.item = _.find(this.items, {'id': this.form.item_id});
                 this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
                 this.form.id = this.form.item_id
@@ -468,15 +461,86 @@
                 this.form.tax_id = (this.taxes.length > 0) ? this.form.item.tax.id: null
 
                 this.form.price = this.form.item.sale_unit_price;
-                
+
                 // this.form.has_igv = this.form.item.has_igv;
                 // this.form.affectation_igv_type_id = this.form.item.sale_affectation_igv_type_id;
-                
+
                 this.form.quantity = 1;
                 this.cleanTotalItem();
                 this.showListStock = true
                 this.form.lots_group = this.form.item.lots_group
 
+            },
+            getItemsAiu(detailAiu)
+            {
+                const context = this
+
+                let items_a = this.items_aiu.filter( row => row.internal_id == 'aiu00001' || row.internal_id == 'aiu00002' || row.internal_id == 'aiu00003' )
+
+                let data = items_a.map(row => {
+
+                    let formaiu = context.getFormAiu()
+                    const price = context.getPriceAiu(row.internal_id, detailAiu)
+
+                    formaiu.item_id = row.id
+                    formaiu.item = row
+
+                    formaiu.unit_type_id = formaiu.item.unit_type_id
+                    formaiu.item.sale_unit_price = price
+                    formaiu.item_unit_types = _.find(context.items_aiu, {'id': formaiu.item_id}).item_unit_types
+                    formaiu.id = formaiu.item_id
+                    formaiu.tax_id = (context.taxes.length > 0) ? formaiu.item.tax.id: null
+                    formaiu.price = price
+                    formaiu.quantity = 1
+                    formaiu.item.presentation = {};
+
+                    formaiu.tax = _.find(context.taxes, {'id': formaiu.tax_id})
+
+                    return formaiu
+
+                })
+
+                return data
+            },
+            getPriceAiu(internal_id, detailAiu)
+            {
+                const context = this
+                let price = 0
+
+                switch(internal_id)
+                {
+                    case 'aiu00001':
+                        price = detailAiu.value_administartion
+                    break;
+                    case 'aiu00002':
+                        price = detailAiu.value_sudden
+                    break;
+                    case 'aiu00003':
+                        price = detailAiu.value_utility
+                    break;
+                }
+                return price
+            },
+            getFormAiu()
+            {
+                return {
+                    id: null,
+                    item_id: null,
+                    item: {},
+                    code: null,
+                    discount: 0,
+                    name: null,
+                    price: null,
+                    quantity: null,
+                    subtotal: null,
+                    tax: {},
+                    tax_id: null,
+                    total: 0,
+                    total_tax: 0,
+                    type_unit: {},
+                    unit_type_id: null,
+                    item_unit_types: [],
+                };
             },
             focusTotalItem(change) {
                 if(!change && this.form.item.calculate_quantity) {
@@ -495,7 +559,6 @@
                 this.total_item = null
             },
             async clickAddItem() {
-
                 if(this.form.item.lots_enabled){
                     if(!this.form.IdLoteSelected)
                         return this.$message.error('Debe seleccionar un lote.');
@@ -508,12 +571,13 @@
                 // console.log(this.form)
                 this.form.item.presentation = this.item_unit_type;
 
+
                 if (this.recordItem){
                     this.form.indexi = this.recordItem.indexi
                 }
 
                 let IdLoteSelected = this.form.IdLoteSelected
-                
+
                 let select_lots = await _.filter(this.form.item.lots, {'has_sale':true})
                 let un_select_lots = await _.filter(this.form.item.lots, {'has_sale':false})
 
@@ -526,12 +590,13 @@
 
                 this.$emit('add', this.form);
 
+
                 if (this.recordItem){
                     this.close()
                 }
 
                 this.initForm();
-                
+
                 // let unit_price = (this.form.has_igv)?this.form.unit_price_value:this.form.unit_price_value*1.18;
                 // this.form.input_unit_price_value = this.form.unit_price_value;
                 // this.form.unit_price = unit_price;
