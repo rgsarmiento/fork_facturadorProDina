@@ -249,7 +249,7 @@ class PosController extends Controller
 
             $configuration =  Configuration::first();
 
-            $items = Item::whereWarehouse()->whereIsActive()->where('unit_type_id', '!=', 'ZZ')->orderBy('description')->take(100)
+            $items = Item::whereWarehouse()->whereItemsAiu()->whereIsActive()->where('unit_type_id', '!=', 'ZZ')->orderBy('description')->take(100)
                             ->get()->transform(function($row) use ($configuration) {
                                 $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->name;
                                 return [
@@ -285,7 +285,8 @@ class PosController extends Controller
                                     }),
                                     'unit_type' => $row->unit_type,
                                     'tax' => $row->tax,
-                                    'item_unit_types' => $row->item_unit_types
+                                    'item_unit_types' => $row->item_unit_types,
+                                    //'sale_unit_price_calculate' => self::calculateSalePrice($row)
                                 ];
                             });
             return $items;
@@ -300,6 +301,29 @@ class PosController extends Controller
         }
 
         return [];
+    }
+
+    public static function calculateSalePrice($item)
+    {
+        $total_tax = 0;
+
+        if($item->tax)
+        {
+            if($item->tax->is_fixed_value)
+            {
+                $total_tax = ( $item->tax->rate * 1 - ($item->discount < $item->unit_price * 1 ? $item->discount : 0));
+            }
+
+            if($item->tax->is_percentage)
+            {
+                $total_tax = ( ($item->unit_price * 1 - ($item->discount < $item->unit_price * 1 ? $item->discount : 0)) * ($item->tax->rate / $item->tax->conversion));
+
+            }
+
+        }
+        else{
+
+        }
     }
 
     public function payment()

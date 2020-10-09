@@ -82,6 +82,11 @@ class DocumentPosController extends Controller
         return view('tenant.sale_notes.form', compact('id'));
     }
 
+    public function create_refund($id)
+    {
+        return view('tenant.pos.refund', compact('id'));
+    }
+
     public function columns()
     {
         return [
@@ -179,6 +184,7 @@ class DocumentPosController extends Controller
 
         return $record;
     }
+    
 
     public function record2($id)
     {

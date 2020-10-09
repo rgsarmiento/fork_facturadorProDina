@@ -182,6 +182,8 @@ Vue.component('tenant-sale-notes-form', require('./views/tenant/sale_notes/form.
 Vue.component('tenant-pos-index', require('./views/tenant/pos/index.vue'));
 Vue.component('tenant-pos-configuration', require('./views/tenant/pos/configuration.vue'));
 Vue.component('tenant-pos-documents', require('./views/tenant/pos/documents.vue'));
+Vue.component('tenant-pos-refund', require('./views/tenant/pos/refund.vue'));
+
 
 
 Vue.component('cash-index', require('./views/tenant/cash/index.vue'));

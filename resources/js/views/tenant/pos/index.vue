@@ -102,8 +102,8 @@
                 <div class="card-footer pointer text-center bg-primary" >
                   <template v-if="!item.edit_unit_price">
                     <h5   class="font-weight-semibold text-right text-white" >
-                      <button v-if="configuration.options_pos" type="button" class="btn btn-xs btn-primary-pos" @click="clickOpenInputEditUP(index)"><span style='font-size:16px;'>&#9998;</span> </button>
-                      {{currency.symbol}} {{item.sale_unit_price}}
+                      <!--<button v-if="configuration.options_pos" type="button" class="btn btn-xs btn-primary-pos" @click="clickOpenInputEditUP(index)"><span style='font-size:16px;'>&#9998;</span> </button>-->
+                      {{currency.symbol}} {{item.sale_unit_price * 1.19}}
                     </h5>
                   </template>
                   <template v-else>
@@ -937,7 +937,6 @@
           },
           setDataTotals() {
 
-              // console.log(val)
               let val = this.form
               val.taxes = JSON.parse(JSON.stringify(this.taxes));
 

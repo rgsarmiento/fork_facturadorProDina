@@ -97,9 +97,9 @@ class Item extends ModelTenant
     // {
     //     return $this->belongsTo(UnitType::class, 'unit_type_id');
     // }
-    
+
     //colombia
-    
+
     public function unit_type()
     {
         return $this->belongsTo(TypeUnit::class, 'unit_type_id');
@@ -109,7 +109,7 @@ class Item extends ModelTenant
     {
         return $this->belongsTo(Tax::class);
     }
-    
+
     public function purchase_tax()
     {
         return $this->belongsTo(Tax::class, 'purchase_tax_id');
@@ -166,6 +166,11 @@ class Item extends ModelTenant
                         })->orWhere('unit_type_id', 'ZZ');
         }
         return $query;
+     }
+
+     public function scopeWhereItemsAiu($query)
+     {
+        return $query->whereNotIn('internal_id', ['aiu00001', 'aiu00002', 'aiu00003']);
      }
 
     public function scopeWhereTypeUser($query)
@@ -270,7 +275,7 @@ class Item extends ModelTenant
     {
         return $this->hasMany(SaleNoteItem::class, 'item_id');
     }
-    
+
     public function scopeWhereFilterValuedKardex($query, $params)
     {
 
@@ -317,10 +322,10 @@ class Item extends ModelTenant
     {
         return $query->where('active', false);
     }
-    
+
     public function scopeWhereHasInternalId($query)
     {
         return $query->where('internal_id','!=', null);
     }
-    
+
 }

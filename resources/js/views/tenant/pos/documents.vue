@@ -107,6 +107,9 @@
 
                             <button  data-toggle="tooltip" data-placement="top" title="Imprimir" v-if="row.state_type_id != '11'"  type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickOptions(row.id)"><i class="fas fa-print"></i></button>
+
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                                    @click.prevent="clickRefund(row.id)">Devolución</button>
                         </td>
 
 
@@ -238,10 +241,14 @@
                 });
             },
             clickVoided(id) {
-                 this.anular(`/${this.resource}/anulate/${id}`).then(() =>
+                this.anular(`/${this.resource}/anulate/${id}`).then(() =>
                     this.$eventHub.$emit('reloadData')
                 )
             },
+            clickRefund(id)
+            {
+                location.href = `/${this.resource}/refund/${id}`
+            }
 
         }
     }

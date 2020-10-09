@@ -398,6 +398,9 @@ if ($hostname) {
             Route::get('document-pos/index', 'Tenant\DocumentPosController@index')->name('tenant.document_pos.index');
             Route::get('document-pos/columns', 'Tenant\DocumentPosController@columns');
             Route::get('document-pos/downloadExternal/{external_id}', 'Tenant\DocumentPosController@downloadExternal');
+            Route::get('document-pos/refund/{id}', 'Tenant\DocumentPosController@create_refund');
+            Route::get('document-pos/record2/{id}', 'Tenant\DocumentPosController@record2');
+
 
 
 
