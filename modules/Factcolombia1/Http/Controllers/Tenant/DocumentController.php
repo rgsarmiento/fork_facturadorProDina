@@ -1355,11 +1355,6 @@ class DocumentController extends Controller
 
             $data_document = json_encode($service_invoice);
 
-                        $file = fopen(storage_path("DEBUG.TXT"), "w");
-                        fwrite($file, json_encode($data_document));
-                        fclose($file);
-
-
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS,($data_document));
@@ -1376,6 +1371,7 @@ class DocumentController extends Controller
             $invoice_status_api = null;
             $response_status = null;
 
+            \Log::debug(json_encode($response_model));
             //return json_encode($response_model);
 
             if($company->type_environment_id == 2){
