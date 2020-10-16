@@ -4,6 +4,56 @@
             <h3 class="my-0">Resolucion de Facturacion</h3>
         </div>
         <div class="tab-content">
+            <div>
+
+                <el-table
+                :data="records"
+                style="width: 100%">
+                    <el-table-column
+                        prop="name"
+                        label="Tipo Doc."
+                        width="180">
+                    </el-table-column>
+                    <el-table-column
+                        prop="prefix"
+                        label="Prefijo"
+                        width="120">
+                    </el-table-column>
+                    <el-table-column
+                        prop="resolution_number"
+                        label="Número">
+                    </el-table-column>
+                    <el-table-column
+                        prop="resolution_date"
+                        label="Fecha Desde">
+                    </el-table-column>
+                    <el-table-column
+                        prop="resolution_date_end"
+                        label="Fecha Hasta">
+                    </el-table-column>
+                    <el-table-column
+                        prop="from"
+                        label="Desde">
+                    </el-table-column>
+                    <el-table-column
+                        prop="to"
+                        label="Hasta">
+                    </el-table-column>
+                    <el-table-column
+                        fixed="right"
+                        label="Operaciones"
+                        width="120">
+                        <template slot-scope="scope">
+                            <el-button
+                            icon="el-icon-check"
+                            @click.native.prevent="selection(scope.row)"
+                            size="mini">
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+            </div>
             <div class="resolution">
                 <form autocomplete="off">
                     <div class="form-body">
@@ -12,6 +62,7 @@
                                 <div class="form-group" :class="{'has-danger': errors.type_document_id}">
                                     <label class="control-label">Tipo de Documento *</label>
                                     <el-select
+                                        @change="changeTypeDocument"
                                         v-model="resolution.type_document_id"
                                         filterable
                                         remote class="border-left rounded-left border-info"
@@ -155,25 +206,28 @@
         props: {
             route: {
                 required: true
-            }
+            },
         },
-
         data: () => ({
             typeDocuments: [
-                { id: 1, name: "Factura de Venta Nacional" },
-                { id: 2, name: "Factura de Exportación" },
-                { id: 3, name: "Factura de Contingencia" },
-                { id: 4, name: "Nota Crédito" },
-                { id: 5, name: "Nota Débito" },
-                { id: 6, name: "ZIP" }
+                { id: 1, name: "Factura de Venta Nacional", code: '1' },
+                { id: 2, name: "Factura de Exportación", code: '2' },
+                { id: 3, name: "Factura de Contingencia", code: '3' },
+                { id: 4, name: "Nota Crédito", code: '4' },
+                { id: 5, name: "Nota Débito", code: '5' },
+                { id: 6, name: "ZIP", code: '6'}
             ],
             errors: {
             },
             resolution: {
             },
             loadingResolution: false,
+            records: []
         }),
-
+        async created(){
+            await this.getRecords()
+            await this.initForm()
+        },
         mounted() {
             this.errors = {
             }
@@ -184,16 +238,35 @@
         },
 
         methods: {
+            changeTypeDocument()
+            {
+                if(this.resolution.type_document_id)
+                {
+                    const type = this.typeDocuments.find(x=> x.id == this.resolution.type_document_id)
+                    this.resolution.code = type.code
+                    this.resolution.name = type.name
+                }
+            },
+            getRecords()
+            {
+                this.$http.get(`/client/configuration/co_type_documents`).then(response=>{
+                    this.records = response.data.data
+                })
+            },
             initForm() {
-                this.resolution.type_document_id = '';
-                this.resolution.prefix = '';
-                this.resolution.resolution = '';
-                this.resolution.resolution_date = '';
-                this.resolution.date_from = '';
-                this.resolution.date_to = '';
-                this.resolution.from = '';
-                this.resolution.to = '';
-                this.resolution.technical_key = '';
+                this.resolution = {
+                    type_document_id : null,
+                    prefix : null,
+                    resolution : null,
+                    resolution_date : null,
+                    date_from : null,
+                    date_to : null,
+                    from : null,
+                    to : null,
+                    technical_key : null,
+                    code : null,
+                    name : null
+                }
             },
 
             validateResolution(scope, model = null, models = null, modelObject = null) {
@@ -202,6 +275,7 @@
                     .then(response => {
                         if (response.data.success) {
                             this.$message.success(response.data.message)
+                            this.getRecords()
                         } else {
                             this.$message.error(response.data.message)
                         }
@@ -218,6 +292,24 @@
                         this.initForm()
                     })
             },
+            selection(row)
+            {
+                const type_doc = this.typeDocuments.find(x=> x.code == row.code)
+                this.resolution = {
+                    type_document_id : type_doc.id,
+                    prefix : row.prefix,
+                    resolution : row.resolution_number,
+                    resolution_date : row.resolution_date,
+                    date_from : row.resolution_date,
+                    date_to : row.resolution_date_end,
+                    from : row.from,
+                    to : row.to,
+                    technical_key : row.technical_key,
+                    code : type_doc.code,
+                    name : type_doc.name
+                }
+
+            }
         }
     };
 </script>

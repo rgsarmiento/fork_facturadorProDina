@@ -765,15 +765,17 @@ class ConfigurationController extends Controller
                 $company->save();
 
                 TypeDocument::updateOrCreate([
-                    'code' => 1
-                ], [
+                    'code' => $request->code,
+                    'prefix' => $request->prefix,
                     'resolution_number' => $request->resolution,
+                ], [
                     'resolution_date' => $request->date_from,
                     'resolution_date_end' => $request->date_to,
-                    'prefix' => $request->prefix,
                     'technical_key' => $request->technical_key,
                     'from' => $request->from,
-                    'to' => $request->to
+                    'to' => $request->to,
+                    'name' => $request->name,
+                    'template' => 'face_f   '
                 ]);
 
                 $response_redit_debit =  $this->storeResolutionNote();
@@ -937,5 +939,12 @@ class ConfigurationController extends Controller
             'data' => $response
         ];
 
+    }
+
+    public function co_type_documents()
+    {
+        return [
+            'data' => TypeDocument::whereIn('code', [1,2,3])->get()
+        ];
     }
 }

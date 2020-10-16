@@ -23,9 +23,11 @@ class ConfigurationServiceResolutionCompanyRequest extends FormRequest
      */
     public function rules()
     {
-    
+
         return [
             'type_document_id'  => 'required',
+            'code'  => 'required',
+            'name'  => 'required',
             'prefix'            => 'nullable|string|max:4',
             'resolution'        => 'nullable|required_if:type_document_id,=,1|string',
             'resolution_date'   => 'nullable|required_if:type_document_id,=,1|date_format:Y-m-d',

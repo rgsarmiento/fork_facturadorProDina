@@ -189,6 +189,8 @@ class DocumentController extends Controller
 
             $service_invoice = $request->service_invoice;
             $service_invoice['number'] = $correlative_api;
+            //$service_invoice['prefix'] = $request->prefix;
+            //$service_invoice['resolution_number'] = $request->resolution_number;
 
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
             $company = ServiceTenantCompany::firstOrFail();
@@ -237,6 +239,7 @@ class DocumentController extends Controller
             curl_close($ch);
 
             $response_model = json_decode($response);
+            return json_encode( $response_model)    ;
             $zip_key = null;
             $invoice_status_api = null;
 
@@ -381,9 +384,7 @@ class DocumentController extends Controller
         DB::connection('tenant')->beginTransaction();
 
         try {
-            // dd($request->all());
-            // return json_encode( $request->all());
-            // return $correlative_api;
+
             $note_service = $request->note_service;
             $url_name_note = '';
             $type_document_service = $note_service['type_document_id'];
@@ -405,8 +406,6 @@ class DocumentController extends Controller
                 ];
             }
 
-            //return $correlative_api;
-
             $note_service['number'] = $correlative_api;
             $note_service['date'] = date('Y-m-d');
             $note_service['time'] = date('H:i:s');
@@ -414,7 +413,6 @@ class DocumentController extends Controller
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
             $company = ServiceTenantCompany::firstOrFail();
 
-//            return json_encode($request->note_concept_id);
 
             $note_concept_id = NoteConcept::query()->where('id', $request->note_concept_id)->get();
             $note_service['discrepancyresponsecode'] = $note_concept_id[0]->code;
@@ -434,12 +432,6 @@ class DocumentController extends Controller
             else
                 $ch = curl_init("{$base_url}ubl2.1/{$url_name_note}");
             $data_document = json_encode($note_service);
-            // dd($data_document);
-
-            $file = fopen(storage_path("DEBUG.TXT"), "w");
-            fwrite($file, json_encode($data_document));
-            fclose($file);
-//            return $data_document;
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -824,8 +816,10 @@ class DocumentController extends Controller
 
         $taxes = $this->table('taxes');
 
+        $resolutions = TypeDocument::select('id','prefix', 'resolution_number')->whereIn('code', [1,2,3])->get();
+
         return compact('customers','payment_methods','payment_forms','type_invoices','currencies'
-                        , 'taxes', 'type_documents');
+                        , 'taxes', 'type_documents', 'resolutions');
 
     }
 
@@ -891,10 +885,10 @@ class DocumentController extends Controller
             $establishment_id = auth()->user()->establishment_id;
             $warehouse = ModuleWarehouse::where('establishment_id', $establishment_id)->first();
 
-            $items_u = ItemP::whereWarehouse()->whereIsActive()->whereNotIsSet()->orderBy('description')->take(20)->get();
-            $items_s = ItemP::where('unit_type_id','ZZ')->whereIsActive()->orderBy('description')->take(10)->get();
+            $items_u = ItemP::whereNotItemsAiu()->whereWarehouse()->whereIsActive()->whereNotIsSet()->orderBy('description')->take(20)->get();
+            $items_s = ItemP::whereNotItemsAiu()->where('unit_type_id','ZZ')->whereIsActive()->orderBy('description')->take(10)->get();
 
-            $items_aiu = ItemP::whereIn('internal_id', ['aiu00001', 'aiu00002', 'aiu00003'])->get();
+           // $items_aiu = ItemP::whereIn('internal_id', ['aiu00001', 'aiu00002', 'aiu00003'])->get();
 
             $items = $items_u->merge($items_s);
 

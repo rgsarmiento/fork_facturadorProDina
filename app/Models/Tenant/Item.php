@@ -168,7 +168,7 @@ class Item extends ModelTenant
         return $query;
      }
 
-     public function scopeWhereItemsAiu($query)
+     public function scopeWhereNotItemsAiu($query)
      {
         return $query->whereNotIn('internal_id', ['aiu00001', 'aiu00002', 'aiu00003']);
      }

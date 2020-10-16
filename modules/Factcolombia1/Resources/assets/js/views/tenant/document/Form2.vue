@@ -39,11 +39,21 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-4 pb-2">
+                            <div class="col-lg-3 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.type_invoice_id}">
                                     <label class="control-label">Tipo de factura</label>
                                     <el-select v-model="form.type_invoice_id"  popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info">
                                         <el-option v-for="option in type_invoices" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.type_invoice_id" v-text="errors.type_invoice_id[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 pb-2">
+                                <div class="form-group" :class="{'has-danger': errors.type_invoice_id}">
+                                    <label class="control-label">Resolucion</label>
+                                    <el-select @change="changeResolution" v-model="form.resolution_id"  popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info">
+                                        <el-option v-for="option in resolutions" :key="option.id" :value="option.id" :label="`${option.prefix} / ${option.resolution_number}`"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.type_invoice_id" v-text="errors.type_invoice_id[0]"></small>
                                 </div>
@@ -336,6 +346,7 @@
                 total_global_discount:0,
                 loading_search:false,
                 taxes:  [],
+                resolutions:[]
             }
         },
         async created() {
@@ -354,6 +365,7 @@
                     this.form.type_invoice_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null;
                     this.form.payment_form_id = (this.payment_forms.length > 0)?this.payment_forms[0].id:null;
                     this.form.payment_method_id = (this.payment_methods.length > 0)?this.payment_methods[0].id:null;
+                    this.resolutions = response.data.resolutions
 
                     // this.selectDocumentType()
                     this.filterCustomers();
@@ -392,6 +404,15 @@
             }
         },
         methods: {
+            changeResolution()
+            {
+                const resol = this.resolutions.find( x =>  x.id == this.form.resolution_id )
+                if(resol)
+                {
+                    this.form.resolution_number = resol.resolution_number
+                    this.form.prefix = resol.prefix
+                }
+            },
             ratePrefix(tax = null) {
                 if ((tax != null) && (!tax.is_fixed_value)) return null;
 
@@ -399,27 +420,6 @@
             },
             keyupCustomer(){
 
-                // if(this.input_person.number){
-
-                //     if(!isNaN(parseInt(this.input_person.number))){
-
-                //         switch (this.input_person.number.length) {
-                //             case 8:
-                //                 this.input_person.identity_type_document_id = '1'
-                //                 this.showDialogNewPerson = true
-                //                 break;
-
-                //             case 11:
-                //                 this.input_person.identity_type_document_id = '6'
-                //                 this.showDialogNewPerson = true
-                //                 break;
-                //             default:
-                //                 this.input_person.identity_type_document_id = '6'
-                //                 this.showDialogNewPerson = true
-                //                 break;
-                //         }
-                //     }
-                // }
             },
             clickAddItemInvoice(){
                 this.recordItem = null
@@ -484,6 +484,9 @@
                     service_invoice: {},
                     payment_form_id: null,
                     payment_method_id: null,
+                    resolution_id: null,
+                    prefix: null,
+                    resolution_number: null,
                 }
 
                 this.errors = {}
