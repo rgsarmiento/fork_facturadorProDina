@@ -58,6 +58,7 @@ use App\Models\Tenant\DocumentPosItem;
 use App\Models\Tenant\DocumentPosPayment;
 use App\Models\Tenant\ConfigurationPos;
 use App\Http\Resources\Tenant\DocumentPosResource;
+use App\Models\Tenant\Cash;
 
 
 
@@ -184,7 +185,7 @@ class DocumentPosController extends Controller
 
         return $record;
     }
-    
+
 
     public function record2($id)
     {
@@ -291,28 +292,23 @@ class DocumentPosController extends Controller
 
         $config = ConfigurationPos::first();
 
-        /*$type_period = $inputs['type_period'];
-        $quantity_period = $inputs['quantity_period'];
-        $d_of_issue = new Carbon($inputs['date_of_issue']);
-        $automatic_date_of_issue = null;
+        $user = auth()->user();
 
-        if($type_period && $quantity_period > 0){
+        $cash = Cash::where('state', 1)
+        ->where('user_id', $user->id)
+        ->first();
 
-            $add_period_date = ($type_period == 'month') ? $d_of_issue->addMonths($quantity_period): $d_of_issue->addYears($quantity_period);
-            $automatic_date_of_issue = $add_period_date->format('Y-m-d');
+        $config =  $cash->resolution;
 
-        }*/
-
-       // $series = Series::find($inputs['series_id'])->number;
-
+        if(!$config)
+        {
+            throw new Exception('Resolución no establecida en caja chica actual.');
+        }
 
         $number = null;
 
-
-
         $document = DocumentPos::select('id', 'number')
-            //->where('soap_type_id', $this->company->soap_type_id)
-            //->where('series', $series)
+            ->where('prefix', $config->prefix)
             ->orderBy('id', 'desc')
             ->first();
 

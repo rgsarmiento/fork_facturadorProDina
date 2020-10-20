@@ -15,12 +15,22 @@ class CashRequest extends FormRequest
     public function rules()
     {
         $id = $this->input('id');
-        return [ 
+        return [
             'beginning_balance' => [
                 'required',
                 'numeric',
                 'min:0',
-            ], 
+            ],
+            'resolution_id' => [
+                'required',
+            ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'resolution_id.required' => 'El campo Resolución es obligatorio.',
         ];
     }
 }

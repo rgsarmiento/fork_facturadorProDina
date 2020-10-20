@@ -721,7 +721,7 @@ class ConfigurationController extends Controller
 
             $ch3 = curl_init("{$base_url}ubl2.1/config/resolution");
             $data = [
-                "delete_all_type_resolutions" => true,
+                "delete_all_type_resolutions" => false,
                 "type_document_id"=> $request->type_document_id,
                 "prefix"=> $request->prefix,
                 "resolution"=> $request->resolution,
@@ -780,10 +780,10 @@ class ConfigurationController extends Controller
 
                 $response_redit_debit =  $this->storeResolutionNote();
 
-                if ($request->prefix == 'SETP')
+                /*if ($request->prefix == 'SETP')
                     $this->changeEnvironment('HABILITACION');
                 else
-                    $this->changeEnvironment('PRODUCCION');
+                    $this->changeEnvironment('PRODUCCION');*/
 
                 return [
                     'message' => "Se guardaron los cambios.",

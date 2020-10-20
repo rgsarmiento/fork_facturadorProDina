@@ -21,6 +21,8 @@ use Maatwebsite\Excel\Excel;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\Tenant\DocumentItem;
 use App\Models\Tenant\PaymentMethodType;
+use App\Models\Tenant\ConfigurationPos;
+
 
 
 
@@ -72,7 +74,9 @@ class CashController extends Controller
                 break;
         }
 
-        return compact('users', 'user');
+        $resolutions = ConfigurationPos::select('id', 'prefix', 'resolution_number')->get();
+
+        return compact('users', 'user', 'resolutions');
     }
 
     public function opening_cash()

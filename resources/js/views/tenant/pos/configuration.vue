@@ -4,6 +4,50 @@
             <h3 class="my-0">Configuración POS</h3>
         </div>
         <div class="tab-content">
+            <div>
+                <el-table
+                :data="records"
+                style="width: 100%">
+                    <el-table-column
+                        prop="prefix"
+                        label="Prefijo"
+                        width="120">
+                    </el-table-column>
+                    <el-table-column
+                        prop="resolution_number"
+                        label="Número">
+                    </el-table-column>
+                    <el-table-column
+                        prop="date_from"
+                        label="Fecha Desde">
+                    </el-table-column>
+                    <el-table-column
+                        prop="date_end"
+                        label="Fecha Hasta">
+                    </el-table-column>
+                    <el-table-column
+                        prop="from"
+                        label="Desde">
+                    </el-table-column>
+                    <el-table-column
+                        prop="to"
+                        label="Hasta">
+                    </el-table-column>
+                    <el-table-column
+                        fixed="right"
+                        label="Operaciones"
+                        width="120">
+                        <template slot-scope="scope">
+                            <el-button
+                            icon="el-icon-check"
+                            @click.native.prevent="selection(scope.row)"
+                            size="mini">
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+            </div>
             <div class="resolution">
                 <form autocomplete="off">
                     <div class="form-body">
@@ -134,8 +178,8 @@
         data: () => ({
             typeDocuments: [
                 { id: 1, name: "Factura de Venta Nacional" },
-                { id: 2, name: "Factura de Exportación" },
-                { id: 3, name: "Factura de Contingencia" },
+                //{ id: 2, name: "Factura de Exportación" },
+                //{ id: 3, name: "Factura de Contingencia" },
                 { id: 4, name: "Nota Crédito" },
                 { id: 5, name: "Nota Débito" },
                 { id: 6, name: "ZIP" }
@@ -145,6 +189,7 @@
             resolution: {
             },
             loadingResolution: false,
+            records: []
         }),
 
         mounted() {
@@ -156,7 +201,7 @@
                 alert("The File APIs are not fully supported in this browser.");
 
 
-            if(this.configuration)
+            /*if(this.configuration)
             {
                 this.resolution.prefix = this.configuration.prefix;
                 this.resolution.resolution_number = this.configuration.resolution_number;
@@ -165,18 +210,35 @@
                 this.resolution.date_end = this.configuration.date_end;
                 this.resolution.from = this.configuration.from;
                 this.resolution.to = this.configuration.to;
-            }
+            }*/
+
+            this.getRecords()
         },
 
         methods: {
+            getRecords()
+            {
+                this.$http.get(`/pos/records`, this.resolution)
+                    .then(response => {
+                        this.records = response.data.data
+                    })
+                    .catch(error => {
+
+                    })
+                    .then(() => {
+                    })
+            },
             initForm() {
-                this.resolution.prefix = '';
-                this.resolution.resolution_number = '';
-                this.resolution.resolution_date = '';
-                this.resolution.date_from = '';
-                this.resolution.date_end = '';
-                this.resolution.from = '';
-                this.resolution.to = '';
+
+                this.resolution = {
+                    prefix : '',
+                    resolution_number: '',
+                    resolution_date: '',
+                    date_from: '',
+                    date_end: '',
+                    from: '',
+                    to: ''
+                }
             },
 
             validateResolution() {
@@ -185,6 +247,7 @@
                     .then(response => {
                         if (response.data.success) {
                             this.$message.success(response.data.message)
+                            this.getRecords()
                         } else {
                             this.$message.error(response.data.message)
                         }
@@ -201,6 +264,18 @@
                         //this.initForm()
                     })
             },
+            selection(row)
+            {
+                this.resolution = {
+                    prefix : row.prefix,
+                    resolution_number: row.resolution_number,
+                    resolution_date: row.resolution_date,
+                    date_from: row.date_from,
+                    date_end: row.date_end,
+                    from: row.from,
+                    to: row.to
+                }
+            }
         }
     };
 </script>

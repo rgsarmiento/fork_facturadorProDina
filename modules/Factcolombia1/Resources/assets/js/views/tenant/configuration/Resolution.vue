@@ -211,8 +211,8 @@
         data: () => ({
             typeDocuments: [
                 { id: 1, name: "Factura de Venta Nacional", code: '1' },
-                { id: 2, name: "Factura de Exportación", code: '2' },
-                { id: 3, name: "Factura de Contingencia", code: '3' },
+                //{ id: 2, name: "Factura de Exportación", code: '2' },
+                //{ id: 3, name: "Factura de Contingencia", code: '3' },
                 { id: 4, name: "Nota Crédito", code: '4' },
                 { id: 5, name: "Nota Débito", code: '5' },
                 { id: 6, name: "ZIP", code: '6'}

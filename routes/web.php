@@ -404,6 +404,7 @@ if ($hostname) {
 
 
 
+
            Route::get('sale_note_payments/records/{sale_note}', 'Tenant\SaleNotePaymentController@records');
            Route::get('sale_note_payments/document/{sale_note}', 'Tenant\SaleNotePaymentController@document');
            Route::get('sale_note_payments/tables', 'Tenant\SaleNotePaymentController@tables');
@@ -434,6 +435,8 @@ if ($hostname) {
            Route::get('pos/payment', 'Tenant\PosController@payment')->name('tenant.pos.payment');
            Route::get('pos/status_configuration', 'Tenant\PosController@status_configuration');
            Route::get('pos/validate_stock/{item}/{quantity}', 'Tenant\PosController@validate_stock');
+           Route::get('pos/records', 'Tenant\PosController@records');
+
 
 
            Route::get('cash', 'Tenant\CashController@index')->name('tenant.cash.index');

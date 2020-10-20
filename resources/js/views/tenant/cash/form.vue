@@ -2,7 +2,7 @@
     <el-dialog :title="titleDialog" :visible="showDialog" @close="close" @open="create">
         <form autocomplete="off" @submit.prevent="submit">
             <div class="form-body">
-                 
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group"  >
@@ -28,7 +28,16 @@
                             <small class="form-control-feedback" v-if="errors.reference_number" v-text="errors.reference_number[0]"></small>
                         </div>
                     </div>
-                </div> 
+                    <div class="col-md-6">
+                        <div class="form-group" :class="{'has-danger': errors.resolution_id}" >
+                            <label class="control-label">Resolución</label>
+                            <el-select v-model="form.resolution_id">
+                                <el-option v-for="option in resolutions" :key="option.id + 'R'" :value="option.id" :label="`${option.prefix} / ${option.resolution_number}`"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.resolution_id" v-text="errors.resolution_id[0]"></small>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="form-actions text-right mt-4">
                 <el-button @click.prevent="close()">Cancelar</el-button>
@@ -57,7 +66,8 @@
                 provinces: [],
                 districts: [],
                 identity_document_types: [],
-                users: []
+                users: [],
+                resolutions: []
             }
         },
         async created() {
@@ -65,7 +75,8 @@
            await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     this.users = response.data.users
-                    this.user = response.data.user
+                    this.user = response.data.user,
+                    this.resolutions = response.data.resolutions
                 })
 
             this.initForm()
@@ -81,7 +92,7 @@
             }
         },
         methods: {
-            
+
             initForm() {
                 this.errors = {}
                 this.form = {
@@ -94,7 +105,7 @@
                     time_closed: null,
                     beginning_balance: 0,
                     final_balance: 0,
-                    income: 0, 
+                    income: 0,
                     state: true,
                     reference_number: null
                 }
@@ -104,9 +115,9 @@
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
-                            this.form = response.data.data 
+                            this.form = response.data.data
                         })
-                }else{                    
+                }else{
                     this.form.user_id = this.user.id //sesion
                     //this.form.user = this.user.name
                 }
@@ -115,8 +126,8 @@
             {
                 let response =  await this.$http.get(`/${this.resource}/opening_cash_check/${this.form.user_id}`)
                     .then(response => {
-                        let cash = response.data.cash 
-                        return (cash) ? true : false                   
+                        let cash = response.data.cash
+                        return (cash) ? true : false
                     })
                 return response
             },
@@ -136,13 +147,13 @@
                     }
                 }
 
-              
+
                 this.$http.post(`/${this.resource}`, this.form)
                     .then(response => {
                         if (response.data.success) {
                             this.$message.success(response.data.message)
-                            if(this.form.user_id === this.user.id) this.$eventHub.$emit('openCash')   
-                            this.$eventHub.$emit('reloadData')                                                      
+                            if(this.form.user_id === this.user.id) this.$eventHub.$emit('openCash')
+                            this.$eventHub.$emit('reloadData')
                             // window.open('/pos/init')
                             this.close()
                         } else {
@@ -163,7 +174,7 @@
             close() {
                 this.$emit('update:showDialog', false)
                 this.initForm()
-            } 
+            }
         }
     }
 </script>

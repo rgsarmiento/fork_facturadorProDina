@@ -861,7 +861,10 @@
                 // let resol = this.resolution.resolution; //TODO
                 let invoice = {
                     number: 0,
-                    type_document_id: 1
+                    type_document_id: 1,
+                    prefix: this.form.prefix,
+                    resolution_number: this.form.resolution_number,
+
                 };
 
                 invoice.customer =  this.getCustomer();

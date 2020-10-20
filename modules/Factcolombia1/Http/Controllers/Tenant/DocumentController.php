@@ -221,7 +221,7 @@ class DocumentController extends Controller
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
 
             $data_document = json_encode($service_invoice);
-            //\Log::debug($service_invoice);
+            \Log::debug(json_encode($service_invoice));
 
                         //$file = fopen(storage_path("DEBUG.TXT"), "w");
                         //fwrite($file, json_encode($data_document));

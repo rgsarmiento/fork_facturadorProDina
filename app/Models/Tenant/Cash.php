@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models\Tenant;
- 
+
 use Modules\Finance\Models\GlobalPayment;
 
 class Cash extends ModelTenant
@@ -18,14 +18,15 @@ class Cash extends ModelTenant
         'time_closed',
         'beginning_balance',
         'final_balance',
-        'income', 
+        'income',
         'state',
-        'reference_number' 
- 
-    ];
- 
+        'reference_number',
+        'resolution_id'
 
-  
+    ];
+
+
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -36,16 +37,22 @@ class Cash extends ModelTenant
     {
         return $this->hasMany(CashDocument::class);
     }
- 
+
     public function scopeWhereTypeUser($query)
     {
-        $user = auth()->user();         
-        return ($user->type == 'seller') ? $query->where('user_id', $user->id) : null; 
+        $user = auth()->user();
+        return ($user->type == 'seller') ? $query->where('user_id', $user->id) : null;
     }
- 
+
     public function global_destination()
     {
         return $this->morphMany(GlobalPayment::class, 'destination');
     }
- 
+
+    public function resolution()
+    {
+        return $this->belongsTo(ConfigurationPos::class, 'resolution_id');
+    }
+
+
 }

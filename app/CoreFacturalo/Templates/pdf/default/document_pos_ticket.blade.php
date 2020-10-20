@@ -7,6 +7,15 @@
     $payments = $document->payments;
 
     $config_pos = \App\Models\Tenant\ConfigurationPos::first();
+    $user = auth()->user();
+
+    $cash = \App\Models\Tenant\Cash::where('state', 1)
+                        ->where('user_id', $user->id)
+                        ->first();
+
+    $resolution = $cash->resolution;
+
+
 
 @endphp
 <html>
@@ -171,17 +180,20 @@
     <tr><td><h6>SALDO:</h6> {{ $document->currency_type->symbol }} {{ number_format($document->total - $payment, 2) }}</td></tr>
 </table>
 <table style="margin-top:3px" class="full-width">
-    <tr>
-        <td> <h6>Resol. DIAN #: {{ $config_pos->resolution_number }} de {{ $config_pos->resolution_date->format('d-m-Y') }}</h6> </td>
-    </tr>
-    <tr>
-        <td>
-            <h6>  Desde la
-            Factura: {{ $config_pos->from }} a la
-            Factura: {{ $config_pos->to }}
-            </h6>
-        </td>
-    </tr>
+
+    @if($resolution)
+        <tr>
+            <td> <h6>Resol. DIAN #: {{ $resolution->resolution_number }} de {{ $resolution->resolution_date->format('d-m-Y') }}</h6> </td>
+        </tr>
+        <tr>
+            <td>
+                <h6>  Desde la
+                Factura: {{ $resolution->from }} a la
+                Factura: {{ $resolution->to }}
+                </h6>
+            </td>
+        </tr>
+    @endif
     <tr>
         <td>Vigencia: 24 Meses.</td>
     </tr>

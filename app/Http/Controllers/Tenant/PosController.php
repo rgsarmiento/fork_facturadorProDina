@@ -48,8 +48,8 @@ class PosController extends Controller
 
         if(!$cash) return redirect()->route('tenant.cash.index');
 
-        $configuration_pos_document = ConfigurationPos::first();
-        if(!$configuration_pos_document) return redirect()->route('tenant.pos.configuration');
+        /*$configuration_pos_document = ConfigurationPos::first();
+        if(!$configuration_pos_document) return redirect()->route('tenant.pos.configuration');*/
 
         $configuration = Configuration::first();
 
@@ -65,19 +65,26 @@ class PosController extends Controller
         return view('tenant.pos.configuration', compact('configuration'));
     }
 
+    public function records()
+    {
+        return [
+            'data' =>  ConfigurationPos::all()
+        ];
+    }
+
     public function configuration_store(ConfigurationPosRequest $request)
     {
-        $id = null;
+       // $id = null;
 
-        $configuration_f = ConfigurationPos::first();
+        /*$configuration_f = ConfigurationPos::first();
         if($configuration_f)
         {
             $id=$configuration_f->id;
-        }
+        }*/
 
-        $configuration = ConfigurationPos::firstOrNew(['id' => $id]);
-        $configuration->fill($request->all());
-        $configuration->save();
+        $configuration = ConfigurationPos::updateOrCreate(['resolution_number' => $request->resolution_number, 'prefix' => $request->prefix], $request->all());
+       // $configuration->fill($request->all());
+       // $configuration->save();
 
         return [
             'success' => true,
