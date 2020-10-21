@@ -21,13 +21,13 @@
                             <small class="form-control-feedback" v-if="errors.beginning_balance" v-text="errors.beginning_balance[0]"></small>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <!--<div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.reference_number}">
                             <label class="control-label">Número de Referencia</label>
                             <el-input :maxlength="10" v-model="form.reference_number"></el-input>
                             <small class="form-control-feedback" v-if="errors.reference_number" v-text="errors.reference_number[0]"></small>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.resolution_id}" >
                             <label class="control-label">Resolución</label>

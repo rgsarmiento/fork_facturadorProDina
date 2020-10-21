@@ -22,18 +22,20 @@ class CashResource extends JsonResource
                 'time_opening' => $this->time_opening,
                 'opening' => "{$this->date_opening} {$this->time_opening}",
                 'date_closed' => $this->date_closed,
-                'time_closed' => $this->time_closed, 
+                'time_closed' => $this->time_closed,
                 'closed' => "{$this->date_closed} {$this->time_closed}",
                 'beginning_balance' => $this->beginning_balance,
                 'final_balance' => $this->final_balance,
                 'income' => $this->income,
                 'expense' => $this->expense,
                 'filename' => $this->filename,
-                'state_description' => ($this->state) ? 'Aperturada':'Cerrada', 
+                'state_description' => ($this->state) ? 'Aperturada':'Cerrada',
                 'state' => (bool) $this->state,
-                'reference_number' => $this->reference_number
+                'reference_number' => $this->reference_number,
+                'resolution_id' => $this->resolution_id,
+
             ];
 
-        
+
     }
 }
