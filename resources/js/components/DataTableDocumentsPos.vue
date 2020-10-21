@@ -35,9 +35,26 @@
                         </template>
                     </div>
                     <div class="col-lg-3 col-md-4 col-sm-12 pb-2">
-                         <el-button v-if="records.length > 0" class="submit" type="success" @click.prevent="clickDownload()">
-                            <i class="fa fa-file-excel"></i> Descargar Informe
-                        </el-button>
+
+                        <el-popover
+                            placement="right"
+                            width="450"
+                            height="300"
+                            trigger="click">
+                            <el-date-picker
+                                style="width:100%"
+                                value-format="yyyy-MM-dd"
+                                v-model="rangePicker"
+                                type="daterange"
+                                range-separator="-"
+                                start-placeholder="Desde"
+                                end-placeholder="Hasta">
+                            </el-date-picker>
+                            <el-button style="float:right;margin-top:4px;" size="mini" type="success"  @click="clickDownload()" >Aceptar</el-button>
+                            <el-button  slot="reference" class="submit" type="success">
+                                <i class="fa fa-file-excel"></i> Descargar Informe
+                            </el-button>
+                        </el-popover>
                     </div>
                 </div>
 
@@ -107,7 +124,8 @@
                 columns: [],
                 records: [],
                 pagination: {},
-                series: []
+                series: [],
+                rangePicker: ''
             }
         },
         computed: {
@@ -166,7 +184,17 @@
                 this.getRecords()
             },
             clickDownload(type) {
-                window.open(`/reports/report-taxes/pdf/?${this.getQueryParameters()}`, '_blank');
+                if(!this.rangePicker)
+                {
+                    return
+                }
+
+                const params = queryString.stringify({
+                    date_start: this.rangePicker[0],
+                    date_end: this.rangePicker[1],
+
+                })
+                window.open(`/reports/report-taxes/pdf/?${params}`, '_blank');
             },
         }
     }

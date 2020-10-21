@@ -134,9 +134,7 @@ class ReportTaxController extends Controller
 
         $taxesAll = collect();
 
-        $records = Document::query()
-            ->with('type_document', 'reference')
-            ->whereBetween('date_of_issue', [
+        $records = DocumentPos::whereBetween('date_of_issue', [
                 Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
                 Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
             ])
@@ -147,6 +145,7 @@ class ReportTaxController extends Controller
                 $taxesAll->push($tax);
             });
         });
+
 
         $taxTitles = $taxesAll->unique('id');
 
