@@ -75,23 +75,43 @@
                 </tr>
             </table>
         </div>
-        @if(!empty($records))
-            <div class="">
-                <div class=" ">
-                    <table class="">
-                        <thead>
-                           
-                        </thead>
-                        <tbody>
+            @inject('report', 'App\Services\TaxReportService')
 
-                        </tbody>
-                    </table>
-                </div>
+            @php
+                $excento = $report->getTotalExcento($items);
+                $iva5 = $report->getTotalIva5($items);
+                $iva19 = $report->getTotalIva19($items);
+
+            @endphp
+            <div class="">
+                <table class="">
+                    <tr>
+                        <td>Venta Total:</td>
+                        <td> {{ number_format($total_sale, 2) }} </td>
+                    </tr>
+
+                    @if($excento)
+                        <tr>
+                            <td>Excento:</td>
+                            <td> {{ number_format($excento, 2) }} </td>
+                        </tr>
+                    @endif
+
+                    @if($iva5)
+                        <tr>
+                            <td>Grav IVA 5:</td>
+                            <td> {{ number_format( $iva5, 2) }} </td>
+                        </tr>
+                    @endif
+
+                    @if($iva19)
+                        <tr>
+                            <td>Grav IVA 19:</td>
+                            <td> {{ number_format($iva19, 2) }} </td>
+                        </tr>
+                    @endif
+
+                </table>
             </div>
-        @else
-            <div class="callout callout-info">
-                <p>No se encontraron registros.</p>
-            </div>
-        @endif
     </body>
 </html>

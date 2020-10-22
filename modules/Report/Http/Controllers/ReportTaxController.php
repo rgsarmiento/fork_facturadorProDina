@@ -140,16 +140,21 @@ class ReportTaxController extends Controller
             ])
             ->get();
 
-        $records->pluck('taxes')->each(function($taxes) use($taxesAll) {
-            collect($taxes)->each(function($tax) use($taxesAll) {
-                $taxesAll->push($tax);
+        $items = collect();
+
+        $records->each(function($row) use($items) {
+            collect($row->items)->each(function($i) use($items) {
+                $items->push($i);
             });
         });
 
+       // return $items;
+
+        $total_sale = $records->sum('total');
 
         $taxTitles = $taxesAll->unique('id');
 
-        $pdf = PDF::loadView('report::tax.report_pos_pdf', compact("records", "company", "establishment", "taxTitles", "taxesAll"));
+        $pdf = PDF::loadView('report::tax.report_pos_pdf', compact("company", "establishment", 'total_sale', 'items'));
 
         $filename = 'Informe_Fiscal_'.date('YmdHis');
 
