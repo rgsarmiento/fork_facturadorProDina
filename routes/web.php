@@ -150,6 +150,8 @@ if ($hostname) {
             Route::post('persons/import', 'Tenant\PersonController@import');
             Route::get('persons/enabled/{type}/{person}', 'Tenant\PersonController@enabled');
             Route::get('persons/co-export/{type}', 'Tenant\PersonController@coExport');
+            Route::get('/persons/searchName/{nit}', 'Tenant\PersonController@searchName');
+
 
             //Documents
             Route::post('documents/categories', 'Tenant\DocumentController@storeCategories');

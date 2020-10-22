@@ -1,7 +1,7 @@
 <template>
     <el-dialog :title="titleDialog" :visible="showDialog" @close="close" @open="create" @opened="opened" :close-on-click-modal="false">
         <form autocomplete="off" @submit.prevent="submit">
-            <div class="form-body"> 
+            <div class="form-body">
                 <!-- <div class="row">
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.name}">
@@ -36,7 +36,7 @@
                         </div>
                     </div>
                 </div> -->
-  
+
                 <!-- <div class="row">
                     <div class="col-md-6" v-if="form.state">
                         <div class="form-group" >
@@ -65,7 +65,7 @@
                 </div> -->
 
                 <div class="row">
- 
+
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.type_person_id}">
                             <label class="control-label">Tipo de persona</label>
@@ -74,7 +74,7 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.type_person_id" v-text="errors.type_person_id[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.type_regime_id}">
@@ -84,9 +84,9 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.type_regime_id" v-text="errors.type_regime_id[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.identity_document_type_id}">
                             <label class="control-label">Tipo de identificación</label>
                             <el-select v-model="form.identity_document_type_id"  filterable>
@@ -94,23 +94,25 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.identity_document_type_id" v-text="errors.identity_document_type_id[0]"></small>
                         </div>
-                    </div> 
-
-                     <div class="col-md-3">
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.number}">
+                            <label class="control-label">N° Identificación  </label>
+                            <!--<el-input @change="changeNumberIdentification" v-model="form.number" ></el-input>-->
+                            <el-input v-model="form.number" :maxlength="maxLength" dusk="number">
+                                <el-button type="primary" slot="append" :loading="loading_search" icon="el-icon-search" @click.prevent="changeNumberIdentification">
+                                </el-button>
+                            </el-input>
+                            <small class="form-control-feedback" v-if="errors.number" v-text="errors.number[0]"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
                         <div class="form-group" :class="{'has-danger': errors.dv}">
                             <label class="control-label">Dv  </label>
                             <el-input v-model="form.dv" ></el-input>
                             <small class="form-control-feedback" v-if="errors.dv" v-text="errors.dv[0]"></small>
                         </div>
-                    </div> 
-
-                     <div class="col-md-4">
-                        <div class="form-group" :class="{'has-danger': errors.number}">
-                            <label class="control-label">N° Identificación  </label>
-                            <el-input v-model="form.number" ></el-input>
-                            <small class="form-control-feedback" v-if="errors.number" v-text="errors.number[0]"></small>
-                        </div>
-                    </div> 
+                    </div>
 
                      <div class="col-md-8">
                         <div class="form-group" :class="{'has-danger': errors.name}">
@@ -118,7 +120,7 @@
                             <el-input v-model="form.name" ></el-input>
                             <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.country_id}">
@@ -129,7 +131,7 @@
                             <small class="form-control-feedback" v-if="errors.country_id" v-text="errors.country_id[0]"></small>
                         </div>
                     </div>
- 
+
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.department_id}">
                             <label class="control-label">Departamento</label>
@@ -139,7 +141,7 @@
                             <small class="form-control-feedback" v-if="errors.department_id" v-text="errors.department_id[0]"></small>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.city_id}">
                             <label class="control-label">Ciudad</label>
@@ -173,15 +175,15 @@
                     </div>
 
                     <div class="col-md-6">
-                        
+
                         <div class="form-group" :class="{'has-danger': errors.code}">
                             <label class="control-label">Código interno  </label>
                             <el-input v-model="form.code" ></el-input>
                             <small class="form-control-feedback" v-if="errors.code" v-text="errors.code[0]"></small>
                         </div>
-                    </div> 
+                    </div>
                 </div>
-                
+
                 <div class="row mt-2" v-if="type === 'suppliers'">
                     <div class="col-md-6 center-el-checkbox">
                         <div class="form-group" :class="{'has-danger': errors.perception_agent}">
@@ -278,6 +280,8 @@
 </template>
 
 <script>
+    import { calcularDv } from '../../../functions/Nit';
+
 
     // import Helper from '@assetsModuleProColombia/mixins/Helper';
 
@@ -306,6 +310,7 @@
                 countries: [],
                 departments: [],
                 cities: [],
+                loading_search: false
             }
         },
         async created() {
@@ -322,7 +327,7 @@
                     this.identity_document_types = response.data.identity_document_types;
                     // this.locations = response.data.locations;
                     this.person_types = response.data.person_types;
-                    
+
                     this.type_persons = response.data.typePeople
                     this.type_regimes = response.data.typeRegimes
                     this.identity_document_types = response.data.typeIdentityDocuments
@@ -342,6 +347,36 @@
             }
         },
         methods: {
+            async changeNumberIdentification()
+            {
+                if(this.form.number)
+                {
+                    this.loading_search = true
+                    this.form.dv = await calcularDv(this.form.number)
+                    await this.searchNameClient()
+                    this.loading_search = false
+
+                }
+
+            },
+            async searchNameClient()
+            {
+                if(this.form.number.length < 8)
+                {
+                    return
+                }
+                await this.$http.get(`/${this.resource}/searchName/${this.form.number}`).then(response => {
+
+                    if(response.data.data)
+                    {
+                        this.form.name = response.data.data
+                    }
+
+                }).catch(error => {
+
+                }).then(() => {
+                });
+            },
             getDepartment(val) {
                 return axios
                             .post(`/departments/${val}`).then(response => {
@@ -386,16 +421,16 @@
                     type_regime_id: null,
                     identity_document_type_id: null,
                     addresses: [],
-                    city_id: null, 
-                    code: null, 
-                    dv: null, 
+                    city_id: null,
+                    code: null,
+                    dv: null,
                     contact_phone: null,
                     contact_name: null,
                 }
-                
+
                 this.departmentss();
                 this.citiess();
-                
+
             },
             departmentss(edit = false) {
                 if (!edit) {
@@ -456,7 +491,7 @@
                             this.form = response.data.data
                             // this.filterProvinces()
                             // this.filterDistricts()
-                            
+
                             this.departmentss(true);
                             this.citiess(true);
 

@@ -28,11 +28,11 @@
                         <td>{{ row.name }}</td>
                         <td class="text-right">{{ row.number }}</td>
                         <td class="text-right">
-                            
+
                             <template v-if="row.enabled">
                                 <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)" >Editar</button>
                             </template>
-                            
+
                             <template v-if="typeUser === 'admin'">
                                 <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
 

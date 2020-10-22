@@ -25,10 +25,14 @@ use Modules\Factcolombia1\Models\Tenant\{
 };
 use App\Exports\PersonExport;
 use Carbon\Carbon;
+use Goutte\Client as ClientScrap;
+
 
 
 class PersonController extends Controller
 {
+    protected $nameclient;
+
     public function index($type)
     {
         $api_service_token = config('configuration.api_service_token');
@@ -110,7 +114,7 @@ class PersonController extends Controller
         }
 
         $person_type = ($person->type == 'customers') ? 'Cliente':'Proveedor';
-        
+
         return [
             'success' => true,
             'message' => ($id)? "{$person_type} editado con éxito":"{$person_type} registrado con éxito",
@@ -197,7 +201,7 @@ class PersonController extends Controller
         return $locations;
     }
 
-    
+
     public function enabled($type, $id)
     {
 
@@ -214,7 +218,7 @@ class PersonController extends Controller
 
     }
 
-    
+
     public function coExport($type)
     {
         $records = Person::where('type', $type)
@@ -226,6 +230,31 @@ class PersonController extends Controller
                 ->records($records)
                 ->download($name.Carbon::now().'.xlsx');
 
+    }
+
+    public  function setNameClient($name)
+    {
+        $this->nameclient = $name;
+    }
+
+    public function searchName($nit)
+    {
+        $client = new ClientScrap();
+        $crawler = $client->request('GET', "https://www.einforma.co/servlet/app/portal/ENTP/prod/LISTA_EMPRESAS/razonsocial/{$nit}");
+        $crawler->filter('h1[class="title01"]')->each(function($node) {
+            //dd($node->text());
+            $this->setNameClient($node->text());
+        });
+
+        /*each(function ($node) use ($datos) {
+          //  print $node->text()."\n";
+            array_push($datos, $node->html());
+            dd($node->text());
+        });*/
+
+        return [
+            'data' => $this->nameclient
+        ];
     }
 
 }
