@@ -79,8 +79,22 @@
 
             @php
                 $excento = $report->getTotalExcento($items);
-                $iva5 = $report->getTotalIva5($items);
-                $iva19 = $report->getTotalIva19($items);
+
+                $sale_total_iva5 = $report->getTotalIva5($items, true);
+                $sale_total_iva19 = $report->getTotalIva19($items, true);
+                $sale_total_ic8= $report->getTotalIC8($items, true);
+
+                $base_imp_iva5 = $report->getTotalIva5($items);
+                $base_imp_iva19 = $report->getTotalIva19($items);
+                $base_imp_ic8 = $report->getTotalIC8($items);
+
+                $discount = $report->getDiscounts($items);
+
+                $total_iva = ( ($sale_total_iva5 + $sale_total_iva19 ) - (  $base_imp_iva5 + $base_imp_iva19 ) );
+                $total_ic = ( $sale_total_ic8 - $base_imp_ic8);
+
+                $total_desc = ($total_sale - $discount);
+
 
             @endphp
             <div class="">
@@ -97,19 +111,74 @@
                         </tr>
                     @endif
 
-                    @if($iva5)
+                    @if($sale_total_iva5)
                         <tr>
                             <td>Grav IVA 5:</td>
-                            <td> {{ number_format( $iva5, 2) }} </td>
+                            <td> {{ number_format( $sale_total_iva5, 2) }} </td>
                         </tr>
                     @endif
 
-                    @if($iva19)
+                    @if($sale_total_iva19)
                         <tr>
                             <td>Grav IVA 19:</td>
-                            <td> {{ number_format($iva19, 2) }} </td>
+                            <td> {{ number_format($sale_total_iva19, 2) }} </td>
                         </tr>
                     @endif
+
+                    @if($sale_total_ic8)
+                        <tr>
+                            <td>Grav I.C 8:</td>
+                            <td> {{ number_format($sale_total_ic8, 2) }} </td>
+                        </tr>
+                    @endif
+
+                    <tr>
+                        <td>Base Imp. :</td>
+                        <td> {{ number_format($total_sale_base, 2) }} </td>
+                    </tr>
+
+                    @if($excento)
+                        <tr>
+                            <td>Excento:</td>
+                            <td> {{ number_format($excento, 2) }} </td>
+                        </tr>
+                    @endif
+
+                    @if($base_imp_iva5)
+                        <tr>
+                            <td>Grav IVA 5:</td>
+                            <td> {{ number_format( $salbase_imp_iva5e_total_iva5, 2) }} </td>
+                        </tr>
+                    @endif
+
+                    @if($base_imp_iva19)
+                        <tr>
+                            <td>Grav IVA 19:</td>
+                            <td> {{ number_format($base_imp_iva19, 2) }} </td>
+                        </tr>
+                    @endif
+
+                    @if($base_imp_ic8)
+                        <tr>
+                            <td>Grav I.C 8:</td>
+                            <td> {{ number_format($base_imp_ic8, 2) }} </td>
+                        </tr>
+                    @endif
+
+                    <tr>
+                        <td>Total Iva:</td>
+                        <td> {{ $total_iva }} </td>
+                    </tr>
+
+                    <tr>
+                        <td>Total IC:</td>
+                        <td> {{ $total_ic }} </td>
+                    </tr>
+
+                    <tr>
+                        <td>Total - Desc.:</td>
+                        <td> {{ $total_desc}} </td>
+                    </tr>
 
                 </table>
             </div>

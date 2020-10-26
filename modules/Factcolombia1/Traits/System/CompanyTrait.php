@@ -309,6 +309,10 @@ trait CompanyTrait
             ->update([
                 'type_tax_id' => 5
             ]);
+            
+        DB::table('co_taxes')->insert([
+            [ 'name' => 'IVA5', 'code' => '71', 'rate' => '5.0', 'conversion' => '100.0', 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'), 'type_tax_id' => 1 ],
+        ]);
 
     }
 

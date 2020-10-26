@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Modules\Report\Http\Resources\OrderNoteConsolidatedCollection;
 use App\Models\Tenant\Document;
 use App\Models\Tenant\DocumentPos;
-
+use App\Models\Tenant\DocumentPosItem;
 use Modules\Report\Exports\TaxExport;
 
 
@@ -134,27 +134,23 @@ class ReportTaxController extends Controller
 
         $taxesAll = collect();
 
-        $records = DocumentPos::whereBetween('date_of_issue', [
+        $records = DocumentPos::select('id', 'date_of_issue', 'total')->whereBetween('date_of_issue', [
                 Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
                 Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
             ])
             ->get();
 
-        $items = collect();
+        $items = collect( DocumentPosItem::whereIn('document_pos_id', $records->pluck('id'))->get() );
 
-        $records->each(function($row) use($items) {
-            collect($row->items)->each(function($i) use($items) {
-                $items->push($i);
-            });
-        });
-
-       // return $items;
+        //return $items;
 
         $total_sale = $records->sum('total');
+        $total_sale_base = $records->sum('subtotal');
 
-        $taxTitles = $taxesAll->unique('id');
 
-        $pdf = PDF::loadView('report::tax.report_pos_pdf', compact("company", "establishment", 'total_sale', 'items'));
+       // $taxTitles = $taxesAll->unique('id');
+
+        $pdf = PDF::loadView('report::tax.report_pos_pdf', compact("company", "establishment", 'total_sale', 'items', 'total_sale_base'));
 
         $filename = 'Informe_Fiscal_'.date('YmdHis');
 
