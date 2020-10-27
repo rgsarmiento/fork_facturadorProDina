@@ -807,16 +807,17 @@ class DocumentPosController extends Controller
             $warehouse = Warehouse::where('establishment_id',$establishment->id)->first();
 
             foreach ($obj->items as $item) {
-                $item->sale_note->inventory_kardex()->create([
+                $item->document_pos->inventory_kardex()->create([
                     'date_of_issue' => date('Y-m-d'),
                     'item_id' => $item->item_id,
                     'warehouse_id' => $warehouse->id,
-                    'quantity' => $item->quantity,
+                    'quantity' => $item->quantity * ($item->refund ? -1 : 1),
                 ]);
                 $wr = ItemWarehouse::where([['item_id', $item->item_id],['warehouse_id', $warehouse->id]])->first();
+
                 if($wr)
                 {
-                    $wr->stock =  $wr->stock + $item->quantity;
+                    $wr->stock =  $wr->stock + ($item->quantity * ($item->refund ? -1 : 1));
                     $wr->save();
                 }
 
