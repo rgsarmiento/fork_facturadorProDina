@@ -10,6 +10,8 @@
         <div class="col-md-4">
           <h2 class="text-sm">POS</h2>
           <h2><el-switch v-model="search_item_by_barcode" active-text="Buscar por código de barras" @change="changeSearchItemBarcode"></el-switch></h2>
+          <h2><el-switch v-model="type_refund" active-text="Devolución"></el-switch></h2>
+
         </div>
         <div class="col-md-4">
             <h2>  <button type="button"  @click="place = 'cat'" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-border-all"></i></button> </h2>
@@ -215,6 +217,38 @@
                     </td>
                   </tr>
                 </template>
+                <template v-for="(item,index) in items_refund">
+                  <tr :key="index + 'R'">
+                    <td width="20%">
+                      <el-input
+                        :value=" '-' +item.quantity"
+                        :readonly="true"
+                        class
+                      ></el-input>
+                    </td>
+                    <td width="20%">
+                      <p class="m-0">{{item.item.name}}</p>
+                      <small> {{nameSets(item.item_id)}} </small>
+                    </td>
+                    <td>
+                      <p class="font-weight-semibold m-0 text-center">{{currency.symbol}}</p>
+                    </td>
+                    <td width="30%">
+                      <p class="font-weight-semibold m-0 text-center">
+                        <el-input
+                          :value="'-' + item.total"
+                          :readonly="true"
+                        >
+                        </el-input>
+                      </p>
+                    </td>
+                    <td class="text-right">
+                      <a class="btn btn-sm btn-default" @click="clickDeleteItemRefund(index)">
+                        <i class="fas fa-trash fa-wf"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </template>
               </table>
             </div>
           </div>
@@ -284,6 +318,7 @@
       <payment-form
         :is_payment.sync="is_payment"
         :form="form"
+        :items_refund="items_refund"
         :currency-type-id-active="form.currency_id"
         :currency-type-active="currency"
         :exchange-rate-sale="form.exchange_rate_sale"
@@ -409,7 +444,9 @@
             user: {},
             form: {},
             categories: [ ],
-            colors: ['#1cb973', '#bf7ae6', '#fc6304', '#9b4db4', '#77c1f3']
+            colors: ['#1cb973', '#bf7ae6', '#fc6304', '#9b4db4', '#77c1f3'],
+            type_refund: false,
+            items_refund: []
           };
         },
         mounted()
@@ -424,11 +461,6 @@
           await this.getFormPosLocalStorage()
           // await this.initCurrencyType()
           this.customer = await this.getLocalStorageIndex('customer')
-
-          /*if(!this.customer)
-          {
-              this.customer = _.find(this.all_customers, { 'number': '222222222222'}) ?? null
-          }*/
 
 
            if(document.querySelector('.sidebar-toggle')){
@@ -488,10 +520,10 @@
 
               if(mod)
               {
-                      this.place= 'cat2'
+                this.place= 'cat2'
               }
               else{
-                  this.place= 'prod'
+                this.place= 'prod'
               }
 
           },
@@ -705,6 +737,7 @@
               this.initForm();
               this.getTables();
               this.setFormPosLocalStorage()
+              this.items_refund = []
             });
           },
           initForm() {
@@ -771,8 +804,11 @@
                   unit_type_id: null,
                   item_unit_types: [],
                   IdLoteSelected: null,
+                  refund: false
 
               };
+
+              //this.items_refund = []
 
           },
           async clickPayment() {
@@ -807,13 +843,41 @@
           },
           async clickAddItem(item, index, input = false) {
 
+
+            if(this.type_refund)
+            {
+
+                this.form_item.item = item;
+                this.form_item.unit_price_value = this.form_item.item.sale_unit_price;
+                this.form_item.quantity = 1;
+                this.form_item.aux_quantity = 1;
+
+                let unit_price = this.form_item.unit_price_value;
+
+                this.form_item.unit_price = unit_price;
+                this.form_item.item.unit_price = unit_price;
+                this.form_item.item.presentation = null;
+
+                // this.form_item.id = this.form_item.item.item_id
+                this.form_item.item_id = this.form_item.item.item_id
+                this.form_item.unit_type_id = this.form_item.item.unit_type_id
+                this.form_item.tax_id = (this.taxes.length > 0) ? this.form_item.item.tax.id: null
+                this.form_item.tax = _.find(this.taxes, {'id': this.form_item.tax_id})
+                this.form_item.unit_type = this.form_item.item.unit_type
+                this.form_item.refund = true
+
+
+                this.items_refund.push(this.form_item);
+                //item.aux_quantity = 1;
+
+            }
+            else{
+
               this.loading = true;
               // let exchangeRateSale = this.form.exchange_rate_sale;
               let exist_item = _.find(this.form.items, { item_id: item.item_id });
               let pos = this.form.items.indexOf(exist_item);
               let response = null;
-
-              // console.log(item.calculate_quantity)
 
               if (exist_item) {
 
@@ -843,18 +907,16 @@
 
                 }
 
-                // console.log(exist_item)
                 let search_item_bd = await _.find(this.items, { item_id: item.item_id });
 
                 if(search_item_bd){
-                  exist_item.item.unit_price = parseFloat(search_item_bd.sale_unit_price)
+                    exist_item.item.unit_price = parseFloat(search_item_bd.sale_unit_price)
                 }
 
                 let unit_price = exist_item.item.sale_unit_price
                 exist_item.item.unit_price = unit_price
 
                 this.form.items[pos] = exist_item;
-                // this.form.items[pos] = this.form_item;
 
               } else {
 
@@ -884,8 +946,6 @@
                   this.form_item.unit_type = this.form_item.item.unit_type
 
 
-                  // console.log(this.form_item)
-
                   this.form.items.push(this.form_item);
                   item.aux_quantity = 1;
 
@@ -898,8 +958,7 @@
                 duration: 700
               });
 
-              // console.log(item, exist_item, this.form)
-
+            }
 
               // console.log(this.form.items)
               await this.calculateTotal();
@@ -924,6 +983,11 @@
 
             await this.setFormPosLocalStorage()
           },
+          async clickDeleteItemRefund(index) {
+            this.items_refund.splice(index, 1);
+            this.calculateTotal();
+            await this.setFormPosLocalStorage()
+          },
 
           calculateTotal() {
               this.setDataTotals()
@@ -938,7 +1002,7 @@
           setDataTotals() {
 
               let val = this.form
-              val.taxes = JSON.parse(JSON.stringify(this.taxes));
+              val.taxes = this.taxes;
 
               val.items.forEach(item => {
                   item.tax = this.taxes.find(tax => tax.id == item.tax_id);
@@ -948,22 +1012,28 @@
                       item.discount == "" ||
                       item.discount > item.unit_price * item.quantity
                   )
-                      this.$set(item, "discount", 0);
+                  {
+                    this.$set(item, "discount", 0);
+                  }
 
                   item.total_tax = 0;
 
                   if (item.tax != null) {
+
                       let tax = val.taxes.find(tax => tax.id == item.tax.id);
 
                       if (item.tax.is_fixed_value)
-
+                      {
                           item.total_tax = (
                               item.tax.rate * item.quantity -
                               (item.discount < item.unit_price * item.quantity ? item.discount : 0)
                           ).toFixed(2);
+                      }
+
+
 
                       if (item.tax.is_percentage)
-
+                      {
                           item.total_tax = (
                               (item.unit_price * item.quantity -
                               (item.discount < item.unit_price * item.quantity
@@ -971,9 +1041,12 @@
                                   : 0)) *
                               (item.tax.rate / item.tax.conversion)
                           ).toFixed(2);
+                      }
 
                       if (!tax.hasOwnProperty("total"))
+                      {
                           tax.total = Number(0).toFixed(2);
+                      }
 
                       tax.total = (Number(tax.total) + Number(item.total_tax)).toFixed(2);
                   }
@@ -985,24 +1058,70 @@
                   this.$set(
                       item,
                       "total",
-                      (Number(item.subtotal) - Number(item.discount)).toFixed(2)
+                      ( Number(item.subtotal) - Number(item.discount)  ).toFixed(2)
                   );
 
               });
 
-              val.subtotal = val.items
-                  .reduce(
-                      (p, c) => Number(p) + (Number(c.subtotal) - Number(c.discount)),
-                      0
-                  )
-                  .toFixed(2);
-                  val.sale = val.items
-                  .reduce(
-                      (p, c) =>
-                      Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount),
-                      0
-                  )
-                  .toFixed(2);
+              this.items_refund.forEach( item=> {
+                item.tax = this.taxes.find(tax => tax.id == item.tax_id);
+                this.$set(item, "discount", 0);
+                 item.total_tax = 0;
+                 if(item.tax != null)
+                 {
+                      let tax = val.taxes.find(tax => tax.id == item.tax.id);
+                      if (item.tax.is_fixed_value)
+                      {
+                          item.total_tax = (
+                              item.tax.rate * item.quantity -
+                              (item.discount < item.unit_price * item.quantity ? item.discount : 0)
+                          ).toFixed(2);
+                      }
+
+                      if (item.tax.is_percentage)
+                      {
+                          item.total_tax = (
+                              (item.unit_price * item.quantity -
+                              (item.discount < item.unit_price * item.quantity
+                                  ? item.discount
+                                  : 0)) *
+                              (item.tax.rate / item.tax.conversion)
+                          ).toFixed(2);
+                      }
+
+                      if (!tax.hasOwnProperty("total"))
+                      {
+                        tax.total = Number(0).toFixed(2);
+                      }
+
+                      tax.total = (Number(tax.total) + Number(item.total_tax)).toFixed(2);
+                  }
+
+                  item.subtotal = (
+                      Number(item.unit_price * item.quantity) + Number(item.total_tax)
+                  ).toFixed(2);
+
+                  this.$set(
+                      item,
+                      "total",
+                      ( (Number(item.subtotal) - Number(item.discount))  ).toFixed(2)
+                  );
+
+              })
+
+
+
+              const subtotal = val.items.reduce( (p, c) => Number(p) + (Number(c.subtotal) - Number(c.discount)), 0);
+              const subtotal_refund = this.items_refund.reduce( (p, c) => Number(p) + (Number(c.subtotal) - Number(c.discount)), 0);
+
+              val.subtotal = (subtotal - subtotal_refund ).toFixed(2)
+
+                const sale = val.items.reduce((p, c) => Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount), 0);
+                const sale_refund = this.items_refund.reduce((p, c) => Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount), 0);
+
+
+                 val.sale = (sale - sale_refund).toFixed(2)
+
                   val.total_discount = val.items
                   .reduce((p, c) => Number(p) + Number(c.discount), 0)
                   .toFixed(2);
@@ -1011,8 +1130,11 @@
                   .toFixed(2);
 
               let total = val.items
-                  .reduce((p, c) => Number(p) + Number(c.total), 0)
-                  .toFixed(2);
+                  .reduce((p, c) => Number(p) + Number(c.total), 0);
+
+              let total_refund = this.items_refund
+                  .reduce((p, c) => Number(p) + Number(c.total), 0);
+
 
               let totalRetentionBase = Number(0);
 
@@ -1053,7 +1175,9 @@
                   }
               });
 
-              val.total = Number(total).toFixed(2)
+              val.total = (Number(total) - Number(total_refund) ).toFixed(2)
+
+
 
           },
           changeExchangeRate(){

@@ -346,7 +346,7 @@
     export default {
         components: {OptionsForm, CardBrandsForm, SaleNotesOptions, MultiplePaymentForm, DocumentPosOptions},
 
-        props:['form','customer', 'currencyTypeActive', 'exchangeRateSale', 'is_payment', 'soapCompany'],
+        props:['form','customer', 'currencyTypeActive', 'exchangeRateSale', 'is_payment', 'soapCompany', 'items_refund'],
         data() {
             return {
                 enabled_discount: false,
@@ -677,6 +677,9 @@
                     this.resource_documents = "document-pos";
                     this.resource_payments = "document_pos_payments";
                     this.resource_options = this.resource_documents;
+
+                    const items_final = this.form.items.concat(this.items_refund);
+                    this.form.items = items_final
 
                 this.loading_submit = true
                 await this.$http.post(`/${this.resource_documents}`, this.form).then(response => {

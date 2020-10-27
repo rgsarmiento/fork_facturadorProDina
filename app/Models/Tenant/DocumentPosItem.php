@@ -34,7 +34,7 @@ class DocumentPosItem extends ModelTenant
         'discount',
 
         'inventory_kardex_id',
-
+        'refund'
     ];
 
     protected $casts = [

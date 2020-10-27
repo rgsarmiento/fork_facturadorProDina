@@ -132,9 +132,9 @@ class ReportTaxController extends Controller
         $company = Company::first();
         $establishment = ($request->establishment_id) ? Establishment::findOrFail($request->establishment_id) : auth()->user()->establishment;
 
-        $taxesAll = collect();
+        //$taxesAll = collect();
 
-        $records = DocumentPos::select('id', 'date_of_issue', 'total')->whereBetween('date_of_issue', [
+        $records = DocumentPos::select('id', 'date_of_issue', 'total', 'subtotal')->whereBetween('date_of_issue', [
                 Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
                 Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
             ])
@@ -147,6 +147,7 @@ class ReportTaxController extends Controller
         $total_sale = $records->sum('total');
         $total_sale_base = $records->sum('subtotal');
 
+       // return $total_sale_base;
 
        // $taxTitles = $taxesAll->unique('id');
 

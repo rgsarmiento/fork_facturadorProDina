@@ -31,7 +31,7 @@ class TaxReportService
         }
         $sum = collect($items)->where('tax_id', $tax->id )->sum('total');
 
-        return  ($total_sale ? ($sum / 1.05) : $sum);
+        return  ($total_sale ? $sum : ($sum / 1.05));
     }
 
     public function getTotalIva19($items, $total_sale = false)
@@ -44,7 +44,7 @@ class TaxReportService
         }
         $sum = collect($items)->where('tax_id', $tax->id )->sum('total');
 
-        return ($total_sale ? ($sum / 1.19) : $sum);
+        return ($total_sale ? $sum : ($sum / 1.19));
     }
 
     public function getTotalIC8($items, $total_sale = false)
@@ -57,7 +57,7 @@ class TaxReportService
         }
         $sum = collect($items)->where('tax_id', $tax->id )->sum('total');
 
-        return ($total_sale ? ($sum / 1.08) : $sum);
+        return ($total_sale ? $sum :($sum / 1.08));
     }
 
     public function getDiscounts($items)
