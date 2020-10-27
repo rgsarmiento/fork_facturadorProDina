@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :title="titleDialog" :visible="showDialog" @close="close" @open="create" @opened="opened" :close-on-click-modal="false">
+    <el-dialog width="80" :title="titleDialog" :visible="showDialog" @close="close" @open="create" @opened="opened" :close-on-click-modal="false">
         <form autocomplete="off" @submit.prevent="submit">
             <div class="form-body">
                 <!-- <div class="row">
@@ -95,7 +95,10 @@
                             <small class="form-control-feedback" v-if="errors.identity_document_type_id" v-text="errors.identity_document_type_id[0]"></small>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                </div>
+                <div class="row">
+
+                    <div class="col-md-5">
                         <div class="form-group" :class="{'has-danger': errors.number}">
                             <label class="control-label">N° Identificación  </label>
                             <!--<el-input @change="changeNumberIdentification" v-model="form.number" ></el-input>-->
@@ -106,7 +109,7 @@
                             <small class="form-control-feedback" v-if="errors.number" v-text="errors.number[0]"></small>
                         </div>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <div class="form-group" :class="{'has-danger': errors.dv}">
                             <label class="control-label">Dv  </label>
                             <el-input v-model="form.dv" ></el-input>
@@ -114,13 +117,16 @@
                         </div>
                     </div>
 
-                     <div class="col-md-8">
+                     <div class="col-md-5">
                         <div class="form-group" :class="{'has-danger': errors.name}">
                             <label class="control-label">Nombre  </label>
                             <el-input v-model="form.name" ></el-input>
                             <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
                         </div>
                     </div>
+
+                </div>
+                <div class="row">
 
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.country_id}">
@@ -152,7 +158,10 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6">
+                </div>
+
+                <div class="row">
+                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.telephone}">
                             <label class="control-label">Teléfono</label>
                             <el-input v-model="form.telephone"></el-input>
@@ -166,7 +175,11 @@
                             <small class="form-control-feedback" v-if="errors.email" v-text="errors.email[0]"></small>
                         </div>
                     </div>
-                    <div class="col-md-6">
+
+                </div>
+
+                <div class="row">
+                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.address}">
                             <label class="control-label">Dirección</label>
                             <el-input v-model="form.address" dusk="address"></el-input>
@@ -183,6 +196,9 @@
                         </div>
                     </div>
                 </div>
+
+
+                
 
                 <div class="row mt-2" v-if="type === 'suppliers'">
                     <div class="col-md-6 center-el-checkbox">
