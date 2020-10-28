@@ -222,6 +222,11 @@ trait CompanyTrait
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
         ]);
+
+        DB::table('co_cities')->insert([
+            [ 'name' => 'San Andres', 'department_id' => '801', 'created_at' => '2020-10-28 03:21:51', 'updated_at' => '2020-10-28 03:21:51' ],
+            [ 'name' => 'Providencia', 'department_id' => '801', 'created_at' => '2020-10-28 03:21:51', 'updated_at' => '2020-10-28 03:21:51' ],
+        ]);
     }
 
 
@@ -309,7 +314,7 @@ trait CompanyTrait
             ->update([
                 'type_tax_id' => 5
             ]);
-            
+
         DB::table('co_taxes')->insert([
             [ 'name' => 'IVA5', 'code' => '71', 'rate' => '5.0', 'conversion' => '100.0', 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'), 'type_tax_id' => 1 ],
         ]);
