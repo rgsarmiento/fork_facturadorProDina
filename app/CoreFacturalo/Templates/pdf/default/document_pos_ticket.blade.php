@@ -198,7 +198,12 @@
         <td>Vigencia: 24 Meses.</td>
     </tr>
     <tr>
-        <td class="text-center">GRACIAS POR SU COMPRA</td>
+        @if($document->state_type_id == '11')
+            <td class="text-center">ANULADO</td>
+        @else
+            <td class="text-center">GRACIAS POR SU COMPRA</td>
+        @endif
+
     </tr>
 </table>
 </body>

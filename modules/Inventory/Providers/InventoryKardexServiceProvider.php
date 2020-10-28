@@ -173,7 +173,7 @@ class InventoryKardexServiceProvider extends ServiceProvider
 
                 $warehouse = $this->findWarehouse($document_pos_item->document_pos->establishment_id);
                 // $this->createInventoryKardex($document_pos_item->document_pos, $document_pos_item->item_id, (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
-                $this->createInventoryKardexDocumentPos($document_pos_item->document_pos, $document_pos_item->item_id, (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id, $document_pos_item->id);
+                $this->createInventoryKardexDocumentPos($document_pos_item->document_pos, $document_pos_item->item_id, ($document_pos_item->refund ? 1 : -1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id, $document_pos_item->id);
                // if(!$document_pos_item->document_pos->order_note_id) $this->updateStock($document_pos_item->item_id, (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
                 $this->updateStock($document_pos_item->item_id, ( $document_pos_item->refund ? 1 : -1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
 
@@ -187,7 +187,7 @@ class InventoryKardexServiceProvider extends ServiceProvider
                     $presentationQuantity = 1;
                     $warehouse = $this->findWarehouse($document_pos_item->document_pos->establishment_id);
                     // $this->createInventoryKardex($document_pos_item->document_pos, $ind_item->id , (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
-                    $this->createInventoryKardexDocumentPos($document_pos_item->document_pos, $ind_item->id , (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id, $document_pos_item->id);
+                    $this->createInventoryKardexDocumentPos($document_pos_item->document_pos, $ind_item->id , ($document_pos_item->refund ? 1 : -1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id, $document_pos_item->id);
                     //if(!$document_pos_item->document_pos->order_note_id) $this->updateStock($ind_item->id , (-1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
                     $this->updateStock($ind_item->id , ($document_pos_item->refund ? 1 : -1 * ($document_pos_item->quantity * $presentationQuantity)), $warehouse->id);
 
