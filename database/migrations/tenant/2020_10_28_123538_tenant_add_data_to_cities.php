@@ -14,14 +14,14 @@ class TenantAddDataToCities extends Migration
     public function up()
     {
 
-        if (Schema::hasTable('co_cities')) {
+        /*if (Schema::hasTable('co_cities')) {
 
             DB::table('co_cities')->insert([
                 [ 'name' => 'San Andres', 'department_id' => '801', 'created_at' => '2020-10-28 03:21:51', 'updated_at' => '2020-10-28 03:21:51' ],
                 [ 'name' => 'Providencia', 'department_id' => '801', 'created_at' => '2020-10-28 03:21:51', 'updated_at' => '2020-10-28 03:21:51' ],
             ]);
 
-        }
+        }*/
     }
 
     /**
