@@ -15,6 +15,8 @@
 
     $resolution = $cash->resolution;
 
+    $sucursal = \App\Models\Tenant\Establishment::where('id', $document->establishment_id)->first();
+
 
 
 @endphp
@@ -37,10 +39,7 @@
         <td><h5>Nit: {{ $company->identification_number }} - {{ $company->type_regime->name}} </h5></td>
     </tr>
     <tr>
-        <td><h5>  {{ ($establishment->address !== '-')? $establishment->address : '' }} </h5></td>
-    </tr>
-    <tr>
-        <td> <h6>Telefonos: {{ ($establishment->telephone !== '-')? $establishment->telephone : '' }}</h6> </td>
+        <td><h6> Sucursal: {{ $sucursal->description }} </h6></td>
     </tr>
     <tr>
         <td> <h6>Email: {{ ($establishment->email !== '-')? $establishment->email : '' }}</h6> </td>
@@ -177,7 +176,7 @@
             $payment += (float) $row->payment;
         @endphp
     @endforeach
-    <tr><td><h6>SALDO:</h6> {{ $document->currency_type->symbol }} {{ number_format($document->total - $payment, 2) }}</td></tr>
+    <tr><td><h6>SALDO: {{ $document->currency_type->symbol }} {{ number_format($document->total - $payment, 2) }}</h6> </td></tr>
 </table>
 <table style="margin-top:3px" class="full-width">
 
