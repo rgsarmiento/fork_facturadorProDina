@@ -7,7 +7,7 @@
             </ol>
             <div class="right-wrapper pull-right">
                 <template  v-if="open_cash">
-                    <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickDownloadGeneral()"><i class="fas fa-shopping-cart"></i> Reporte general</button>
+                    <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickDownloadGeneral()"><i class="fas fa-shopping-cart"></i> Reporte general (Cajas del Día)</button>
 
                     <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickCreate()"><i class="fas fa-shopping-cart"></i> Aperturar caja chica</button>
                 </template>
@@ -50,7 +50,7 @@
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-primary" @click.prevent="clickDownload(row.id)">Reporte</button>
                             <!-- <button type="button" class="btn waves-effect waves-light btn-xs btn-primary" @click.prevent="clickDownloadProducts(row.id)">Reporte Productos</button> -->
 
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickDownloadIncomeSummary(row.id)">R. Ingreso</button>
+                            <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickDownloadIncomeSummary(row.id)">R. Ingreso</button>-->
 
                             <template v-if="row.state">
 
@@ -179,7 +179,7 @@
             },
             clickDownloadGeneral()
             {
-                  window.open(`/${this.resource}/report`, '_blank');
+                window.open(`/${this.resource}/report`, '_blank');
             },
             clickDownloadProducts(id)
             {

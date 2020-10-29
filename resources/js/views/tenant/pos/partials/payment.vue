@@ -685,7 +685,7 @@
                 await this.$http.post(`/${this.resource_documents}`, this.form).then(response => {
                     if (response.data.success) {
 
-                        this.form_cash_document.document_pos_id = response.data.data.id;
+                        this.form_cash_document.document_pos_id = response.data.id;
                         this.saleNotesNewId = response.data.data.id;
                         this.showDialogSaleNote = true;
 

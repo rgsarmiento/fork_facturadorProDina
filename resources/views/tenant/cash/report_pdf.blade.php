@@ -14,33 +14,14 @@ $cash_documents = $cash->cash_documents;
 
 foreach ($cash_documents as $cash_document) {
 
-    //$final_balance += ($cash_document->document) ? $cash_document->document->total : $cash_document->sale_note->total;
+    if($cash_document->document_pos){
 
-    if($cash_document->sale_note){
+        $cash_income += $cash_document->document_pos->total;
+        $final_balance += $cash_document->document_pos->total;
 
-        $cash_income += $cash_document->sale_note->total;
-        $final_balance += $cash_document->sale_note->total;
-
-        if( count($cash_document->sale_note->payments) > 0)
+        if( count($cash_document->document_pos->payments) > 0)
         {
-            $pays = $cash_document->sale_note->payments;
-
-            foreach ($methods_payment as $record) {
-                $record->sum = ($record->sum + $pays->where('payment_method_type_id', $record->id)->sum('payment') );
-            }
-
-        }
-
-
-    }
-    else if($cash_document->document){
-
-        $cash_income += $cash_document->document->total;
-        $final_balance += $cash_document->document->total;
-
-        if( count($cash_document->document->payments) > 0)
-        {
-            $pays = $cash_document->document->payments;
+            $pays = $cash_document->document_pos->payments;
 
             foreach ($methods_payment as $record) {
 
@@ -51,20 +32,11 @@ foreach ($cash_documents as $cash_document) {
         }
 
     }
-    else if($cash_document->expense_payment){
 
-        if($cash_document->expense_payment->expense->state_type_id == '05'){
-
-            $cash_egress += $cash_document->expense_payment->payment;
-            $final_balance -= $cash_document->expense_payment->payment;
-
-        }
-    }
 
 }
 
 $cash_final_balance = $final_balance + $cash->beginning_balance;
-//$cash_income = ($final_balance > 0) ? ($cash_final_balance - $cash->beginning_balance) : 0;
 
 @endphp
 <!DOCTYPE html>
@@ -234,14 +206,8 @@ $cash_final_balance = $final_balance + $cash->beginning_balance;
                             @php
                                 $all_documents = [];
                                 foreach ($cash_documents as $key => $value) {
-                                    if($value->sale_note){
+                                    if($value->document_pos){
                                         $all_documents[] = $value;
-                                    }else if($value->document){
-                                        $all_documents[] = $value;
-                                    }else if($value->expense_payment){
-                                        if($value->expense_payment->expense->state_type_id == '05'){
-                                            $all_documents[] = $value;
-                                        }
                                     }
                                 }
                             @endphp
@@ -258,42 +224,17 @@ $cash_final_balance = $final_balance + $cash->beginning_balance;
                                         $currency_type_id = null;
                                         $total = null;
 
-                                        if($value->sale_note){
-
                                             $type_transaction =  'Venta';
-                                            $document_type_description =  'NOTA DE VENTA';
-                                            $number = $value->sale_note->number_full;
-                                            $date_of_issue = $value->sale_note->date_of_issue->format('Y-m-d');
-                                            $customer_name = $value->sale_note->customer->name;
-                                            $customer_number = $value->sale_note->customer->number;
-                                            $total = $value->sale_note->total;
-                                            $currency_type_id = $value->sale_note->currency_type_id;
+                                            $document_type_description =  'FACT POS';
+                                            $number = $value->document_pos->number;
+                                            $date_of_issue = $value->document_pos->date_of_issue->format('Y-m-d');
+                                            $customer_name = $value->document_pos->customer->name;
+                                            $customer_number = $value->document_pos->customer->number;
+                                            $total = $value->document_pos->total;
+                                            $currency_type_id = $value->document_pos->currency_type_id;
 
-                                        }
-                                        else if($value->document){
 
-                                            $type_transaction =  'Venta';
-                                            $document_type_description =  $value->document->document_type->description;
-                                            $number = $value->document->number_full;
-                                            $date_of_issue = $value->document->date_of_issue->format('Y-m-d');
-                                            $customer_name = $value->document->customer->name;
-                                            $customer_number = $value->document->customer->number;
-                                            $total = $value->document->total;
-                                            $currency_type_id = $value->document->currency_type_id;
 
-                                        }
-                                        else if($value->expense_payment){
-
-                                            $type_transaction =  'Gasto';
-                                            $document_type_description =  $value->expense_payment->expense->expense_type->description;
-                                            $number = $value->expense_payment->expense->number;
-                                            $date_of_issue = $value->expense_payment->expense->date_of_issue->format('Y-m-d');
-                                            $customer_name = $value->expense_payment->expense->supplier->name;
-                                            $customer_number = $value->expense_payment->expense->supplier->number;
-                                            $total = -$value->expense_payment->payment;
-                                            $currency_type_id = $value->expense_payment->expense->currency_type_id;
-
-                                        }
 
                                     @endphp
 

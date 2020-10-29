@@ -228,8 +228,9 @@ class CashController extends Controller
 
     public function report_general()
     {
+
         $cashes = Cash::select('id')->whereDate('date_opening', date('Y-m-d'))->pluck('id');
-        $cash_documents =  CashDocument::whereIn('cash_id', $cashes)->get();
+        $cash_documents =  CashDocument::with('document_pos')->whereNotNull('document_pos_id')->whereIn('cash_id', $cashes)->get();
 
         $company = Company::first();
         set_time_limit(0);
