@@ -49,6 +49,13 @@
                 color: white;
                 text-align: center;
             }
+            tr {
+                background-color: #dddddd;
+            }
+
+            .leftx{
+                margin-left: 4%;
+            }
         </style>
     </head>
     <body>
@@ -97,79 +104,66 @@
 
 
             @endphp
-            <div class="">
+            <div >
+
                 <table class="">
-                        <tr>
-                            <td>Venta Total:</td>
-                            <td> {{ number_format($total_sale, 2) }} </td>
-                        </tr>
-
-                        <tr style="margin-left: 4px;">
-                            <td>Excento:</td>
-                            <td> {{ number_format($excento, 2) }} </td>
-                        </tr>
-
-
-                        <tr style="margin-left: 4px;">
-                            <td>Grav IVA 5:</td>
-                            <td> {{ number_format( $sale_total_iva5, 2) }} </td>
-                        </tr>
-
-                        <tr style="margin-left: 4px;">
-                            <td>Grav IVA 19:</td>
-                            <td> {{ number_format($sale_total_iva19, 2) }} </td>
-                        </tr>
-
-                        <tr style="margin-left: 4px;">
-                            <td>Grav I.C 8:</td>
-                            <td> {{ number_format($sale_total_ic8, 2) }} </td>
-                        </tr>
-
-                    <tr>
-                        <td>Base Imp. :</td>
-                        <td> {{ number_format($total_sale_base, 2) }} </td>
-                    </tr>
 
                         <tr>
-                            <td>Excento:</td>
-                            <td> {{ number_format($excento, 2) }} </td>
+                            <td>Venta Total: {{ $total_sale }} </td>
+                        </tr>
+                        <tr>
+                            <td> <span class="leftx"> Excento: {{ number_format($excento, 2) }} </span>  </td>
+                        </tr>
+
+                        <tr >
+                            <td> <span class="leftx">Grav IVA 5: {{ number_format( $sale_total_iva5, 2) }}</span></td>
+                        </tr>
+                        <tr>
+                            <td> <span class="leftx">Grav IVA 19: {{ number_format($sale_total_iva19, 2) }} </span>  </td>
+                        </tr>
+                        <tr>
+                            <td>  <span class="leftx">Grav I.C 8: {{ number_format($sale_total_ic8, 2) }} </span>  </td>
                         </tr>
 
                         <tr>
-                            <td>Grav IVA 5:</td>
-                            <td> {{ number_format( $salbase_imp_iva5e_total_iva5, 2) }} </td>
+                            <td>Base Imp. : {{ number_format($total_sale_base, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td> <span class="leftx"> Excento: {{ number_format($excento, 2) }} </span>  </td>
                         </tr>
 
                         <tr>
-                            <td>Grav IVA 19:</td>
-                            <td> {{ number_format($base_imp_iva19, 2) }} </td>
+                            <td>  <span class="leftx"> Grav IVA 5: {{ number_format( $base_imp_iva5, 2) }}</span>  </td>
                         </tr>
 
                         <tr>
-                            <td>Grav I.C 8:</td>
-                            <td> {{ number_format($base_imp_ic8, 2) }} </td>
+                            <td>  <span class="leftx"> Grav IVA 19: {{ number_format($base_imp_iva19, 2) }}</span> </td>
                         </tr>
 
+                        <tr>
+                            <td> <span class="leftx"> Grav I.C 8: {{ number_format($base_imp_ic8, 2) }}</span>  </td>
+                        </tr>
+
+
+
+                </table>
+                <br>
+                <table>
                     <tr>
-                        <td>Total Iva:</td>
-                        <td> {{ $total_iva }} </td>
+                        <td> <span class="">Total Iva: {{ $total_iva }}</span>  </td>
                     </tr>
 
                     <tr>
-                        <td>Total IC:</td>
-                        <td> {{ $total_ic }} </td>
+                        <td> <span class=""> Total IC: {{ $total_ic }}</span>  </td>
                     </tr>
 
                     <tr>
-                        <td>Total Descuento:</td>
-                        <td> {{ $discount }} </td>
+                        <td> <span class=""> Total Descuento: {{ $discount }}</span>  </td>
                     </tr>
 
                     <tr>
-                        <td>Total - Desc.:</td>
-                        <td> {{ $total_desc}} </td>
+                        <td> <span class=""> Total - Desc.: {{ $total_desc}}</span>  </td>
                     </tr>
-
                 </table>
             </div>
     </body>
