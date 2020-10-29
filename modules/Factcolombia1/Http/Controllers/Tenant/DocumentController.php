@@ -177,7 +177,7 @@ class DocumentController extends Controller
 
             $response =  null;
             $response_status =  null;
-            $correlative_api = $this->getCorrelativeInvoice(1);
+            $correlative_api = $this->getCorrelativeInvoice(1, $request->prefix);
 
 
             if(!is_numeric($correlative_api)){
@@ -221,12 +221,7 @@ class DocumentController extends Controller
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
 
             $data_document = json_encode($service_invoice);
-            \Log::debug(json_encode($service_invoice));
-
-                        //$file = fopen(storage_path("DEBUG.TXT"), "w");
-                        //fwrite($file, json_encode($data_document));
-                        //fclose($file);
-
+//            \Log::debug(json_encode($service_invoice));
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -355,8 +350,6 @@ class DocumentController extends Controller
 
             $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
             $payments = (new DocumentHelper())->savePayments($this->document, $request->payments);
-
-
         }
         catch (\Exception $e) {
             DB::connection('tenant')->rollBack();
@@ -718,11 +711,14 @@ class DocumentController extends Controller
     }
 
 
-    public function getCorrelativeInvoice($type_service)
+    public function getCorrelativeInvoice($type_service, $prefix = NULL)
     {
         $company = ServiceTenantCompany::firstOrFail();
         $base_url = config('tenant.service_fact');
-        $ch2 = curl_init("{$base_url}ubl2.1/invoice/current_number/{$type_service}");
+        if($prefix)
+            $ch2 = curl_init("{$base_url}ubl2.1/invoice/current_number/{$type_service}/{$prefix}");
+        else
+            $ch2 = curl_init("{$base_url}ubl2.1/invoice/current_number/{$type_service}");
 
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "GET");
