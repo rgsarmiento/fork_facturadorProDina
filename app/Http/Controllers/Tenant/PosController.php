@@ -48,6 +48,8 @@ class PosController extends Controller
 
         if(!$cash) return redirect()->route('tenant.cash.index');
 
+        if(!$cash->resolution_id) return redirect()->route('tenant.cash.index');
+
         /*$configuration_pos_document = ConfigurationPos::first();
         if(!$configuration_pos_document) return redirect()->route('tenant.pos.configuration');*/
 
