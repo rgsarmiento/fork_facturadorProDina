@@ -422,6 +422,7 @@ class ConfigurationController extends Controller
     public function changeEnvironmentProduction(string $environment){
 
         $company = ServiceCompany::firstOrFail();
+
         $base_url = env("SERVICE_FACT", "");
         $ch = curl_init("{$base_url}ubl2.1/config/environment");
         if($environment == 'P')
@@ -456,16 +457,25 @@ class ConfigurationController extends Controller
         else{
             if(property_exists($respuesta, 'message'))
             {
+                $company->type_environment_id = $data['type_environment_id'];
+                $company->save();
+
                 if($environment == 'P')
+                {
                     return [
                         'message' => "Se cambio satisfactoriamente a ambiente de PRODUCCION.",
                         'success' => true,
                     ];
+                }
                 else
+                {
                     return [
                         'message' => "Se cambio satisfactoriamente a HABILITACION.",
                         'success' => true,
                     ];
+                }
+
+
             }
             else{
                 return [
@@ -530,6 +540,8 @@ class ConfigurationController extends Controller
                 ];
             }
             else{
+                
+
                 return [
                     'message' => "Error en validacion de datos Api.",
                     'success' => false,
