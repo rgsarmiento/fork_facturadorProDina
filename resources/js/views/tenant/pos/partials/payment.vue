@@ -204,32 +204,6 @@
                     </div>
                 </div>
 
-                <!-- <div class="col-lg-8">
-                    <div class="card card-default">
-
-                        <div class="card-body text-center">
-
-                            <div class="row col-lg-12">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <h2><el-switch @change="changeEnabledDiscount" v-model="enabled_discount" class="control-label font-weight-semibold m-0 text-center m-b-0" active-text="Aplicar descuento"></el-switch></h2>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label">Monto descuento</label>
-                                        <el-input v-model="discount_amount" @input="inputDiscountAmount()" :disabled="!enabled_discount">
-                                            <template slot="prepend">{{currencyTypeActive.symbol}}</template>
-                                        </el-input>
-
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div> -->
                 <div class="col-lg-8">
                     <div class="card card-default">
                         <div class="card-body">
@@ -397,47 +371,23 @@
 
             this.$eventHub.$on('localSPayments', (payments) => {
                 this.payments = payments
+
+                //inciaalizo el pago el total
+                this.enter_amount = parseFloat( this.form.total)
+                this.enterAmount()
             })
 
             await this.getFormPosLocalStorage()
             // console.log(this.form.payments, this.payments)
         },
         mounted(){
-            // console.log(this.currencyTypeActive)
         },
         methods: {
             changeEnabledDiscount(){
 
-                // if(!this.enabled_discount){
-
-                //     this.discount_amount = 0
-                //     this.deleteDiscountGlobal()
-                //     this.reCalculateTotal()
-
-                // }
-
             },
             inputDiscountAmount(){
 
-                // if(this.enabled_discount){
-
-                //     if(this.discount_amount && !isNaN(this.discount_amount) && parseFloat(this.discount_amount) > 0){
-
-                //         if(this.discount_amount >= this.form.total)
-                //             return this.$message.error("El monto de descuento debe ser menor al total de venta")
-
-                //         this.reCalculateTotal()
-
-                //     }else{
-
-                //         // this.discount_amount = 0
-                //         this.deleteDiscountGlobal()
-                //         this.reCalculateTotal()
-
-                //     }
-
-                //     // console.log(this.discount_amount)
-                // }
             },
             back()
             {
