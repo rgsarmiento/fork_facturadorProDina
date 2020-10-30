@@ -42,11 +42,18 @@
                     <el-table-column
                         fixed="right"
                         label="Operaciones"
-                        width="120">
+                        width="140">
                         <template slot-scope="scope">
                             <el-button
                             icon="el-icon-check"
                             @click.native.prevent="selection(scope.row)"
+                            size="mini">
+                            </el-button>
+                            <el-button
+                            type="danger"
+                            plain
+                            icon="el-icon-close"
+                            @click.native.prevent="deleter(scope.row.id)"
                             size="mini">
                             </el-button>
                         </template>
@@ -308,6 +315,39 @@
                     code : type_doc.code,
                     name : type_doc.name
                 }
+
+            },
+            deleter(id)
+            {
+                this.$confirm('¿Desea eliminar el registro?', 'Eliminar', {
+                    confirmButtonText: 'Eliminar',
+                    cancelButtonText: 'Cancelar',
+                    type: 'warning'
+                }).then(() => {
+                    this.$http.delete(`/client/configuration/storeServiceCompanieResolution/${id}`)
+                        .then(res => {
+                            if(res.data.success) {
+                                this.$message.success(res.data.message)
+                                this.getRecords()
+                                resolve()
+                            }else{
+                                this.$message.error(res.data.message)
+                                resolve()
+                            }
+
+                        })
+                        .catch(error => {
+                            if (error.response.status === 500) {
+                                this.$message.error('Error al intentar eliminar');
+                            } else {
+                                console.log(error.response.data.message)
+                            }
+                        })
+
+                }).catch(error => {
+                    console.log(error)
+                });
+
 
             }
         }

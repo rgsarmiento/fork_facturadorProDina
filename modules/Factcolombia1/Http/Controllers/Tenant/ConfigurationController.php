@@ -540,7 +540,7 @@ class ConfigurationController extends Controller
                 ];
             }
             else{
-                
+
 
                 return [
                     'message' => "Error en validacion de datos Api.",
@@ -956,7 +956,18 @@ class ConfigurationController extends Controller
     public function co_type_documents()
     {
         return [
-            'data' => TypeDocument::whereIn('code', [1,2,3])->get()
+            'data' => TypeDocument::whereNotNull('resolution_number')->whereIn('code', [1,2,3])->get()
+        ];
+    }
+
+    public function destroy($resolution)
+    {
+        $it = TypeDocument::find($resolution);
+        $it->delete();
+
+        return [
+            'success' => true,
+            'message' => "Se elimino con éxito el registro {$it->prefix} / {$it->resolution_number}."
         ];
     }
 }

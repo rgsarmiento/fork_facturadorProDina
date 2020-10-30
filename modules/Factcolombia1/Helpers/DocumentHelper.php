@@ -24,11 +24,6 @@ class DocumentHelper{
     public static function createDocument($request, $nextConsecutive, $correlative_api, $company, $response, $response_status)
     {
 
-        try{
-
-
-
-
         $establishment = EstablishmentInput::set(auth()->user()->establishment_id);
 
         $document = Document::create([
@@ -109,19 +104,8 @@ class DocumentHelper{
 
         }
 
-
         return $document;
-    }
-    catch(\Exception $e)
-    {
-        return [
-            'success' => false,
-            'message' => $e->getMessage(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTrace(),
-        ];
 
-    }
     }
 
 

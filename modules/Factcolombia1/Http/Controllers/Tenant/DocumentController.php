@@ -349,6 +349,9 @@ class DocumentController extends Controller
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents)) throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
 
             $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
+
+            \Log::debug($this->document);
+
             $payments = (new DocumentHelper())->savePayments($this->document, $request->payments);
         }
         catch (\Exception $e) {
@@ -813,7 +816,7 @@ class DocumentController extends Controller
 
         $taxes = $this->table('taxes');
 
-        $resolutions = TypeDocument::select('id','prefix', 'resolution_number')->whereIn('code', [1,2,3])->get();
+        $resolutions = TypeDocument::select('id','prefix', 'resolution_number')->whereNotNull('resolution_number')->whereIn('code', [1,2,3])->get();
 
         return compact('customers','payment_methods','payment_forms','type_invoices','currencies'
                         , 'taxes', 'type_documents', 'resolutions');

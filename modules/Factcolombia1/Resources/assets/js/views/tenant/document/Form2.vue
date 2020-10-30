@@ -51,7 +51,7 @@
 
                             <div class="col-lg-3 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.type_invoice_id}">
-                                    <label class="control-label">Resolucion</label>
+                                    <label class="control-label">Resolución</label>
                                     <el-select @change="changeResolution" v-model="form.resolution_id"  popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info">
                                         <el-option v-for="option in resolutions" :key="option.id" :value="option.id" :label="`${option.prefix} / ${option.resolution_number}`"></el-option>
                                     </el-select>
@@ -361,7 +361,7 @@
                     this.currencies = response.data.currencies
                     this.payment_methods = response.data.payment_methods
                     this.payment_forms = response.data.payment_forms
-                    this.form.currency_id = (this.currencies.length > 0)?this.currencies[0].id:null;
+                    this.form.currency_id = (this.currencies.length > 0)?170:null;
                     this.form.type_invoice_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null;
                     //his.form.payment_form_id = (this.payment_forms.length > 0)?this.payment_forms[0].id:null;
                     this.form.payment_method_id = 10;//(this.payment_methods.length > 0)?this.payment_methods[0].id:null;
@@ -413,6 +413,7 @@
                 {
                     this.form.resolution_number = resol.resolution_number
                     this.form.prefix = resol.prefix
+                    this.form.type_document_id = resol.id
                 }
             },
             ratePrefix(tax = null) {
@@ -468,7 +469,7 @@
             initForm() {
 
                 this.form = {
-                    type_document_id: 1,
+                    type_document_id: null,
                     currency_id: null,
                     date_issue: moment().format('YYYY-MM-DD'),
                     date_expiration: null,
@@ -506,7 +507,7 @@
             resetForm() {
                 this.activePanel = 0
                 this.initForm()
-                this.form.currency_id = (this.currencies.length > 0)?this.currencies[0].id:null
+                this.form.currency_id = (this.currencies.length > 0)?170:null
                 // this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
                 this.form.type_invoice_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null
                 this.form.payment_form_id = (this.payment_forms.length > 0)?this.payment_forms[0].id:null;
@@ -788,6 +789,12 @@
                 }*/
             },
             async submit() {
+
+
+                if(!this.form.resolution_number || !this.form.prefix)
+                {
+                    return this.$message.error('Debe seleccionar una Resolución')
+                }
 
                 if(!this.form.customer_id){
                     return this.$message.error('Debe seleccionar un cliente')
