@@ -31,8 +31,8 @@ class SaleNoteEmail extends Mailable
     {
         $pdf = $this->getStorage($this->document->filename, 'sale_note');
 
-        return $this->subject('Envio de Nota de Venta')
-                    ->from(config('mail.username'), 'Nota de Venta')
+        return $this->subject('Envio de Factura POS')
+                    ->from(config('mail.username'), 'Factura POS')
                     ->view('tenant.templates.email.document')
                     ->attachData($pdf, $this->document->filename.'.pdf');
     }
