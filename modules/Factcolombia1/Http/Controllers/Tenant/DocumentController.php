@@ -189,8 +189,8 @@ class DocumentController extends Controller
 
             $service_invoice = $request->service_invoice;
             $service_invoice['number'] = $correlative_api;
-            //$service_invoice['prefix'] = $request->prefix;
-            //$service_invoice['resolution_number'] = $request->resolution_number;
+            $service_invoice['prefix'] = $request->prefix;
+            $service_invoice['resolution_number'] = $request->resolution_number;
 
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
             $company = ServiceTenantCompany::firstOrFail();
@@ -221,7 +221,7 @@ class DocumentController extends Controller
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
 
             $data_document = json_encode($service_invoice);
-            
+
             \Log::debug(json_encode($service_invoice));
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
