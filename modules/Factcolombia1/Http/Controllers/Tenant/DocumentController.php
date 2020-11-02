@@ -221,7 +221,8 @@ class DocumentController extends Controller
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
 
             $data_document = json_encode($service_invoice);
-//            \Log::debug(json_encode($service_invoice));
+            
+            \Log::debug(json_encode($service_invoice));
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -350,7 +351,6 @@ class DocumentController extends Controller
 
             $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status);
 
-            \Log::debug($this->document);
 
             $payments = (new DocumentHelper())->savePayments($this->document, $request->payments);
         }
