@@ -106,6 +106,9 @@ if($hostname) {
 
                 Route::get('items/{warehouse_id}', 'TransferController@items');
 
+                Route::get('download', 'TransferController@download');
+
+
 
             });
 

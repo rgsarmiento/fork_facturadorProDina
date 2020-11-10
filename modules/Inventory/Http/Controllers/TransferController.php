@@ -16,6 +16,8 @@ use Modules\Inventory\Http\Requests\InventoryRequest;
 use Modules\Inventory\Http\Requests\TransferRequest;
 
 use Modules\Item\Models\ItemLot;
+use Barryvdh\DomPDF\Facade as PDF;
+
 
 class TransferController extends Controller
 {
@@ -248,6 +250,7 @@ class TransferController extends Controller
 
             return  [
                 'success' => true,
+                'data' => $row->id,
                 'message' => 'Traslado creado con éxito'
             ];
         });
@@ -265,9 +268,22 @@ class TransferController extends Controller
         ];
     }
 
-    public function download()
+    public function download(Request $request)
     {
-        
+        $warehouse_end = $request->warehouse_end;
+        $warehouse_init = $request->warehouse_init;
+        $reason = $request->reason;
+
+        $items = collect(Inventory::where('inventories_transfer_id', $request->id)->get())->transform(function($row) {
+            return (object)[
+                'quantity' => $row->quantity,
+                'item' => $row->item->description,
+            ];
+        });
+
+        $pdf = PDF::loadView('inventory::transfers.constancy', compact("warehouse_end", "warehouse_init", "reason", "items"));
+        $filename = "Constancia-Traslado";
+        return $pdf->download($filename.'.pdf');
     }
 
 

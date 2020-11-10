@@ -157,6 +157,7 @@
 
 <script>
 import OutputLotsForm from "./partials/lots.vue";
+import queryString from 'query-string';
 
 export default {
   props: [],
@@ -291,6 +292,7 @@ export default {
         .then(response => {
           if (response.data.success) {
             this.$message.success(response.data.message);
+            this.downloadConstancy(response.data.data)
             this.close();
           } else {
             this.$message.error(response.data.message);
@@ -309,7 +311,22 @@ export default {
     },
     close() {
         location.href = '/transfers'
-    }
+    },
+    downloadConstancy(id)
+    {
+
+        const warehouse_init = this.warehouses.find(x=>x.id == this.form.warehouse_id)
+        const warehouse_end = this.warehouses.find(x=>x.id == this.form.warehouse_destination_id)
+
+        let query = queryString.stringify({
+                        reason: this.form.description,
+                        warehouse_init: warehouse_init.description,
+                        warehouse_end: warehouse_end.description,
+                        id:id
+        })
+
+        window.open(`/${this.resource}/download?${query}`, '_blank');
+    },
   }
 };
 </script>
