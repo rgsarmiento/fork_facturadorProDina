@@ -92,6 +92,8 @@
 <script>
     import InputLotsForm from '../../../../../../resources/js/views/tenant/items/partials/lots.vue'
     import OutputLotsForm from './partials/lots.vue'
+    import queryString from 'query-string'
+
 
     export default {
         components: {InputLotsForm, OutputLotsForm},
@@ -233,6 +235,7 @@
                     .then(response => {
                         if (response.data.success) {
                             this.$message.success(response.data.message)
+                            this.downloadConstancy()
                             this.$eventHub.$emit('reloadData')
                             this.close()
                         } else {
@@ -250,6 +253,22 @@
                     .then(() => {
                         this.loading_submit = false
                     })
+            },
+            downloadConstancy()
+            {
+                const item = this.items.find(x => x.id == this.form.item_id)
+                const reason = this.inventory_transactions.find(x=>x.id == this.form.inventory_transaction_id)
+                const warehouse = this.warehouses.find(x=>x.id == this.form.warehouse_id)
+
+                let query = queryString.stringify({
+                                type: 'Ingreso',
+                                product: item.description,
+                                quantity: this.form.quantity,
+                                reason: reason.name,
+                                warehouse: warehouse.description
+                });
+
+                window.open(`/${this.resource}/download?${query}`, '_blank');
             },
             close() {
                 this.$emit('update:showDialog', false)

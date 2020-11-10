@@ -16,6 +16,7 @@ use Modules\Inventory\Models\Warehouse;
 use Modules\Inventory\Http\Requests\InventoryRequest;
 use Modules\Item\Models\ItemLot;
 use Modules\Item\Models\ItemLotsGroup;
+use Barryvdh\DomPDF\Facade as PDF;
 
 
 class InventoryController extends Controller
@@ -365,6 +366,19 @@ class InventoryController extends Controller
     public function initialize()
     {
         $this->initializeInventory();
+    }
+
+    public function download(Request $request)
+    {
+        $type = $request->type;
+        $product = $request->product;
+        $quantity = $request->quantity;
+        $warehouse = $request->warehouse;
+        $reason = $request->reason;
+
+        $pdf = PDF::loadView('inventory::inventory.constancy', compact("type", "product", "quantity", "warehouse", "reason"));
+        $filename = "Constancia-{$type}";
+        return $pdf->download($filename.'.pdf');
     }
 
 

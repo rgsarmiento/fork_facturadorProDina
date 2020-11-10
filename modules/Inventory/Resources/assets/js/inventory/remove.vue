@@ -27,10 +27,10 @@
                             <el-input v-model="form.quantity_remove"></el-input>
                         </div>
                     </div>
-                    <div class="col-md-4 mt-4" v-if="form.item_id && form.warehouse_id && form.lots_enabled"> 
+                    <div class="col-md-4 mt-4" v-if="form.item_id && form.warehouse_id && form.lots_enabled">
                         <!-- <el-button type="primary" native-type="submit" icon="el-icon-check">Elegir serie</el-button> -->
                         <a href="#"  class="text-center font-weight-bold text-info" @click.prevent="clickLotcodeOutput">[&#10004; Seleccionar series]</a>
-                    </div> 
+                    </div>
                 </div>
             </div>
             <div class="form-actions text-right mt-4">
@@ -49,6 +49,8 @@
 
 <script>
     import OutputLotsForm from './partials/lots.vue'
+    import queryString from 'query-string'
+
 
     export default {
         components: {OutputLotsForm},
@@ -77,7 +79,7 @@
             addRowOutputLot(lots){
                 this.form.lots = lots
             },
-            clickLotcodeOutput(){ 
+            clickLotcodeOutput(){
                 this.showDialogLotsOutput = true
             },
             initForm() {
@@ -116,6 +118,7 @@
                     .then(response => {
                         if (response.data.success) {
                             this.$message.success(response.data.message)
+                            this.downloadConstancy()
                             this.$eventHub.$emit('reloadData')
                             this.close()
                         } else {
@@ -136,6 +139,19 @@
             close() {
                 this.$emit('update:showDialog', false)
                 this.initForm()
+            },
+            downloadConstancy()
+            {
+
+                let query = queryString.stringify({
+                                type: 'Retiro',
+                                product: this.form.item_description,
+                                quantity: this.form.quantity_remove,
+                                reason: '',
+                                warehouse: this.form.warehouse_description
+                });
+
+                window.open(`/${this.resource}/download?${query}`, '_blank');
             },
         }
     }

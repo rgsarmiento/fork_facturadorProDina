@@ -25,8 +25,6 @@ use App\Models\Tenant\ConfigurationPos;
 
 
 
-
-
 class CashController extends Controller
 {
     public function index()

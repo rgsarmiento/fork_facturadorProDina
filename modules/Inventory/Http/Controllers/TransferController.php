@@ -265,7 +265,10 @@ class TransferController extends Controller
         ];
     }
 
-
+    public function download()
+    {
+        
+    }
 
 
 
