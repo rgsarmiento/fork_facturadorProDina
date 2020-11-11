@@ -211,6 +211,7 @@ class DocumentController extends Controller
             else
                 $service_invoice['payment_form']['payment_due_date'] = date('Y-m-d', strtotime($request->date_expiration));
             $service_invoice['payment_form']['duration_measure'] = $request->time_days_credit;
+            $service_invoice['customer']['dv'] = $this->validarDigVerifDIAN($service_invoice['customer']['identification_number']);
 
             $id_test = $company->test_id;
             $base_url = config('tenant.service_fact');
@@ -222,7 +223,7 @@ class DocumentController extends Controller
 
             $data_document = json_encode($service_invoice);
 
-            \Log::debug(json_encode($service_invoice));
+            //            \Log::debug(json_encode($service_invoice));
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -421,6 +422,7 @@ class DocumentController extends Controller
             if(file_exists(storage_path('sendmail.api'))){
                 $note_service['sendmail'] = true;
             }
+            $note_service['customer']['dv'] = $this->validarDigVerifDIAN($note_service['customer']['identification_number']);
 
             $id_test = $company->test_id;
             $base_url = config('tenant.service_fact');

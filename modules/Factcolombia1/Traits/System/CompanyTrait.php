@@ -86,6 +86,7 @@ trait CompanyTrait
         ];
 
         $data_companiee = json_encode($bodyContent);
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS,($data_companiee));
