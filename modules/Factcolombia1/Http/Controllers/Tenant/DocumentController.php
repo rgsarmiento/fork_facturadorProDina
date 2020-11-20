@@ -223,7 +223,7 @@ class DocumentController extends Controller
 
             $data_document = json_encode($service_invoice);
 
-            //            \Log::debug(json_encode($service_invoice));
+                        \Log::debug(json_encode($service_invoice));
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");

@@ -962,7 +962,7 @@
                     tax_inclusive_amount: this.cadenaDecimales(tax_incl_am),
                     allowance_total_amount: this.cadenaDecimales(allowance_total_amount),
                     charge_total_amount: "0.00",
-                    payable_amount: this.cadenaDecimales(tax_incl_am)
+                    payable_amount: this.cadenaDecimales(tax_incl_am - allowance_total_amount)
                 };
 
             },
