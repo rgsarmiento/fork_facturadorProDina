@@ -216,14 +216,14 @@ class DocumentController extends Controller
             $id_test = $company->test_id;
             $base_url = config('tenant.service_fact');
 
-            if($company->type_environment_id == 2)
+            if($company->type_environment_id == 2 && $company->test_id != 'no_test_set_id')
                 $ch = curl_init("{$base_url}ubl2.1/invoice/{$id_test}");
             else
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
 
             $data_document = json_encode($service_invoice);
 
-                        \Log::debug(json_encode($service_invoice));
+//                        \Log::debug(json_encode($service_invoice));
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -241,7 +241,7 @@ class DocumentController extends Controller
             $zip_key = null;
             $invoice_status_api = null;
 
-            if($company->type_environment_id == 2){
+            if($company->type_environment_id == 2 && $company->test_id != 'no_test_set_id'){
                 if(array_key_exists('urlinvoicepdf', $response_model) && array_key_exists('urlinvoicexml', $response_model))
                 {
                     if(!is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey))
@@ -1373,7 +1373,7 @@ class DocumentController extends Controller
             $invoice_status_api = null;
             $response_status = null;
 
-            \Log::debug(json_encode($response_model));
+//            \Log::debug(json_encode($response_model));
             //return json_encode($response_model);
 
             if($company->type_environment_id == 2){
