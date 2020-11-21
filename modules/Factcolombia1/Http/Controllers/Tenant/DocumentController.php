@@ -627,7 +627,7 @@ class DocumentController extends Controller
     {
         $company = ServiceTenantCompany::firstOrFail();
 
-        $send= (object)['number'=> $request->number, 'email'=> $request->email];
+        $send= (object)['number'=> $request->number, 'email'=> $request->email, 'number_full'=> $request->number_full];
         $data_send = json_encode($send);
 
         $base_url = config('tenant.service_fact');

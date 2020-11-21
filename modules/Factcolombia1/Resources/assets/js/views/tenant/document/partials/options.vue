@@ -1,6 +1,6 @@
 <template>
     <el-dialog :title="titleDialog" :visible="showDialog" @open="create" width="30%" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false" append-to-body>
-       
+
         <div class="row mb-4" v-if="form.response_api_message">
             <div class="col-md-12">
                 <el-alert
@@ -9,10 +9,10 @@
                     show-icon>
                 </el-alert>
             </div>
-        </div>   
+        </div>
 
         <div class="row" v-if="showDownload">
- 
+
             <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold mt-3">
                 <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickDownload(form.download_pdf)">
                     <i class="fa fa-file-pdf"></i>
@@ -20,14 +20,14 @@
                 <p>Descargar PDF</p>
             </div>
              <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold mt-3">
-               
+
                 <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickDownload(form.download_xml)">
                     <i class="fa fa-file-excel"></i>
                 </button>
                  <p>Descargar XML</p>
             </div>
- 
-        </div> 
+
+        </div>
         <div class="row mt-3">
             <div class="col-md-12">
                 <el-input v-model="form.customer_email">
@@ -87,15 +87,15 @@
         methods: {
             clickDownload(download) {
                 window.open(download, '_blank');
-            }, 
+            },
             clickSendWhatsapp() {
-                
+
                 if(!this.form.customer_phone){
                     return this.$message.error('El número es obligatorio')
                 }
 
                 window.open(`https://wa.me/51${this.form.customer_phone}?text=${this.form.message_text}`, '_blank');
-            
+
             },
             initForm() {
                 this.errors = {};
@@ -116,16 +116,17 @@
                     this.form = response.data.data;
                     this.titleDialog = 'Comprobante: '+this.form.number_full;
                 });
- 
+
             },
             clickPrint(format){
                 window.open(`/print/document/${this.form.external_id}/${format}`, '_blank');
-            },  
+            },
             clickSendEmail() {
                 this.loading = true
                 this.$http.post(`/${this.resource}/sendEmail`, {
                     email: this.form.customer_email,
-                    number: this.form.correlative_api
+                    number: this.form.correlative_api,
+                    number_full: this.form.number_full
                 })
                     .then(response => {
                         if (response.data.success) {
@@ -144,7 +145,7 @@
                     .then(() => {
                         this.loading = false
                     })
-            }, 
+            },
             clickFinalize() {
                 location.href = (this.isContingency) ? `/contingencies` : `/${this.resource}`
             },

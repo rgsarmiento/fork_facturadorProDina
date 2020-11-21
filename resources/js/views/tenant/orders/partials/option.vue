@@ -99,12 +99,12 @@
                 this.initForm()
             },
             clickSendEmail() {
-
                 if(this.form.customer_email == null || this.form.customer_email == '') return this.$message.error('Ingrese el correo')
                 this.loading = true
                 this.$http.post(`/${this.resource}/sendEmail`, {
                     email: this.form.customer_email,
-                    number: this.form.correlative_api
+                    number: this.form.correlative_api,
+                    number_full: this.form.number_full
                 })
                     .then(response => {
                         if (response.data.success) {

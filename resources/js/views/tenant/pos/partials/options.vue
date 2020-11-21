@@ -12,7 +12,7 @@
                         <div class="col-md-12">
                             <h4 class="title">Venta exitosa : comprobante {{form.number_full}}</h4>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </span>
@@ -25,31 +25,31 @@
                     <p>Descargar PDF</p>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold mt-5">
-                
+
                     <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickDownload(form.download_xml)">
                         <i class="fa fa-file-excel"></i>
                     </button>
                     <p>Descargar XML</p>
                 </div>
-                <div class="row col-md-12 mt-5"> 
-                    <div class="col-md-8">   
+                <div class="row col-md-12 mt-5">
+                    <div class="col-md-8">
                         <el-input v-model="form.customer_email">
                             <el-button slot="append" icon="el-icon-message"   @click="clickSendEmail" :loading="loading">Enviar</el-button>
                         </el-input>
                         <!-- <small class="form-control-feedback" v-if="errors.customer_email" v-text="errors.customer_email[0]"></small> -->
 
                     </div>
-                    <!-- <div class="col-md-1">    
+                    <!-- <div class="col-md-1">
                     </div> -->
-                    <div class="col-md-4">  
-                        <el-button  type="primary"  class="float-right" @click="clickNewSale">Nueva venta</el-button>                             
+                    <div class="col-md-4">
+                        <el-button  type="primary"  class="float-right" @click="clickNewSale">Nueva venta</el-button>
                     </div>
                 </div>
 
             </div>
         </div>
     </el-dialog>
-</template> 
+</template>
 
 <script>
     export default {
@@ -67,20 +67,20 @@
             }
         },
         async created() {
-            this.initForm() 
+            this.initForm()
         },
         methods: {
             clickDownload(download) {
                 window.open(download, '_blank');
-            }, 
+            },
             clickSendWhatsapp() {
-                
+
                 if(!this.form.customer_phone){
                     return this.$message.error('El número es obligatorio')
                 }
 
                 window.open(`https://wa.me/51${this.form.customer_phone}?text=${this.form.message_text}`, '_blank');
-            
+
             },
             clickNewSale(){
                 this.initForm()
@@ -100,25 +100,26 @@
                     response_api_message: null,
                     download_pdf: null,
                     download_xml: null,
-                } 
+                }
             },
             create() {
                 this.$http.get(`/${this.resource}/record/${this.recordId}`).then(response => {
-                    this.form = response.data.data; 
+                    this.form = response.data.data;
                     this.titleDialog = 'Comprobante: '+this.form.number;
                 });
 
                 // this.$http.get(`/pos/status_configuration`).then(response => {
                 //     this.configuration = response.data
                 // });
-            }, 
+            },
             clickSendEmail() {
-                            
+
                 if(this.form.customer_email == null || this.form.customer_email == '') return this.$message.error('Ingrese el correo')
                 this.loading = true
                 this.$http.post(`/${this.resource}/sendEmail`, {
                     email: this.form.customer_email,
-                    number: this.form.correlative_api
+                    number: this.form.correlative_api,
+                    number_full: this.form.number_full
                 })
                     .then(response => {
                         if (response.data.success) {
