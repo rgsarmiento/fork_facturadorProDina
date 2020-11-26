@@ -555,7 +555,9 @@ class ConfigurationController extends Controller
     public function storeServiceSoftware(ConfigurationServiceSoftwareCompanyRequest $request)
     {
         $company = ServiceCompany::firstOrFail();
-        $base_url = env("SERVICE_FACT", "");
+        // $base_url = env("SERVICE_FACT", "");
+        $base_url = config('tenant.service_fact');
+
         $ch = curl_init("{$base_url}ubl2.1/config/software");
         $data = [
             "id"=> $request->id_software,
