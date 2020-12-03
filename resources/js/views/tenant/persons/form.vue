@@ -1,5 +1,5 @@
 <template>
-    <el-dialog width="80" :title="titleDialog" :visible="showDialog" @close="close" @open="create" @opened="opened" :close-on-click-modal="false">
+    <el-dialog width="60%" :title="titleDialog" :visible="showDialog" @close="close" @open="create" @opened="opened" :close-on-click-modal="false">
         <form autocomplete="off" @submit.prevent="submit">
             <div class="form-body">
                 <!-- <div class="row">
@@ -86,13 +86,23 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.identity_document_type_id}">
                             <label class="control-label">Tipo de identificación</label>
                             <el-select v-model="form.identity_document_type_id"  filterable>
                                 <el-option v-for="option in identity_document_types" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.identity_document_type_id" v-text="errors.identity_document_type_id[0]"></small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.type_obligation_id}">
+                            <label class="control-label">Tipo de obligación</label>
+                            <el-select v-model="form.type_obligation_id"  filterable>
+                                <el-option v-for="option in type_obligations" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.type_obligation_id" v-text="errors.type_obligation_id[0]"></small>
                         </div>
                     </div>
                 </div>
@@ -198,7 +208,7 @@
                 </div>
 
 
-                
+
 
                 <div class="row mt-2" v-if="type === 'suppliers'">
                     <div class="col-md-6 center-el-checkbox">
@@ -323,6 +333,7 @@
                 identity_document_types: [],
                 type_persons: [],
                 type_regimes: [],
+                type_obligations: [],
                 countries: [],
                 departments: [],
                 cities: [],
@@ -346,11 +357,11 @@
 
                     this.type_persons = response.data.typePeople
                     this.type_regimes = response.data.typeRegimes
+                    this.type_obligations = response.data.typeObligations
                     this.identity_document_types = response.data.typeIdentityDocuments
                     // this.countries = response.data.countries
 
                 })
-
         },
         computed: {
             maxLength: function () {
@@ -436,6 +447,7 @@
                     type_person_id: null,
                     type_regime_id: null,
                     identity_document_type_id: null,
+                    type_obligation_id: null,
                     addresses: [],
                     city_id: null,
                     code: null,
@@ -481,7 +493,6 @@
 
             },
             create() {
-                // console.log(this.input_person)
                 if(this.external) {
                     if(this.document_type_id === '01') {
                         this.form.identity_document_type_id = '6'
@@ -505,21 +516,12 @@
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
                             this.form = response.data.data
-                            // this.filterProvinces()
-                            // this.filterDistricts()
-
                             this.departmentss(true);
                             this.citiess(true);
-
                         })
                 }
             },
             clickAddAddress() {
-               /* this.form.more_address.push({
-                    location_id: [],
-                    address: null,
-                })*/
-
                 this.form.addresses.push({
                     'id': null,
                     'country_id': 'PE',

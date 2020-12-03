@@ -747,7 +747,6 @@ export default {
     },
     refreshData() {
       this.loadDataTable = true;
-
       axios
         .post(`/client/${this.resource}All`)
         .then(response => {
@@ -982,7 +981,8 @@ export default {
         phone: customer.phone,
         address: customer.address,
         email: customer.email,
-        merchant_registration: "000000"
+        merchant_registration: "000000",
+        type_obligation_id: customer.type_obligation_id
       };
 
       if (customer.type_person_id == 2) {

@@ -3,7 +3,7 @@
         <form autocomplete="off" @submit.prevent="submit">
             <div class="form-body">
                 <div class="row">
- 
+
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.type_person_id}">
                             <label class="control-label">Tipo de persona</label>
@@ -12,7 +12,7 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.type_person_id" v-text="errors.type_person_id[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.type_regime_id}">
@@ -22,7 +22,7 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.type_regime_id" v-text="errors.type_regime_id[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.type_identity_document_id}">
@@ -32,7 +32,7 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.type_identity_document_id" v-text="errors.type_identity_document_id[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                      <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.dv}">
@@ -40,7 +40,7 @@
                             <el-input v-model="form.dv" ></el-input>
                             <small class="form-control-feedback" v-if="errors.dv" v-text="errors.dv[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                      <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.identification_number}">
@@ -48,7 +48,7 @@
                             <el-input v-model="form.identification_number" ></el-input>
                             <small class="form-control-feedback" v-if="errors.identification_number" v-text="errors.identification_number[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                      <div class="col-md-8">
                         <div class="form-group" :class="{'has-danger': errors.name}">
@@ -56,7 +56,7 @@
                             <el-input v-model="form.name" ></el-input>
                             <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.country_id}">
@@ -67,7 +67,7 @@
                             <small class="form-control-feedback" v-if="errors.country_id" v-text="errors.country_id[0]"></small>
                         </div>
                     </div>
- 
+
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.department_id}">
                             <label class="control-label">Departamento</label>
@@ -77,7 +77,7 @@
                             <small class="form-control-feedback" v-if="errors.department_id" v-text="errors.department_id[0]"></small>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.city_id}">
                             <label class="control-label">Ciudad</label>
@@ -88,41 +88,41 @@
                         </div>
                     </div>
 
-                    
+
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.address}">
                             <label class="control-label">Dirección  </label>
                             <el-input v-model="form.address" ></el-input>
                             <small class="form-control-feedback" v-if="errors.address" v-text="errors.address[0]"></small>
                         </div>
-                    </div> 
-                    
+                    </div>
+
                      <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.phone}">
                             <label class="control-label">Teléfono  </label>
                             <el-input v-model="form.phone" ></el-input>
                             <small class="form-control-feedback" v-if="errors.phone" v-text="errors.phone[0]"></small>
                         </div>
-                    </div> 
-                    
+                    </div>
+
                      <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.email}">
                             <label class="control-label">Correo electrónico  </label>
                             <el-input v-model="form.email" ></el-input>
                             <small class="form-control-feedback" v-if="errors.email" v-text="errors.email[0]"></small>
                         </div>
-                    </div> 
-                    
+                    </div>
+
                      <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.code}">
                             <label class="control-label">Código interno  </label>
                             <el-input v-model="form.code" ></el-input>
                             <small class="form-control-feedback" v-if="errors.code" v-text="errors.code[0]"></small>
                         </div>
-                    </div> 
+                    </div>
                 </div>
-  
- 
+
+
             </div>
             <div class="form-actions text-right pt-2">
                 <el-button @click.prevent="close()">Cancelar</el-button>
@@ -182,7 +182,7 @@
                     this.type_identity_documents = response.data.typeIdentityDocuments
                     this.countries = response.data.countries
                 })
- 
+
 
             // await this.setDefaultConfiguration()
 
@@ -193,7 +193,7 @@
                 return (this.form.id) ? {method: 'put', url: `/${this.form.id}`} : {method: 'post', url: '/'};
             }
         },
-        methods: {   
+        methods: {
             initForm() {
                 this.loading_submit = false,
                 this.errors = {}
@@ -202,18 +202,18 @@
                     type_person_id: null,
                     type_regime_id: null,
                     type_identity_document_id: null,
-                    identification_number: null, 
-                    name: null, 
-                    country_id: null, 
-                    department_id: null, 
-                    city_id: null, 
-                    address: null, 
-                    phone: null, 
-                    email: null, 
-                    code: null, 
-                    dv: null, 
+                    identification_number: null,
+                    name: null,
+                    country_id: null,
+                    department_id: null,
+                    city_id: null,
+                    address: null,
+                    phone: null,
+                    email: null,
+                    code: null,
+                    dv: null,
                 }
-                
+
                 this.departmentss();
                 this.citiess();
             },
@@ -249,7 +249,7 @@
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
                             this.form = response.data
-                            
+
                             this.departmentss(true);
                             this.citiess(true);
                             // this.has_percentage_perception = (this.form.percentage_perception) ? true : false
@@ -257,13 +257,13 @@
                         })
                 }
 
-            }, 
+            },
             async submit() {
 
                 this.loading_submit = true
 
                 if(this.form.id){
-                    
+
                     await this.$http.put(`/${this.resource}/${this.form.id}`, this.form)
                         .then(response => {
                             if (response.data.success) {

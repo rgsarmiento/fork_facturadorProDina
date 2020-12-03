@@ -89,19 +89,19 @@ class ClientController extends Controller
             $response = curl_exec($ch);
 
             return ( $response);*/
-            
+
 
            return view('factcolombia1::client.tenant.index');
     }
-    
-    
-    
-    public function columns()
+
+
+
+    public function             columns()
     {
         return [
             'name' => 'Nombre',
-        ];
-    }
+            ];
+        }
 
     public function records(Request $request)
     {
@@ -148,11 +148,11 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(ClientRequest $request) {
-        
+
         $client = Client::create([
             'type_person_id' => $request->type_person_id,
             'type_regime_id' => $request->type_regime_id,
-            'type_identity_document_id' => $request->type_identity_document_id,
+                    'type_identity_document_id' => $request->type_identity_document_id,
             'identification_number' => $request->identification_number,
             'name' => $request->name,
             'country_id' => $request->country_id,
@@ -164,18 +164,18 @@ class ClientController extends Controller
             'code' => $request->code,
             'dv' => $request->dv
         ]);
-        
+
         return [
             'success' => true,
             'message' => "Se registro con éxito el cliente {$client->name}."
         ];
     }
-    
+
     /**
-     * Update the specified resource in storage.
+     * Update the         specified resource in storage.
      *
      * @param  \App\Http\Requests\Tenant\ClientUpdateRequest  $request
-     * @param  \App\Models\Tenant\Client  $client
+     * @param  \App\Models\Tenant\Client      $client
      * @return \Illuminate\Http\Response
      */
     public function update(ClientUpdateRequest $request, Client $client) {
@@ -193,46 +193,46 @@ class ClientController extends Controller
             'email' => $request->email,
             'dv' => $request->dv
         ]);
-        
+
         $client->save();
-        
+
         return [
             'success' => true,
             'message' => "Se actualizo con éxito el cliente {$client->name}."
         ];
     }
-    
+
     /**
-     * Remove the specified resource from storage.
+     * Remove the sp        ecified resource from storag        e.
      *
      * @param  \App\Models\Tenant\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Client $client) {
+    public function destroy(Client $clien    t) {
         $client->forceDelete();
-        
+
         return [
             'success' => true,
             'message' => "Se elimino con éxito el cliente {$client->name}."
         ];
     }
-    
+
     /**
      * Format import
      * @return \Illuminate\Http\Response
-     */
+             */
     public function formatImport() {
         return Excel::download(new ClientsFormatExport, 'Formato clientes.xlsx');
     }
-    
+
     /**
-     * Import
+     * Im    port
      * @param  \App\Http\Requests\Tenant\ClientImportRequest $request
      * @return \Illuminate\Http\Response
      */
     public function import(ClientImportRequest $request) {
         try {
-            if ($request->hasFile('file')) Excel::import(new ClientsImport, $request->file('file'));
+            if     ($request->hasFile('file')) Excel::import(new ClientsImport, $request->file('file'));
         }
         catch (\Exception $e) {
             return [
@@ -240,18 +240,18 @@ class ClientController extends Controller
                 'message' => $e->getMessage()
             ];
         }
-        
+
         return [
             'success' => true,
             'message' => 'Importación exítosa.'
         ];
     }
-    
+
     /**
      * Export
      * @return \Illuminate\Http\Response
      */
     public function export() {
-        return Excel::download(new ClientsExport, 'clientes.xlsx');
+        return Excel::downloa        d(new ClientsExport, 'clientes.xlsx');
     }
 }

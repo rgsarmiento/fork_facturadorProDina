@@ -146,7 +146,7 @@
 
 <script>
     import Helper from '../../../mixins/Helper';
-    
+
     export default {
         mixins: [Helper],
         props: {
@@ -321,7 +321,7 @@
                 this.$validator.validateAll(scope).then(valid => {
                     if (valid) {
                         this.loading = true;
-        
+
                         axios({method: this.urlData.method, url: this.urlData.url, data: this.client}).then(response => {
                             this.$setLaravelMessage(response.data);
 

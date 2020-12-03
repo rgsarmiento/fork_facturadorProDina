@@ -8,13 +8,13 @@ use Modules\Factcolombia1\Traits\Tenant\RequestsTrait;
 class ClientRequest extends FormRequest
 {
     use RequestsTrait;
-    
+
     /**
      * Form
      * @var string
      */
     public $form = 'client';
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -23,7 +23,7 @@ class ClientRequest extends FormRequest
     public function authorize() {
         return true;
     }
-    
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -34,6 +34,7 @@ class ClientRequest extends FormRequest
             'type_person_id' => 'nullable|exists:tenant.co_type_people,id',
             'type_regime_id' => 'nullable|exists:tenant.co_type_regimes,id',
             'type_identity_document_id' => 'required|exists:tenant.co_type_identity_documents,id',
+            'type_obligation_id' => 'required|exists:tenant.co_type_obligations,id',
             'identification_number' => "required|numeric|digits_between:1,15|unique:tenant.co_clients,identification_number,null,null,type_identity_document_id,{$this->type_identity_document_id}",
             'name' => 'required|max:50',
             'country_id' => 'nullable|exists:tenant.co_countries,id',
