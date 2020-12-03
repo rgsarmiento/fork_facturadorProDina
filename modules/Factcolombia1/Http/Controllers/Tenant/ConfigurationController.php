@@ -420,9 +420,7 @@ class ConfigurationController extends Controller
     }
 
     public function changeEnvironmentProduction(string $environment){
-
         $company = ServiceCompany::firstOrFail();
-
         $base_url = env("SERVICE_FACT", "");
         $ch = curl_init("{$base_url}ubl2.1/config/environment");
         if($environment == 'P')
@@ -457,25 +455,22 @@ class ConfigurationController extends Controller
         else{
             if(property_exists($respuesta, 'message'))
             {
-                $company->type_environment_id = $data['type_environment_id'];
-                $company->save();
-
-                if($environment == 'P')
-                {
+                if($environment == 'P'){
+                    $company->type_environment_id = 1;
+                    $company->save();
                     return [
                         'message' => "Se cambio satisfactoriamente a ambiente de PRODUCCION.",
                         'success' => true,
                     ];
                 }
-                else
-                {
+                else{
+                    $company->type_environment_id = 2;
+                    $company->save();
                     return [
                         'message' => "Se cambio satisfactoriamente a HABILITACION.",
                         'success' => true,
                     ];
                 }
-
-
             }
             else{
                 return [
@@ -508,10 +503,6 @@ class ConfigurationController extends Controller
         $response_query = curl_exec($ch);
         $err = curl_error($ch);
         $respuesta = json_decode($response_query);
-
-//        $file = fopen(storage_path("DEBUG.TXT"), "w+");
-//        fwrite($file, json_encode($company));
-//        fclose($file);
 
         if($err)
         {
