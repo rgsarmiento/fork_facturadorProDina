@@ -21,6 +21,7 @@ use Modules\Factcolombia1\Models\Tenant\{
     TypeIdentityDocument,
     TypePerson,
     TypeRegime,
+    TypeObligation,
     Country as CoCountry,
 };
 use App\Exports\PersonExport;
@@ -76,10 +77,11 @@ class PersonController extends Controller
         $typeIdentityDocuments = TypeIdentityDocument::all();
         $typeRegimes = TypeRegime::all();
         $typePeople = TypePerson::all();
+        $typeObligations = TypeObligation::all();
         $countries = CoCountry::all();
 
         return compact('countries', 'identity_document_types','person_types','api_service_token', 'typeIdentityDocuments', 'typeRegimes',
-                        'typePeople');
+                        'typePeople', 'typeObligations');
     }
 
     public function record($id)

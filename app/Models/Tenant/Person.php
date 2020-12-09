@@ -37,6 +37,7 @@ class Person extends ModelTenant
         'email',
         'telephone',
         'perception_agent',
+        'type_obligation_id',
         // 'state',
         // 'condition',
         'percentage_perception',
@@ -60,6 +61,10 @@ class Person extends ModelTenant
     //         $builder->where('status', 1);
     //     });
     // }
+
+    public function typeObligation() {
+        return $this->belongsTo(TypeObligation::class);
+    }
 
     public function typePerson() {
         return $this->belongsTo(TypePerson::class);

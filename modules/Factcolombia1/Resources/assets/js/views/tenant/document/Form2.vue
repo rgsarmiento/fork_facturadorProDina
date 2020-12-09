@@ -350,6 +350,7 @@
             }
         },
         async created() {
+//            console.log(this.resource)
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
@@ -385,6 +386,7 @@
             this.$eventHub.$on('initInputPerson', () => {
                 this.initInputPerson()
             })
+//            console.log(this.customers)
         },
         watch: {
             typeDocuments: {
@@ -898,7 +900,8 @@
                     type_document_identification_id: customer.identity_document_type_id,
                     type_organization_id: customer.type_person_id,
                     municipality_id_fact: customer.city_id,
-                    type_regime_id: customer.type_regime_id
+                    type_regime_id: customer.type_regime_id,
+                    type_liability_id: customer.type_obligation_id
                 };
 
                 this.form.customer_id = customer.id

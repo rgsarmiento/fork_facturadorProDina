@@ -223,7 +223,7 @@ class DocumentController extends Controller
 
             $data_document = json_encode($service_invoice);
 
-//                        \Log::debug(json_encode($service_invoice));
+//            return $data_document;
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -855,6 +855,7 @@ class DocumentController extends Controller
                     'type_person_id' => $row->type_person_id,
                     'type_regime_id' => $row->type_regime_id,
                     'city_id' => $row->city_id,
+                    'type_obligation_id' => $row->type_obligation_id,
                     'dv' => $row->dv
                 ];
             });
@@ -1183,6 +1184,7 @@ class DocumentController extends Controller
                             'address' =>  $row->address,
                             'email' =>  $row->email,
                             'telephone' =>  $row->telephone,
+                            'type_liability_id' => $row->type_obligation_id,
                         ];
                     });
 
