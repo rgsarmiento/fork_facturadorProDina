@@ -228,6 +228,9 @@ trait CompanyTrait
             [ 'name' => 'San Andres', 'department_id' => '801', 'created_at' => '2020-10-28 03:21:51', 'updated_at' => '2020-10-28 03:21:51' ],
             [ 'name' => 'Providencia', 'department_id' => '801', 'created_at' => '2020-10-28 03:21:51', 'updated_at' => '2020-10-28 03:21:51' ],
         ]);
+
+        //lleno data a la tabla co_cities
+        \Artisan::call('db:seed', array('--class' => 'UpdateCitiesTentantSeeder'));
     }
 
 
