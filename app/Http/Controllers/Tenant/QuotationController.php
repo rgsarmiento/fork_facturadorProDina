@@ -594,7 +594,7 @@ class QuotationController extends Controller
             ]);
         } else if($format_pdf === 'a5'){
 
-             $company_name      = (strlen($company->name) / 20) * 10;
+            $company_name      = (strlen($company->name) / 20) * 10;
             $company_address   = (strlen($document->establishment->address) / 30) * 10;
             $company_number    = $document->establishment->telephone != '' ? '10' : '0';
             $customer_name     = strlen($document->customer->name) > '25' ? '10' : '0';
@@ -638,20 +638,28 @@ class QuotationController extends Controller
                     210,
                     $diferencia + $alto
                     ],
-                'margin_top' => 2,
+                'margin_top' => 40,
                 'margin_right' => 5,
-                'margin_bottom' => 0,
-                'margin_left' => 5
+                'margin_bottom' => 5,
+                'margin_left' => 5,
+                'margin_footer' => 3,
+                'margin_header' => 5
             ]);
 
 
         }  else {
-
-
+            $pdf = new Mpdf([
+                'mode' => 'utf-8',
+                'margin_top' => 40,
+                'margin_right' => 10,
+                'margin_left' => 10,
+                'margin_bottom' => 5,
+                'margin_footer' => 3,
+                'margin_header' => 5
+            ]);
 
             $pdf_font_regular = config('tenant.pdf_name_regular');
             $pdf_font_bold = config('tenant.pdf_name_bold');
-
             if ($pdf_font_regular != false) {
                 $defaultConfig = (new ConfigVariables())->getDefaults();
                 $fontDirs = $defaultConfig['fontDir'];
@@ -673,34 +681,33 @@ class QuotationController extends Controller
                         'custom_regular' => [
                             'R' => $pdf_font_regular.'.ttf',
                         ],
-                    ]
+                    ],
+                    'margin_top' => 50,
+                ];
+
+                if ($base_template == 'citec') {
+                    $default = [
+                        'mode' => 'utf-8',
+                        'margin_top' => 40,
+                        'margin_right' => 0,
+                        'margin_bottom' => 0,
+                        'margin_left' => 0,
+                        'fontDir' => array_merge($fontDirs, [
+                            app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.
+                                                        DIRECTORY_SEPARATOR.'pdf'.
+                                                        DIRECTORY_SEPARATOR.$base_template.
+                                                        DIRECTORY_SEPARATOR.'font')
+                        ]),
+                        'fontdata' => $fontData + [
+                            'custom_bold' => [
+                                'R' => $pdf_font_bold.'.ttf',
+                            ],
+                            'custom_regular' => [
+                                'R' => $pdf_font_regular.'.ttf',
+                            ],
+                        ]
                     ];
-
-                    if($base_template == 'citec')
-                    {
-                        $default = [
-                            'mode' => 'utf-8',
-                            'margin_top' => 2,
-                            'margin_right' => 0,
-                            'margin_bottom' => 0,
-                            'margin_left' => 0,
-                            'fontDir' => array_merge($fontDirs, [
-                                app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.
-                                                         DIRECTORY_SEPARATOR.'pdf'.
-                                                         DIRECTORY_SEPARATOR.$base_template.
-                                                         DIRECTORY_SEPARATOR.'font')
-                            ]),
-                            'fontdata' => $fontData + [
-                                'custom_bold' => [
-                                    'R' => $pdf_font_bold.'.ttf',
-                                ],
-                                'custom_regular' => [
-                                    'R' => $pdf_font_regular.'.ttf',
-                                ],
-                            ]
-                            ];
-
-                    }
+                }
 
                 $pdf = new Mpdf($default);
             }
@@ -714,11 +721,17 @@ class QuotationController extends Controller
         $stylesheet = file_get_contents($path_css);
 
         $pdf->WriteHTML($stylesheet, HTMLParserMode::HEADER_CSS);
-        $pdf->WriteHTML($html, HTMLParserMode::HTML_BODY);
+
 
         if ($format_pdf != 'ticket') {
-            if(config('tenant.pdf_template_footer')) {
+            $htmlHeader = $template->pdfHeader($base_template, 'quotation_header', [
+                'company' => $company,
+                'establishment' => $document->establishment,
+                'title' => $document->prefix . '-' . str_pad($document->id, 8, '0', STR_PAD_LEFT)
+            ]);
 
+            $pdf->SetHTMLHeader($htmlHeader);
+            if (config('tenant.pdf_template_footer')) {
                 $html_footer = $template->pdfFooter($base_template);
                 $html_footer_term_condition = ($document->terms_condition) ? $template->pdfFooterTermCondition($base_template, $document):"";
 
@@ -727,6 +740,7 @@ class QuotationController extends Controller
             //$html_footer = $template->pdfFooter();
             //$pdf->SetHTMLFooter($html_footer);
         }
+        $pdf->WriteHTML($html, HTMLParserMode::HTML_BODY);
 
         $this->uploadFile($filename, $pdf->output('', 'S'), 'quotation');
     }
