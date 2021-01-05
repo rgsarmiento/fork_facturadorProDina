@@ -896,7 +896,7 @@
                     phone: customer.telephone,
                     address: customer.address,
                     email: customer.email,
-                    merchant_registration: "000000",
+                    merchant_registration: "111111",
                     type_document_identification_id: customer.identity_document_type_id,
                     type_organization_id: customer.type_person_id,
                     municipality_id_fact: customer.city_id,
