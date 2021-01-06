@@ -890,7 +890,7 @@
             },
             getCustomer() {
                 let customer = this.customers.find(x => x.id == this.form.customer_id);
-                console.log(customer);
+                console.log(this.customers);
                 let obj = {
                     identification_number: customer.number,
                     name: customer.name,
