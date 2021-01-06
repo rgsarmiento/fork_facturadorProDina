@@ -357,7 +357,7 @@
                     this.all_customers = response.data.customers;
                     this.customers = response.data.customers;
                     this.taxes = response.data.taxes
-                    console.log(this.customers)
+//                    console.log(this.customers)
                     this.type_invoices = response.data.type_invoices;
                     this.currencies = response.data.currencies
                     this.payment_methods = response.data.payment_methods
@@ -890,17 +890,17 @@
             },
             getCustomer() {
                 let customer = this.customers.find(x => x.id == this.form.customer_id);
-                console.log(this.customers);
                 let obj = {
                     identification_number: customer.number,
                     name: customer.name,
                     phone: customer.telephone,
                     address: customer.address,
                     email: customer.email,
-                    merchant_registration: "111111",
+                    merchant_registration: "000000",
                     type_document_identification_id: customer.identity_document_type_id,
                     type_organization_id: customer.type_person_id,
                     municipality_id_fact: customer.city_id,
+                    city_id: customer.city_id,
                     type_regime_id: customer.type_regime_id,
                     type_liability_id: customer.type_obligation_id
                 };
@@ -910,6 +910,7 @@
                 if (customer.type_person_id == 1) {
                     obj.dv = customer.dv;
                 }
+console.log(obj);
                 return obj;
             },
 
