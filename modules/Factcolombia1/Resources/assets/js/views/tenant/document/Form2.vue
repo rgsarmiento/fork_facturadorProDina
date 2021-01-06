@@ -357,7 +357,7 @@
                     this.all_customers = response.data.customers;
                     this.customers = response.data.customers;
                     this.taxes = response.data.taxes
-                    // console.log(this.taxes)
+//                    console.log(this.customers)
                     this.type_invoices = response.data.type_invoices;
                     this.currencies = response.data.currencies
                     this.payment_methods = response.data.payment_methods
