@@ -1156,11 +1156,14 @@ class DocumentController extends Controller
                                     'name' => $row->name,
                                     'number' => $row->number,
                                     'identity_document_type_id' => $row->identity_document_type_id,
-                                    'identity_document_type_code' => $row->identity_document_type->code,
-                                    'addresses' => $row->addresses,
+                                    'address' =>  $row->address,
                                     'email' =>  $row->email,
                                     'telephone' =>  $row->telephone,
-                                    'address' =>  $row->address
+                                    'type_person_id' => $row->type_person_id,
+                                    'type_regime_id' => $row->type_regime_id,
+                                    'city_id' => $row->city_id,
+                                    'type_obligation_id' => $row->type_obligation_id,
+                                    'dv' => $row->dv
                                 ];
                             });
 
@@ -1180,13 +1183,16 @@ class DocumentController extends Controller
                             'name' => $row->name,
                             'number' => $row->number,
                             'identity_document_type_id' => $row->identity_document_type_id,
-                            'identity_document_type_code' => $row->identity_document_type->code,
                             'address' =>  $row->address,
                             'email' =>  $row->email,
                             'telephone' =>  $row->telephone,
-                            'type_liability_id' => $row->type_obligation_id,
+                            'type_person_id' => $row->type_person_id,
+                            'type_regime_id' => $row->type_regime_id,
+                            'city_id' => $row->city_id,
+                            'type_obligation_id' => $row->type_obligation_id,
+                            'dv' => $row->dv
                         ];
-                    });
+            });
 
         return compact('customers');
     }
