@@ -1,6 +1,6 @@
-<img src="icon_pro3.jpg" width="120">
+<!--<img src="icon_pro3.jpg" width="120"> -->
 
-# **Facturador PRO 3**
+# **Facturador PRO 2**
 
 <!-- ## Instalación reseller
 
@@ -33,7 +33,7 @@ Linux - Ubuntu 18 - Docker - SSL opcional<br>
 
 [Con Docker](https://docs.google.com/document/d/1ekGySBjGHspbPEE3OLkMGlWwjLvudmyLKo9Et-Cxejk/edit "Clic")
 <br>
-[SSL con Docker](https://docs.google.com/document/d/1kcgtIDrOWnGKQbWO3sW2KEkUoNdadIB5YHBgaSb87uA/edit "Clic")
+[SSL con Docker](https://docs.google.com/document/d/1fxeZ_sA88R7KVYPgRw1UJXYtyEB4bN07i2Ol0A7OXro/edit?usp=sharing "Clic")
 
 * Docker - Script
 
