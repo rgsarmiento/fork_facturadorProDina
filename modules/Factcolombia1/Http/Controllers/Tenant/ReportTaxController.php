@@ -20,7 +20,7 @@ class ReportTaxController extends Controller
     public function index() {
         return view('report.tenant.index');
     }
-    
+
     /**
      * Data
      * @param  \App\Http\Requests\Tenant\ReportTaxRequest\ReportTaxRequest $request
@@ -28,7 +28,7 @@ class ReportTaxController extends Controller
      */
     public function data(ReportTaxRequest $request) {
         $taxesAll = collect();
-        
+
         $documents = Document::query()
             ->with('type_document', 'reference')
             ->whereBetween('date_issue', [
@@ -36,15 +36,15 @@ class ReportTaxController extends Controller
                 Carbon::parse($request->date_up)->endOfDay()->format('Y-m-d H:m:s')
             ])
             ->get();
-        
+
         $documents->pluck('taxes')->each(function($taxes) use($taxesAll) {
             collect($taxes)->each(function($tax) use($taxesAll) {
                 $taxesAll->push($tax);
             });
         });
-        
+
         $taxTitles = $taxesAll->unique('id');
-        
+
         return [
             'success' => true,
             'documents' => $documents,
@@ -52,7 +52,7 @@ class ReportTaxController extends Controller
             'taxesAll' => $taxesAll
         ];
     }
-    
+
     /**
      * Export
      * @param  \App\Http\Requests\Tenant\ReportTaxRequest\ReportTaxRequest $request

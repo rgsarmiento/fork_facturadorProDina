@@ -55,7 +55,6 @@ class ReportTaxController extends Controller
 
        // $union = $documents->union( $documents_pos );
 
-
         return [
             'success' => true,
             'data' => array_merge($documents->toArray(), $documents_pos->toArray()),
@@ -64,8 +63,6 @@ class ReportTaxController extends Controller
         ];
 
     }
-
-
 
     public function excel(Request $request)
     {

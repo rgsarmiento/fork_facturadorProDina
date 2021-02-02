@@ -78,7 +78,7 @@
                         {{row.prefix}}{{row.number}}
                         <template
                           v-if="row.type_document_id && row.type_document_id != 1"
-                        >({{row.reference.prefix}}{{row.reference.number}})</template>
+                        >({{row.prefix}}{{row.number}})</template>
                       </div>
                     </td>
 
@@ -249,8 +249,6 @@
                     this.taxesAll = response.data.taxesAll
                     this.loading_submit = false
                 });
-
-
             },
             getQueryParameters() {
                 return queryString.stringify({
