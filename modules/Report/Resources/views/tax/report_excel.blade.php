@@ -80,7 +80,7 @@
                                         <div>
                                             {{$value->prefix}}{{$value->number}}
                                             @if($value->type_document_id != 1)
-                                                ({{$value->reference.prefix}}{{$value->reference.number}})
+                                                ({{$value->prefix}}{{$value->number}})
                                             @endif
                                         </div>
                                     </td>
