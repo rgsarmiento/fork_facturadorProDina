@@ -1358,7 +1358,7 @@ class DocumentController extends Controller
             $id_test = $company->test_id;
             $base_url = config('tenant.service_fact');
 
-            if($company->type_environment_id == 2)
+            if($company->type_environment_id == 2 && $company->test_id != 'no_test_set_id')
                 $ch = curl_init("{$base_url}ubl2.1/invoice-aiu/{$id_test}");
             else
                 $ch = curl_init("{$base_url}ubl2.1/invoice-aiu");
@@ -1384,7 +1384,7 @@ class DocumentController extends Controller
 //            \Log::debug(json_encode($response_model));
             //return json_encode($response_model);
 
-            if($company->type_environment_id == 2){
+            if($company->type_environment_id == 2 && $company->test_id != 'no_test_set_id'){
                 if(array_key_exists('urlinvoicepdf', $response_model) && array_key_exists('urlinvoicexml', $response_model))
                 {
                     if(!is_string($response_model->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey))
