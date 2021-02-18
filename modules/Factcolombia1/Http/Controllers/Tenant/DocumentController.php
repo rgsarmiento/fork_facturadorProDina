@@ -1294,7 +1294,6 @@ class DocumentController extends Controller
 
 
     public function store_aiu(DocumentRequest $request) {
-//return $request->all();
         DB::connection('tenant')->beginTransaction();
 
         try {
