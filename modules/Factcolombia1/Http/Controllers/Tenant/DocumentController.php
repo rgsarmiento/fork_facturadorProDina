@@ -1294,7 +1294,7 @@ class DocumentController extends Controller
 
 
     public function store_aiu(DocumentRequest $request) {
-
+return $request->all();
         DB::connection('tenant')->beginTransaction();
 
         try {
@@ -1334,6 +1334,8 @@ class DocumentController extends Controller
 
             $service_invoice = $request->service_invoice;
             $service_invoice['number'] = $correlative_api;
+            $service_invoice['prefix'] = $request->prefix;
+            $service_invoice['resolution_number'] = $request->resolution_number;
 
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
             $company = ServiceTenantCompany::firstOrFail();
