@@ -422,7 +422,6 @@
                 const items_aiu = this.$refs.documentFormItem.getItemsAiu(this.detailAiu)
                 const items_base = this.form.items.filter(row => row.item.internal_id != 'aiu00001' && row.item.internal_id != 'aiu00002' && row.item.internal_id != 'aiu00003')
                 const items_form = items_base.concat(items_aiu)
-
                 this.form.items = items_form
 
                 this.setDataTotals()

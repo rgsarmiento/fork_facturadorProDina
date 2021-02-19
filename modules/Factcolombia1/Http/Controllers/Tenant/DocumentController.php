@@ -1054,7 +1054,6 @@ class DocumentController extends Controller
     public function searchItems(Request $request)
     {
 
-        // dd($request->all());
         $establishment_id = auth()->user()->establishment_id;
         $warehouse = ModuleWarehouse::where('establishment_id', $establishment_id)->first();
 
