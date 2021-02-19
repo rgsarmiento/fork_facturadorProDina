@@ -39,6 +39,16 @@
                                 </div>
                             </div>
 
+                            <div class="col-lg-2 pb-2">
+                                <div class="form-group" :class="{'has-danger': errors.type_invoice_id}">
+                                    <label class="control-label">Resolución</label>
+                                    <el-select @change="changeResolution" v-model="form.resolution_id"  popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info">
+                                        <el-option v-for="option in resolutions" :key="option.id" :value="option.id" :label="`${option.prefix} / ${option.resolution_number}`"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.type_invoice_id" v-text="errors.type_invoice_id[0]"></small>
+                                </div>
+                            </div>
+
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.date_issue}">
                                     <label class="control-label">Fec. Emisión</label>
@@ -265,23 +275,22 @@
 
 <style>
 
-.c-m-top{
-    margin-top: 4.5px !important;
-}
+    .c-m-top{
+        margin-top: 4.5px !important;
+    }
 
-.pointer{
-    cursor: pointer;
-}
+    .pointer{
+        cursor: pointer;
+    }
 
-.input-custom{
-    width: 50% !important;
-}
+    .input-custom{
+        width: 50% !important;
+    }
 
-.el-textarea__inner {
-    height: 65px !important;
-    min-height: 65px !important;
-}
-
+    .el-textarea__inner {
+        height: 65px !important;
+        min-height: 65px !important;
+    }
 </style>
 <script>
     import DocumentFormItem from './partials/item.vue'
@@ -333,7 +342,8 @@
                 loading_search:false,
                 taxes:  [],
                 showDialogDetailAiu: false,
-                detailAiu:{}
+                detailAiu:{},
+                resolutions:[]
             }
         },
         computed:{
@@ -349,7 +359,6 @@
                     this.all_customers = response.data.customers;
                     this.customers = response.data.customers;
                     this.taxes = response.data.taxes
-                    // console.log(this.taxes)
                     this.type_invoices = response.data.type_invoices;
                     this.currencies = response.data.currencies
                     this.payment_methods = response.data.payment_methods
@@ -358,6 +367,7 @@
                     this.form.type_invoice_id = (this.type_invoices.length > 0)?this.type_invoices[0].id:null;
                     this.form.payment_form_id = (this.payment_forms.length > 0)?this.payment_forms[0].id:null;
                     this.form.payment_method_id = (this.payment_methods.length > 0)?this.payment_methods[0].id:null;
+                    this.resolutions = response.data.resolutions
 
                     // this.selectDocumentType()
                     this.filterCustomers();
@@ -396,13 +406,22 @@
             }
         },
         methods: {
+            changeResolution()
+            {
+                const resol = this.resolutions.find( x =>  x.id == this.form.resolution_id )
+                if(resol)
+                {
+                    this.form.resolution_number = resol.resolution_number
+                    this.form.prefix = resol.prefix
+                    this.form.type_document_id = resol.id
+                }
+            },
             addDetailAiu(data)
             {
                 this.detailAiu = data
                 const items_aiu = this.$refs.documentFormItem.getItemsAiu(this.detailAiu)
                 const items_base = this.form.items.filter(row => row.item.internal_id != 'aiu00001' && row.item.internal_id != 'aiu00002' && row.item.internal_id != 'aiu00003')
                 const items_form = items_base.concat(items_aiu)
-
                 this.form.items = items_form
 
                 this.setDataTotals()

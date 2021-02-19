@@ -221,12 +221,34 @@ trait CompanyTrait
                 'type_tax_id' => 1,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
+            ],[
+                'name' => 'IVA0AIU',
+                'code' => '98',
+                'rate' => '0.00',
+                'conversion' => '100.00',
+                'type_tax_id' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],[
+                'name' => 'IVA19AIU',
+                'code' => '99',
+                'rate' => '19',
+                'conversion' => '100.00',
+                'type_tax_id' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ],
         ]);
 
         DB::connection('tenant')->table('co_cities')->insert([
             [ 'name' => 'San Andres', 'department_id' => '801', 'created_at' => '2020-10-28 03:21:51', 'updated_at' => '2020-10-28 03:21:51' ],
             [ 'name' => 'Providencia', 'department_id' => '801', 'created_at' => '2020-10-28 03:21:51', 'updated_at' => '2020-10-28 03:21:51' ],
+        ]);
+
+        DB::connection('tenant')->table('items')->insert([
+            ['name' => 'Administracion', 'internal_id' => 'aiu00001', 'item_type_id' => '01', 'tax_id' => 9, 'unit_type_id' => 1, 'currency_type_id' => 170, 'sale_unit_price' => 0, 'purchase_unit_price' => 0],
+            ['name' => 'Imprevisto', 'internal_id' => 'aiu00002', 'item_type_id' => '01', 'tax_id' => 9, 'unit_type_id' => 1, 'currency_type_id' => 170, 'sale_unit_price' => 0, 'purchase_unit_price' => 0],
+            ['name' => 'Utilidad', 'internal_id' => 'aiu00003', 'item_type_id' => '01', 'tax_id' => 10, 'unit_type_id' => 1, 'currency_type_id' => 170, 'sale_unit_price' => 0, 'purchase_unit_price' => 0],
         ]);
 
         //lleno data a la tabla co_cities

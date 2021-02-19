@@ -63,7 +63,6 @@ class CompanyController extends Controller
 
 
     public function store(CompanyRequest $request) {
-
         $response = $this->createCompanyApiDian($request);
 
         if(!property_exists( $response, 'password' ) || !property_exists( $response, 'token' )){
