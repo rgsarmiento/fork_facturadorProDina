@@ -86,7 +86,7 @@
         },
         methods: {
             clickDownload(download) {
-                window.open(download, '_blank');
+                window.open(download, '_blank').focus();
             },
             clickSendWhatsapp() {
 
