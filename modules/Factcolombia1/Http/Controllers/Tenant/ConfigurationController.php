@@ -262,7 +262,8 @@ class ConfigurationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function uploadLogo(ConfigurationUploadLogoRequest $request) {
-        $base_url = env("SERVICE_FACT", "");
+        $base_url = config("tenant.service_fact", "");
+//        $base_url = env("SERVICE_FACT", "");
 
         $company = Company::firstOrFail();
         $servicecompany = ServiceCompany::firstOrFail();
@@ -421,7 +422,8 @@ class ConfigurationController extends Controller
 
     public function changeEnvironmentProduction(string $environment){
         $company = ServiceCompany::firstOrFail();
-        $base_url = env("SERVICE_FACT", "");
+        $base_url = config("tenant.service_fact", "");
+//        $base_url = env("SERVICE_FACT", "");
         $ch = curl_init("{$base_url}ubl2.1/config/environment");
         if($environment == 'P')
             $data = [
@@ -484,7 +486,8 @@ class ConfigurationController extends Controller
 
     public function queryTechnicalKey(){
         $company = ServiceCompany::firstOrFail();
-        $base_url = env("SERVICE_FACT", "");
+        $base_url = config("tenant.service_fact", "");
+//        $base_url = env("SERVICE_FACT", "");
 
         $ch = curl_init("{$base_url}ubl2.1/numbering-range");
         $data = [
@@ -658,7 +661,8 @@ class ConfigurationController extends Controller
     public function changeEnvironment($ambiente)
     {
         $company = ServiceCompany::firstOrFail();
-        $base_url = env("SERVICE_FACT", "");
+        $base_url = config("tenant.service_fact", "");
+//        $base_url = env("SERVICE_FACT", "");
 
         $ch2 = curl_init("{$base_url}ubl2.1/config/environment");
         if ($ambiente == 'HABILITACION')
@@ -819,7 +823,8 @@ class ConfigurationController extends Controller
     public function testApiDian()
     {
         $company = ServiceTenantCompany::firstOrFail();
-        $base_url = env("SERVICE_FACT", "");
+        $base_url = config("tenant.service_fact", "");
+//        $base_url = env("SERVICE_FACT", "");
         $id_test = $company->test_id;
 
         //envio 60 facturas
