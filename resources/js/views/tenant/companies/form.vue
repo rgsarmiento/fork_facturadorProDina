@@ -249,11 +249,13 @@
                     })
             },
             successUpload(response, file, fileList) {
+                // console.log(response)
                 if (response.success) {
                     this.$message.success(response.message)
                     this.form[response.type] = response.name
                 } else {
-                    this.$message({message:'Error al subir el archivo', type: 'error'})
+                    // this.$message({message:'Error al subir el archivo', type: 'error'})
+                    this.$message({message: response.message, type: 'error'})
                 }
             },
         }

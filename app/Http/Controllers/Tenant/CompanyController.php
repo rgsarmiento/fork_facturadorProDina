@@ -12,8 +12,7 @@ use Modules\Factcolombia1\Models\TenantService\{
     Company as ServiceTenantCompany
 };
 use Illuminate\Support\Facades\Storage;
-
-
+use Validator;
 
 
 class CompanyController extends Controller
@@ -65,16 +64,26 @@ class CompanyController extends Controller
             $ext = $file->getClientOriginalExtension();
             $name = $type.'_'.$company->identification_number.'.'.$ext;
 
-
-            if (($type === 'logo')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+            $validator = Validator::make($request->all(), [
+                'file' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+    
+            if ($validator->fails()) { 
+                return [
+                    'success' => false,
+                    'message' =>  'Tipo de archivo no permitido',
+                ];
+            }
+            
+            // if (($type === 'logo')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 
             $file->storeAs(($type === 'logo') ? 'public/uploads/logos' : 'certificates', $name);
 
-            if (($type === 'logo_store')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+            // if (($type === 'logo_store')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 
             $file->storeAs(($type === 'logo_store') ? 'public/uploads/logos' : 'certificates', $name);
 
-            if (($type === 'logo_login')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+            // if (($type === 'logo_login')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 
             if($type === 'logo_login')
             {
