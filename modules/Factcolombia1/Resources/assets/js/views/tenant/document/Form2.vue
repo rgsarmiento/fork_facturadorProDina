@@ -998,7 +998,7 @@
                         description: x.item.name,
                         code: x.item.internal_id,
                         type_item_identification_id: 4,
-                        price_amount: this.cadenaDecimales(Number(x.price) + Number(x.total_tax)),
+                        price_amount: this.cadenaDecimales(Number(x.price) + (Number(x.total_tax) / Number(x.quantity))),
                         base_quantity: x.quantity
                     };
 
