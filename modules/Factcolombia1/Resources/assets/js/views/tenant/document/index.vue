@@ -131,12 +131,37 @@
                 this.showDialogVoided = true
             },
             clickDownload(download) {
-                window.open(download, '_blank');
+                this.$http.get(`/${this.resource}/downloadFile/${this.downloadFilename(download)}`).then((response) => {
+                    var byteCharacters = atob(response.data.filebase64);
+                    var byteNumbers = new Array(byteCharacters.length);
+                    for (var i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    var byteArray = new Uint8Array(byteNumbers);
+                    if(download.indexOf("PDF") >= 0 || download.indexOf("pdf") >= 0)
+                      var file = new Blob([byteArray], { type: 'application/pdf;base64' });
+                    else
+                      var file = new Blob([byteArray], { type: 'application/xml;base64' });
+                    var fileURL = URL.createObjectURL(file);
+                    window.open(fileURL, '_blank');
+                })
+//                window.open(download, '_blank');
             },
             clickOptions(recordId = null) {
                 this.recordId = recordId
                 this.showDialogOptions = true
             },
+            downloadFilename(filename){
+              c = ""
+              for(var i = filename.length - 1; i >= 0; i--){
+                  if(filename.substring(i, i + 1) != "/"){
+                    c = c + filename.substring(i, i + 1)
+                  }
+                  else
+                    return c.split('').reverse().join('');
+              }
+              return c.split('').reverse().join('');
+            }
         }
     }
 </script>

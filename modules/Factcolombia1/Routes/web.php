@@ -11,10 +11,7 @@ if($current_hostname) {
             Route::get('/client/configuration/co_type_documents', 'Tenant\ConfigurationController@co_type_documents');
             Route::delete('/client/configuration/storeServiceCompanieResolution/{resolution}', 'Tenant\ConfigurationController@destroy');
 
-
-
             Route::prefix('co-documents')->group(function () {
-
                 Route::get('', 'Tenant\DocumentController@index')->name('tenant.co-documents.index');
                 Route::get('records', 'Tenant\DocumentController@records');
                 Route::get('note/{id}', 'Tenant\DocumentController@note');
@@ -34,7 +31,7 @@ if($current_hostname) {
                 Route::post('note', 'Tenant\DocumentController@storeNote');
                 Route::get('documents/search/externalId/{external_id}', 'Tenant\DocumentController@searchExternalId');
                 Route::post('store_aiu', 'Tenant\DocumentController@store_aiu');
-
+                Route::get('downloadFile/{filename}', 'Tenant\DocumentController@downloadFile');
             });
 
             Route::prefix('co-documents-aiu')->group(function () {
@@ -53,15 +50,12 @@ if($current_hostname) {
                 Route::get('/items/formatImport', 'Tenant\ItemController@formatImport')->name('tenant.items.import');
                 Route::put('/items/import/excel', 'Tenant\ItemController@import');
                 Route::get('/items/export', 'Tenant\ItemController@export')->name('tenant.items.export');
-
             });
-
 
             Route::post('/countries', 'Tenant\ConfigurationController@countries');
             Route::post('/departments/{country}', 'Tenant\ConfigurationController@departments');
             Route::post('/cities/{department}', 'Tenant\ConfigurationController@cities');
             Route::post('/concepts/{type_document}', 'Tenant\ConfigurationController@concepts');
-
 
             Route::prefix('co-clients')->group(function () {
                 Route::get('/clients', 'Tenant\ClientController@index')->name('tenant.co-clients.clients');
@@ -77,9 +71,7 @@ if($current_hostname) {
                 Route::get('/clients/export', 'Tenant\ClientController@export')->name('tenant.clients.export');
                 Route::get('/clients/formatImport', 'Tenant\ClientController@formatImport');
                 Route::put('/clients/import/excel', 'Tenant\ClientController@import');
-
             });
-
 
             Route::prefix('co-taxes')->group(function () {
                 Route::get('/taxes', 'Tenant\TaxController@index')->name('tenant.co-taxes.taxes');
@@ -103,9 +95,6 @@ if($current_hostname) {
             Route::get('/co-configuration-change-ambient', 'Tenant\ConfigurationController@changeAmbient')->name('tenant.configuration.change.ambient');
             Route::post('/co-configuration/production/changeEnvironmentProduction/{environment}', 'Tenant\ConfigurationController@changeEnvironmentProduction');
             Route::post('/co-configuration/production/queryTechnicalKey', 'Tenant\ConfigurationController@queryTechnicalKey');
-
-
-
 
             Route::post('/company', 'Tenant\ConfigurationController@company');
         });

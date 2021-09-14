@@ -215,15 +215,17 @@ class DocumentController extends Controller
             $id_test = $company->test_id;
             $base_url = config('tenant.service_fact');
 
-            if($company->type_environment_id == 2 && $company->test_id != 'no_test_set_id')
+            if($company->type_environment_id == 2 && $company->test_id != 'no_test_set_id'){
+                \Log::debug("Alexander");
                 $ch = curl_init("{$base_url}ubl2.1/invoice/{$id_test}");
+            }
             else
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
 
             $data_document = json_encode($service_invoice);
-\Log::debug("{$base_url}ubl2.1/invoice");
-\Log::debug($company->api_token);
-\Log::debug($data_document);
+//\Log::debug("{$base_url}ubl2.1/invoice");
+//\Log::debug($company->api_token);
+//\Log::debug($data_document);
 //            return $data_document;
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -236,7 +238,7 @@ class DocumentController extends Controller
             ));
             $response = curl_exec($ch);
             curl_close($ch);
-\Log::debug($response);
+//\Log::debug($response);
             $response_model = json_decode($response);
            // return json_encode( $response_model)    ;
             $zip_key = null;
@@ -1170,6 +1172,32 @@ class DocumentController extends Controller
         return compact('customers');
     }
 
+    public function downloadFile($filename)
+    {
+        $company = ServiceTenantCompany::firstOrFail();
+        $base_url = config('tenant.service_fact');
+        $ch2 = curl_init("{$base_url}ubl2.1/download/{$company->identification_number}/{$filename}/BASE64");
+
+        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            "Authorization: Bearer {$company->api_token}"
+        ));
+        $response_data = curl_exec($ch2);
+        $err = curl_error($ch2);
+        curl_close($ch2);
+        if($err){
+            return [
+                'success' => false,
+                'message' => "No se pudo descargar el archivo: ".$filename
+            ];
+        }
+        else{
+            return $response_data;
+        }
+    }
 
     public function searchCustomerById($id)
     {
