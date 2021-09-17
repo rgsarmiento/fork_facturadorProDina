@@ -172,6 +172,7 @@
                                     <button type="button" class="btn waves-effect waves-light btn-primary" @click.prevent="clickAddItemInvoice">+ Agregar Producto</button>
                                     <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddRetention">+ Agregar Retención</button>
                                     <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickOpenDeatailAiu">+ Agregar Detalle AIU</button>
+                                    <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddOrderReference">+ Agregar orden de pago</button>
 
                                 </div>
                             </div>
@@ -268,6 +269,10 @@
 
         <detail-aiu @add="addDetailAiu" :showDialog.sync="showDialogDetailAiu" :total="getTotalBase"> </detail-aiu>
 
+        <document-order-reference :showDialog.sync="showDialogOrderReference"
+                            :order_reference="form.order_reference"
+                            @addOrderReference="addOrderReference" 
+                            ></document-order-reference>
 
         </div>
     </div>
@@ -301,14 +306,16 @@
     // import {calculateRowItem} from '../../../helpers/functions'
     import DocumentOptions from './partials/options.vue'
     import DetailAiu from './partials/detailAiu.vue'
+    import DocumentOrderReference from './partials/order_reference.vue'
 
 
     export default {
         props: ['typeUser', 'configuration'],
-        components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions, DetailAiu},
+        components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions, DetailAiu, DocumentOrderReference},
         mixins: [functions, exchangeRate],
         data() {
             return {
+                showDialogOrderReference: false,
                 datEmision: {
                   disabledDate(time) {
                     return time.getTime() > moment();
@@ -406,6 +413,12 @@
             }
         },
         methods: {
+            addOrderReference(order_reference) {
+                this.form.order_reference = order_reference
+            },
+            clickAddOrderReference(){
+                this.showDialogOrderReference = true
+            },
             changeResolution()
             {
                 const resol = this.resolutions.find( x =>  x.id == this.form.resolution_id )
@@ -504,6 +517,7 @@
                     service_invoice: {},
                     payment_form_id: null,
                     payment_method_id: null,
+                    order_reference: {}
                 }
 
                 this.errors = {}

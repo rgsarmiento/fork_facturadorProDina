@@ -67,6 +67,7 @@ class DocumentHelper{
             'correlative_api' => $correlative_api,
             'sale_note_id' => $request->sale_note_id,
             'quotation_id' => $request->quotation_id,
+            'order_reference' => self::getOrderReference($request),
 
         ]);
 
@@ -169,6 +170,27 @@ class DocumentHelper{
 
             }
         }
+    }
+
+    
+    public static function getOrderReference($request)
+    {
+
+        $order_reference = null;
+
+        if ($request->order_reference)
+        {
+            if (isset($request['order_reference']['issue_date_order']) && isset($request['order_reference']['id_order']))
+            {
+                $order_reference = [
+                    'id_order' => $request['order_reference']['id_order'],
+                    'issue_date_order' => $request['order_reference']['issue_date_order'],
+                ];
+            }
+        }
+
+        return $order_reference;
+
     }
 
 }

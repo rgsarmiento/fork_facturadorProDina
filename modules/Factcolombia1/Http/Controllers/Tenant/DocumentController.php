@@ -191,6 +191,17 @@ class DocumentController extends Controller
             $service_invoice['prefix'] = $request->prefix;
             $service_invoice['resolution_number'] = $request->resolution_number;
 
+
+            if ($request->order_reference)
+            {
+                if (isset($request['order_reference']['issue_date_order']) && isset($request['order_reference']['id_order']))
+                {
+                    $service_invoice['order_reference']['id_order'] = $request['order_reference']['id_order'];
+                    $service_invoice['order_reference']['issue_date_order'] = $request['order_reference']['issue_date_order'];
+                }
+            }
+
+
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
             $company = ServiceTenantCompany::firstOrFail();
 
@@ -1363,6 +1374,15 @@ class DocumentController extends Controller
             $service_invoice['number'] = $correlative_api;
             $service_invoice['prefix'] = $request->prefix;
             $service_invoice['resolution_number'] = $request->resolution_number;
+
+            if ($request->order_reference)
+            {
+                if (isset($request['order_reference']['issue_date_order']) && isset($request['order_reference']['id_order']))
+                {
+                    $service_invoice['order_reference']['id_order'] = $request['order_reference']['id_order'];
+                    $service_invoice['order_reference']['issue_date_order'] = $request['order_reference']['issue_date_order'];
+                }
+            }
 
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
             $company = ServiceTenantCompany::firstOrFail();
