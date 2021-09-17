@@ -181,6 +181,7 @@
                                 <div class="form-group">
                                     <button type="button" class="btn waves-effect waves-light btn-primary" @click.prevent="clickAddItemInvoice">+ Agregar Producto</button>
                                     <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddRetention">+ Agregar Retención</button>
+                                    <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddOrderReference">+ Agregar orden de pago</button>
                                 </div>
                             </div>
 
@@ -274,6 +275,10 @@
         <document-form-retention :showDialog.sync="showDialogAddRetention"
                            @add="addRowRetention"></document-form-retention>
 
+        <document-order-reference :showDialog.sync="showDialogOrderReference"
+                            :order_reference="form.order_reference"
+                            @addOrderReference="addOrderReference" 
+                            ></document-order-reference>
 
         </div>
     </div>
@@ -307,13 +312,15 @@
     import {functions, exchangeRate} from '@mixins/functions'
     // import {calculateRowItem} from '../../../helpers/functions'
     import DocumentOptions from './partials/options.vue'
+    import DocumentOrderReference from './partials/order_reference.vue'
 
     export default {
         props: ['typeUser', 'configuration'],
-        components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions},
+        components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions, DocumentOrderReference},
         mixins: [functions, exchangeRate],
         data() {
             return {
+                showDialogOrderReference: false,
                 datEmision: {
                   disabledDate(time) {
                     return time.getTime() > moment();
@@ -408,6 +415,9 @@
             }
         },
         methods: {
+            addOrderReference(order_reference) {
+                this.form.order_reference = order_reference
+            },
             changeResolution()
             {
                 const resol = this.resolutions.find( x =>  x.id == this.form.resolution_id )
@@ -432,6 +442,9 @@
             },
             clickAddRetention(){
                 this.showDialogAddRetention = true
+            },
+            clickAddOrderReference(){
+                this.showDialogOrderReference = true
             },
             getFormatUnitPriceRow(unit_price){
                 return _.round(unit_price, 6)
@@ -492,6 +505,7 @@
                     resolution_id: null,
                     prefix: null,
                     resolution_number: null,
+                    order_reference: {}
                 }
 
                 this.errors = {}

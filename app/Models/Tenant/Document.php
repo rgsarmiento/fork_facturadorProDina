@@ -123,6 +123,7 @@ class Document extends ModelTenant
         'time_days_credit',
         'correlative_api',
         'response_api_status',
+        'order_reference',
 
 
     ];
@@ -338,6 +339,15 @@ class Document extends ModelTenant
         $this->attributes['data_json'] = (is_null($value))?null:json_encode($value);
     }
 
+    public function getOrderReferenceAttribute($value)
+    {
+        return (is_null($value))?null:(object) json_decode($value);
+    }
+
+    public function setOrderReferenceAttribute($value)
+    {
+        $this->attributes['order_reference'] = (is_null($value))?null:json_encode($value);
+    }
 
     public function user()
     {
