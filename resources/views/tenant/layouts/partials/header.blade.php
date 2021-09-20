@@ -15,14 +15,14 @@
     <div class="header-right">
         @if($vc_company->soap_type_id == "01")
         <a href="@if(in_array('configuration', $vc_modules)){{route('tenant.companies.create')}}@else # @endif">
-        <div class="switch switch-sm switch-primary" data-toggle="tooltip" data-placement="bottom" title="SUNAT: ENTORNO DE DEMOSTRACIÓN, pulse para ir a configuración">
+<!--        <div class="switch switch-sm switch-primary" data-toggle="tooltip" data-placement="bottom" title="SUNAT: ENTORNO DE DEMOSTRACIÓN, pulse para ir a configuración">
             <div class="ios-switch off">
                 <div class="on-background background-fill"></div>
                 <div class="state-background background-fill">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 9px; position: absolute; color: #fff;">DEMO</span></div>
                 <div class="handle"></div>
             </div>
             <input type="checkbox" name="switch" data-plugin-ios-switch="" checked="checked" style="display: none;">
-        </div>
+        </div>   -->
         </a>
         @elseif($vc_company->soap_type_id == "02")
         <a href="@if(in_array('configuration', $vc_modules)){{route('tenant.companies.create')}}@else # @endif">
