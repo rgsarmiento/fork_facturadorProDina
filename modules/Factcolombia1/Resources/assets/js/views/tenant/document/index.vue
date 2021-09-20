@@ -3,7 +3,7 @@
         <div class="page-header pr-0">
             <h2><a href="/dashboard"><i class="fas fa-tachometer-alt"></i></a></h2>
             <ol class="breadcrumbs">
-                <li class="active"><span>Listado de docusmentos</span> </li>
+                <li class="active"><span>Listado de documentos</span> </li>
                 <!-- <li><span class="text-muted">Facturas - Notas <small>(crédito y débito)</small> - Boletas - Anulaciones</span></li> -->
             </ol>
             <div class="right-wrapper pull-right" >

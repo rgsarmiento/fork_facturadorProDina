@@ -208,7 +208,7 @@ class ClientController extends Controller
      * @param  \App\Models\Tenant\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Client $clien    t) {
+    public function destroy(Client $client) {
         $client->forceDelete();
 
         return [
@@ -252,6 +252,6 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function export() {
-        return Excel::downloa        d(new ClientsExport, 'clientes.xlsx');
+        return Excel::download(new ClientsExport, 'clientes.xlsx');
     }
 }

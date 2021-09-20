@@ -174,7 +174,12 @@
                      <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.telephone}">
                             <label class="control-label">Teléfono</label>
-                            <el-input v-model="form.telephone"></el-input>
+                            <el-input type="tel" maxlength="10" v-model="form.telephone" onkeydown="return ( event.ctrlKey || event.altKey
+                                                                                                    || (47<event.keyCode && event.keyCode<58 && event.shiftKey==false)
+                                                                                                    || (95<event.keyCode && event.keyCode<106)
+                                                                                                    || (event.keyCode==8) || (event.keyCode==9)
+                                                                                                    || (event.keyCode>34 && event.keyCode<40)
+                                                                                                    || (event.keyCode==46) )"></el-input>
                             <small class="form-control-feedback" v-if="errors.telephone" v-text="errors.telephone[0]"></small>
                         </div>
                     </div>
