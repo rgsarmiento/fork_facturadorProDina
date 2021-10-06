@@ -544,8 +544,6 @@ class ConfigurationController extends Controller
         }
     }
 
-
-
     public function storeServiceSoftware(ConfigurationServiceSoftwareCompanyRequest $request)
     {
         $company = ServiceCompany::firstOrFail();

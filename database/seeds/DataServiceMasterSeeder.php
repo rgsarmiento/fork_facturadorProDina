@@ -53,6 +53,24 @@ class DataServiceMasterSeeder extends Seeder
         'co_service_languages' => [
             'columns' => 'id, name, code, @created_at, @updated_at',
         ],
+        'co_type_workers' => [
+            'columns' => 'id, name, code, @created_at, @updated_at'
+        ],
+        'co_sub_type_workers' => [
+            'columns' => 'id, name, code, @created_at, @updated_at'
+        ],
+        'co_payroll_type_document_identifications' => [
+            'columns' => 'id, name, code, @created_at, @updated_at'
+        ],
+        'co_type_contracts' => [
+            'columns' => 'id, name, code, @created_at, @updated_at'
+        ],
+        'co_payroll_periods' => [
+            'columns' => 'id, name, code, @created_at, @updated_at'
+        ],
+        'co_type_law_deductions' => [
+            'columns' => 'id, name, code, percentage, @created_at, @updated_at'
+        ],
     ];
 
     /**
