@@ -400,7 +400,8 @@ class CompanyController extends Controller
           //  'type_currency' => ServiceTypeCurrency::all(),
             'type_organizations' => ServiceTypeOrganization::all(),
             'type_regimes' => ServiceTypeRegime::all(),
-            'modules' => Module::whereIn('id', [1,2,4,5,6,7,8,10,12])->orderBy('description')->get(),
+            // 'modules' => Module::whereIn('id', [1,2,4,5,6,7,8,10,12])->orderBy('description')->get(),
+            'modules' => Module::whereIn('id', auth()->user()->getAllowedModulesForSystem())->orderBy('description')->get(),
             'url_base' => '.'.config('tenant.app_url_base'),
         //  'type_liability' => ServiceTypeLiability::all()
 

@@ -19,7 +19,8 @@ class CompanyResource extends JsonResource
     public function toArray($request)
     { 
 
-        $all_modules = Module::whereIn('id', [1,2,4,5,6,7,8,10,12])->orderBy('description')->get();
+        $all_modules = Module::whereIn('id', auth()->user()->getAllowedModulesForSystem())->orderBy('description')->get();
+        // $all_modules = Module::whereIn('id', [1,2,4,5,6,7,8,10,12])->orderBy('description')->get();
         $modules_in_user = $this->modules->pluck('module_id')->toArray();
         // dd($all_modules,$modules_in_user);
         $modules = [];

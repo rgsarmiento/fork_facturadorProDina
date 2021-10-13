@@ -817,6 +817,40 @@
                     </li>
                     @endif
 
+
+                    
+                    @if(in_array('payroll', $vc_modules))
+
+                    <li class="nav-parent {{$path[0] === 'payroll' && in_array($path[1], [
+                                                'workers'
+                                            ])
+                                            ? 'nav-active nav-expanded' : ''}}">
+
+                        <a class="nav-link" href="#">
+                            <span class="float-right badge badge-red badge-danger mr-3">Nuevo</span>
+                            <i class="fas fa-clipboard-list" aria-hidden="true"></i>
+                            <span>Nóminas</span>
+                        </a>
+                        
+                        <ul class="nav nav-children" style="">
+                            <li class="{{(($path[0] === 'payroll') && ($path[1] == 'workers')) ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.payroll.workers.index')}}">
+                                    Empleados
+                                </a>
+                            </li> 
+                        </ul> 
+
+                        {{-- <ul class="nav nav-children" style="">
+                            <li class="{{(($path[0] === 'payroll') && ($path[1] == 'type-workers')) ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.payroll.type-workers.index')}}">
+                                    Tipos de empleados
+                                </a>
+                            </li> 
+                        </ul> --}}
+                    </li>
+                    @endif
+
+
                     @if(in_array('configuration', $vc_modules))
                     <li class="nav-parent {{in_array($path[0], ['co-configuration-change-ambient', 'co-configuration', 'co-configuration-documents', 'companies', 'catalogs', 'advanced', 'tasks', 'inventories','company_accounts','bussiness_turns','offline-configurations','series-configurations','configurations']) ? 'nav-active nav-expanded' : ''}}">
                         <a class="nav-link" href="#">

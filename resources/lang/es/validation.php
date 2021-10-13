@@ -292,5 +292,17 @@ return [
         'time'                  => 'hora',
         'subject'               => 'asunto',
         'message'               => 'mensaje',
+
+        'idpayroll'               => 'id software nómina',
+        'pinpayroll'               => 'pin software nómina',
+
+        'surname' => 'apellido',
+        'second_surname' => 'segundo apellido',
+        'type_worker_id' => 'tipo empleado',
+        'sub_type_worker_id' => 'subtipo empleado',
+        'payroll_type_document_identification_id' => 'tipo de identificación',
+        'type_contract_id' => 'tipo contrato',
+        'salary' => 'salario',
+
     ],
 ];

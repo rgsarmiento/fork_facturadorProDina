@@ -10,6 +10,7 @@ if($current_hostname) {
             Route::post('/client/configuration/storeServiceCompanieCertificate', 'Tenant\ConfigurationController@storeServiceCertificate');
             Route::get('/client/configuration/co_type_documents', 'Tenant\ConfigurationController@co_type_documents');
             Route::delete('/client/configuration/storeServiceCompanieResolution/{resolution}', 'Tenant\ConfigurationController@destroy');
+            Route::post('/client/configuration/store-service-software-payroll', 'Tenant\ConfigurationController@storeServiceSoftwarePayroll');
 
             Route::prefix('co-documents')->group(function () {
                 Route::get('', 'Tenant\DocumentController@index')->name('tenant.co-documents.index');

@@ -104,6 +104,7 @@ Vue.component('tenant-configuration-certificate', require('@viewsModuleProColomb
 Vue.component('tenant-configuration-resolution', require('@viewsModuleProColombia/tenant/configuration/Resolution.vue'));
 Vue.component('tenant-configuration-documents', require('@viewsModuleProColombia/tenant/configuration/Documents.vue'));
 Vue.component('tenant-configuration-change-ambient', require('@viewsModuleProColombia/tenant/configuration/Production.vue'))
+Vue.component('tenant-configuration-software-payroll', require('@viewsModuleProColombia/tenant/configuration/SoftwarePayroll.vue'));
 
 
 
@@ -298,6 +299,11 @@ Vue.component('tenant-expense-method-types-index', require('@viewsModuleExpense/
 //technical Services
 Vue.component('tenant-technical-services-index', require('@viewsModuleSale/technical-services/index.vue'));
 Vue.component('tenant-user-commissions-index', require('@viewsModuleSale/user-commissions/index.vue'));
+
+//payroll
+Vue.component('tenant-workers-index', require('@viewsModulePayroll/workers/index.vue'));
+// Vue.component('tenant-type-workers-index', require('@viewsModulePayroll/type-workers/index.vue'));
+// Vue.component('tenant-sub-type-workers-index', require('@viewsModulePayroll/sub-type-workers/index.vue'));
 
 
 // System
