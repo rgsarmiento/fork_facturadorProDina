@@ -821,9 +821,14 @@
                     
                     @if(in_array('payroll', $vc_modules))
 
-                    <li class="nav-parent {{$path[0] === 'payroll' && in_array($path[1], [
-                                                'workers'
-                                            ])
+                    <li class="nav-parent {{$path[0] === 'payroll' && 
+                                            in_array($path[1], [
+                                                'workers', 'document-payrolls'
+                                            ]) 
+                                            // && 
+                                            // in_array($path[2], [
+                                            //     'create'
+                                            // ])
                                             ? 'nav-active nav-expanded' : ''}}">
 
                         <a class="nav-link" href="#">
@@ -833,11 +838,25 @@
                         </a>
                         
                         <ul class="nav nav-children" style="">
+
                             <li class="{{(($path[0] === 'payroll') && ($path[1] == 'workers')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.payroll.workers.index')}}">
                                     Empleados
                                 </a>
                             </li> 
+                            
+                            <li class="{{(($path[0] === 'payroll') && ($path[1] == 'document-payrolls') && $path[2] == 'create') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.payroll.document-payrolls.create')}}">
+                                    Nueva nómina
+                                </a>
+                            </li> 
+
+                            <li class="{{(($path[0] === 'payroll') && ($path[1] == 'document-payrolls') && $path[2] == '') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.payroll.document-payrolls.index')}}">
+                                    Listado de nóminas
+                                </a>
+                            </li> 
+
                         </ul> 
 
                         {{-- <ul class="nav nav-children" style="">

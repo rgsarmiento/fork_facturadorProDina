@@ -8,6 +8,18 @@ if($hostname) {
  
             Route::prefix('payroll')->group(function () {
  
+                Route::prefix('document-payrolls')->group(function () {
+                    Route::get('', 'DocumentPayrollController@index')->name('tenant.payroll.document-payrolls.index');
+                    Route::get('create', 'DocumentPayrollController@create')->name('tenant.payroll.document-payrolls.create');
+                    Route::get('tables', 'DocumentPayrollController@tables');
+                    Route::get('columns', 'DocumentPayrollController@columns');
+                    Route::get('records', 'DocumentPayrollController@records');
+                    Route::get('tables', 'DocumentPayrollController@tables');
+                    Route::post('', 'DocumentPayrollController@store');
+                    Route::get('record/{record}', 'DocumentPayrollController@record');
+                });
+
+
                 Route::prefix('workers')->group(function () {
                     Route::get('', 'WorkerController@index')->name('tenant.payroll.workers.index');
                     Route::get('tables', 'WorkerController@tables');

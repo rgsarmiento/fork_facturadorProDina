@@ -71,6 +71,20 @@ class Worker extends ModelTenant
         return $this->belongsTo(Municipality::class);
     }
 
+    public function getSearchFullNameAttribute()
+    { 
+        return "{$this->identification_number} - {$this->second_surname} {$this->surname} {$this->first_name}";
+    }
+ 
+    public function getSearchRowResource()
+    { 
+        return [
+            'id' => $this->id,
+            'search_fullname' => $this->search_fullname,
+        ];
+    }
+ 
+
     /**
      * Use in resource and collection
      *
