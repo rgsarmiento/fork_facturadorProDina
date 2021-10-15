@@ -19,51 +19,62 @@
                         <th>#</th>
                         <th>Fecha</th>
                         <th>Empleado</th>
-                        <th>Nómina</th>
+                        <th class="text-center">Nómina</th>
+                        <th class="text-center">Salario</th>
+                        <th class="text-center">T. Devengados</th>
+                        <th class="text-center">T. Deducciones</th>
                         <th class="text-right">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }">
                         <td>{{ index }}</td>
                         <td>{{ row.date_of_issue }}</td>
                         <td>{{ row.worker_full_name }}</td>  
-                        <td>{{ row.number_full }}</td>  
+                        <td class="text-center">{{ row.number_full }}</td>  
+                        <td class="text-center">{{ row.salary }}</td>  
+                        <td class="text-center">{{ row.accrued_total }}</td>  
+                        <td class="text-center">{{ row.deductions_total }}</td>  
                         <td class="text-right">
-                            <!-- <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button> -->
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickOptions(row.id)">Opciones</button>
                             <!-- <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button> -->
                         </td>
                     </tr>
                 </data-table>
             </div>
+ 
 
-            <!-- <workers-form :showDialog.sync="showDialog"
-                        :recordId="recordId"></workers-form> -->
-
+            <document-payroll-options :showDialog.sync="showDialogDocumentPayrollOptions"     
+                            :recordId="recordId"
+                            :showDownload="true"
+                            :showClose="true">
+                            </document-payroll-options>
         </div>
     </div>
 </template>
 <script>
 
     // import WorkersForm from './form.vue'
+    import DocumentPayrollOptions from './partials/options.vue' 
     import DataTable from '@components/DataTableResource.vue'
     import {deletable} from '@mixins/deletable'
 
     export default {
         mixins: [deletable],
-        components: { DataTable},
+        components: { DataTable, DocumentPayrollOptions},
         data() {
             return {
                 showDialog: false,
                 resource: 'payroll/document-payrolls',
                 recordId: null,
+                showDialogDocumentPayrollOptions:false,
             }
         },
         created() { 
         },
         methods: { 
-            // clickCreate(recordId = null) {
-            //     this.recordId = recordId
-            //     this.showDialog = true
-            // },  
+            clickOptions(recordId = null) {
+                this.recordId = recordId
+                this.showDialogDocumentPayrollOptions = true
+            },  
         }
     }
 </script>

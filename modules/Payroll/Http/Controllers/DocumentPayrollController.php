@@ -11,6 +11,7 @@ use Modules\Payroll\Models\{
 };
 use Modules\Payroll\Http\Resources\{
     DocumentPayrollCollection,
+    DocumentPayrollResource
 };
 use Modules\Payroll\Http\Requests\DocumentPayrollRequest;
 use Modules\Factcolombia1\Models\TenantService\{
@@ -21,7 +22,9 @@ use Modules\Factcolombia1\Models\Tenant\{
     PaymentMethod,
     TypeDocument
 };
-
+use Illuminate\Support\Facades\DB;
+use Exception;
+use Modules\Payroll\Helpers\DocumentPayrollHelper;
 
 
 class DocumentPayrollController extends Controller
@@ -52,7 +55,8 @@ class DocumentPayrollController extends Controller
             'payroll_periods' => PayrollPeriod::get(),
             'payment_methods' => PaymentMethod::get(),
             'type_law_deductions' => TypeLawDeductions::get(),
-            'type_documents' => TypeDocument::get(),
+            // 'type_documents' => TypeDocument::get(),
+            'resolutions' => TypeDocument::select('id','prefix', 'resolution_number')->where('code', 9)->get()
         ];
     }
 
@@ -69,6 +73,13 @@ class DocumentPayrollController extends Controller
         return [];
     }
     
+    
+    public function record($id)
+    {
+        return new DocumentPayrollResource(DocumentPayroll::findOrFail($id));
+    }
+
+
     public function records(Request $request)
     {
         $records = DocumentPayroll::where($request->column, 'like', "%{$request->value}%")->latest();
@@ -80,27 +91,36 @@ class DocumentPayrollController extends Controller
     public function store(DocumentPayrollRequest $request)
     {
 
-        dd($request->all());
-        $id = $request->input('id');
-        $record = DocumentPayroll::firstOrNew(['id' => $id]);
-        $record->fill($request->all());
-        $record->save();
+        $data = DB::connection('tenant')->transaction(function () use($request) {
+
+            // inputs
+            $helper = new DocumentPayrollHelper();
+            $inputs = $helper->getInputs($request);
+            
+            // registrar nomina en bd
+            $document = DocumentPayroll::create($inputs);
+            $document->accrued()->create($inputs['accrued']);
+            $document->deduction()->create($inputs['deduction']);
+
+            // enviar nomina a la api
+            $send_to_api = $helper->sendToApi($document, $inputs);
+
+            $document->update([
+                'response_api' => $send_to_api
+            ]);
+
+            return $document;
+        });
 
         return [
             'success' => true,
-            'message' => ($id)?'Empleado editado con éxito':'Empleado registrado con éxito'
+            'message' => 'Nómina registrada con éxito',
+            'data' => [
+                'id' => $data->id
+            ]
         ];
     }
-
-    public function destroy($id)
-    {
-        $record = DocumentPayroll::findOrFail($id);
-        $record->delete(); 
-
-        return [
-            'success' => true,
-            'message' => 'Empleado eliminado con éxito'
-        ];
-    }
+ 
+ 
 
 }

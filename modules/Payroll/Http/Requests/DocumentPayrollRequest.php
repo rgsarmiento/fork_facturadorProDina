@@ -17,54 +17,55 @@ class DocumentPayrollRequest extends FormRequest
     {
         $id = $this->input('id');
 
-        return [
-            'code' => [
-                'required',
-                Rule::unique('tenant.co_workers')->ignore($id),
-            ], 
-            'type_worker_id' => [
+        return [ 
+            'type_document_id' => [
                 'required',
             ],
-            'sub_type_worker_id' => [
+            'prefix' => [
                 'required',
             ],
-            'payroll_type_document_identification_id' => [
+            'payroll_period_id' => [
                 'required',
             ],
-            'municipality_id' => [
+            'worker_id' => [
                 'required',
-            ],
-            'type_contract_id' => [
-                'required',
-            ],
-            'identification_number' => [
-                'required',
-                'numeric',
-                'digits_between:1,15',
             ],
 
-            'surname' => [
-                'required',
-            ],
-            'second_surname' => [
-                'required',
-            ],
-            'first_name' => [
-                'required',
-            ],
-            'address' => [
-                'required',
-            ],
-            'high_risk_pension' => [
-                'required',
-            ],
-            'integral_salarary' => [
-                'required',
-            ],
-            'salary' => [
-                'required',
-            ], 
+            // Period
+            'period' => 'required|array',
+            'period.admision_date' => 'required|date_format:Y-m-d',
+            'period.settlement_start_date' => 'required|date_format:Y-m-d',
+            'period.settlement_end_date' => 'required|date_format:Y-m-d',
+            'period.worked_time' => 'required|numeric',
+            'period.issue_date' => 'required|date_format:Y-m-d',
+
+            // Payment
+            'payment' => 'required|array',
+            'payment.payment_method_id' => 'required',
+            'payment.bank_name' => 'nullable|required_if:payment.payment_method_id,2,3,4,5,6,7,21,22,30,31,42,45,46,47,|string',
+            'payment.account_type' => 'nullable|required_if:payment.payment_method_id,2,3,4,5,6,7,21,22,30,31,42,45,46,47,|string',
+            'payment.account_number' => 'nullable|required_if:payment.payment_method_id,2,3,4,5,6,7,21,22,30,31,42,45,46,47,|string',
+
+
+            // Payment Dates
+            'payment_dates' => 'required|array',
+            'payment_dates.*.payment_date' => 'required|date_format:Y-m-d',
+
+ 
+            // Accrued
+            'accrued' => 'required|array',
+            'accrued.worked_days' => 'required|numeric|digits_between:1,2',
+            'accrued.salary' => 'required|numeric',
+            'accrued.accrued_total' => 'required|numeric',
             
+            
+            // Deductions
+            'deduction' => 'required|array',
+            'deduction.eps_type_law_deductions_id' => 'required',
+            'deduction.eps_deduction' => 'required|numeric',
+            'deduction.pension_type_law_deductions_id' => 'required',
+            'deduction.pension_deduction' => 'required|numeric',
+            'deduction.deductions_total' => 'required|numeric',
         ];
     }
 

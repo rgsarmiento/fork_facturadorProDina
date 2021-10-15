@@ -22,6 +22,7 @@ class TenantCreateCoDocumentPayrollsTable extends Migration
             $table->time('time_of_issue')->index();
 
             $table->unsignedInteger('type_document_id');
+            $table->unsignedInteger('user_id');
             $table->unsignedInteger('establishment_id');
             $table->json('establishment');
 
@@ -43,8 +44,10 @@ class TenantCreateCoDocumentPayrollsTable extends Migration
             
             $table->json('payment');
             $table->json('payment_dates');
+            $table->json('response_api')->nullable();
 
             $table->foreign('type_document_id')->references('id')->on('co_type_documents');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('establishment_id')->references('id')->on('establishments');
             $table->foreign('payroll_period_id')->references('id')->on('co_payroll_periods');
             $table->foreign('worker_id')->references('id')->on('co_workers');

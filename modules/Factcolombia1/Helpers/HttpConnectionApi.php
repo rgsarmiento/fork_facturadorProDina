@@ -68,4 +68,46 @@ class HttpConnectionApi
     }
 
 
+    public function get($url)
+    {
+
+        try {
+
+            $ch = curl_init("{$this->base_url}{$url}");
+            
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Accept: application/json',
+                "Authorization: Bearer {$this->api_token}"
+            ));
+    
+            $response = curl_exec($ch);
+            $curl_error = curl_error($ch);
+    
+            if($curl_error) return $this->responseMessage(false, 'Error en la petición a la Api');
+
+            return json_decode($response, true);
+
+        }catch (Exception $e) 
+        {
+            return $this->responseError($e);
+        }
+
+    }
+    
+    public function parseErrorsToString($errors)
+    {
+        
+        $message = "Error de validación Api: ";
+
+        foreach ($errors as $key => $value) {
+            $message .= implode(', ', $value)." - ";
+        }
+
+        return $message;
+    }
+
 }

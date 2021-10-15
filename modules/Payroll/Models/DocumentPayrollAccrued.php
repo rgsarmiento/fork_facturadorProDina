@@ -12,6 +12,7 @@ class DocumentPayrollAccrued extends ModelTenant
 {
 
     protected $table = 'co_document_payroll_accrued';
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.

@@ -139,14 +139,8 @@
 
 <script>
 
-    // import { calcularDv } from '../../../functions/Nit';
-
-
-    // import Helper from '@assetsModuleProColombia/mixins/Helper';
-
     export default {
-        // mixins: [Helper],
-        props: ['showDialog', 'type', 'recordId', 'external', 'document_type_id','input_person'],
+        props: ['showDialog', 'recordId', 'external'],
         data() {
             return {
                 loading_submit: false,
@@ -226,7 +220,7 @@
                         if (response.data.success) {
                             this.$message.success(response.data.message)
                             if (this.external) {
-                                this.$eventHub.$emit('reloadDataPersons', response.data.id)
+                                this.$eventHub.$emit('reloadDataWorkers', response.data.id)
                             } else {
                                 this.$eventHub.$emit('reloadData')
                             }

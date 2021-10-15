@@ -75,7 +75,8 @@ class WorkerController extends Controller
 
         return [
             'success' => true,
-            'message' => ($id)?'Empleado editado con éxito':'Empleado registrado con éxito'
+            'message' => ($id)?'Empleado editado con éxito':'Empleado registrado con éxito',
+            'id' => $record->id
         ];
     }
 
@@ -89,5 +90,25 @@ class WorkerController extends Controller
             'message' => 'Empleado eliminado con éxito'
         ];
     }
+
+    
+    public function searchWorkers(Request $request)
+    {
+        return [
+            'workers' => Worker::whereFilterSearch($request)->get()->transform(function($row){
+                return $row->getSearchRowResource();
+            })
+        ];
+    }
+    
+    public function searchWorkerById($id)
+    {
+        return [
+            'workers' => Worker::where('id', $id)->take(1)->get()->transform(function($row){
+                return $row->getSearchRowResource();
+            })
+        ];
+    }
+
 
 }

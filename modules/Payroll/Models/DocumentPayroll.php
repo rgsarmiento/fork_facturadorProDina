@@ -2,7 +2,10 @@
 
 namespace Modules\Payroll\Models;
 
-use App\Models\Tenant\ModelTenant;
+use App\Models\Tenant\{
+    ModelTenant,
+    User
+};
 use Modules\Factcolombia1\Models\Tenant\{
     TypeDocument,
 };
@@ -27,6 +30,7 @@ class DocumentPayroll extends ModelTenant
     protected $fillable = [ 
 
         'external_id',
+        'user_id',
         'date_of_issue',
         'time_of_issue',
 
@@ -52,6 +56,7 @@ class DocumentPayroll extends ModelTenant
         
         'payment',
         'payment_dates',
+        'response_api',
 
     ];
         
@@ -82,7 +87,7 @@ class DocumentPayroll extends ModelTenant
 
     public function getPeriodAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value))?null:json_decode($value, true);
     }
 
     public function setPeriodAttribute($value)
@@ -97,27 +102,37 @@ class DocumentPayroll extends ModelTenant
 
     public function setWorkerAttribute($value)
     {
-        $this->attributes['Worker'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['worker'] = (is_null($value))?null:json_encode($value);
     }
 
     public function getPaymentAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value))?null: json_decode($value, true);
     }
 
     public function setPaymentAttribute($value)
     {
-        $this->attributes['Payment'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['payment'] = (is_null($value))?null:json_encode($value);
     }
 
     public function getPaymentDatesAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value))?null: json_decode($value, true);
     }
 
     public function setPaymentDatesAttribute($value)
     {
         $this->attributes['payment_dates'] = (is_null($value))?null:json_encode($value);
+    }
+    
+    public function getResponseApiAttribute($value)
+    {
+        return (is_null($value))?null:(object) json_decode($value);
+    }
+
+    public function setResponseApiAttribute($value)
+    {
+        $this->attributes['response_api'] = (is_null($value))?null:json_encode($value);
     }
 
     public function type_document() 
@@ -135,19 +150,29 @@ class DocumentPayroll extends ModelTenant
         return $this->belongsTo(PayrollPeriod::class);
     }
 
-    public function worker() 
+    public function user() 
     {
-        return $this->belongsTo(Worker::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function model_worker() 
+    {
+        return $this->belongsTo(Worker::class, 'worker_id');
     }
 
     public function accrued() 
     {
-        return $this->hasOne(DocumentPayrollAccrued::class);
+        return $this->hasOne(DocumentPayrollAccrued::class, 'co_document_payroll_id');
     }
 
     public function deduction() 
     {
-        return $this->hasOne(DocumentPayrollDeduction::class);
+        return $this->hasOne(DocumentPayrollDeduction::class, 'co_document_payroll_id');
+    }
+
+    public function getNumberFullAttribute()
+    {
+        return $this->prefix.'-'.$this->consecutive;
     }
 
     /**
@@ -156,6 +181,11 @@ class DocumentPayroll extends ModelTenant
      * @return array
      */
     public function getRowResource(){
+
+        if($this->response_api){
+            $response = $this->response_api;
+            $response_api_message = isset($response->message) ? $response->message:null;
+        }
 
         return [
             'id' => $this->id,
@@ -171,12 +201,21 @@ class DocumentPayroll extends ModelTenant
             'period' => $this->period,
             'prefix' => $this->prefix,
             'consecutive' => $this->consecutive,
+            'number_full' => $this->number_full,
             'payroll_period_id' => $this->payroll_period_id,
             'notes' => $this->notes,
             'worker_id' => $this->worker_id,
             'worker' => $this->worker,
+            'worker_full_name' => $this->model_worker->full_name,
             'payment' => $this->payment,
             'payment_dates' => $this->payment_dates,
+            'response_api_message' => $response_api_message,
+            // 'response_api' => $this->response_api,
+
+            'salary' => optional($this->accrued)->salary,
+            'accrued_total' => optional($this->accrued)->accrued_total,
+            'deductions_total' => optional($this->deduction)->deductions_total,
+
         ];
 
     }

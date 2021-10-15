@@ -39,7 +39,7 @@ class WorkerRequest extends FormRequest
             ],
             'identification_number' => [
                 'required',
-                'numeric',
+                'alpha_num',
                 'digits_between:1,15',
             ],
 
@@ -63,6 +63,7 @@ class WorkerRequest extends FormRequest
             ],
             'salary' => [
                 'required',
+                'numeric',
             ], 
             
         ];

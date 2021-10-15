@@ -44,6 +44,7 @@ class EstablishmentInput
             'trade_address' => $establishment->trade_address,
             'web_address' => $establishment->web_address,
             'aditional_information' => $establishment->aditional_information,
+            'description' => $establishment->description,
         ];
     }
 }

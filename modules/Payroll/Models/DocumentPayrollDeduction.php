@@ -12,6 +12,7 @@ class DocumentPayrollDeduction extends ModelTenant
 {
 
     protected $table = 'co_document_payroll_deductions';
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.

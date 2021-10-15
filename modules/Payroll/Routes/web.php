@@ -29,6 +29,8 @@ if($hostname) {
                     Route::post('', 'WorkerController@store');
                     Route::get('record/{record}', 'WorkerController@record');
                     Route::delete('{record}', 'WorkerController@destroy');
+                    Route::get('search', 'WorkerController@searchWorkers');
+                    Route::get('search-by-id/{worker}', 'WorkerController@searchWorkerById');
                 });
 
 

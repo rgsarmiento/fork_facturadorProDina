@@ -76,6 +76,11 @@ class Worker extends ModelTenant
         return "{$this->identification_number} - {$this->second_surname} {$this->surname} {$this->first_name}";
     }
  
+    public function getFullNameAttribute()
+    { 
+        return "{$this->second_surname} {$this->surname} {$this->first_name}";
+    }
+
     public function getSearchRowResource()
     { 
         return [
@@ -111,5 +116,22 @@ class Worker extends ModelTenant
         ];
 
     }
+    
+    /**
+     * Filtro para busqueda de empleados
+     *
+     * @param  mixed $query
+     * @param  mixed $request
+     * @return void
+     */
+    public function scopeWhereFilterSearch($query, $request)
+    { 
+        return $query->where('identification_number','like', "%{$request->input}%")
+                    ->orWhere('surname','like', "%{$request->input}%") 
+                    ->orWhere('second_surname','like', "%{$request->input}%") 
+                    ->orWhere('first_name','like', "%{$request->input}%") 
+                    ->orderBy('surname');
+    }
+
 
 }
