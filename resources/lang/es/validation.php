@@ -292,5 +292,41 @@ return [
         'time'                  => 'hora',
         'subject'               => 'asunto',
         'message'               => 'mensaje',
+
+        'idpayroll'               => 'id software nómina',
+        'pinpayroll'               => 'pin software nómina',
+
+        'surname' => 'apellido',
+        'second_surname' => 'segundo apellido',
+        'type_worker_id' => 'tipo empleado',
+        'sub_type_worker_id' => 'subtipo empleado',
+        'payroll_type_document_identification_id' => 'tipo de identificación',
+        'type_contract_id' => 'tipo contrato',
+        'salary' => 'salario',
+        'payroll_period_id' => 'periodo de nómina',
+        'worker_id' => 'empleado',
+
+        'period.issue_date' => 'fecha emisión',
+        'period.admision_date' => 'fecha admisión',
+        'period.settlement_start_date' => 'fecha de inicio de liquidación',
+        'period.settlement_end_date' => 'fecha de finalización de liquidación',
+        'period.worked_time' => 'tiempo trabajado',
+
+        'payment.payment_method_id' => 'método de pago',
+        'payment.bank_name' => 'nombre del banco',
+        'payment.account_type' => 'tipo de cuenta',
+        'payment.account_number' => 'número de cuenta',
+        'payment_dates' => 'fechas de pago',
+
+        'accrued.worked_days' => 'días trabajados',
+        'accrued.salary' => 'salario',
+        'accrued.accrued_total' => 'total devengados',
+        
+        'deduction.eps_type_law_deductions_id' => 'EPS - Deducciones por ley',
+        'deduction.eps_deduction' => 'deducción EPS',
+        'deduction.pension_type_law_deductions_id' => 'Pensión - Deducciones por ley',
+        'deduction.pension_deduction' => 'deducción de pensión',
+        'deduction.deductions_total' => 'deducción Total',
+
     ],
 ];

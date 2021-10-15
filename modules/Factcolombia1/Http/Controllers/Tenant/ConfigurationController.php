@@ -10,6 +10,7 @@ use Modules\Factcolombia1\Http\Requests\Tenant\{
     ConfigurationCompanyRequest,
     ConfigurationServiceCompanyRequest,
     ConfigurationServiceSoftwareCompanyRequest,
+    ConfigurationServiceSoftwarePayrollRequest,
     ConfigurationServiceCertificateCompanyRequest,
     ConfigurationServiceResolutionCompanyRequest
 
@@ -38,6 +39,8 @@ use Carbon\Carbon;
 use Modules\Factcolombia1\Models\TenantService\{
     Company as ServiceTenantCompany
 };
+use Modules\Factcolombia1\Helpers\HttpConnectionApi;
+
 
 class ConfigurationController extends Controller
 {
@@ -966,4 +969,47 @@ class ConfigurationController extends Controller
             'message' => "Se elimino con éxito el registro {$it->prefix} / {$it->resolution_number}."
         ];
     }
+
+        
+    /**
+     * Regitrar id y pin sw para nomina en api
+     *
+     * @param  mixed $request
+     * @return array
+     */
+    public function storeServiceSoftwarePayroll(ConfigurationServiceSoftwarePayrollRequest $request)
+    {
+
+        $company = ServiceCompany::firstOrFail();
+        $connection_api = (new HttpConnectionApi($company->api_token));
+        $send_request_to_api = $connection_api->sendRequestToApi('ubl2.1/config/softwarepayroll', $request->all());
+        $response_message = isset($send_request_to_api['message']) ? $send_request_to_api['message'] : null;
+
+        // dd($send_request_to_api, isset($send_request_to_api['success']));
+
+        if(isset($send_request_to_api['success']))
+        {
+            if($send_request_to_api['success']){
+
+                $this->updateServiceCompany($company, $request);
+                return $connection_api->responseMessage(true, $response_message);
+
+            }else
+            {
+                return $connection_api->responseMessage(false, 'Error en validacion de datos Api.'.($response_message ? ' - '.$response_message:''));
+            }
+        }
+
+        return $connection_api->responseMessage(false,  'Error en peticion Api.'.($response_message ? ' - '.$response_message:''));
+
+    }
+
+    private function updateServiceCompany($company, $request)
+    {
+        $company->test_set_id_payroll = $request->test_set_id_payroll;
+        $company->pin_software_payroll = $request->pinpayroll;
+        $company->id_software_payroll = $request->idpayroll;
+        $company->save();
+    }
+
 }

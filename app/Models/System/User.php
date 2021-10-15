@@ -25,5 +25,27 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password', 'remember_token',
     ];
+    
+
+    /**
+     * Retorna un arreglo con los ids de los modulos permitidos por el sistema
+     *
+     * @return array
+     */
+    public function getAllowedModulesForSystem()
+    {
+        // 1 - Ventas
+        // 2 - Compras
+        // 4 - Reportes
+        // 5 - Configuración
+        // 6 - Punto de venta (POS)
+        // 7 - Dashboard
+        // 8 - Inventario
+        // 10 - Ecommerce
+        // 12 - Finanzas
+        // 13 - Nóminas
+
+        return [1,2,4,5,6,7,8,10,12,13];
+    }
 
 }

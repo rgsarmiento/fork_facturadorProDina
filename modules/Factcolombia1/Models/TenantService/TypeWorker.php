@@ -19,4 +19,21 @@ class TypeWorker extends Model
     protected $fillable = [
         'name', 'code',
     ];
+
+        
+    /**
+     * Use in resource and collection
+     *
+     * @return array
+     */
+    public function getRowResource(){
+
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'code' => $this->code,
+        ];
+
+    }
+
 }
