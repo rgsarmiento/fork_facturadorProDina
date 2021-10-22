@@ -40,7 +40,7 @@ class DataServiceMasterSeeder extends Seeder
         ],
         'co_service_type_liabilities' => [
             'columns' => 'id, name, code, @created_at, @updated_at',
-        ],      
+        ],
         'co_service_type_currencies' => [
             'columns' => 'id, name, code, @created_at, @updated_at',
         ],
@@ -53,7 +53,7 @@ class DataServiceMasterSeeder extends Seeder
         'co_service_languages' => [
             'columns' => 'id, name, code, @created_at, @updated_at',
         ],
-        'co_type_workers' => [
+        /*'co_type_workers' => [
             'columns' => 'id, name, code, @created_at, @updated_at'
         ],
         'co_sub_type_workers' => [
@@ -70,7 +70,7 @@ class DataServiceMasterSeeder extends Seeder
         ],
         'co_type_law_deductions' => [
             'columns' => 'id, name, code, percentage, @created_at, @updated_at'
-        ],
+        ],*/
     ];
 
     /**
