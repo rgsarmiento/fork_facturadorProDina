@@ -14,16 +14,17 @@ $currentHostname = app(Hyn\Tenancy\Contracts\CurrentHostname::class);
 */
 
 if ($currentHostname == null) {
-    Route::domain(env('APP_URL_BASE', 'factura'))->group(function() {
+    $app_url = config('tenant.prefix_url') == null ? config('tenant.app_url_base') : config('tenant.prefix_url').'.'.config('tenant.app_url_base');
+    Route::domain($app_url)->group(function() {
         Route::middleware('auth:admin')->group(function() {
             Route::get('/', function () {
                 return redirect()->route('companies');
             });
-            
+
             Route::get('/companies', 'System\HomeController@index')->name('companies');
             Route::get('/companies/document', 'System\HomeController@indexDocument')->name('documents');
 
-            
+
             Route::prefix('/system')->group(function() {
                 Route::post('/company', 'System\CompanyController@store')->name('system.company');
                 Route::post('/companyAll', 'System\CompanyController@all');

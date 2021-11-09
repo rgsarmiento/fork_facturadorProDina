@@ -103,8 +103,8 @@ if($current_hostname) {
 
 
 } else {
-
-    Route::domain(config('tenant.app_url_base'))->group(function() {
+    $app_url = config('tenant.prefix_url') == null ? config('tenant.app_url_base') : config('tenant.prefix_url').'.'.config('tenant.app_url_base');
+    Route::domain($app_url)->group(function() {
 
         Route::middleware('auth:admin')->group(function() {
 
