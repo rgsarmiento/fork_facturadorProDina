@@ -19,10 +19,7 @@
             <nav id="menu" class="nav-main" role="navigation">
                 <ul class="nav nav-main">
                     <li class="{{ (in_array($path[0], ['clients', 'dashboard', 'co-companies']))?'nav-active':'' }}">
-                        {{-- <a class="nav-link" href="{{route('system.dashboard')}}">
-                            <i class="fas fa-chart-line"></i><span>Dashboard</span>
-                        </a> --}}
-                        <a class="nav-link" href="{{route('system.co-companies')}}">
+                        <a class="nav-link" href="{{route('system.dashboard')}}">
                             <i class="fas fa-chart-line"></i><span>Dashboard</span>
                         </a>
                     </li>
