@@ -317,7 +317,7 @@ class ClientController extends Controller
             $client->locked_emission = $request->input('locked_emission');
             $client->save();
 
-            $this->createCompanyColombia($request);
+            $this->createCompanyApiDian($request);
 
             DB::connection('system')->commit();
         }
@@ -363,10 +363,10 @@ class ClientController extends Controller
 
         $establishment_id = DB::connection('tenant')->table('establishments')->insertGetId([
             'description' => 'Oficina Principal',
-            'country_id' => 'PE',
-            'department_id' => '15',
-            'province_id' => '1501',
-            'district_id' => '150101',
+            // 'country_id' => 47,
+            // 'department_id' => 779,
+            // 'city_id' => 12688,
+            // 'district_id' => '150101',
             'address' => '-',
             'email' => $request->input('email'),
             'telephone' => '-',
