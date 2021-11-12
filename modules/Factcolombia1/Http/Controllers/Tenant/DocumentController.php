@@ -1182,7 +1182,18 @@ class DocumentController extends Controller
 
         return compact('customers');
     }
-
+    
+    
+    /**
+     * 
+     * Descargar xml - pdf
+     * Usado en:
+     * DocumentController - comprobantes
+     * DocumentPayrollController - nóminas
+     *
+     * @param string $filename
+     * @return array
+     */
     public function downloadFile($filename)
     {
         $company = ServiceTenantCompany::firstOrFail();

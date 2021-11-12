@@ -14,14 +14,14 @@
         <div class="row" v-if="showDownload">
 
             <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold mt-3">
-                <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickDownload(form.download_pdf)">
+                <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickDownload(form.filename_pdf)">
                     <i class="fa fa-file-pdf"></i>
                 </button>
                 <p>Descargar PDF</p>
             </div>
              <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold mt-3">
 
-                <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickDownload(form.download_xml)">
+                <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickDownload(form.filename_xml)">
                     <i class="fa fa-file-excel"></i>
                 </button>
                  <p>Descargar XML</p>
@@ -65,33 +65,27 @@
             this.initForm()
         },
         methods: {
-            clickDownload(download) {
-                this.$http.get(`/${this.resource}/downloadFile/${this.downloadFilename(download)}`).then((response) => {
+            clickDownload(filename) {
+
+                this.$http.get(`/${this.resource}/downloadFile/${filename}`).then((response) => {
+                    
+                    let res_data = response.data
+                    if(!res_data.success) return this.$message.error(res_data.message)
+
                     var byteCharacters = atob(response.data.filebase64);
                     var byteNumbers = new Array(byteCharacters.length);
                     for (var i = 0; i < byteCharacters.length; i++) {
                         byteNumbers[i] = byteCharacters.charCodeAt(i);
                     }
                     var byteArray = new Uint8Array(byteNumbers);
-                    if(download.indexOf("PDF") >= 0 || download.indexOf("pdf") >= 0)
+                    if(filename.indexOf("PDF") >= 0 || filename.indexOf("pdf") >= 0)
                       var file = new Blob([byteArray], { type: 'application/pdf;base64' });
                     else
                       var file = new Blob([byteArray], { type: 'application/xml;base64' });
                     var fileURL = URL.createObjectURL(file);
                     window.open(fileURL, '_blank');
                 })
-//                window.open(download, '_blank');
-            },
-            downloadFilename(filename){
-              c = ""
-              for(var i = filename.length - 1; i >= 0; i--){
-                  if(filename.substring(i, i + 1) != "/"){
-                    c = c + filename.substring(i, i + 1)
-                  }
-                  else
-                    return c.split('').reverse().join('');
-              }
-              return c.split('').reverse().join('');
+
             },
             initForm() {
                 this.errors = {};
@@ -103,8 +97,8 @@
                     correlative_api:null,
                     message_text: null,
                     response_api_message: null,
-                    download_pdf: null,
-                    download_xml: null,
+                    filename_xml: null,
+                    filename_pdf: null,
                 };
             },
             async create() {
