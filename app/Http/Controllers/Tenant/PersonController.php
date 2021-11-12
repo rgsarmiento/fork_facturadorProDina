@@ -145,6 +145,39 @@ class PersonController extends Controller
 
     }
 
+    
+    /**
+     * Eliminar todos los registros que no tienen transacciones asociadas
+     *
+     * @return array
+     */
+    public function deleteAll($type)
+    {
+
+        $quantity_deleted = 0;
+        $persons = Person::whereType($type)->select('id', 'name')->get();
+
+        foreach ($persons as $person) {
+
+            // si tienen registros asociados no se eliminan
+            try {
+    
+                $person->delete();
+                $quantity_deleted++;
+    
+            } catch (Exception $e){
+            }
+            
+        }
+
+        return [
+            'success' => true,
+            'message' => "{$quantity_deleted} registro(s) eliminados"
+        ];
+
+    }
+
+
     public function import(Request $request)
     {
         if ($request->hasFile('file')) {
