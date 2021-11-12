@@ -182,10 +182,18 @@ class DocumentPayroll extends ModelTenant
      */
     public function getRowResource(){
 
+        $filename_xml = null;
+        $filename_pdf = null;
+        
         if($this->response_api){
             $response = $this->response_api;
             $response_api_message = isset($response->message) ? $response->message:null;
+
+            $filename_xml = $response->urlpayrollxml ?? null;
+            $filename_pdf =  $response->urlpayrollpdf ?? null;
+
         }
+
 
         return [
             'id' => $this->id,
@@ -215,6 +223,9 @@ class DocumentPayroll extends ModelTenant
             'salary' => optional($this->accrued)->salary,
             'accrued_total' => optional($this->accrued)->accrued_total,
             'deductions_total' => optional($this->deduction)->deductions_total,
+
+            'filename_xml' => $filename_xml,
+            'filename_pdf' => $filename_pdf,
 
         ];
 

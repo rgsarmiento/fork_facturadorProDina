@@ -25,6 +25,7 @@ use Modules\Factcolombia1\Models\Tenant\{
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Modules\Payroll\Helpers\DocumentPayrollHelper;
+use Modules\Factcolombia1\Http\Controllers\Tenant\DocumentController;
 
 
 class DocumentPayrollController extends Controller
@@ -121,6 +122,9 @@ class DocumentPayrollController extends Controller
         ];
     }
  
- 
+    public function downloadFile($filename)
+    {
+        return app(DocumentController::class)->downloadFile($filename);
+    }
 
 }
