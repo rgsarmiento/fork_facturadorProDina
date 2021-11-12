@@ -39,6 +39,7 @@ use Modules\Factcolombia1\Models\Tenant\{
     Currency,
     Tax,
 };
+use Illuminate\Support\Facades\Log;
 
 
 class ItemController extends Controller
@@ -346,6 +347,42 @@ class ItemController extends Controller
 
 
     }
+
+        
+    /**
+     * Eliminar todos los productos que no tienen registros asociados
+     *
+     * @return array
+     */
+    public function deleteAll()
+    {
+
+        $quantity_deleted = 0;
+        $items = Item::select('id', 'name')->get();
+
+        foreach ($items as $item) {
+
+            // si los productos tienen registros asociados no se eliminan
+            try {
+    
+                $this->deleteRecordInitialKardex($item);
+                $item->delete();
+                $quantity_deleted++;
+    
+            } catch (Exception $e) 
+            {
+                // Log::info("El producto {$item->name} no pudo ser eliminado: Code - {$e->getCode()} | Message - {$e->getMessage()} | Line - {$e->getLine()}");
+            }
+            
+        }
+
+        return [
+            'success' => true,
+            'message' => "{$quantity_deleted} producto(s) eliminados"
+        ];
+
+    }
+    
 
     public function destroyItemUnitType($id)
     {

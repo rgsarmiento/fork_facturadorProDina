@@ -192,6 +192,65 @@ export const deletable = {
                 });
             })
         },
+        destroyAll(url) {
+
+            return new Promise((resolve) => {      
+                
+                const context = this
+
+                const h = this.$createElement;
+                this.$msgbox({
+                    title: 'Eliminar',
+                    type: 'error',
+                    message: h('p', null, [
+                        h('p', null, [
+                            h('b', null, '¿Desea eliminar todos los registros?')
+                        ]),
+                        h('p', null, 'Si los registros tienen transacciones asociadas (ventas, compras, etc), no se eliminarán.')
+                    ]),
+                    showCancelButton: true,
+                    confirmButtonText: 'Eliminar',
+                    cancelButtonText: 'Cancelar',
+                    beforeClose: (action, instance, done) => {
+                        if (action === 'confirm') {                         
+                            
+                            instance.confirmButtonLoading = true;
+                            instance.confirmButtonText = 'Eliminando...';
+
+                            context.$http.delete(url)
+                                .then(res => {
+                                    if(res.data.success) {
+                                        this.$message.success(res.data.message)
+                                        resolve()
+                                    }else{
+                                        this.$message.error(res.data.message)
+                                        resolve()
+                                    }
+                                })
+                                .catch(error => {
+                                    if (error.response.status === 500) {
+                                        this.$message.error('Ocurrió un error en el proceso');
+                                    } else {
+                                        console.log(error.response.data.message)
+                                    }
+                                }).then(()=>{
+                                
+                                    instance.confirmButtonLoading = false
+                                    instance.confirmButtonText = 'Eliminar'
+                                    done()
+                                })
+
+                        } else {
+                            done();
+                        }
+                    }
+                })
+                .then(action => { 
+                })
+                .catch(action => { 
+                });
+            })
+        }
 
     }
 }

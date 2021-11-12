@@ -127,7 +127,7 @@ class PurchaseController extends Controller
         $currencies = Currency::all();
         $taxes = $this->table('taxes');
 
-        return compact('suppliers', 'establishment','currencies', 'discount_types',
+        return compact('suppliers', 'establishment','currencies', 
                     'taxes', 'document_types_invoice','company','payment_method_types', 'payment_destinations', 'customers');
     }
 
