@@ -2,130 +2,196 @@
     <el-dialog width="60%" :title="titleDialog" :visible="showDialog" @close="close" @open="create" @opened="opened" :close-on-click-modal="false">
         <form autocomplete="off" @submit.prevent="submit">
             <div class="form-body">
+
+                
+                <el-tabs v-model="activeName">
+                    <el-tab-pane label="Información general" name="general">
+
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.code}">
+                                    <label class="control-label">Código</label>
+                                    <el-input v-model="form.code">
+                                    </el-input>
+                                    <small class="form-control-feedback" v-if="errors.code" v-text="errors.code[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.payroll_type_document_identification_id}">
+                                    <label class="control-label">Tipo de identificación</label>
+                                    <el-select v-model="form.payroll_type_document_identification_id"  filterable>
+                                        <el-option v-for="option in payroll_type_document_identifications" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.payroll_type_document_identification_id" v-text="errors.payroll_type_document_identification_id[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.identification_number}">
+                                    <label class="control-label">N° Identificación  </label>
+                                    <el-input v-model="form.identification_number">
+                                        <!-- <el-button type="primary" slot="append" :loading="loading_search" icon="el-icon-search" @click.prevent="changeNumberIdentification">
+                                        </el-button> -->
+                                    </el-input>
+                                    <small class="form-control-feedback" v-if="errors.identification_number" v-text="errors.identification_number[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.first_name}">
+                                    <label class="control-label">Nombre  </label>
+                                    <el-input v-model="form.first_name" ></el-input>
+                                    <small class="form-control-feedback" v-if="errors.first_name" v-text="errors.first_name[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.surname}">
+                                    <label class="control-label">Primer Apellido  </label>
+                                    <el-input v-model="form.surname" ></el-input>
+                                    <small class="form-control-feedback" v-if="errors.surname" v-text="errors.surname[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.second_surname}">
+                                    <label class="control-label">Segundo Apellido  </label>
+                                    <el-input v-model="form.second_surname" ></el-input>
+                                    <small class="form-control-feedback" v-if="errors.second_surname" v-text="errors.second_surname[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.cellphone}">
+                                    <label class="control-label">Celular</label>
+                                    <el-input v-model="form.cellphone" ></el-input>
+                                    <small class="form-control-feedback" v-if="errors.cellphone" v-text="errors.cellphone[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.email}">
+                                    <label class="control-label">Correo electrónico</label>
+                                    <el-input v-model="form.email" ></el-input>
+                                    <small class="form-control-feedback" v-if="errors.email" v-text="errors.email[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.municipality_id}">
+                                    <label class="control-label">Municipalidad</label>
+                                    <el-select v-model="form.municipality_id"  filterable>
+                                        <el-option v-for="option in municipalities" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.municipality_id" v-text="errors.municipality_id[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-9">
+                                <div class="form-group" :class="{'has-danger': errors.address}">
+                                    <label class="control-label">Dirección</label>
+                                    <el-input v-model="form.address" dusk="address"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.address" v-text="errors.address[0]"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </el-tab-pane>
+                    
+                    <el-tab-pane label="Información laboral" name="working">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.type_worker_id}">
+                                    <label class="control-label">Tipo de empleado</label>
+                                    <el-select v-model="form.type_worker_id" filterable>
+                                        <el-option v-for="option in type_workers" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.type_worker_id" v-text="errors.type_worker_id[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.sub_type_worker_id}">
+                                    <label class="control-label">Subtipo de empleado</label>
+                                    <el-select v-model="form.sub_type_worker_id" filterable>
+                                        <el-option v-for="option in sub_type_workers" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.sub_type_worker_id" v-text="errors.sub_type_worker_id[0]"></small>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.type_contract_id}">
+                                    <label class="control-label">Tipo contrato</label>
+                                    <el-select v-model="form.type_contract_id" filterable>
+                                        <el-option v-for="option in type_contracts" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.type_contract_id" v-text="errors.type_contract_id[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.salary}">
+                                    <label class="control-label">Salario</label>
+                                    <el-input v-model="form.salary"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.salary" v-text="errors.salary[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.payroll_period_id}">
+                                    <label class="control-label">Frecuencia de pago</label>
+                                    <el-select v-model="form.payroll_period_id" filterable>
+                                        <el-option v-for="option in payroll_periods" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.payroll_period_id" v-text="errors.payroll_period_id[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.position}">
+                                    <label class="control-label">Cargo</label>
+                                    <el-input v-model="form.position"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.position" v-text="errors.position[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" :class="{'has-danger': errors.work_start_date}">
+                                    <label class="control-label">Fecha inicio de labores</label>
+                                    <el-date-picker v-model="form.work_start_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
+                                    <small class="form-control-feedback" v-if="errors.work_start_date" v-text="errors.work_start_date[0]"></small>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-3 mt-4">
+                                <div class="form-group" :class="{'has-danger': errors.high_risk_pension}">
+                                    <el-checkbox v-model="form.high_risk_pension">Pensión de alto riesgo</el-checkbox>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mt-4">
+                                <div class="form-group" :class="{'has-danger': errors.integral_salarary}">
+                                    <el-checkbox v-model="form.integral_salarary">Salario integral</el-checkbox>
+                                </div>
+                            </div>
+                        </div>
+
+                    </el-tab-pane>
+                    
+                    <!-- <el-tab-pane label="Método de pago" name="payment_method">
+                    </el-tab-pane> -->
+
+                </el-tabs>
+
+
                 <div class="row">
 
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.type_worker_id}">
-                            <label class="control-label">Tipo de empleado</label>
-                            <el-select v-model="form.type_worker_id" filterable>
-                                <el-option v-for="option in type_workers" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.type_worker_id" v-text="errors.type_worker_id[0]"></small>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.sub_type_worker_id}">
-                            <label class="control-label">Subtipo de empleado</label>
-                            <el-select v-model="form.sub_type_worker_id" filterable>
-                                <el-option v-for="option in sub_type_workers" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.sub_type_worker_id" v-text="errors.sub_type_worker_id[0]"></small>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.payroll_type_document_identification_id}">
-                            <label class="control-label">Tipo de identificación</label>
-                            <el-select v-model="form.payroll_type_document_identification_id"  filterable>
-                                <el-option v-for="option in payroll_type_document_identifications" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.payroll_type_document_identification_id" v-text="errors.payroll_type_document_identification_id[0]"></small>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.municipality_id}">
-                            <label class="control-label">Municipalidad</label>
-                            <el-select v-model="form.municipality_id"  filterable>
-                                <el-option v-for="option in municipalities" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.municipality_id" v-text="errors.municipality_id[0]"></small>
-                        </div>
-                    </div>
-
-
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.code}">
-                            <label class="control-label">Código</label>
-                            <el-input v-model="form.code">
-                            </el-input>
-                            <small class="form-control-feedback" v-if="errors.code" v-text="errors.code[0]"></small>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.identification_number}">
-                            <label class="control-label">N° Identificación  </label>
-                            <el-input v-model="form.identification_number">
-                                <!-- <el-button type="primary" slot="append" :loading="loading_search" icon="el-icon-search" @click.prevent="changeNumberIdentification">
-                                </el-button> -->
-                            </el-input>
-                            <small class="form-control-feedback" v-if="errors.identification_number" v-text="errors.identification_number[0]"></small>
-                        </div>
-                    </div>
-
-                     <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.first_name}">
-                            <label class="control-label">Nombre  </label>
-                            <el-input v-model="form.first_name" ></el-input>
-                            <small class="form-control-feedback" v-if="errors.first_name" v-text="errors.first_name[0]"></small>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.surname}">
-                            <label class="control-label">Primer Apellido  </label>
-                            <el-input v-model="form.surname" ></el-input>
-                            <small class="form-control-feedback" v-if="errors.surname" v-text="errors.surname[0]"></small>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group" :class="{'has-danger': errors.second_surname}">
-                            <label class="control-label">Segundo Apellido  </label>
-                            <el-input v-model="form.second_surname" ></el-input>
-                            <small class="form-control-feedback" v-if="errors.second_surname" v-text="errors.second_surname[0]"></small>
-                        </div>
-                    </div>
-
-                     <div class="col-md-8">
-                        <div class="form-group" :class="{'has-danger': errors.address}">
-                            <label class="control-label">Dirección</label>
-                            <el-input v-model="form.address" dusk="address"></el-input>
-                            <small class="form-control-feedback" v-if="errors.address" v-text="errors.address[0]"></small>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.type_contract_id}">
-                            <label class="control-label">Tipo contrato</label>
-                            <el-select v-model="form.type_contract_id" filterable>
-                                <el-option v-for="option in type_contracts" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.type_contract_id" v-text="errors.type_contract_id[0]"></small>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.salary}">
-                            <label class="control-label">Salario</label>
-                            <el-input v-model="form.salary"></el-input>
-                            <small class="form-control-feedback" v-if="errors.salary" v-text="errors.salary[0]"></small>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 mt-4">
-                        <div class="form-group" :class="{'has-danger': errors.high_risk_pension}">
-                            <el-checkbox v-model="form.high_risk_pension">Pensión de alto riesgo</el-checkbox>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 mt-4">
-                        <div class="form-group" :class="{'has-danger': errors.integral_salarary}">
-                            <el-checkbox v-model="form.integral_salarary">Salario integral</el-checkbox>
-                        </div>
-                    </div>
  
                 </div>
             </div>
@@ -152,8 +218,10 @@
                 sub_type_workers: [],
                 payroll_type_document_identifications: [],
                 type_contracts: [],
+                payroll_periods: [],
                 municipalities: [], 
                 loading_search: false,
+                activeName: 'general',
             }
         },
         async created() {
@@ -167,6 +235,7 @@
                     this.payroll_type_document_identifications = response.data.payroll_type_document_identifications 
                     this.type_contracts = response.data.type_contracts 
                     this.municipalities = response.data.municipalities 
+                    this.payroll_periods = response.data.payroll_periods 
 
                 })
         },
@@ -192,7 +261,13 @@
                     address: null,
                     high_risk_pension: false,
                     integral_salarary: false,
-                    salary: null
+                    salary: null,
+
+                    email: null,
+                    cellphone: null,
+                    position: null,
+                    work_start_date: moment().format('YYYY-MM-DD'),
+                    payroll_period_id: null,
                 }
 
             }, 
@@ -211,7 +286,17 @@
                         .then(response => {
                             this.form = response.data.data
                         })
+                
+                }else{
+
+                    this.setInitialData()
                 }
+            },
+            setInitialData(){
+
+                const payroll_month = _.find(this.payroll_periods, {id:5})
+                this.form.payroll_period_id = payroll_month ? payroll_month.id : null
+                 
             },
             submit() {
                 this.loading_submit = true

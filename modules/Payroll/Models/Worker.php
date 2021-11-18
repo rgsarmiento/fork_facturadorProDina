@@ -8,7 +8,8 @@ use Modules\Factcolombia1\Models\TenantService\{
     SubTypeWorker,
     PayrollTypeDocumentIdentification,
     TypeContract,
-    Municipality
+    Municipality,
+    PayrollPeriod
 };
 
 
@@ -36,7 +37,13 @@ class Worker extends ModelTenant
         'address',
         'high_risk_pension',
         'integral_salarary',
-        'salary'
+        'salary',
+
+        'cellphone',
+        'email',
+        'position',
+        'work_start_date',
+        'payroll_period_id',
     ];
 
         
@@ -71,6 +78,11 @@ class Worker extends ModelTenant
         return $this->belongsTo(Municipality::class);
     }
 
+    public function payroll_period() 
+    {
+        return $this->belongsTo(PayrollPeriod::class);
+    }
+
     public function getSearchFullNameAttribute()
     { 
         return "{$this->identification_number} - {$this->second_surname} {$this->surname} {$this->first_name}";
@@ -86,6 +98,9 @@ class Worker extends ModelTenant
         return [
             'id' => $this->id,
             'search_fullname' => $this->search_fullname,
+            'salary' => $this->salary,
+            'work_start_date' => $this->work_start_date,
+            'payroll_period_id' => $this->payroll_period_id,
         ];
     }
  
@@ -113,6 +128,12 @@ class Worker extends ModelTenant
             'high_risk_pension' => $this->high_risk_pension,
             'integral_salarary' => $this->integral_salarary,
             'salary' => $this->salary,
+            
+            'cellphone' => $this->cellphone,
+            'email' => $this->email,
+            'position' => $this->position,
+            'work_start_date' => $this->work_start_date,
+            'payroll_period_id' => $this->payroll_period_id,
         ];
 
     }

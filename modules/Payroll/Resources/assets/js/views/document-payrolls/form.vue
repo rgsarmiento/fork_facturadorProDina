@@ -43,8 +43,12 @@
 
                             <div class="col-md-3">
                                 <div class="form-group" :class="{'has-danger': errors.payroll_period_id}">
-                                    <label class="control-label">Periodo de nómina</label>
-                                    <el-select v-model="form.payroll_period_id"   filterable class="border-left rounded-left border-info">
+                                    <label class="control-label">Periodo de nómina
+                                        <el-tooltip class="item" effect="dark" content="Frecuencia de pago" placement="top-start">
+                                            <i class="fa fa-info-circle"></i>
+                                        </el-tooltip>
+                                    </label>
+                                    <el-select v-model="form.payroll_period_id"   filterable class="border-left rounded-left border-info" :disabled="form_disabled.payroll_period_id">
                                         <el-option v-for="option in payroll_periods" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.payroll_period_id" v-text="errors.payroll_period_id[0]"></small>
@@ -60,8 +64,12 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['period.admision_date']}">
-                                            <label class="control-label">Fecha de admisión</label>
-                                            <el-date-picker v-model="form.period.admision_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
+                                            <label class="control-label">Fecha de admisión
+                                                <el-tooltip class="item" effect="dark" content="Fecha de inicio de labores del empleado" placement="top-start">
+                                                    <i class="fa fa-info-circle"></i>
+                                                </el-tooltip>
+                                            </label>
+                                            <el-date-picker v-model="form.period.admision_date" type="date" value-format="yyyy-MM-dd" :clearable="false" :disabled="form_disabled.admision_date"></el-date-picker>
                                             <small class="form-control-feedback" v-if="errors['period.admision_date']" v-text="errors['period.admision_date'][0]"></small>
                                         </div>
                                     </div>
@@ -293,6 +301,7 @@
                 activeName: 'period',
                 recordId:null,
                 showDialogDocumentPayrollOptions:false,
+                form_disabled: {}
             }
         }, 
         async created() {
@@ -340,6 +349,12 @@
                 }
 
                 this.errors = {}
+
+                
+                this.form_disabled = {
+                    payroll_period_id : false,
+                    admision_date : false,
+                }
 
             },
             clickAddPaymentDate() {
@@ -417,9 +432,27 @@
                 this.$http.get(`/payroll/workers/search-by-id/${worker_id}`).then((response) => {
                     this.workers = response.data.workers
                     this.form.worker_id = worker_id
+                    this.changeWorker()
                 })
             },
-            changeWorker() { 
+            async changeWorker() { 
+
+                let worker = await _.find(this.workers, {id : this.form.worker_id})
+
+                //autocompletar campos
+                this.autocompleteDataFromWorker(worker)
+
+            },
+            autocompleteDataFromWorker(worker){
+
+                this.form.payroll_period_id = worker.payroll_period_id
+                this.form_disabled.payroll_period_id = worker.payroll_period_id ? true : false
+
+                this.form.period.admision_date = worker.work_start_date
+                this.form_disabled.admision_date = worker.work_start_date ? true : false
+
+                this.form.accrued.salary = worker.salary
+
             },
             async submit() {
  
