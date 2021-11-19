@@ -456,8 +456,8 @@
             },
             async submit() {
  
-
                 this.loading_submit = true
+                
                 await this.$http.post(`/${this.resource}`, this.form).then(response => {
                     console.log(response)
                     if (response.data.success) {

@@ -19,4 +19,15 @@ class TypeLawDeductions extends Model
     protected $fillable = [
         'name', 'code',
     ];
+    
+    /**
+     * Filtro para obtener registros para el empleado
+     *
+     * @param  $query
+     */
+    public static function scopeWhereTypeLawDeductionsWorker($query)
+    {
+        return $query->whereIn('id', ['1', '2', '3', '5', '7', '9']);
+    }
+
 }

@@ -26,11 +26,14 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Modules\Payroll\Helpers\DocumentPayrollHelper;
 use Modules\Factcolombia1\Http\Controllers\Tenant\DocumentController;
+use Modules\Payroll\Traits\UtilityTrait; 
 
 
 class DocumentPayrollController extends Controller
 {
     
+    use UtilityTrait;
+
     public function index()
     {
         return view('payroll::document-payrolls.index');
@@ -55,7 +58,7 @@ class DocumentPayrollController extends Controller
             'workers' => $this->table('workers'),
             'payroll_periods' => PayrollPeriod::get(),
             'payment_methods' => PaymentMethod::get(),
-            'type_law_deductions' => TypeLawDeductions::get(),
+            'type_law_deductions' => TypeLawDeductions::whereTypeLawDeductionsWorker()->get(),
             // 'type_documents' => TypeDocument::get(),
             'resolutions' => TypeDocument::select('id','prefix', 'resolution_number')->where('code', 9)->get()
         ];
@@ -92,39 +95,65 @@ class DocumentPayrollController extends Controller
     public function store(DocumentPayrollRequest $request)
     {
 
-        $data = DB::connection('tenant')->transaction(function () use($request) {
+        try {
 
-            // inputs
-            $helper = new DocumentPayrollHelper();
-            $inputs = $helper->getInputs($request);
-            
-            // registrar nomina en bd
-            $document = DocumentPayroll::create($inputs);
-            $document->accrued()->create($inputs['accrued']);
-            $document->deduction()->create($inputs['deduction']);
+            $data = DB::connection('tenant')->transaction(function () use($request) {
+    
+                // inputs
+                $helper = new DocumentPayrollHelper();
+                $inputs = $helper->getInputs($request);
+                
+                // registrar nomina en bd
+                $document = DocumentPayroll::create($inputs);
+                $document->accrued()->create($inputs['accrued']);
+                $document->deduction()->create($inputs['deduction']);
+    
+                // enviar nomina a la api
+                $send_to_api = $helper->sendToApi($document, $inputs);
+    
+                $document->update([
+                    'response_api' => $send_to_api
+                ]);
+    
+                return $document;
+            });
+    
+            return [
+                'success' => true,
+                'message' => 'Nómina registrada con éxito',
+                'data' => [
+                    'id' => $data->id
+                ]
+            ];
 
-            // enviar nomina a la api
-            $send_to_api = $helper->sendToApi($document, $inputs);
+        } catch (Exception $e)
+        {
+            return $this->getErrorFromException($e->getMessage(), $e);
+        }
 
-            $document->update([
-                'response_api' => $send_to_api
-            ]);
-
-            return $document;
-        });
-
-        return [
-            'success' => true,
-            'message' => 'Nómina registrada con éxito',
-            'data' => [
-                'id' => $data->id
-            ]
-        ];
     }
  
+        
+    /**
+     * Descarga de xml/pdf
+     *
+     * @param  string $filename
+     */
     public function downloadFile($filename)
     {
         return app(DocumentController::class)->downloadFile($filename);
+    }
+
+        
+    /**
+     * Envio de correo de la nómina
+     *
+     * @param  Request $request
+     * @return array
+     */
+    public function sendEmail(Request $request)
+    {
+        return (new DocumentPayrollHelper())->sendEmail($request);
     }
 
 }

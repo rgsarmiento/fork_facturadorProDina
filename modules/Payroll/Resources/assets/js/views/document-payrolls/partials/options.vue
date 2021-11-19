@@ -28,14 +28,14 @@
             </div>
 
         </div>
-        <!-- <div class="row mt-3">
+        <div class="row mt-3">
             <div class="col-md-12">
-                <el-input v-model="form.customer_email">
+                <el-input v-model="form.worker_email">
                     <el-button slot="append" icon="el-icon-message" @click="clickSendEmail" :loading="loading">Enviar</el-button>
                 </el-input>
-                <small class="form-control-feedback" v-if="errors.customer_email" v-text="errors.customer_email[0]"></small>
+                <small class="form-control-feedback" v-if="errors.worker_email" v-text="errors.worker_email[0]"></small>
             </div>
-        </div>  -->
+        </div> 
 
         <span slot="footer" class="dialog-footer">
             <template v-if="showClose">
@@ -92,8 +92,7 @@
                 this.form = {
                     id: null,
                     number_full:null,
-                    customer_email:null,
-                    customer_phone:null,
+                    worker_email:null,
                     correlative_api:null,
                     message_text: null,
                     response_api_message: null,
@@ -111,31 +110,33 @@
             clickPrint(format){
                 window.open(`/print/document/${this.form.external_id}/${format}`, '_blank');
             },
-            // clickSendEmail() {
-            //     this.loading = true
-            //     this.$http.post(`/${this.resource}/sendEmail`, {
-            //         email: this.form.customer_email,
-            //         number: this.form.correlative_api,
-            //         number_full: this.form.number_full
-            //     })
-            //         .then(response => {
-            //             if (response.data.success) {
-            //                 this.$message.success('El correo fue enviado satisfactoriamente')
-            //             } else {
-            //                 this.$message.error('Error al enviar el correo')
-            //             }
-            //         })
-            //         .catch(error => {
-            //             if (error.response.status === 422) {
-            //                 this.errors = error.response.data.errors
-            //             } else {
-            //                 this.$message.error(error.response.data.message)
-            //             }
-            //         })
-            //         .then(() => {
-            //             this.loading = false
-            //         })
-            // },
+            clickSendEmail() {
+
+                this.loading = true
+                this.$http.post(`/${this.resource}/send-email`, {
+                        email: this.form.worker_email,
+                        prefix: this.form.prefix,
+                        consecutive: this.form.consecutive
+                    })
+                    .then(response => {
+                        if (response.data.success) {
+                            this.$message.success(response.data.message)
+                        } else {
+                            this.$message.error(response.data.message)
+                        }
+                    })
+                    .catch(error => {
+                        if (error.response.status === 422) {
+                            this.errors = error.response.data.errors
+                        } else {
+                            this.$message.error(error.response.data.message)
+                        }
+                    })
+                    .then(() => {
+                        this.loading = false
+                    })
+                    
+            },
             clickFinalize() {
                 location.href = `/${this.resource}`
             },
