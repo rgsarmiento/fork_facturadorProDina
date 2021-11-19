@@ -17,7 +17,7 @@ class DocumentPayrollHelper
 
     public function __construct()
     {
-        $this->company = ServiceCompany::select('test_set_id_payroll', 'api_token')->firstOrFail();
+        $this->company = ServiceCompany::select('test_set_id_payroll', 'api_token', 'type_environment_id')->firstOrFail();
     }
     
     /**
@@ -59,45 +59,136 @@ class DocumentPayrollHelper
         $params = $this->getParamsForApi($document, $inputs);
         $connection_api = new HttpConnectionApi($this->company->api_token);
         $send_request_to_api = $connection_api->sendRequestToApi("ubl2.1/payroll/{$this->company->test_set_id_payroll}", $params, 'POST');
+        $number_full = "{$params['prefix']}-{$params['consecutive']}";
 
         //error validacion form request api
         if(isset($send_request_to_api['errors']))
         {
             $message = $connection_api->parseErrorsToString($send_request_to_api['errors']);
-            throw new Exception($message);
+            $this->throwException($message);
         }
 
+        // validacion respuesta api entorno Pruebas/Produccion
+        $this->validateResponseApi($send_request_to_api, $number_full, $connection_api);
 
-        //TODO no se esta validando tipo de entorno, pruebas o produccion
-        $zip_key = null;
-        // dd($send_request_to_api);
+        return $send_request_to_api;
 
-        if(array_key_exists('urlpayrollpdf', $send_request_to_api) && array_key_exists('urlpayrollxml', $send_request_to_api))
-        {
-            $zip_key = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ZipKey'];
+    }
+    
 
-            if(!is_string( $zip_key))
+    /**
+     * Validar respuesta al enviar nomina, entorno prueba/produccion
+     *
+     * @param $send_request_to_api
+     * @param $number_full
+     * @param HttpConnectionApi $connection_api
+     * @return void
+     */
+    private function validateResponseApi($send_request_to_api, $number_full, HttpConnectionApi $connection_api)
+    {
+
+        //entorno pruebas/habilitacion
+        if($this->company->type_environment_id == 2){
+
+            $zip_key = null;
+            // dd($send_request_to_api);
+    
+            if(array_key_exists('urlpayrollpdf', $send_request_to_api) && array_key_exists('urlpayrollxml', $send_request_to_api))
             {
-                if(is_string($send_request_to_api['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ErrorMessageList']['XmlParamsResponseTrackId']['Success']))
+                
+                $send_test_set_async_result = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult'];
+                $zip_key = $send_test_set_async_result['ZipKey'];
+    
+                if(!is_string($zip_key))
                 {
-                    if($send_request_to_api['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ErrorMessageList']['XmlParamsResponseTrackId']['Success'] == 'false')
+                    if(is_string($send_test_set_async_result['ErrorMessageList']['XmlParamsResponseTrackId']['Success']))
                     {
-                        throw new Exception($send_request_to_api['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ErrorMessageList']['XmlParamsResponseTrackId']['ProcessedMessage']);
+                        if($send_test_set_async_result['ErrorMessageList']['XmlParamsResponseTrackId']['Success'] == 'false')
+                        {
+                            $this->throwException($send_test_set_async_result['ErrorMessageList']['XmlParamsResponseTrackId']['ProcessedMessage']);
+                        }
                     }
                 }
             }
+    
+            $this->validateZipKey($zip_key, $number_full, $connection_api);
+
+        }
+        //entorno produccion
+        else{
+
+            //TODO parsear respuesta y verificar
+            $send_bill_sync_result = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendBillSyncResponse']['SendBillSyncResult'];
+
+            if($send_bill_sync_result['IsValid'] == "true")
+            {
+                //estado aceptado en produccion, deberia actualizar un campo en bd para mostrar el mensaje directo de la dian
+            }
+            else
+            {
+                // estado rechazado
+                $extract_error_response = $send_bill_sync_result['ErrorMessage']['string'] ?? $send_bill_sync_result['StatusDescription'];
+                $error_message_response = is_array($extract_error_response) ?  implode(",", $extract_error_response) : $extract_error_response;
+                $this->throwException("Error al Validar Nómina Nro: {$number_full} Errores: {$error_message_response}");
+
+            }
+
         }
 
+    }
+
+    
+    /**
+     * 
+     * Realiza peticion a ubl2.1/status/zip/{$zip_key} para validar el estado de la nomina (entorno pruebas/habilitacion)
+     *
+     * @param  string $zip_key
+     * @param $number_full
+     * @param HttpConnectionApi $connection_api
+     * @return void
+     */
+    private function validateZipKey($zip_key, $number_full, HttpConnectionApi $connection_api)
+    {
+        
         if($zip_key)
         {
-            //se deberia ejecutar servicio de status document 
+            //esperar 3 segundos para ejecutar servicio status
+            sleep(3);
+
+            $params_zip_key = [
+                'is_payroll' => true
+            ];
+
+            $query_zip_key = $connection_api->sendRequestToApi("ubl2.1/status/zip/{$zip_key}", $params_zip_key, 'POST');
+            // dd($query_zip_key);
+
+            if(isset($query_zip_key['ResponseDian'])){
+
+                $dian_response = $query_zip_key['ResponseDian']['Envelope']['Body']['GetStatusZipResponse']['GetStatusZipResult']['DianResponse'];
+
+                if($dian_response['IsValid'] == "true")
+                {
+                    //estado aceptado en habilitacion, deberia actualizar un campo en bd para mostrar el mensaje directo de la dian
+                }
+                else
+                {
+                    // estado rechazado
+                    $extract_error_zip_key = $dian_response['ErrorMessage']['string'] ?? $dian_response['StatusDescription'];
+                    $error_message_zip_key = is_array($extract_error_zip_key) ?  implode(",", $extract_error_zip_key) : $extract_error_zip_key;
+
+                    $this->throwException("Error al Validar Nómina Nro: {$number_full} Errores: {$error_message_zip_key}");
+
+                }
+            }
+            else{
+                $this->throwException("Error al Validar Nómina Nro: {$number_full} Errores: {$query_zip_key['message']}");
+            }
+
         }
         else
         {
-            throw new Exception('Error de ZipKey.');
+            $this->throwException('Error de ZipKey.');
         }
-
-        return $send_request_to_api;
 
     }
     
@@ -191,5 +282,51 @@ class DocumentPayrollHelper
 
         return null;
     }
+
+        
+    /**
+     * Envio de correo
+     *
+     * @param  mixed $request
+     * @return array
+     */
+    public function sendEmail($request)
+    {
+        $connection_api = new HttpConnectionApi($this->company->api_token);
+        $send_request_to_api = $connection_api->sendRequestToApi("ubl2.1/send-email-document-payroll", $request->all(), 'POST');
+
+        return $this->getGeneralResponseFromApi($send_request_to_api, $connection_api);
+    }
+    
+    /**
+     * Parsea respuesta api, y retorna arreglo con datos para la vista
+     *
+     * @param  $response
+     * @param  HttpConnectionApi $connection_api
+     * @return array
+     */
+    public function getGeneralResponseFromApi($response, HttpConnectionApi $connection_api)
+    {
+        
+        //error validacion form request api
+        if(isset($response['errors']))
+        {
+            return [
+                'success' => false,
+                'message' => $connection_api->parseErrorsToString($response['errors'])
+            ];
+        }
+
+        //si la api retorna true/false, retorna arreglo con estado
+        return $response;
+
+    }
+
+
+    public function throwException($message)
+    {
+        throw new Exception($message);
+    }
+
 
 }

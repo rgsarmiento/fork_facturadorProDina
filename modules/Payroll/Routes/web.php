@@ -18,6 +18,7 @@ if($hostname) {
                     Route::post('', 'DocumentPayrollController@store');
                     Route::get('record/{record}', 'DocumentPayrollController@record');
                     Route::get('downloadFile/{filename}', 'DocumentPayrollController@downloadFile');
+                    Route::post('send-email', 'DocumentPayrollController@sendEmail');
                 });
 
 

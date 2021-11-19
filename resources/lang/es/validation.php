@@ -327,6 +327,7 @@ return [
         'deduction.pension_type_law_deductions_id' => 'Pensión - Deducciones por ley',
         'deduction.pension_deduction' => 'deducción de pensión',
         'deduction.deductions_total' => 'deducción Total',
+        'work_start_date' => 'fecha inicio de labores',
 
     ],
 ];

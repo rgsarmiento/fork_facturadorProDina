@@ -65,6 +65,20 @@ class WorkerRequest extends FormRequest
                 'required',
                 'numeric',
             ], 
+            'cellphone' => [
+                'nullable',
+                'numeric',
+            ], 
+            'email' => [
+                'nullable',
+                'email',
+            ], 
+            'work_start_date' => [
+                'required',
+            ], 
+            'payroll_period_id' => [
+                'required',
+            ], 
             
         ];
     }

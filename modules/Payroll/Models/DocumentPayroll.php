@@ -215,6 +215,7 @@ class DocumentPayroll extends ModelTenant
             'worker_id' => $this->worker_id,
             'worker' => $this->worker,
             'worker_full_name' => $this->model_worker->full_name,
+            'worker_email' => $this->model_worker->email,
             'payment' => $this->payment,
             'payment_dates' => $this->payment_dates,
             'response_api_message' => $response_api_message,

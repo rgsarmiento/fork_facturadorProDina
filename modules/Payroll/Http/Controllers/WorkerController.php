@@ -17,6 +17,7 @@ use Modules\Factcolombia1\Models\TenantService\{
     TypeWorker,
     SubTypeWorker,
     PayrollTypeDocumentIdentification,
+    PayrollPeriod,
     TypeContract,
     Municipality
 };
@@ -47,6 +48,7 @@ class WorkerController extends Controller
             'sub_type_workers' => SubTypeWorker::get(),
             'payroll_type_document_identifications' => PayrollTypeDocumentIdentification::get(),
             'type_contracts' => TypeContract::get(),
+            'payroll_periods' => PayrollPeriod::get(),
             'municipalities' => Municipality::get(),
         ];
     }
