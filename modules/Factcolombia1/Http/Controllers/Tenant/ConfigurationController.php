@@ -537,8 +537,6 @@ class ConfigurationController extends Controller
                 ];
             }
             else{
-
-
                 return [
                     'message' => "Error en validacion de datos Api.",
                     'success' => false,
@@ -970,7 +968,7 @@ class ConfigurationController extends Controller
         ];
     }
 
-        
+
     /**
      * Regitrar id y pin sw para nomina en api
      *

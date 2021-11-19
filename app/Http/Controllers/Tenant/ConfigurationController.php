@@ -189,13 +189,13 @@ class ConfigurationController extends Controller
         }
 
         $http = new Client(['verify' => false]);
-        $response = $http->request('GET', $path);
-        if($response->getStatusCode() == '200'){
-            $body = $response->getBody();
+//        $response = $http->request('GET', $path);
+//        if($response->getStatusCode() == '200'){
+//            $body = $response->getBody();
 
-            $configuration->phone_whatsapp = $body;
-            $configuration->save();
-        }
+//            $configuration->phone_whatsapp = $body;
+//            $configuration->save();
+//        }
         return 'error';
     }
 
