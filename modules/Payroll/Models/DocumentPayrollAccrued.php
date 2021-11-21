@@ -182,7 +182,8 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setWorkDisabilitiesAttribute($value)
     {
-        $this->attributes['work_disabilities'] = (is_null($value))?null:json_encode($value);
+        // dd((is_null($value))?null:json_encode($value), $value, empty($value));
+        $this->attributes['work_disabilities'] = (is_null($value) || empty($value)) ? null : json_encode($value);
     }
  
     public function getMaternityLeaveAttribute($value)

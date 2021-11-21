@@ -16,7 +16,8 @@ use Modules\Payroll\Http\Resources\{
 use Modules\Payroll\Http\Requests\DocumentPayrollRequest;
 use Modules\Factcolombia1\Models\TenantService\{
     PayrollPeriod,
-    TypeLawDeductions
+    TypeLawDeductions,
+    TypeDisability
 };
 use Modules\Factcolombia1\Models\Tenant\{
     PaymentMethod,
@@ -57,6 +58,7 @@ class DocumentPayrollController extends Controller
         return [
             'workers' => $this->table('workers'),
             'payroll_periods' => PayrollPeriod::get(),
+            'type_disabilities' => TypeDisability::get(),
             'payment_methods' => PaymentMethod::get(),
             'type_law_deductions' => TypeLawDeductions::whereTypeLawDeductionsWorker()->get(),
             // 'type_documents' => TypeDocument::get(),
