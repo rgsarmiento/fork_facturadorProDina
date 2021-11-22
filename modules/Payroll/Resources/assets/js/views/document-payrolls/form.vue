@@ -114,7 +114,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['payment.payment_method_id']}">
                                             <label class="control-label">Métodos de pago<span class="text-danger"> *</span></label>
-                                            <el-select v-model="form.payment.payment_method_id"   filterable @change="changePaymentMethod">
+                                            <el-select v-model="form.payment.payment_method_id"   filterable @change="changePaymentMethod" :disabled="form_disabled.payment">
                                                 <el-option v-for="option in payment_methods" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="errors['payment.payment_method_id']" v-text="errors['payment.payment_method_id'][0]"></small>
@@ -125,21 +125,21 @@
                                         <div class="col-md-3">
                                             <div class="form-group" :class="{'has-danger': errors['payment.bank_name']}">
                                                 <label class="control-label">Nombre del banco</label>
-                                                <el-input v-model="form.payment.bank_name"></el-input>
+                                                <el-input v-model="form.payment.bank_name" :disabled="form_disabled.payment"></el-input>
                                                 <small class="form-control-feedback" v-if="errors['payment.bank_name']" v-text="errors['payment.bank_name'][0]"></small>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group" :class="{'has-danger': errors['payment.account_type']}">
                                                 <label class="control-label">Tipo de cuenta</label>
-                                                <el-input v-model="form.payment.account_type"></el-input>
+                                                <el-input v-model="form.payment.account_type" :disabled="form_disabled.payment"></el-input>
                                                 <small class="form-control-feedback" v-if="errors['payment.account_type']" v-text="errors['payment.account_type'][0]"></small>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group" :class="{'has-danger': errors['payment.account_number']}">
                                                 <label class="control-label">Número de cuenta</label>
-                                                <el-input v-model="form.payment.account_number"></el-input>
+                                                <el-input v-model="form.payment.account_number" :disabled="form_disabled.payment"></el-input>
                                                 <small class="form-control-feedback" v-if="errors['payment.account_number']" v-text="errors['payment.account_number'][0]"></small>
                                             </div>
                                         </div>
@@ -204,7 +204,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.transportation_allowance']}">
                                             <label class="control-label">Subsidio de transporte</label>
-                                            <el-input-number v-model="form.accrued.transportation_allowance" :min="0" controls-position="right"></el-input-number>
+                                            <el-input-number v-model="form.accrued.transportation_allowance" :min="0" disabled controls-position="right"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['accrued.transportation_allowance']" v-text="errors['accrued.transportation_allowance'][0]"></small>
                                         </div>
                                     </div>
@@ -501,7 +501,8 @@
                 recordId:null,
                 showDialogDocumentPayrollOptions:false,
                 form_disabled: {},
-                show_inputs_payment_method: true
+                show_inputs_payment_method: true,
+                advanced_configuration: {},
             }
         }, 
         async created() {
@@ -541,7 +542,7 @@
                     }, 
                     payment_dates: [], 
                     accrued :{
-                        worked_days: 0, 
+                        worked_days: 30, 
                         salary: 0, 
                         accrued_total: 0,
                         transportation_allowance: undefined, //se usa undefined ya que el valor null, el componente input-number lo toma a 0
@@ -549,9 +550,9 @@
                         work_disabilities: []
                     },
                     deduction: {
-                        eps_type_law_deductions_id: null,
+                        eps_type_law_deductions_id: 1,
                         eps_deduction: 0, 
-                        pension_type_law_deductions_id: null,
+                        pension_type_law_deductions_id: 5,
                         pension_deduction: 0, 
                         deductions_total: 0, 
                         afc: undefined, 
@@ -569,6 +570,7 @@
                 this.form_disabled = {
                     payroll_period_id : false,
                     admision_date : false,
+                    payment : false,
                 }
 
             },
@@ -637,6 +639,7 @@
                         // this.type_documents = response.data.type_documents 
                         this.resolutions = response.data.resolutions
                         this.type_disabilities = response.data.type_disabilities
+                        this.advanced_configuration = response.data.advanced_configuration
 
                         this.filterWorkers(); 
                     })
@@ -703,12 +706,52 @@
                 this.form.period.admision_date = worker.work_start_date
                 this.form_disabled.admision_date = worker.work_start_date ? true : false
 
-                this.form.accrued.salary = worker.salary
+
+                this.autocompleteDataSalary(worker)
+
+                this.autocompleteDataPayment(worker)
+
+            },
+            autocompleteDataSalary(worker){
+
+                this.form.accrued.salary = parseFloat(worker.salary)
+
+                let minimum_salary = parseFloat(this.advanced_configuration.minimum_salary)
+
+                if(this.form.accrued.salary <= (minimum_salary * 2)){
+                    this.form.accrued.transportation_allowance = this.advanced_configuration.transportation_allowance
+                }else{
+                    this.form.accrued.transportation_allowance = undefined
+                }
+
+                // console.log(this.advanced_configuration)
+
+            },
+            autocompleteDataPayment(worker){
+
+                if(worker.payment){
+
+                    this.form.payment = worker.payment
+                    this.form_disabled.payment = true
+
+                }else{
+
+                    this.form.payment = {
+                        payment_method_id: null,
+                        bank_name: null,
+                        account_type: null,
+                        account_number: null,
+                    }
+
+                    this.form_disabled.payment = false
+                }
+                
+                this.changePaymentMethod()
 
             },
             async submit() {
  
-                // this.loading_submit = true
+                this.loading_submit = true
                 
                 await this.$http.post(`/${this.resource}`, this.form).then(response => {
                     console.log(response)

@@ -308,6 +308,10 @@ Vue.component('tenant-document-payrolls-form', require('@viewsModulePayroll/docu
 // Vue.component('tenant-sub-type-workers-index', require('@viewsModulePayroll/sub-type-workers/index.vue'));
 
 
+// advanced-configuration
+Vue.component('tenant-advanced-configuration-index', require('@viewsModuleProColombia/tenant/advanced-configuration/index.vue'));
+
+
 // System
 Vue.component('system-clients-index', require('./views/system/clients/index.vue'));
 Vue.component('system-clients-form', require('./views/system/clients/form.vue'));

@@ -80,6 +80,14 @@ class WorkerRequest extends FormRequest
                 'required',
             ], 
             
+            // Payment
+            'payment' => 'required|array',
+            'payment.payment_method_id' => 'required',
+            'payment.bank_name' => 'nullable|required_if:payment.payment_method_id,2,3,4,5,6,7,21,22,30,31,42,45,46,47,|string',
+            'payment.account_type' => 'nullable|required_if:payment.payment_method_id,2,3,4,5,6,7,21,22,30,31,42,45,46,47,|string',
+            'payment.account_number' => 'nullable|required_if:payment.payment_method_id,2,3,4,5,6,7,21,22,30,31,42,45,46,47,|string',
+
+            
         ];
     }
 

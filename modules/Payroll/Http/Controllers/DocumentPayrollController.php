@@ -17,11 +17,12 @@ use Modules\Payroll\Http\Requests\DocumentPayrollRequest;
 use Modules\Factcolombia1\Models\TenantService\{
     PayrollPeriod,
     TypeLawDeductions,
-    TypeDisability
+    TypeDisability,
+    AdvancedConfiguration
 };
 use Modules\Factcolombia1\Models\Tenant\{
     PaymentMethod,
-    TypeDocument
+    TypeDocument,
 };
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -61,6 +62,7 @@ class DocumentPayrollController extends Controller
             'type_disabilities' => TypeDisability::get(),
             'payment_methods' => PaymentMethod::get(),
             'type_law_deductions' => TypeLawDeductions::whereTypeLawDeductionsWorker()->get(),
+            'advanced_configuration' => AdvancedConfiguration::first(),
             // 'type_documents' => TypeDocument::get(),
             'resolutions' => TypeDocument::select('id','prefix', 'resolution_number')->where('code', 9)->get()
         ];
