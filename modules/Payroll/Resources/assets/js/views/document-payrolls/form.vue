@@ -11,7 +11,7 @@
                             <div class="col-md-6 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.worker_id}">
                                     <label class="control-label font-weight-bold text-info">
-                                        Empleados
+                                        Empleados<span class="text-danger"> *</span>
                                         <el-tooltip class="item" effect="dark" content="Escribir al menos 3 caracteres para buscar" placement="top-start">
                                             <i class="fa fa-info-circle"></i>
                                         </el-tooltip>
@@ -33,7 +33,9 @@
 
                             <div class="col-md-3 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.type_document_id}">
-                                    <label class="control-label">Resolución</label>
+                                    <label class="control-label">Resolución
+                                        <span class="text-danger"> *</span>
+                                    </label>
                                     <el-select @change="changeResolution" v-model="form.type_document_id" class="border-left rounded-left border-info">
                                         <el-option v-for="option in resolutions" :key="option.id" :value="option.id" :label="`${option.prefix}`"></el-option>
                                     </el-select>
@@ -43,7 +45,7 @@
 
                             <div class="col-md-3">
                                 <div class="form-group" :class="{'has-danger': errors.payroll_period_id}">
-                                    <label class="control-label">Periodo de nómina
+                                    <label class="control-label">Periodo de nómina<span class="text-danger"> *</span>
                                         <el-tooltip class="item" effect="dark" content="Frecuencia de pago" placement="top-start">
                                             <i class="fa fa-info-circle"></i>
                                         </el-tooltip>
@@ -64,7 +66,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['period.admision_date']}">
-                                            <label class="control-label">Fecha de admisión
+                                            <label class="control-label">Fecha de admisión<span class="text-danger"> *</span>
                                                 <el-tooltip class="item" effect="dark" content="Fecha de inicio de labores del empleado" placement="top-start">
                                                     <i class="fa fa-info-circle"></i>
                                                 </el-tooltip>
@@ -75,21 +77,21 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['period.settlement_start_date']}">
-                                            <label class="control-label">Fecha de inicio de liquidación</label>
+                                            <label class="control-label">Fecha de inicio de liquidación<span class="text-danger"> *</span></label>
                                             <el-date-picker v-model="form.period.settlement_start_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
                                             <small class="form-control-feedback" v-if="errors['period.settlement_start_date']" v-text="errors['period.settlement_start_date'][0]"></small>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['period.settlement_end_date']}">
-                                            <label class="control-label">Fecha de finalización de liquidación</label>
+                                            <label class="control-label">Fecha de finalización de liquidación<span class="text-danger"> *</span></label>
                                             <el-date-picker v-model="form.period.settlement_end_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
                                             <small class="form-control-feedback" v-if="errors['period.settlement_end_date']" v-text="errors['period.settlement_end_date'][0]"></small>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['period.issue_date']}">
-                                            <label class="control-label">Fecha de emisión</label>
+                                            <label class="control-label">Fecha de emisión<span class="text-danger"> *</span></label>
                                             <el-date-picker v-model="form.period.issue_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
                                             <small class="form-control-feedback" v-if="errors['period.issue_date']" v-text="errors['period.issue_date'][0]"></small>
                                         </div>
@@ -97,8 +99,8 @@
  
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['period.worked_time']}">
-                                            <label class="control-label">Tiempo trabajado</label>
-                                            <el-input-number v-model="form.period.worked_time" :min="0"></el-input-number>
+                                            <label class="control-label">Tiempo trabajado<span class="text-danger"> *</span></label>
+                                            <el-input-number v-model="form.period.worked_time" :min="0" controls-position="right"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['period.worked_time']" v-text="errors['period.worked_time'][0]"></small>
                                         </div>
                                     </div>
@@ -111,40 +113,43 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['payment.payment_method_id']}">
-                                            <label class="control-label">Métodos de pago</label>
-                                            <el-select v-model="form.payment.payment_method_id"   filterable>
+                                            <label class="control-label">Métodos de pago<span class="text-danger"> *</span></label>
+                                            <el-select v-model="form.payment.payment_method_id"   filterable @change="changePaymentMethod" :disabled="form_disabled.payment">
                                                 <el-option v-for="option in payment_methods" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="errors['payment.payment_method_id']" v-text="errors['payment.payment_method_id'][0]"></small>
                                         </div>
                                     </div>
                                         
-                                    <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['payment.bank_name']}">
-                                            <label class="control-label">Nombre del banco</label>
-                                            <el-input v-model="form.payment.bank_name"></el-input>
-                                            <small class="form-control-feedback" v-if="errors['payment.bank_name']" v-text="errors['payment.bank_name'][0]"></small>
+                                    <template v-if="show_inputs_payment_method">
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['payment.bank_name']}">
+                                                <label class="control-label">Nombre del banco</label>
+                                                <el-input v-model="form.payment.bank_name" :disabled="form_disabled.payment"></el-input>
+                                                <small class="form-control-feedback" v-if="errors['payment.bank_name']" v-text="errors['payment.bank_name'][0]"></small>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['payment.account_type']}">
-                                            <label class="control-label">Tipo de cuenta</label>
-                                            <el-input v-model="form.payment.account_type"></el-input>
-                                            <small class="form-control-feedback" v-if="errors['payment.account_type']" v-text="errors['payment.account_type'][0]"></small>
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['payment.account_type']}">
+                                                <label class="control-label">Tipo de cuenta</label>
+                                                <el-input v-model="form.payment.account_type" :disabled="form_disabled.payment"></el-input>
+                                                <small class="form-control-feedback" v-if="errors['payment.account_type']" v-text="errors['payment.account_type'][0]"></small>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['payment.account_number']}">
-                                            <label class="control-label">Número de cuenta</label>
-                                            <el-input v-model="form.payment.account_number"></el-input>
-                                            <small class="form-control-feedback" v-if="errors['payment.account_number']" v-text="errors['payment.account_number'][0]"></small>
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['payment.account_number']}">
+                                                <label class="control-label">Número de cuenta</label>
+                                                <el-input v-model="form.payment.account_number" :disabled="form_disabled.payment"></el-input>
+                                                <small class="form-control-feedback" v-if="errors['payment.account_number']" v-text="errors['payment.account_number'][0]"></small>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </template>
+
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-md-12">
                                         <div class="form-group" :class="{'has-danger': errors['payment_dates']}">
-                                            <h4>Fechas de pago</h4>
+                                            <h4>Fechas de pago<span class="text-danger"> *</span></h4>
                                             <small class="form-control-feedback" v-if="errors['payment_dates']" v-text="errors['payment_dates'][0]"></small>
                                         </div>
                                     </div>
@@ -152,7 +157,7 @@
                                         <table>
                                             <thead>
                                                 <tr width="100%">
-                                                    <th v-if="form.payment_dates.length>0" class="pb-2">Fecha</th>
+                                                    <th v-if="form.payment_dates.length>0" class="pb-2">Fecha<span class="text-danger"> *</span></th>
                                                     <th width="30%"><a href="#" @click.prevent="clickAddPaymentDate" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
                                                 </tr>
                                             </thead>
@@ -182,35 +187,116 @@
                                     
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.worked_days']}">
-                                            <label class="control-label">Días trabajados</label>
-                                            <el-input-number v-model="form.accrued.worked_days" :min="0"></el-input-number>
+                                            <label class="control-label">Días trabajados<span class="text-danger"> *</span></label>
+                                            <el-input-number v-model="form.accrued.worked_days" :min="0" controls-position="right"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['accrued.worked_days']" v-text="errors['accrued.worked_days'][0]"></small>
                                         </div>
                                     </div>
                                     
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.salary']}">
-                                            <label class="control-label">Salario</label>
-                                            <el-input-number v-model="form.accrued.salary" :min="0"></el-input-number>
+                                            <label class="control-label">Salario<span class="text-danger"> *</span></label>
+                                            <el-input-number v-model="form.accrued.salary" :min="0" controls-position="right"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['accrued.salary']" v-text="errors['accrued.salary'][0]"></small>
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.transportation_allowance']}">
+                                            <label class="control-label">Subsidio de transporte</label>
+                                            <el-input-number v-model="form.accrued.transportation_allowance" :min="0" disabled controls-position="right"></el-input-number>
+                                            <small class="form-control-feedback" v-if="errors['accrued.transportation_allowance']" v-text="errors['accrued.transportation_allowance'][0]"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.telecommuting']}">
+                                            <label class="control-label">Teletrabajo</label>
+                                            <el-input-number v-model="form.accrued.telecommuting" :min="0" controls-position="right"></el-input-number>
+                                            <small class="form-control-feedback" v-if="errors['accrued.telecommuting']" v-text="errors['accrued.telecommuting'][0]"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.accrued_total']}">
-                                            <label class="control-label">Total devengados</label>
-                                            <el-input-number v-model="form.accrued.accrued_total" :min="0"></el-input-number>
+                                            <label class="control-label">Total devengados<span class="text-danger"> *</span></label>
+                                            <el-input-number v-model="form.accrued.accrued_total" :min="0" controls-position="right"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['accrued.accrued_total']" v-text="errors['accrued.accrued_total'][0]"></small>
                                         </div>
                                     </div>
+
                                 </div>  
+
+                                <div class="row mt-2">
+                                    <div class="col-md-12">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.work_disabilities']}">
+                                            <h4>Incapacidades</h4>
+                                            <small class="form-control-feedback" v-if="errors['accrued.work_disabilities']" v-text="errors['accrued.work_disabilities'][0]"></small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.accrued.work_disabilities.length>0">
+                                                        <th class="pb-2">Fecha inicio</th>
+                                                        <th class="pb-2">Fecha término</th>
+                                                        <th class="pb-2">Tipo</th>
+                                                        <th class="pb-2">Cantidad</th>
+                                                        <th class="pb-2">Pago</th>
+                                                    </template>
+                                                    <th width="10%"><a href="#" @click.prevent="clickAddWorkDisability" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.accrued.work_disabilities" :key="index"> 
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-date-picker v-model="row.start_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-date-picker v-model="row.end_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-select v-model="row.type" filterable>
+                                                                <el-option v-for="option in type_disabilities" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                                            </el-select>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.quantity" :min="0" controls-position="right"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right"></el-input-number>
+                                                        </div>
+                                                    </td>
+
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelWorkDisability(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
                             </el-tab-pane>
                             <el-tab-pane label="Deducciones" name="deduction">
                                 
                                 <div class="row"> 
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.eps_type_law_deductions_id']}">
-                                            <label class="control-label">EPS - Deducciones por ley</label>
+                                            <label class="control-label">EPS - Deducciones por ley<span class="text-danger"> *</span></label>
                                             <el-select v-model="form.deduction.eps_type_law_deductions_id"   filterable>
                                                 <el-option v-for="option in type_law_deductions" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
@@ -219,14 +305,14 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.eps_deduction']}">
-                                            <label class="control-label">Deducción EPS</label>
-                                            <el-input-number v-model="form.deduction.eps_deduction" :min="0"></el-input-number>
+                                            <label class="control-label">Deducción EPS<span class="text-danger"> *</span></label>
+                                            <el-input-number v-model="form.deduction.eps_deduction" :min="0" controls-position="right"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.eps_deduction']" v-text="errors['deduction.eps_deduction'][0]"></small>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.pension_type_law_deductions_id']}">
-                                            <label class="control-label">Pensión - Deducciones por ley</label>
+                                            <label class="control-label">Pensión - Deducciones por ley<span class="text-danger"> *</span></label>
                                             <el-select v-model="form.deduction.pension_type_law_deductions_id"   filterable>
                                                 <el-option v-for="option in type_law_deductions" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
@@ -235,19 +321,132 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.pension_deduction']}">
-                                            <label class="control-label">Deducción de pensión</label>
-                                            <el-input-number v-model="form.deduction.pension_deduction" :min="0"></el-input-number>
+                                            <label class="control-label">Deducción de pensión<span class="text-danger"> *</span></label>
+                                            <el-input-number v-model="form.deduction.pension_deduction" :min="0" controls-position="right"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.pension_deduction']" v-text="errors['deduction.pension_deduction'][0]"></small>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">AFC</label>
+                                            <el-input-number v-model="form.deduction.afc" :min="0" controls-position="right"></el-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Reintegro</label>
+                                            <el-input-number v-model="form.deduction.refund" :min="0" controls-position="right"></el-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Deuda</label>
+                                            <el-input-number v-model="form.deduction.debt" :min="0" controls-position="right"></el-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Educación</label>
+                                            <el-input-number v-model="form.deduction.education" :min="0" controls-position="right"></el-input-number>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.deductions_total']}">
-                                            <label class="control-label">Deducción Total</label>
-                                            <el-input-number v-model="form.deduction.deductions_total" :min="0"></el-input-number>
+                                            <label class="control-label">Deducción Total<span class="text-danger"> *</span></label>
+                                            <el-input-number v-model="form.deduction.deductions_total" :min="0" controls-position="right"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.deductions_total']" v-text="errors['deduction.deductions_total'][0]"></small>
                                         </div>
                                     </div>
                                 </div>
+
+                                
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <h4>Sindicatos</h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <h4>Sanciones</h4>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sindicatos -->
+                                    <div class="col-md-6">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.deduction.labor_union.length>0">
+                                                        <th class="pb-2">Porcentaje</th>
+                                                        <th class="pb-2">Deducción</th>
+                                                    </template>
+                                                    <th width="15%"><a href="#" @click.prevent="clickAddLaborUnion" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.deduction.labor_union" :key="index"> 
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.percentage" :min="0" controls-position="right"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.deduction" :min="0" controls-position="right"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelLaborUnion(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Sindicatos -->
+                                    
+                                    <!-- Sanciones -->
+                                    <div class="col-md-6">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.deduction.sanctions.length>0">
+                                                        <th class="pb-2">Sanción pública</th>
+                                                        <th class="pb-2">Sanción privada</th>
+                                                    </template>
+                                                    <th width="15%"><a href="#" @click.prevent="clickAddSanction" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.deduction.sanctions" :key="index"> 
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.public_sanction" :min="0" controls-position="right"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.private_sanction" :min="0" controls-position="right"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelSanction(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Sanciones -->
+
+                                </div>
+
                             </el-tab-pane>
                         </el-tabs>
  
@@ -280,7 +479,6 @@
     import DocumentPayrollOptions from './partials/options.vue' 
 
     export default {
-        props: ['typeUser', 'configuration'],
         components: {WorkerForm, DocumentPayrollOptions},
         data() {
             return {
@@ -297,11 +495,14 @@
                 type_law_deductions: [], 
                 type_documents: [], 
                 resolutions:[],
+                type_disabilities: [],
                 showDialogNewWorker: false,
                 activeName: 'period',
                 recordId:null,
                 showDialogDocumentPayrollOptions:false,
-                form_disabled: {}
+                form_disabled: {},
+                show_inputs_payment_method: true,
+                advanced_configuration: {},
             }
         }, 
         async created() {
@@ -313,6 +514,12 @@
             this.loading_form = true
         }, 
         methods: { 
+            changePaymentMethod(){
+
+                //mostrar campos adicionales, si el metodo de pago es el definido en el arreglo/obligatorio
+                this.show_inputs_payment_method = [2,3,4,5,6,7,21,22,30,31,42,45,46,47].includes(this.form.payment.payment_method_id)
+
+            },
             initForm() {
 
                 this.form = {
@@ -335,16 +542,25 @@
                     }, 
                     payment_dates: [], 
                     accrued :{
-                        worked_days: 0, 
+                        worked_days: 30, 
                         salary: 0, 
-                        accrued_total: 0
+                        accrued_total: 0,
+                        transportation_allowance: undefined, //se usa undefined ya que el valor null, el componente input-number lo toma a 0
+                        telecommuting: undefined,
+                        work_disabilities: []
                     },
                     deduction: {
-                        eps_type_law_deductions_id: null,
+                        eps_type_law_deductions_id: 1,
                         eps_deduction: 0, 
-                        pension_type_law_deductions_id: null,
+                        pension_type_law_deductions_id: 5,
                         pension_deduction: 0, 
                         deductions_total: 0, 
+                        afc: undefined, 
+                        refund: undefined,
+                        debt: undefined,
+                        education: undefined,
+                        labor_union: [],
+                        sanctions: [],
                     },
                 }
 
@@ -354,8 +570,45 @@
                 this.form_disabled = {
                     payroll_period_id : false,
                     admision_date : false,
+                    payment : false,
                 }
 
+            },
+            clickAddLaborUnion(){
+                
+                this.form.deduction.labor_union.push({
+                    percentage :  0,
+                    deduction :  0,
+                })
+
+            },
+            clickCancelLaborUnion(index){
+                this.form.deduction.labor_union.splice(index, 1)
+            },
+            clickAddSanction(){
+                
+                this.form.deduction.sanctions.push({
+                    public_sanction :  0,
+                    private_sanction :  0,
+                })
+
+            },
+            clickCancelSanction(index){
+                this.form.deduction.sanctions.splice(index, 1)
+            },
+            clickAddWorkDisability(){
+
+                this.form.accrued.work_disabilities.push({
+                    start_date :  moment().format('YYYY-MM-DD'),
+                    end_date :  moment().format('YYYY-MM-DD'),
+                    type :  null,
+                    quantity :  0,
+                    payment :  0,
+                })
+
+            },
+            clickCancelWorkDisability(index){
+                this.form.accrued.work_disabilities.splice(index, 1)
             },
             clickAddPaymentDate() {
                 this.form.payment_dates.push({
@@ -385,6 +638,8 @@
                         this.type_law_deductions = response.data.type_law_deductions 
                         // this.type_documents = response.data.type_documents 
                         this.resolutions = response.data.resolutions
+                        this.type_disabilities = response.data.type_disabilities
+                        this.advanced_configuration = response.data.advanced_configuration
 
                         this.filterWorkers(); 
                     })
@@ -451,7 +706,47 @@
                 this.form.period.admision_date = worker.work_start_date
                 this.form_disabled.admision_date = worker.work_start_date ? true : false
 
-                this.form.accrued.salary = worker.salary
+
+                this.autocompleteDataSalary(worker)
+
+                this.autocompleteDataPayment(worker)
+
+            },
+            autocompleteDataSalary(worker){
+
+                this.form.accrued.salary = parseFloat(worker.salary)
+
+                let minimum_salary = parseFloat(this.advanced_configuration.minimum_salary)
+
+                if(this.form.accrued.salary <= (minimum_salary * 2)){
+                    this.form.accrued.transportation_allowance = this.advanced_configuration.transportation_allowance
+                }else{
+                    this.form.accrued.transportation_allowance = undefined
+                }
+
+                // console.log(this.advanced_configuration)
+
+            },
+            autocompleteDataPayment(worker){
+
+                if(worker.payment){
+
+                    this.form.payment = worker.payment
+                    this.form_disabled.payment = true
+
+                }else{
+
+                    this.form.payment = {
+                        payment_method_id: null,
+                        bank_name: null,
+                        account_type: null,
+                        account_number: null,
+                    }
+
+                    this.form_disabled.payment = false
+                }
+                
+                this.changePaymentMethod()
 
             },
             async submit() {

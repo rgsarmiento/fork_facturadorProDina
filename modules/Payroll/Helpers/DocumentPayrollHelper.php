@@ -57,6 +57,7 @@ class DocumentPayrollHelper
     {
 
         $params = $this->getParamsForApi($document, $inputs);
+        // dd($params);
         $connection_api = new HttpConnectionApi($this->company->api_token);
         $send_request_to_api = $connection_api->sendRequestToApi("ubl2.1/payroll/{$this->company->test_set_id_payroll}", $params, 'POST');
         $number_full = "{$params['prefix']}-{$params['consecutive']}";
@@ -250,6 +251,9 @@ class DocumentPayrollHelper
                 'worked_days' => $accrued->worked_days,
                 'salary' => $accrued->salary,
                 'accrued_total' => $accrued->accrued_total,
+                'transportation_allowance' => $accrued->transportation_allowance,
+                'telecommuting' => $accrued->telecommuting,
+                'work_disabilities' => $accrued->work_disabilities,
             ],
             'deductions' => [
                 'eps_type_law_deductions_id' => $deduction->eps_type_law_deductions_id,
@@ -257,6 +261,13 @@ class DocumentPayrollHelper
                 'pension_type_law_deductions_id' => $deduction->pension_type_law_deductions_id,
                 'pension_deduction' => $deduction->pension_deduction,
                 'deductions_total' => $deduction->deductions_total,
+
+                'afc' => $deduction->afc,
+                'refund' => $deduction->refund,
+                'debt' => $deduction->debt,
+                'labor_union' => $deduction->labor_union,
+                'education' => $deduction->education,
+                'sanctions' => $deduction->sanctions,
             ]
         ];
 

@@ -871,7 +871,11 @@
 
 
                     @if(in_array('configuration', $vc_modules))
-                    <li class="nav-parent {{in_array($path[0], ['co-configuration-change-ambient', 'co-configuration', 'co-configuration-documents', 'companies', 'catalogs', 'advanced', 'tasks', 'inventories','company_accounts','bussiness_turns','offline-configurations','series-configurations','configurations']) ? 'nav-active nav-expanded' : ''}}">
+                    <li class="nav-parent {{in_array($path[0], [
+                        'co-configuration-change-ambient', 'co-configuration', 'co-configuration-documents', 
+                        'companies', 'catalogs', 'advanced', 'tasks', 'inventories','company_accounts','bussiness_turns',
+                        'offline-configurations','series-configurations','configurations','co-advanced-configuration'
+                    ]) ? 'nav-active nav-expanded' : ''}}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-cogs" aria-hidden="true"></i>
                             <span>Configuración</span>
@@ -914,6 +918,12 @@
                                 </a>
                             </li>
                             @endif
+
+                            <li class="{{($path[0] === 'co-advanced-configuration') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.co-advanced-configuration.index')}}">
+                                    Avanzado
+                                </a>
+                            </li>
 
                             {{-- <li class="{{($path[0] === 'advanced') ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.advanced.index')}}">

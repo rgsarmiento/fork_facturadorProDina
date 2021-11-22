@@ -21,7 +21,9 @@ use Modules\Factcolombia1\Models\TenantService\{
     TypeContract,
     Municipality
 };
-
+use Modules\Factcolombia1\Models\Tenant\{
+    PaymentMethod,
+};
 
 
 class WorkerController extends Controller
@@ -49,6 +51,7 @@ class WorkerController extends Controller
             'payroll_type_document_identifications' => PayrollTypeDocumentIdentification::get(),
             'type_contracts' => TypeContract::get(),
             'payroll_periods' => PayrollPeriod::get(),
+            'payment_methods' => PaymentMethod::get(),
             'municipalities' => Municipality::get(),
         ];
     }

@@ -98,6 +98,13 @@ if($current_hostname) {
             Route::post('/co-configuration/production/queryTechnicalKey', 'Tenant\ConfigurationController@queryTechnicalKey');
 
             Route::post('/company', 'Tenant\ConfigurationController@company');
+            
+            Route::prefix('co-advanced-configuration')->group(function () {
+                Route::get('', 'Tenant\AdvancedConfigurationController@index')->name('tenant.co-advanced-configuration.index');
+                Route::get('record', 'Tenant\AdvancedConfigurationController@record');
+                Route::post('', 'Tenant\AdvancedConfigurationController@store');
+            });
+
         });
     });
 

@@ -44,6 +44,7 @@ class Worker extends ModelTenant
         'position',
         'work_start_date',
         'payroll_period_id',
+        'payment',
     ];
 
         
@@ -83,6 +84,16 @@ class Worker extends ModelTenant
         return $this->belongsTo(PayrollPeriod::class);
     }
 
+    public function getPaymentAttribute($value)
+    {
+        return (is_null($value))?null:(object) json_decode($value);
+    }
+
+    public function setPaymentAttribute($value)
+    {
+        $this->attributes['payment'] = (is_null($value))?null:json_encode($value);
+    }
+
     public function getSearchFullNameAttribute()
     { 
         return "{$this->identification_number} - {$this->second_surname} {$this->surname} {$this->first_name}";
@@ -91,6 +102,21 @@ class Worker extends ModelTenant
     public function getFullNameAttribute()
     { 
         return "{$this->second_surname} {$this->surname} {$this->first_name}";
+    }
+    
+    /**
+     * Retorna data cuando el campo payment es null
+     *
+     * @return array
+     */
+    public function getDefaultDataPayment()
+    {
+        return [
+            'payment_method_id' => null,
+            'bank_name' => null,
+            'account_type' => null,
+            'account_number' => null,
+        ];
     }
 
     public function getSearchRowResource()
@@ -101,6 +127,7 @@ class Worker extends ModelTenant
             'salary' => $this->salary,
             'work_start_date' => $this->work_start_date,
             'payroll_period_id' => $this->payroll_period_id,
+            'payment' => $this->payment,
         ];
     }
  
@@ -134,6 +161,7 @@ class Worker extends ModelTenant
             'position' => $this->position,
             'work_start_date' => $this->work_start_date,
             'payroll_period_id' => $this->payroll_period_id,
+            'payment' => $this->payment ?? $this->getDefaultDataPayment()
         ];
 
     }
