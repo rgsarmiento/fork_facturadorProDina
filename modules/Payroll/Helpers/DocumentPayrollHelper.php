@@ -261,6 +261,13 @@ class DocumentPayrollHelper
                 'pension_type_law_deductions_id' => $deduction->pension_type_law_deductions_id,
                 'pension_deduction' => $deduction->pension_deduction,
                 'deductions_total' => $deduction->deductions_total,
+
+                'afc' => $deduction->afc,
+                'refund' => $deduction->refund,
+                'debt' => $deduction->debt,
+                'labor_union' => $deduction->labor_union,
+                'education' => $deduction->education,
+                'sanctions' => $deduction->sanctions,
             ]
         ];
 
@@ -329,7 +336,7 @@ class DocumentPayrollHelper
 
     public function throwException($message)
     {
-        // throw new Exception($message);
+        throw new Exception($message);
     }
 
 

@@ -53,7 +53,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function setLaborUnionAttribute($value)
     {
-        $this->attributes['labor_union'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['labor_union'] = (is_null($value) || empty($value))?null:json_encode($value);
     }
 
     public function getSanctionsAttribute($value)
@@ -63,7 +63,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function setSanctionsAttribute($value)
     {
-        $this->attributes['sanctions'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['sanctions'] = (is_null($value) || empty($value))?null:json_encode($value);
     }
 
     public function getOrdersAttribute($value)

@@ -87,7 +87,7 @@ class DocumentPayroll extends ModelTenant
 
     public function getPeriodAttribute($value)
     {
-        return (is_null($value))?null:json_decode($value, true);
+        return (is_null($value))?null:(object) json_decode($value);
     }
 
     public function setPeriodAttribute($value)
@@ -107,7 +107,7 @@ class DocumentPayroll extends ModelTenant
 
     public function getPaymentAttribute($value)
     {
-        return (is_null($value))?null: json_decode($value, true);
+        return (is_null($value))?null:(object) json_decode($value);
     }
 
     public function setPaymentAttribute($value)
@@ -117,7 +117,7 @@ class DocumentPayroll extends ModelTenant
 
     public function getPaymentDatesAttribute($value)
     {
-        return (is_null($value))?null: json_decode($value, true);
+        return (is_null($value))?null:(object) json_decode($value);
     }
 
     public function setPaymentDatesAttribute($value)

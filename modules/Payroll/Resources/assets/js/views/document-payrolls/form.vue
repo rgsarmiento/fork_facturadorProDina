@@ -114,34 +114,37 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['payment.payment_method_id']}">
                                             <label class="control-label">Métodos de pago<span class="text-danger"> *</span></label>
-                                            <el-select v-model="form.payment.payment_method_id"   filterable>
+                                            <el-select v-model="form.payment.payment_method_id"   filterable @change="changePaymentMethod">
                                                 <el-option v-for="option in payment_methods" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="errors['payment.payment_method_id']" v-text="errors['payment.payment_method_id'][0]"></small>
                                         </div>
                                     </div>
                                         
-                                    <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['payment.bank_name']}">
-                                            <label class="control-label">Nombre del banco</label>
-                                            <el-input v-model="form.payment.bank_name"></el-input>
-                                            <small class="form-control-feedback" v-if="errors['payment.bank_name']" v-text="errors['payment.bank_name'][0]"></small>
+                                    <template v-if="show_inputs_payment_method">
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['payment.bank_name']}">
+                                                <label class="control-label">Nombre del banco</label>
+                                                <el-input v-model="form.payment.bank_name"></el-input>
+                                                <small class="form-control-feedback" v-if="errors['payment.bank_name']" v-text="errors['payment.bank_name'][0]"></small>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['payment.account_type']}">
-                                            <label class="control-label">Tipo de cuenta</label>
-                                            <el-input v-model="form.payment.account_type"></el-input>
-                                            <small class="form-control-feedback" v-if="errors['payment.account_type']" v-text="errors['payment.account_type'][0]"></small>
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['payment.account_type']}">
+                                                <label class="control-label">Tipo de cuenta</label>
+                                                <el-input v-model="form.payment.account_type"></el-input>
+                                                <small class="form-control-feedback" v-if="errors['payment.account_type']" v-text="errors['payment.account_type'][0]"></small>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['payment.account_number']}">
-                                            <label class="control-label">Número de cuenta</label>
-                                            <el-input v-model="form.payment.account_number"></el-input>
-                                            <small class="form-control-feedback" v-if="errors['payment.account_number']" v-text="errors['payment.account_number'][0]"></small>
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['payment.account_number']}">
+                                                <label class="control-label">Número de cuenta</label>
+                                                <el-input v-model="form.payment.account_number"></el-input>
+                                                <small class="form-control-feedback" v-if="errors['payment.account_number']" v-text="errors['payment.account_number'][0]"></small>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </template>
+
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-md-12">
@@ -324,6 +327,31 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">AFC</label>
+                                            <el-input-number v-model="form.deduction.afc" :min="0" controls-position="right"></el-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Reintegro</label>
+                                            <el-input-number v-model="form.deduction.refund" :min="0" controls-position="right"></el-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Deuda</label>
+                                            <el-input-number v-model="form.deduction.debt" :min="0" controls-position="right"></el-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Educación</label>
+                                            <el-input-number v-model="form.deduction.education" :min="0" controls-position="right"></el-input-number>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.deductions_total']}">
                                             <label class="control-label">Deducción Total<span class="text-danger"> *</span></label>
                                             <el-input-number v-model="form.deduction.deductions_total" :min="0" controls-position="right"></el-input-number>
@@ -331,6 +359,94 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <h4>Sindicatos</h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <h4>Sanciones</h4>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sindicatos -->
+                                    <div class="col-md-6">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.deduction.labor_union.length>0">
+                                                        <th class="pb-2">Porcentaje</th>
+                                                        <th class="pb-2">Deducción</th>
+                                                    </template>
+                                                    <th width="15%"><a href="#" @click.prevent="clickAddLaborUnion" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.deduction.labor_union" :key="index"> 
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.percentage" :min="0" controls-position="right"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.deduction" :min="0" controls-position="right"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelLaborUnion(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Sindicatos -->
+                                    
+                                    <!-- Sanciones -->
+                                    <div class="col-md-6">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.deduction.sanctions.length>0">
+                                                        <th class="pb-2">Sanción pública</th>
+                                                        <th class="pb-2">Sanción privada</th>
+                                                    </template>
+                                                    <th width="15%"><a href="#" @click.prevent="clickAddSanction" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.deduction.sanctions" :key="index"> 
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.public_sanction" :min="0" controls-position="right"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.private_sanction" :min="0" controls-position="right"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelSanction(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Sanciones -->
+
+                                </div>
+
                             </el-tab-pane>
                         </el-tabs>
  
@@ -384,7 +500,8 @@
                 activeName: 'period',
                 recordId:null,
                 showDialogDocumentPayrollOptions:false,
-                form_disabled: {}
+                form_disabled: {},
+                show_inputs_payment_method: true
             }
         }, 
         async created() {
@@ -396,6 +513,12 @@
             this.loading_form = true
         }, 
         methods: { 
+            changePaymentMethod(){
+
+                //mostrar campos adicionales, si el metodo de pago es el definido en el arreglo/obligatorio
+                this.show_inputs_payment_method = [2,3,4,5,6,7,21,22,30,31,42,45,46,47].includes(this.form.payment.payment_method_id)
+
+            },
             initForm() {
 
                 this.form = {
@@ -431,6 +554,12 @@
                         pension_type_law_deductions_id: null,
                         pension_deduction: 0, 
                         deductions_total: 0, 
+                        afc: undefined, 
+                        refund: undefined,
+                        debt: undefined,
+                        education: undefined,
+                        labor_union: [],
+                        sanctions: [],
                     },
                 }
 
@@ -442,6 +571,28 @@
                     admision_date : false,
                 }
 
+            },
+            clickAddLaborUnion(){
+                
+                this.form.deduction.labor_union.push({
+                    percentage :  0,
+                    deduction :  0,
+                })
+
+            },
+            clickCancelLaborUnion(index){
+                this.form.deduction.labor_union.splice(index, 1)
+            },
+            clickAddSanction(){
+                
+                this.form.deduction.sanctions.push({
+                    public_sanction :  0,
+                    private_sanction :  0,
+                })
+
+            },
+            clickCancelSanction(index){
+                this.form.deduction.sanctions.splice(index, 1)
             },
             clickAddWorkDisability(){
 
