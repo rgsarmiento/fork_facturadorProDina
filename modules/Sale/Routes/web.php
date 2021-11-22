@@ -7,6 +7,16 @@ if($current_hostname) {
     Route::domain($current_hostname->fqdn)->group(function () {
         Route::middleware(['auth', 'locked.tenant'])->group(function () {
 
+
+            // rutas colombia
+
+
+
+
+
+
+            
+
             Route::prefix('sale-opportunities')->group(function() {
 
                 Route::get('', 'SaleOpportunityController@index')->name('tenant.sale_opportunities.index');
