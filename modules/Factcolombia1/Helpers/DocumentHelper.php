@@ -193,4 +193,55 @@ class DocumentHelper{
 
     }
 
+    
+    /**
+     * Genera un arreglo con la data necesaria para insertar en el detalle del documento
+     * 
+     * Usado en: 
+     * RemissionController
+     *
+     * @param  array $inputs
+     * @return array
+    */
+    public static function getDataItemFromInputs($inputs)
+    {
+
+        $items = [];
+
+        foreach ($inputs['items'] as $item) {
+
+            $json_item = [
+                'name' => $item['item']['name'],
+                'description' => $item['item']['description'],
+                'internal_id' => $item['item']['internal_id'],
+
+                'unit_type' => $item['item']['unit_type'],
+                'unit_type_id' => $item['item']['unit_type_id'],
+                'presentation' => (key_exists('item', $item)) ? (isset($item['item']['presentation']) ? $item['item']['presentation']:[]):[],
+
+                'is_set' => $item['item']['is_set'],
+                'lots' => (isset($item['item']['lots'])) ? $item['item']['lots']:[],
+                'IdLoteSelected' => ( isset($item['IdLoteSelected']) ? $item['IdLoteSelected'] : null )
+            ];
+
+            $items [] = [
+                'item_id' => $item['item_id'],
+                // 'item' => array_merge($item, $json_item),
+                'item' => $json_item,
+                'unit_type_id' => $item['unit_type_id'],
+                'quantity' => $item['quantity'],
+                'unit_price' => isset($item['price']) ? $item['price'] : $item['unit_price'],
+                'tax_id' => $item['tax_id'],
+                'tax' => Tax::find($item['tax_id']),
+                'total_tax' => $item['total_tax'],
+                'subtotal' => $item['subtotal'],
+                'discount' => $item['discount'],
+                'total' => $item['total']
+            ];
+
+        }
+
+        return $items;
+    }
+
 }

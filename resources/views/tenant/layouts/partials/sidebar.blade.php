@@ -58,6 +58,7 @@
                         {{ ($path[0] === 'co-clients')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'co-taxes')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'co-documents-aiu')?'nav-active nav-expanded':'' }}
+                        {{ ($path[0] === 'co-remissions')?'nav-active nav-expanded':'' }}
 
 
                         ">
@@ -237,6 +238,13 @@
                                         </a>
                                     </li>
                                 @endif
+
+                                
+                                <li class="{{ ($path[0] === 'co-remissions')?'nav-active':'' }}">
+                                    <a class="nav-link" href="{{route('tenant.co-remissions.index')}}">
+                                        Remisiones
+                                    </a>
+                                </li>
 
                                 {{-- <li class="nav-parent
                                     {{ ($path[0] === 'contracts')?'nav-active nav-expanded':'' }}

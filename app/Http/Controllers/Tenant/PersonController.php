@@ -294,27 +294,48 @@ class PersonController extends Controller
 
         
     /**
-     * Busqueda de clientes
-     *
-     * @param  Request $request
+     * Busqueda de cliente por id
+     *  
      * @param  int $id
-     * @return arry
+     * @return array
      */
-    public function searchCustomers(Request $request, $id = null)
+    public function searchCustomerById($id)
+    {
+
+        return [
+            'customers' => Person::where('id', $id)
+                                    ->take(1)
+                                    ->get()->transform(function($row){
+                                        return $row->getRowSearchResource();
+                                    })
+        ];
+
+    }
+
+    /**
+     * Busqueda de clientes
+     * Si no ingresan datos para búsqueda, retorna los 10 primeros (usar en método tables)
+     *
+     * Usado en:
+     * RemissionController
+     *  
+     * @param  Request $request
+     * @return array
+     */
+    public function searchCustomers(Request $request)
     {
 
         if(!$request->has('input'))
         {
-            $persons = Person::take(10);
+            $customers = Person::take(10);
         }
         else
         {
-            $persons = Person::whereFilterSearchCustomer($request->input);
+            $customers = Person::whereFilterSearchCustomer($request->input);
         }
 
-
         return [
-            'persons' => $persons->get()->transform(function($row){
+            'customers' => $customers->get()->transform(function($row){
                 return $row->getRowSearchResource();
             })
         ];

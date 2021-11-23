@@ -329,7 +329,7 @@ class Item extends ModelTenant
         return $query->where('internal_id','!=', null);
     }
 
-    public function getSearchRowResource()
+    public function getRowSearchResource()
     {
 
         $detail = $this->getFullDescription();
@@ -394,6 +394,8 @@ class Item extends ModelTenant
             'series_enabled' => (bool) $this->series_enabled,
             'unit_type' => $this->unit_type,
             'tax' => $this->tax,
+            'is_set' => (bool) $this->is_set,
+            
         ];
     }
 
@@ -418,6 +420,31 @@ class Item extends ModelTenant
             'brand' => $brand,
             'category' => $category,
         ];
+    }
+
+    
+    /**
+     * 
+     * Filtros para busqueda de productos
+     * Usado en:
+     * ItemController
+     *
+     * @param $query
+     * @param $input
+     */
+    public function scopeWhereFilterSearchItem($query, $input)
+    {
+        return $query->where('name','like', "%{$input}%")
+                    ->orWhere('internal_id','like', "%{$input}%")
+                    ->orderBy('name');
+    }
+    
+    public function scopeWhereFilterAllowedItem($query)
+    {
+        return $query->whereWarehouse()
+                        ->whereNotIsSet()
+                        ->whereIsActive()
+                        ->whereNotItemsAiu();
     }
 
 }

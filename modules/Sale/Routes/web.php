@@ -11,19 +11,19 @@ if($current_hostname) {
 
             Route::prefix('co-remissions')->group(function() {
 
-                Route::get('', 'SaleOpportunityController@index')->name('tenant.co-remissions.index');
-                Route::post('', 'SaleOpportunityController@store');
-                Route::get('columns', 'SaleOpportunityController@columns');
-                Route::get('records', 'SaleOpportunityController@records');
-                Route::get('record/{id}', 'SaleOpportunityController@record');
-                Route::get('create/{id?}', 'SaleOpportunityController@create')->name('tenant.co-remissions.create');
-                // Route::get('search/customers', 'SaleOpportunityController@searchCustomers');
-                // Route::get('search/customer/{id}', 'SaleOpportunityController@searchCustomerById');
+                Route::get('', 'RemissionController@index')->name('tenant.co-remissions.index');
+                Route::post('', 'RemissionController@store');
+                Route::get('columns', 'RemissionController@columns');
+                Route::get('records', 'RemissionController@records');
+                Route::get('record/{id}', 'RemissionController@record');
+                Route::get('create/{id?}', 'RemissionController@create')->name('tenant.co-remissions.create');
+                // Route::get('search/customers', 'RemissionController@searchCustomers');
+                // Route::get('search/customer/{id}', 'RemissionController@searchCustomerById');
 
-                Route::get('tables', 'SaleOpportunityController@tables');
-                Route::get('item/tables', 'SaleOpportunityController@item_tables');
-                Route::get('download/{external_id}/{format?}', 'SaleOpportunityController@download');
-                Route::get('print/{external_id}/{format?}', 'SaleOpportunityController@toPrint');
+                Route::get('tables', 'RemissionController@tables');
+                Route::get('item/tables', 'RemissionController@item_tables');
+                Route::get('download/{external_id}/{format?}', 'RemissionController@download');
+                Route::get('print/{external_id}/{format?}', 'RemissionController@toPrint');
                 
             });
 

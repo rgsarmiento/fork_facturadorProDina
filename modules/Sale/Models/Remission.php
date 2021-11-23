@@ -15,6 +15,8 @@ use App\Models\Tenant\{
     User,
     Establishment,
 };
+use App\Models\Tenant\ModelTenant;
+
 
 class Remission extends ModelTenant
 {
@@ -161,6 +163,48 @@ class Remission extends ModelTenant
     public function scopeWhereCurrency($query, $currency_id)
     {
         return $query->where('currency_id', $currency_id);
+    }
+
+    public function getRowResource()
+    {
+        return [
+            
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'external_id' => $this->external_id,
+            'establishment_id' => $this->establishment_id,
+            'establishment' => $this->establishment,
+            'state_type_id' => $this->state_type_id,
+            'number_full' => $this->number_full,
+
+            'date_of_issue' => $this->date_of_issue->format('Y-m-d'),
+            'time_of_issue' => $this->time_of_issue,
+
+            'customer_id' => $this->customer_id,
+            'customer_number' => $this->customer->number,
+            'customer_name' => $this->customer->name,
+
+            'prefix' => $this->prefix,
+            'number' => $this->number,
+            'currency_id' => $this->currency_id,
+            'currency_name' => $this->currency->name,
+
+            'date_expiration' => $this->date_expiration,
+            'observation' => $this->observation,
+
+            'sale' => $this->sale,
+            'total_tax' => $this->total_tax,
+            'taxes' => $this->taxes,
+            'total_discount' => $this->total_discount,
+            'subtotal' => $this->subtotal,
+            'total' => $this->total,
+
+            'payment_form_id' => $this->payment_form_id,
+            'payment_method_id' => $this->payment_method_id,
+            'time_days_credit' => $this->time_days_credit,
+            'filename' => $this->filename,
+
+        ];
     }
 
 }

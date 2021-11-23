@@ -139,6 +139,8 @@ if ($hostname) {
             Route::get('items/images/{item}', 'Tenant\ItemController@images');
             Route::get('items/images/delete/{id}', 'Tenant\ItemController@delete_images');
             Route::delete('items/delete/all', 'Tenant\ItemController@deleteAll');
+            Route::get('main-items/search', 'Tenant\ItemController@searchItems');
+            Route::get('main-items/search-by-id/{id}', 'Tenant\ItemController@searchItemById');
 
             //Persons
             Route::get('persons/columns', 'Tenant\PersonController@columns');
@@ -153,7 +155,8 @@ if ($hostname) {
             Route::get('persons/co-export/{type}', 'Tenant\PersonController@coExport');
             Route::get('/persons/searchName/{nit}', 'Tenant\PersonController@searchName');
             Route::delete('persons/delete/all/{type}', 'Tenant\PersonController@deleteAll');
-            Route::get('/persons/search-customers/{input}', 'Tenant\PersonController@searchCustomers');
+            Route::get('persons-search-customers', 'Tenant\PersonController@searchCustomers');
+            Route::get('customer-by-id/{id}', 'Tenant\PersonController@searchCustomerById');
 
 
             //Documents

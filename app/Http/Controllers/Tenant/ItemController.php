@@ -579,4 +579,56 @@ class ItemController extends Controller
     }
 
 
+    /**
+     * Busqueda de producto por id
+     *  
+     * @param  int $id
+     * @return array
+     */
+    public function searchItemById($id)
+    {
+
+        return [
+            'items' => Item::where('id', $id)
+                            ->whereFilterAllowedItem()
+                            ->take(1)
+                            ->get()->transform(function($row){
+                                return $row->getRowSearchResource();
+                            })
+        ];
+
+    }
+
+    /**
+     * Busqueda de productos
+     * Si no ingresan datos para búsqueda, retorna los 10 primeros (usar en método tables)
+     *
+     * Usado en:
+     * RemissionController
+     *  
+     * @param  Request $request
+     * @return array
+    */
+    public function searchItems(Request $request)
+    {
+
+        if(!$request->has('input'))
+        {
+            $items = Item::whereFilterAllowedItem()
+                            ->take(10);
+        }
+        else
+        {
+            $items = Item::whereFilterAllowedItem()
+                            ->whereFilterSearchItem($request->input);
+        }
+
+        return [
+            'items' => $items->get()->transform(function($row){
+                return $row->getRowSearchResource();
+            })
+        ];
+
+    }
+
 }

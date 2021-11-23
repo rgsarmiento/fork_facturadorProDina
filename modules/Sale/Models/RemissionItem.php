@@ -4,6 +4,7 @@ namespace Modules\Sale\Models;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Factcolombia1\Models\Tenant\TypeUnit;
+use App\Models\Tenant\ModelTenant;
 
 class RemissionItem extends ModelTenant
 {

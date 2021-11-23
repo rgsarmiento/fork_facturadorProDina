@@ -159,7 +159,7 @@ class Person extends ModelTenant
      *
      * @return array
      */
-    private function getRowSearchResource()
+    public function getRowSearchResource()
     {
         return [
             'id' => $this->id,
@@ -192,7 +192,7 @@ class Person extends ModelTenant
     {
         return $query->where('number','like', "%{$input}%")
                     ->orWhere('name','like', "%{$input}%")
-                    ->whereType('type', 'customers')
+                    ->whereType('customers')
                     ->orderBy('name');
     }
 
