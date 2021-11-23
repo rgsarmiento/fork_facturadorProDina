@@ -292,4 +292,33 @@ class PersonController extends Controller
         ];
     }
 
+        
+    /**
+     * Busqueda de clientes
+     *
+     * @param  Request $request
+     * @param  int $id
+     * @return arry
+     */
+    public function searchCustomers(Request $request, $id = null)
+    {
+
+        if(!$request->has('input'))
+        {
+            $persons = Person::take(10);
+        }
+        else
+        {
+            $persons = Person::whereFilterSearchCustomer($request->input);
+        }
+
+
+        return [
+            'persons' => $persons->get()->transform(function($row){
+                return $row->getRowSearchResource();
+            })
+        ];
+
+    }
+
 }

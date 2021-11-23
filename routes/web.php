@@ -153,6 +153,7 @@ if ($hostname) {
             Route::get('persons/co-export/{type}', 'Tenant\PersonController@coExport');
             Route::get('/persons/searchName/{nit}', 'Tenant\PersonController@searchName');
             Route::delete('persons/delete/all/{type}', 'Tenant\PersonController@deleteAll');
+            Route::get('/persons/search-customers/{input}', 'Tenant\PersonController@searchCustomers');
 
 
             //Documents

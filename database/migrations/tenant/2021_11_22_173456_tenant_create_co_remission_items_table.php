@@ -16,7 +16,7 @@ class TenantCreateCoRemissionItemsTable extends Migration
         Schema::create('co_remission_items', function (Blueprint $table) {
 
             $table->increments('id');
-            $table->unsignedInteger('co_remission_id');
+            $table->unsignedInteger('remission_id');
             $table->unsignedInteger('item_id');
             $table->json('item');
             
@@ -32,7 +32,7 @@ class TenantCreateCoRemissionItemsTable extends Migration
             $table->decimal('unit_price', 16, 6);
             $table->decimal('total', 18, 2);
 
-            $table->foreign('co_remission_id')->references('id')->on('co_remissions')->onDelete('cascade');
+            $table->foreign('remission_id')->references('id')->on('co_remissions')->onDelete('cascade');
             $table->foreign('item_id')->references('id')->on('items');
             $table->foreign('unit_type_id')->references('id')->on('co_type_units');
             $table->foreign('tax_id')->references('id')->on('co_taxes');

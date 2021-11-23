@@ -53,5 +53,24 @@ class Tax extends Model
         return $this->belongsTo(TypeTax::class, 'type_tax_id');
     }
 
-
+    public function getSearchRowResource()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'code' => $this->code,
+            'rate' =>  $this->rate,
+            'conversion' =>  $this->conversion,
+            'is_percentage' =>  $this->is_percentage,
+            'is_fixed_value' =>  $this->is_fixed_value,
+            'is_retention' =>  $this->is_retention,
+            'in_base' =>  $this->in_base,
+            'in_tax' =>  $this->in_tax,
+            'type_tax_id' =>  $this->type_tax_id,
+            'type_tax' =>  $this->type_tax,
+            'retention' =>  0,
+            'total' =>  0,
+        ];
+    }
+    
 }

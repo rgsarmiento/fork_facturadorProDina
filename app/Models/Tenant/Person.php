@@ -152,4 +152,48 @@ class Person extends ModelTenant
         return $query->where('enabled', true);
     }
 
+    
+    /**
+     * 
+     * Retorna arreglo con los datos para la busqueda de clientes
+     *
+     * @return array
+     */
+    private function getRowSearchResource()
+    {
+        return [
+            'id' => $this->id,
+            'description' => $this->number.' - '.$this->name,
+            'name' => $this->name,
+            'number' => $this->number,
+            'identity_document_type_id' => $this->identity_document_type_id,
+            'address' =>  $this->address,
+            'email' =>  $this->email,
+            'telephone' =>  $this->telephone,
+            'type_person_id' => $this->type_person_id,
+            'type_regime_id' => $this->type_regime_id,
+            'city_id' => $this->city_id,
+            'type_obligation_id' => $this->type_obligation_id,
+            'dv' => $this->dv
+        ];
+    }
+
+            
+    /**
+     * 
+     * Filtros para busqueda de clientes
+     * Usado en:
+     * PersonController
+     *
+     * @param $query
+     * @param $input
+     */
+    public function scopeWhereFilterSearchCustomer($query, $input)
+    {
+        return $query->where('number','like', "%{$input}%")
+                    ->orWhere('name','like', "%{$input}%")
+                    ->whereType('type', 'customers')
+                    ->orderBy('name');
+    }
+
 }

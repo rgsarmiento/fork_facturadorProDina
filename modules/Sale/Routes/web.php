@@ -7,12 +7,27 @@ if($current_hostname) {
     Route::domain($current_hostname->fqdn)->group(function () {
         Route::middleware(['auth', 'locked.tenant'])->group(function () {
 
+            // colombia
 
-            // rutas colombia
+            Route::prefix('co-remissions')->group(function() {
 
+                Route::get('', 'SaleOpportunityController@index')->name('tenant.co-remissions.index');
+                Route::post('', 'SaleOpportunityController@store');
+                Route::get('columns', 'SaleOpportunityController@columns');
+                Route::get('records', 'SaleOpportunityController@records');
+                Route::get('record/{id}', 'SaleOpportunityController@record');
+                Route::get('create/{id?}', 'SaleOpportunityController@create')->name('tenant.co-remissions.create');
+                // Route::get('search/customers', 'SaleOpportunityController@searchCustomers');
+                // Route::get('search/customer/{id}', 'SaleOpportunityController@searchCustomerById');
 
+                Route::get('tables', 'SaleOpportunityController@tables');
+                Route::get('item/tables', 'SaleOpportunityController@item_tables');
+                Route::get('download/{external_id}/{format?}', 'SaleOpportunityController@download');
+                Route::get('print/{external_id}/{format?}', 'SaleOpportunityController@toPrint');
+                
+            });
 
-
+            // colombia
 
 
             

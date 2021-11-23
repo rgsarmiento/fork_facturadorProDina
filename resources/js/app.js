@@ -311,6 +311,10 @@ Vue.component('tenant-document-payrolls-form', require('@viewsModulePayroll/docu
 // advanced-configuration
 Vue.component('tenant-advanced-configuration-index', require('@viewsModuleProColombia/tenant/advanced-configuration/index.vue'));
 
+// Remissions
+// Vue.component('tenant-co-remissions-index', require('@viewsModuleSale/co-remissions/index.vue'));
+// Vue.component('tenant-co-remissions-form', require('@viewsModuleSale/co-remissions/form.vue'));
+
 
 // System
 Vue.component('system-clients-index', require('./views/system/clients/index.vue'));

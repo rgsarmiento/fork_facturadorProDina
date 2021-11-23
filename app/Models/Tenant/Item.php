@@ -15,6 +15,7 @@ use Modules\Item\Models\ItemLotsGroup;
 use Modules\Factcolombia1\Models\Tenant\TypeUnit;
 use Modules\Factcolombia1\Models\Tenant\Tax;
 use Modules\Factcolombia1\Models\Tenant\Currency;
+use Modules\Inventory\Models\Warehouse;
 
 
 class Item extends ModelTenant
@@ -326,6 +327,97 @@ class Item extends ModelTenant
     public function scopeWhereHasInternalId($query)
     {
         return $query->where('internal_id','!=', null);
+    }
+
+    public function getSearchRowResource()
+    {
+
+        $detail = $this->getFullDescription();
+        $warehouse = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();
+
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'full_description' => $detail['full_description'],
+            'brand' => $detail['brand'],
+            'category' => $detail['category'],
+            'internal_id' => $this->internal_id,
+            'description' => $this->description,
+            'currency_type_id' => $this->currency_type_id,
+            'currency_type_symbol' => $this->currency_type->symbol,
+            'sale_unit_price' => round($this->sale_unit_price, 2),
+            'purchase_unit_price' => $this->purchase_unit_price,
+            'unit_type_id' => $this->unit_type_id,
+            'item_unit_types' => collect($this->item_unit_types)->transform(function($row) {
+                return [
+                    'id' => $row->id,
+                    'description' => "{$row->description}",
+                    'item_id' => $row->item_id,
+                    'unit_type_id' => $row->unit_type_id,
+                    'unit_type' => $row->unit_type,
+                    'quantity_unit' => $row->quantity_unit,
+                    'price1' => $row->price1,
+                    'price2' => $row->price2,
+                    'price3' => $row->price3,
+                    'price_default' => $row->price_default,
+                ];
+            }),
+            'warehouses' => collect($this->warehouses)->transform(function($row) use($warehouse){
+                return [
+                    'warehouse_description' => $row->warehouse->description,
+                    'stock' => $row->stock,
+                    'warehouse_id' => $row->warehouse_id,
+                    'checked' => ($row->warehouse_id == $warehouse->id) ? true : false,
+                ];
+            }),
+            'lots_group' => collect($this->lots_group)->transform(function($row){
+                return [
+                    'id'  => $row->id,
+                    'code' => $row->code,
+                    'quantity' => $row->quantity,
+                    'date_of_due' => $row->date_of_due,
+                    'checked'  => false
+                ];
+            }),
+            'lots' => $this->item_lots->where('has_sale', false)->where('warehouse_id', $warehouse->id)->transform(function($row) {
+                return [
+                    'id' => $row->id,
+                    'series' => $row->series,
+                    'date' => $row->date,
+                    'item_id' => $row->item_id,
+                    'warehouse_id' => $row->warehouse_id,
+                    'has_sale' => (bool)$row->has_sale,
+                    'lot_code' => ($row->item_loteable_type) ? (isset($row->item_loteable->lot_code) ? $row->item_loteable->lot_code:null):null
+                ];
+            }),
+            'lots_enabled' => (bool) $this->lots_enabled,
+            'series_enabled' => (bool) $this->series_enabled,
+            'unit_type' => $this->unit_type,
+            'tax' => $this->tax,
+        ];
+    }
+
+        
+    /**
+     * Descripción para busqueda de items
+     *
+     * @param $row
+     * @param $warehouse
+     * @return void
+     */
+    public function getFullDescription(){
+
+        $desc = ($this->internal_id)?$this->internal_id.' - '.$this->name : $this->name;
+        $category = ($this->category) ? "{$this->category->name}" : "";
+        $brand = ($this->brand) ? "{$this->brand->name}" : "";
+
+        $desc = "{$desc} - {$brand}";
+
+        return [
+            'full_description' => $desc,
+            'brand' => $brand,
+            'category' => $category,
+        ];
     }
 
 }
