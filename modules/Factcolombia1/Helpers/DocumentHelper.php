@@ -21,7 +21,7 @@ class DocumentHelper{
     protected $apply_change;
 
 
-    public static function createDocument($request, $nextConsecutive, $correlative_api, $company, $response, $response_status)
+    public static function createDocument($request, $nextConsecutive, $correlative_api, $company, $response, $response_status, $type_environment_id)
     {
 
         $establishment = EstablishmentInput::set(auth()->user()->establishment_id);
@@ -33,8 +33,7 @@ class DocumentHelper{
             'establishment' => $establishment,
             'soap_type_id' => Company::active()->soap_type_id,
             'send_server' => false,
-
-
+            'type_environment_id' => $type_environment_id,
             'type_document_id' => $request->type_document_id,
             'prefix' => $nextConsecutive->prefix,
             'number' => $correlative_api,

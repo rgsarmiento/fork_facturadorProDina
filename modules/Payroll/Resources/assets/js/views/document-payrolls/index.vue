@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div  v-loading="loading">
         <div class="page-header pr-0">
             <h2><a href="/dashboard"><i class="fas fa-tachometer-alt"></i></a></h2>
             <ol class="breadcrumbs">
@@ -20,6 +20,7 @@
                         <th>Fecha</th>
                         <th>Empleado</th>
                         <th class="text-center">Nómina</th>
+                        <th class="text-center">Estado</th>
                         <th class="text-center">Salario</th>
                         <th class="text-center">T. Devengados</th>
                         <th class="text-center">T. Deducciones</th>
@@ -30,12 +31,26 @@
                         <td>{{ row.date_of_issue }}</td>
                         <td>{{ row.worker_full_name }}</td>  
                         <td class="text-center">{{ row.number_full }}</td>  
+                        <td class="text-center">
+                            <template v-if="row.state_document_id">
+                                <span class="badge bg-secondary text-white" :class="{'bg-secondary': (row.state_document_id === 1), 'bg-success': (row.state_document_id === 5), 'bg-dark': (row.state_document_id === 6)}">
+                                    {{ row.state_document_name }}
+                                </span>
+                            </template>
+                        </td>  
                         <td class="text-center">{{ row.salary }}</td>  
                         <td class="text-center">{{ row.accrued_total }}</td>  
                         <td class="text-center">{{ row.deductions_total }}</td>  
                         <td class="text-right">
+
+                            <template v-if="row.btn_query">
+                                <el-tooltip class="item" effect="dark" content="Consultar ZIPKEY a la DIAN" placement="top-start">
+                                    <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickQueryZipKey(row.id)">Consultar</button>
+                                </el-tooltip>
+                            </template>
+
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickOptions(row.id)">Opciones</button>
-                            <!-- <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button> -->
+
                         </td>
                     </tr>
                 </data-table>
@@ -66,11 +81,42 @@
                 resource: 'payroll/document-payrolls',
                 recordId: null,
                 showDialogDocumentPayrollOptions:false,
+                loading: false,
             }
         },
         created() { 
         },
         methods: { 
+            async clickQueryZipKey(recordId) {
+
+                // this.loading = true
+                
+                await this.$http.post(`/${this.resource}/query-zipkey`, {
+                    id : recordId
+                }).then(response => {
+                    console.log(response)
+
+                    if (response.data.success) {
+                        this.$message.success(response.data.message)
+                        this.$eventHub.$emit('reloadData')
+                    }
+                    else {
+                        this.$message.error(response.data.message)
+                    }
+                }).catch(error => {
+
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data
+                    }
+                    else {
+                        this.$message.error(error.response.data.message)
+                    }
+
+
+                }).then(() => {
+                    this.loading = false
+                })
+            },  
             clickOptions(recordId = null) {
                 this.recordId = recordId
                 this.showDialogDocumentPayrollOptions = true

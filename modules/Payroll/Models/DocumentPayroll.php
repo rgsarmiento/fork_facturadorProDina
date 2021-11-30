@@ -8,9 +8,11 @@ use App\Models\Tenant\{
 };
 use Modules\Factcolombia1\Models\Tenant\{
     TypeDocument,
+    StateDocument,
 };
 use Modules\Factcolombia1\Models\TenantService\{
-    PayrollPeriod
+    PayrollPeriod,
+    TypeEnvironment
 };
 use App\Models\Tenant\{
     Establishment
@@ -57,6 +59,8 @@ class DocumentPayroll extends ModelTenant
         'payment',
         'payment_dates',
         'response_api',
+        'type_environment_id',
+        'state_document_id',
 
     ];
         
@@ -135,6 +139,16 @@ class DocumentPayroll extends ModelTenant
         $this->attributes['response_api'] = (is_null($value))?null:json_encode($value);
     }
 
+    public function state_document() 
+    {
+        return $this->belongsTo(StateDocument::class);
+    }
+
+    public function type_environment()
+    {
+        return $this->belongsTo(TypeEnvironment::class);
+    }
+
     public function type_document() 
     {
         return $this->belongsTo(TypeDocument::class);
@@ -194,6 +208,12 @@ class DocumentPayroll extends ModelTenant
 
         }
 
+        //mostrar el boton consultar si el estado es registrado
+        $btn_query = false;
+
+        if($this->state_document_id === 1){
+            $btn_query = true;
+        }
 
         return [
             'id' => $this->id,
@@ -227,6 +247,10 @@ class DocumentPayroll extends ModelTenant
 
             'filename_xml' => $filename_xml,
             'filename_pdf' => $filename_pdf,
+
+            'state_document_id' => $this->state_document_id,
+            'state_document_name' => optional($this->state_document)->name,
+            'btn_query' => $btn_query,
 
         ];
 

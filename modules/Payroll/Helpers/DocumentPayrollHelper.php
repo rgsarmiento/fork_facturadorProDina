@@ -8,10 +8,17 @@ use Modules\Factcolombia1\Helpers\HttpConnectionApi;
 use Modules\Factcolombia1\Models\TenantService\{
     Company as ServiceCompany
 };
+use Modules\Payroll\Models\{
+    DocumentPayroll,
+};
 use Exception;
 
 class DocumentPayrollHelper
 {
+
+    const REGISTERED = 1;
+    const ACCEPTED = 5;
+    const REJECTED = 6;
 
     private $company;
 
@@ -32,7 +39,7 @@ class DocumentPayrollHelper
         $worker = WorkerInput::set($inputs->worker_id);
 
         $values = [
-            'consecutive' => $this->getConsecutive(9, $inputs->prefix),
+            'consecutive' => $this->getConsecutive(9, true, $inputs->prefix),
             'user_id' => auth()->id(),
             'external_id' => Str::uuid()->toString(),
             'establishment_id' => auth()->user()->establishment_id,
@@ -40,7 +47,7 @@ class DocumentPayrollHelper
             'date_of_issue' => date('Y-m-d'),
             'time_of_issue' => date('H:i:s'),
             'worker' => $worker,
-
+            'state_document_id' => self::REGISTERED, //estado inicial
         ];
  
         return $inputs->merge($values)->all();
@@ -50,10 +57,10 @@ class DocumentPayrollHelper
     /**
      * Enviar nomina a la api
      *
-     * @param  mixed $document
+     * @param  DocumentPayroll $document
      * @param  mixed $inputs
      */
-    public function sendToApi($document, $inputs)
+    public function sendToApi(DocumentPayroll $document, $inputs)
     {
 
         $params = $this->getParamsForApi($document, $inputs);
@@ -70,7 +77,7 @@ class DocumentPayrollHelper
         }
 
         // validacion respuesta api entorno Pruebas/Produccion
-        $this->validateResponseApi($send_request_to_api, $number_full, $connection_api);
+        $this->validateResponseApi($send_request_to_api, $number_full, $connection_api, $document);
 
         return $send_request_to_api;
 
@@ -83,9 +90,10 @@ class DocumentPayrollHelper
      * @param $send_request_to_api
      * @param $number_full
      * @param HttpConnectionApi $connection_api
+     * @param DocumentPayroll $document
      * @return void
      */
-    private function validateResponseApi($send_request_to_api, $number_full, HttpConnectionApi $connection_api)
+    private function validateResponseApi($send_request_to_api, $number_full, HttpConnectionApi $connection_api, DocumentPayroll $document)
     {
 
         //entorno pruebas/habilitacion
@@ -111,8 +119,8 @@ class DocumentPayrollHelper
                     }
                 }
             }
-    
-            $this->validateZipKey($zip_key, $number_full, $connection_api);
+            
+            // $this->validateZipKey($zip_key, $number_full, $connection_api);
 
         }
         //entorno produccion
@@ -124,6 +132,7 @@ class DocumentPayrollHelper
             if($send_bill_sync_result['IsValid'] == "true")
             {
                 //estado aceptado en produccion, deberia actualizar un campo en bd para mostrar el mensaje directo de la dian
+                $this->updateStateDocument(self::ACCEPTED, $document);
             }
             else
             {
@@ -137,6 +146,21 @@ class DocumentPayrollHelper
         }
 
     }
+    
+    /**
+     * 
+     * Actualizar estado de la nómina dependiendo de la validación al enviar a la dian
+     *
+     * @param  int $state_document_id
+     * @param  DocumentPayroll $document
+     * @return void
+     */
+    public function updateStateDocument($state_document_id, DocumentPayroll $document)
+    {
+        $document->update([
+            'state_document_id' => $state_document_id
+        ]);
+    }
 
     
     /**
@@ -146,15 +170,20 @@ class DocumentPayrollHelper
      * @param  string $zip_key
      * @param $number_full
      * @param HttpConnectionApi $connection_api
+     * @param DocumentPayroll $document
      * @return void
      */
-    private function validateZipKey($zip_key, $number_full, HttpConnectionApi $connection_api)
+    public function validateZipKey($zip_key, $number_full, DocumentPayroll $document, HttpConnectionApi $connection_api = null)
     {
+
+        if(!$connection_api){
+            $connection_api = new HttpConnectionApi($this->company->api_token);
+        }
         
         if($zip_key)
         {
             //esperar 3 segundos para ejecutar servicio status
-            sleep(3);
+            // sleep(3);
 
             $params_zip_key = [
                 'is_payroll' => true
@@ -170,6 +199,7 @@ class DocumentPayrollHelper
                 if($dian_response['IsValid'] == "true")
                 {
                     //estado aceptado en habilitacion, deberia actualizar un campo en bd para mostrar el mensaje directo de la dian
+                    $this->updateStateDocument(self::ACCEPTED, $document);
                 }
                 else
                 {
@@ -178,7 +208,6 @@ class DocumentPayrollHelper
                     $error_message_zip_key = is_array($extract_error_zip_key) ?  implode(",", $extract_error_zip_key) : $extract_error_zip_key;
 
                     $this->throwException("Error al Validar Nómina Nro: {$number_full} Errores: {$error_message_zip_key}");
-
                 }
             }
             else{
@@ -278,12 +307,13 @@ class DocumentPayrollHelper
      * Obtener correlativo desde el api
      *
      * @param  mixed $type_service
+     * @param  mixed $ignore_state_document_id
      * @param  mixed $prefix
      */
-    public function getConsecutive($type_service, $prefix = null)
+    public function getConsecutive($type_service, $ignore_state_document_id = false, $prefix = null)
     {
         $connection_api = new HttpConnectionApi($this->company->api_token);
-        $url = ($prefix) ? "ubl2.1/payroll/current_number/{$type_service}/{$prefix}" : "ubl2.1/payroll/current_number/{$type_service}";
+        $url = ($prefix) ? "ubl2.1/payroll/current_number/{$type_service}/{$ignore_state_document_id}/{$prefix}" : "ubl2.1/payroll/current_number/{$type_service}/{$ignore_state_document_id}";
         $send_request_to_api = $connection_api->get($url);
 
         if(isset($send_request_to_api['success']))

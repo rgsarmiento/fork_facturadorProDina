@@ -423,19 +423,15 @@ class ConfigurationController extends Controller
         ];
     }
 
+
     public function changeEnvironmentProduction(string $environment){
+
         $company = ServiceCompany::firstOrFail();
         $base_url = config("tenant.service_fact", "");
 //        $base_url = env("SERVICE_FACT", "");
         $ch = curl_init("{$base_url}ubl2.1/config/environment");
-        if($environment == 'P')
-            $data = [
-                "type_environment_id" => 1,
-            ];
-        else
-            $data = [
-                "type_environment_id" => 2,
-            ];
+
+        $data = $this->getDataByTypeEnvironment($environment);
 
         $data_production = json_encode($data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -460,22 +456,7 @@ class ConfigurationController extends Controller
         else{
             if(property_exists($respuesta, 'message'))
             {
-                if($environment == 'P'){
-                    $company->type_environment_id = 1;
-                    $company->save();
-                    return [
-                        'message' => "Se cambio satisfactoriamente a ambiente de PRODUCCION.",
-                        'success' => true,
-                    ];
-                }
-                else{
-                    $company->type_environment_id = 2;
-                    $company->save();
-                    return [
-                        'message' => "Se cambio satisfactoriamente a HABILITACION.",
-                        'success' => true,
-                    ];
-                }
+                return $this->updateTypeEnvironmentCompany($environment, $company);
             }
             else{
                 return [
@@ -484,6 +465,87 @@ class ConfigurationController extends Controller
                 ];
             }
         }
+    }
+    
+    /**
+     * Actualizar tipo de entorno empresa facturacion/nomina
+     *
+     * @param  $environment
+     * @param  $company
+     * @return array
+     */
+    private function updateTypeEnvironmentCompany($environment, $company)
+    {
+        $message = null;
+        
+        switch ($environment) {
+
+            case 'P':
+                $company->type_environment_id = 1;
+                $message = 'Se cambio satisfactoriamente a ambiente de PRODUCCIÓN.';
+                break;
+
+            case 'H':
+                $company->type_environment_id = 2;
+                $message = 'Se cambio satisfactoriamente a HABILITACIÓN.';
+                break;
+
+            case 'payrollP':
+                $company->payroll_type_environment_id = 1;
+                $message = 'Se cambio satisfactoriamente a ambiente de PRODUCCIÓN.';
+                break;
+
+            case 'payrollH':
+                $company->payroll_type_environment_id = 2;
+                $message = 'Se cambio satisfactoriamente a HABILITACIÓN.';
+                break;
+
+        }
+
+        $company->save();
+
+        return [
+            'success' => true,
+            'message' => $message,
+        ];
+
+    }
+    
+    /**
+     * 
+     * Retorna arreglo con tipo de entorno a actualizar facturacion/nomina
+     *
+     * @param  string $environment
+     * @return array
+     */
+    private function getDataByTypeEnvironment($environment)
+    {
+
+        switch ($environment) {
+            case 'P':
+                $data = [
+                    "type_environment_id" => 1,
+                ];
+                break;
+            case 'H':
+                $data = [
+                    "type_environment_id" => 2,
+                ];
+                break;
+            case 'payrollP':
+                $data = [
+                    "payroll_type_environment_id" => 1,
+                ];
+                break;
+            case 'payrollH':
+                $data = [
+                    "payroll_type_environment_id" => 2,
+                ];
+                break;
+        }
+
+        return $data;
+ 
     }
 
 

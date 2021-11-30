@@ -95,7 +95,37 @@ class DocumentPayrollController extends Controller
         return new DocumentPayrollCollection($records->paginate(config('tenant.items_per_page')));
     }
  
+    
+    /**
+     * Consultar zipkey - usado en habilitación
+     *
+     * @param  Request $request
+     * @return array
+     */
+    public function queryZipkey(Request $request)
+    {
 
+        try {
+
+            $document = DocumentPayroll::findOrFail($request->id);
+            $helper = new DocumentPayrollHelper();
+            $zip_key = $document->response_api->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey;
+
+            $helper->validateZipKey($zip_key, $document->number_full, $document);
+            // dd($document);
+
+            return [
+                'success' => true,
+                'message' => 'Nómina consultada con éxito'
+            ];
+            
+        } catch (Exception $e)
+        {
+            return $this->getErrorFromException($e->getMessage(), $e);
+        }
+
+    }
+ 
     public function store(DocumentPayrollRequest $request)
     {
 

@@ -21,6 +21,9 @@ use Modules\Factcolombia1\Models\Tenant\{
     PaymentMethod,
 };
 use DateTime;
+use Modules\Factcolombia1\Models\TenantService\{
+    TypeEnvironment
+};
 
 
 class Document extends ModelTenant
@@ -124,6 +127,7 @@ class Document extends ModelTenant
         'correlative_api',
         'response_api_status',
         'order_reference',
+        'type_environment_id',
 
 
     ];
@@ -161,6 +165,11 @@ class Document extends ModelTenant
         if ($prefix == null) return $query;
 
         return $query->where('prefix', $prefix);
+    }
+
+    public function type_environment()
+    {
+        return $this->belongsTo(TypeEnvironment::class);
     }
 
     public function state_document() {
