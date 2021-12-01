@@ -24,7 +24,7 @@ class DocumentPayrollHelper
 
     public function __construct()
     {
-        $this->company = ServiceCompany::select('test_set_id_payroll', 'api_token', 'type_environment_id')->firstOrFail();
+        $this->company = ServiceCompany::select('test_set_id_payroll', 'api_token', 'payroll_type_environment_id')->firstOrFail();
     }
     
     /**
@@ -38,8 +38,11 @@ class DocumentPayrollHelper
         $establishment = EstablishmentInput::set(auth()->user()->establishment_id);
         $worker = WorkerInput::set($inputs->worker_id);
 
+        $ignore_state_document_id = (int) ($this->company->payroll_type_environment_id === 2);
+        $consecutive = $this->getConsecutive(9, $ignore_state_document_id, $inputs->prefix);
+
         $values = [
-            'consecutive' => $this->getConsecutive(9, true, $inputs->prefix),
+            'consecutive' => $consecutive,
             'user_id' => auth()->id(),
             'external_id' => Str::uuid()->toString(),
             'establishment_id' => auth()->user()->establishment_id,
@@ -97,7 +100,7 @@ class DocumentPayrollHelper
     {
 
         //entorno pruebas/habilitacion
-        if($this->company->type_environment_id == 2){
+        if($this->company->payroll_type_environment_id == 2){
 
             $zip_key = null;
             // dd($send_request_to_api);
@@ -183,24 +186,33 @@ class DocumentPayrollHelper
 
                 if($dian_response['IsValid'] == "true")
                 {
-                    //estado aceptado en habilitacion, deberia actualizar un campo en bd para mostrar el mensaje directo de la dian
-                    $this->updateStateDocument(self::ACCEPTED, $document);
 
-                    return $this->responseMessage(true, 'Nómina consultada con éxito');
+                    $message_zip_key = "{$dian_response['StatusCode']} - {$dian_response['StatusDescription']} - {$dian_response['StatusMessage']}";
+                    $this->updateStateDocument(self::ACCEPTED, $document);
+                    $this->updateMessageQueryZipkey($message_zip_key, $document);
+
+                    return $this->responseMessage(true, $message_zip_key);
 
                 }
                 else
                 {
+
                     // estado rechazado
                     $extract_error_zip_key = $dian_response['ErrorMessage']['string'] ?? $dian_response['StatusDescription'];
                     $error_message_zip_key = is_array($extract_error_zip_key) ?  implode(",", $extract_error_zip_key) : $extract_error_zip_key;
 
+                    //excepcion
+                    $status_code = $dian_response['StatusCode'] ?? [];
+                    
+                    // 'Batch en proceso de validación.'
+                    if(empty($status_code)){
+                        $this->throwException("Error al Validar Nómina Nro: {$number_full} Errores: {$error_message_zip_key}");
+                    }
+
                     $this->updateStateDocument(self::REJECTED, $document);
                     $this->updateMessageQueryZipkey($error_message_zip_key, $document);
-
                     return $this->responseMessage(false, "Error al Validar Nómina Nro: {$number_full} Errores: {$error_message_zip_key}");
 
-                    // $this->throwException("Error al Validar Nómina Nro: {$number_full} Errores: {$error_message_zip_key}");
                 }
             }
             else{
@@ -338,6 +350,7 @@ class DocumentPayrollHelper
     {
         $connection_api = new HttpConnectionApi($this->company->api_token);
         $url = ($prefix) ? "ubl2.1/payroll/current_number/{$type_service}/{$ignore_state_document_id}/{$prefix}" : "ubl2.1/payroll/current_number/{$type_service}/{$ignore_state_document_id}";
+
         $send_request_to_api = $connection_api->get($url);
 
         if(isset($send_request_to_api['success']))

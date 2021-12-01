@@ -177,7 +177,16 @@ class DocumentController extends Controller
 
             $response =  null;
             $response_status =  null;
-            $correlative_api = $this->getCorrelativeInvoice(1, $request->prefix);
+            // $correlative_api = $this->getCorrelativeInvoice(1, $request->prefix);
+
+            $company = ServiceTenantCompany::firstOrFail();
+
+            //si la empresa esta en habilitacion, envio el parametro ignore_state_document_id en true
+            //  para buscar el correlativo en api sin filtrar por el campo state_document_id=1
+            $ignore_state_document_id = ($company->type_environment_id === 2);
+            $correlative_api = $this->getCorrelativeInvoice(1, $request->prefix, $ignore_state_document_id);
+            
+            // dd($correlative_api);
 
             if(!is_numeric($correlative_api)){
                 return [
@@ -203,7 +212,6 @@ class DocumentController extends Controller
 
 
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
-            $company = ServiceTenantCompany::firstOrFail();
 
             if(file_exists(storage_path('sendmail.api')))
                 $service_invoice['sendmail'] = true;
@@ -730,14 +738,40 @@ class DocumentController extends Controller
     }
 
 
-    public function getCorrelativeInvoice($type_service, $prefix = NULL)
+    private function getBaseUrlCorrelativeInvoice($type_service, $prefix = null, $ignore_state_document_id = false)
     {
-        $company = ServiceTenantCompany::firstOrFail();
         $base_url = config('tenant.service_fact');
-        if($prefix)
-            $ch2 = curl_init("{$base_url}ubl2.1/invoice/current_number/{$type_service}/{$prefix}");
-        else
-            $ch2 = curl_init("{$base_url}ubl2.1/invoice/current_number/{$type_service}");
+        $url = "{$base_url}ubl2.1/invoice/current_number/{$type_service}";
+
+        if($ignore_state_document_id){
+
+            $val_prefix = $prefix ? $prefix : 'null';
+            $url .= "/{$val_prefix}/{$ignore_state_document_id}";
+
+        }else{
+
+            if($prefix){
+                $url .= "/{$prefix}";
+            }
+        }
+
+        return $url;
+    }
+
+
+    public function getCorrelativeInvoice($type_service, $prefix = null, $ignore_state_document_id = false)
+    {
+
+        $company = ServiceTenantCompany::firstOrFail();
+
+        // $base_url = config('tenant.service_fact');
+        // if($prefix)
+        //     $ch2 = curl_init("{$base_url}ubl2.1/invoice/current_number/{$type_service}/{$prefix}");
+        // else
+        //     $ch2 = curl_init("{$base_url}ubl2.1/invoice/current_number/{$type_service}");
+
+        $url = $this->getBaseUrlCorrelativeInvoice($type_service, $prefix, $ignore_state_document_id);
+        $ch2 = curl_init($url);
 
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "GET");
@@ -1372,6 +1406,7 @@ class DocumentController extends Controller
             $response =  null;
             $response_status =  null;
             $correlative_api = $this->getCorrelativeInvoice(1);
+            // dd($correlative_api);
 
 
             if(!is_numeric($correlative_api)){

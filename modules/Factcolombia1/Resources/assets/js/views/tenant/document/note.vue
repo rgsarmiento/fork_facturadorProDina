@@ -741,7 +741,7 @@
                 this.form.note_service = this.noteService;
                 // return
 
-                this.loading_submit = true
+                // this.loading_submit = true
                 this.$http.post(`/${this.resource}/note`, this.form).then(response => {
                     if (response.data.success) {
                         this.resetForm();
