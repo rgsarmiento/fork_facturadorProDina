@@ -220,7 +220,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.accrued_total']}">
                                             <label class="control-label">Total devengados<span class="text-danger"> *</span></label>
-                                            <el-input-number v-model="form.accrued.accrued_total" :min="0" controls-position="right"></el-input-number>
+                                            <el-input-number v-model="form.accrued.accrued_total" :min="0" controls-position="right" ></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['accrued.accrued_total']" v-text="errors['accrued.accrued_total'][0]"></small>
                                         </div>
                                     </div>
@@ -306,7 +306,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.eps_deduction']}">
                                             <label class="control-label">Deducción EPS<span class="text-danger"> *</span></label>
-                                            <el-input-number v-model="form.deduction.eps_deduction" :min="0" controls-position="right"></el-input-number>
+                                            <el-input-number v-model="form.deduction.eps_deduction" :min="0" controls-position="right" @change="changeEpsDeduction"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.eps_deduction']" v-text="errors['deduction.eps_deduction'][0]"></small>
                                         </div>
                                     </div>
@@ -322,7 +322,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.pension_deduction']}">
                                             <label class="control-label">Deducción de pensión<span class="text-danger"> *</span></label>
-                                            <el-input-number v-model="form.deduction.pension_deduction" :min="0" controls-position="right"></el-input-number>
+                                            <el-input-number v-model="form.deduction.pension_deduction" :min="0" controls-position="right" @change="changePensionDeduction"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.pension_deduction']" v-text="errors['deduction.pension_deduction'][0]"></small>
                                         </div>
                                     </div>
@@ -690,12 +690,34 @@
                     this.changeWorker()
                 })
             },
+            changePensionDeduction(){
+                this.calculateTotal()
+            },
+            changeEpsDeduction(){
+                this.calculateTotal()
+            },
+            calculateTotal(){
+                this.calculateTotalAccrued()
+                this.calculateTotalDeduction()
+            },
+            calculateTotalDeduction(){
+
+                this.form.deduction.deductions_total = parseFloat(this.form.deduction.eps_deduction) + parseFloat(this.form.deduction.pension_deduction)
+
+            },
+            calculateTotalAccrued(){
+
+                this.form.accrued.accrued_total = parseFloat(this.form.accrued.salary) + parseFloat(this.form.accrued.transportation_allowance)
+
+            },
             async changeWorker() { 
 
                 let worker = await _.find(this.workers, {id : this.form.worker_id})
 
                 //autocompletar campos
                 this.autocompleteDataFromWorker(worker)
+
+                this.calculateTotal()
 
             },
             autocompleteDataFromWorker(worker){
@@ -718,7 +740,7 @@
 
                 let minimum_salary = parseFloat(this.advanced_configuration.minimum_salary)
 
-                if(this.form.accrued.salary <= (minimum_salary * 2)){
+                if(this.form.accrued.salary < (minimum_salary * 2)){
                     this.form.accrued.transportation_allowance = this.advanced_configuration.transportation_allowance
                 }else{
                     this.form.accrued.transportation_allowance = undefined
@@ -751,7 +773,7 @@
             },
             async submit() {
  
-                // this.loading_submit = true
+                this.loading_submit = true
                 
                 await this.$http.post(`/${this.resource}`, this.form).then(response => {
                     // console.log(response)

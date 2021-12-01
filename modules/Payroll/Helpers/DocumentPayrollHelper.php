@@ -147,22 +147,7 @@ class DocumentPayrollHelper
 
     }
     
-    /**
-     * 
-     * Actualizar estado de la nómina dependiendo de la validación al enviar a la dian
-     *
-     * @param  int $state_document_id
-     * @param  DocumentPayroll $document
-     * @return void
-     */
-    public function updateStateDocument($state_document_id, DocumentPayroll $document)
-    {
-        $document->update([
-            'state_document_id' => $state_document_id
-        ]);
-    }
 
-    
     /**
      * 
      * Realiza peticion a ubl2.1/status/zip/{$zip_key} para validar el estado de la nomina (entorno pruebas/habilitacion)
@@ -200,6 +185,9 @@ class DocumentPayrollHelper
                 {
                     //estado aceptado en habilitacion, deberia actualizar un campo en bd para mostrar el mensaje directo de la dian
                     $this->updateStateDocument(self::ACCEPTED, $document);
+
+                    return $this->responseMessage(true, 'Nómina consultada con éxito');
+
                 }
                 else
                 {
@@ -207,7 +195,12 @@ class DocumentPayrollHelper
                     $extract_error_zip_key = $dian_response['ErrorMessage']['string'] ?? $dian_response['StatusDescription'];
                     $error_message_zip_key = is_array($extract_error_zip_key) ?  implode(",", $extract_error_zip_key) : $extract_error_zip_key;
 
-                    $this->throwException("Error al Validar Nómina Nro: {$number_full} Errores: {$error_message_zip_key}");
+                    $this->updateStateDocument(self::REJECTED, $document);
+                    $this->updateMessageQueryZipkey($error_message_zip_key, $document);
+
+                    return $this->responseMessage(false, "Error al Validar Nómina Nro: {$number_full} Errores: {$error_message_zip_key}");
+
+                    // $this->throwException("Error al Validar Nómina Nro: {$number_full} Errores: {$error_message_zip_key}");
                 }
             }
             else{
@@ -222,6 +215,37 @@ class DocumentPayrollHelper
 
     }
     
+    
+    /**
+     * 
+     * Actualizar mensaje de respuesta al consultar zipkey de la nómina
+     *
+     * @param  string $response_message_query_zipkey
+     * @param  DocumentPayroll $document
+     * @return void
+     */
+    public function updateMessageQueryZipkey($response_message_query_zipkey, DocumentPayroll $document)
+    {
+        $document->update([
+            'response_message_query_zipkey' => $response_message_query_zipkey
+        ]);
+    }
+
+    /**
+     * 
+     * Actualizar estado de la nómina dependiendo de la validación al enviar a la dian
+     *
+     * @param  int $state_document_id
+     * @param  DocumentPayroll $document
+     * @return void
+     */
+    public function updateStateDocument($state_document_id, DocumentPayroll $document)
+    {
+        $document->update([
+            'state_document_id' => $state_document_id
+        ]);
+    }
+
     
     /**
      * Obtener array para enviar a la api
@@ -337,6 +361,21 @@ class DocumentPayrollHelper
         $send_request_to_api = $connection_api->sendRequestToApi("ubl2.1/send-email-document-payroll", $request->all(), 'POST');
 
         return $this->getGeneralResponseFromApi($send_request_to_api, $connection_api);
+    }
+
+    
+    /**
+     *
+     * @param  bool $success
+     * @param  string $message
+     * @return array
+     */
+    public function responseMessage($success, $message)
+    {
+        return [
+            'success' => $success,
+            'message' => $message,
+        ];
     }
     
     /**

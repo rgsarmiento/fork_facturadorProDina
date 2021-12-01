@@ -110,14 +110,10 @@ class DocumentPayrollController extends Controller
             $document = DocumentPayroll::findOrFail($request->id);
             $helper = new DocumentPayrollHelper();
             $zip_key = $document->response_api->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey;
-
-            $helper->validateZipKey($zip_key, $document->number_full, $document);
             // dd($document);
 
-            return [
-                'success' => true,
-                'message' => 'Nómina consultada con éxito'
-            ];
+            return $helper->validateZipKey($zip_key, $document->number_full, $document);
+
             
         } catch (Exception $e)
         {

@@ -61,6 +61,7 @@ class DocumentPayroll extends ModelTenant
         'response_api',
         'type_environment_id',
         'state_document_id',
+        'response_message_query_zipkey',
 
     ];
         
@@ -251,7 +252,8 @@ class DocumentPayroll extends ModelTenant
             'state_document_id' => $this->state_document_id,
             'state_document_name' => optional($this->state_document)->name,
             'btn_query' => $btn_query,
-
+            'response_message_query_zipkey' => $this->response_message_query_zipkey,
+            
         ];
 
     }

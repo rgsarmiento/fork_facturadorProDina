@@ -89,7 +89,7 @@
         methods: { 
             async clickQueryZipKey(recordId) {
 
-                // this.loading = true
+                this.loading = true
                 
                 await this.$http.post(`/${this.resource}/query-zipkey`, {
                     id : recordId
@@ -98,11 +98,13 @@
 
                     if (response.data.success) {
                         this.$message.success(response.data.message)
-                        this.$eventHub.$emit('reloadData')
                     }
                     else {
                         this.$message.error(response.data.message)
                     }
+
+                    this.$eventHub.$emit('reloadData')
+
                 }).catch(error => {
 
                     if (error.response.status === 422) {
