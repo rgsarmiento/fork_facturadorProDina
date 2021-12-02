@@ -51,6 +51,7 @@ class DocumentPayrollHelper
             'time_of_issue' => date('H:i:s'),
             'worker' => $worker,
             'state_document_id' => self::REGISTERED, //estado inicial
+            'payroll_type_environment_id' => $this->company->payroll_type_environment_id,
         ];
  
         return $inputs->merge($values)->all();

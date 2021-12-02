@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-loading="loading">
         <div class="page-header pr-0">
             <h2><a href="/dashboard"><i class="fas fa-tachometer-alt"></i></a></h2>
             <ol class="breadcrumbs">
@@ -76,6 +76,12 @@
                         </td>
                         <td class="text-right" >
 
+                            <template v-if="row.btn_query">
+                                <el-tooltip class="item" effect="dark" content="Consultar ZIPKEY a la DIAN" placement="top-start">
+                                    <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickQueryZipKey(row.id)">Consultar</button>
+                                </el-tooltip>
+                            </template>
+
                             <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2"
                                >Nota</a>
 
@@ -117,11 +123,44 @@
                 recordId: null,
                 showDialogOptions: false,
                 showDialogPayments: false,
+                loading: false,
             }
         },
         created() {
         },
         methods: {
+            async clickQueryZipKey(recordId) {
+
+                // this.loading = true
+                
+                await this.$http.post(`/${this.resource}/query-zipkey`, {
+                    id : recordId
+                }).then(response => {
+                    console.log(response)
+
+                    if (response.data.success) {
+                        this.$message.success(response.data.message)
+                    }
+                    else {
+                        this.$message.error(response.data.message)
+                    }
+
+                    this.$eventHub.$emit('reloadData')
+
+                }).catch(error => {
+
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data
+                    }
+                    else {
+                        this.$message.error(error.response.data.message)
+                    }
+
+
+                }).then(() => {
+                    this.loading = false
+                })
+            },  
             clickPayment(recordId) {
                 this.recordId = recordId;
                 this.showDialogPayments = true;

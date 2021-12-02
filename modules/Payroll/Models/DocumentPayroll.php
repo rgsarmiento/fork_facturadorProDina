@@ -59,7 +59,7 @@ class DocumentPayroll extends ModelTenant
         'payment',
         'payment_dates',
         'response_api',
-        'type_environment_id',
+        'payroll_type_environment_id',
         'state_document_id',
         'response_message_query_zipkey',
 
@@ -147,7 +147,7 @@ class DocumentPayroll extends ModelTenant
 
     public function type_environment()
     {
-        return $this->belongsTo(TypeEnvironment::class);
+        return $this->belongsTo(TypeEnvironment::class, 'payroll_type_environment_id');
     }
 
     public function type_document() 
@@ -209,10 +209,10 @@ class DocumentPayroll extends ModelTenant
 
         }
 
-        //mostrar el boton consultar si el estado es registrado
+        //mostrar el boton consultar si el estado es registrado y el entorno es habilitacion
         $btn_query = false;
 
-        if($this->state_document_id === 1){
+        if($this->state_document_id === 1 && $this->payroll_type_environment_id == 2){
             $btn_query = true;
         }
 
@@ -253,6 +253,7 @@ class DocumentPayroll extends ModelTenant
             'state_document_name' => optional($this->state_document)->name,
             'btn_query' => $btn_query,
             'response_message_query_zipkey' => $this->response_message_query_zipkey,
+            'payroll_type_environment_id' => $this->payroll_type_environment_id,
             
         ];
 

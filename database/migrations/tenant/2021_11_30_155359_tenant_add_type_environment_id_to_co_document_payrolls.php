@@ -14,8 +14,8 @@ class TenantAddTypeEnvironmentIdToCoDocumentPayrolls extends Migration
     public function up()
     {
         Schema::table('co_document_payrolls', function (Blueprint $table) {
-            $table->unsignedBigInteger('type_environment_id')->after('user_id')->nullable();
-            $table->foreign('type_environment_id')->references('id')->on('co_service_type_environments');
+            $table->unsignedBigInteger('payroll_type_environment_id')->after('user_id')->nullable();
+            $table->foreign('payroll_type_environment_id')->references('id')->on('co_service_type_environments');
         });
     }
 
@@ -27,8 +27,8 @@ class TenantAddTypeEnvironmentIdToCoDocumentPayrolls extends Migration
     public function down()
     {
         Schema::table('co_document_payrolls', function (Blueprint $table) {
-            $table->dropForeign(['type_environment_id']);
-            $table->dropColumn('type_environment_id');
+            $table->dropForeign(['payroll_type_environment_id']);
+            $table->dropColumn('payroll_type_environment_id');
         });
     }
 }

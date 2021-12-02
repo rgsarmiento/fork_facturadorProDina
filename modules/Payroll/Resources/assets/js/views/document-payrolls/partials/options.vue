@@ -11,7 +11,7 @@
             </div>
         </div>
 
-        <div class="row mb-4" v-if="form.response_message_query_zipkey">
+        <div class="row mb-4" v-if="form.response_message_query_zipkey && form.payroll_type_environment_id == 2">
             <div class="col-md-12">
                 <el-alert
                     :title="`Consulta Zipkey: ${form.response_message_query_zipkey}`"
