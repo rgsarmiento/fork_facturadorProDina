@@ -13,8 +13,11 @@ use Modules\Factcolombia1\Models\Tenant\{
     Tax,
 };
 use Modules\Finance\Traits\FinanceTrait;
+use Exception;
 
-class DocumentHelper{
+
+class DocumentHelper
+{
 
     use FinanceTrait;
 
@@ -25,6 +28,7 @@ class DocumentHelper{
     {
 
         $establishment = EstablishmentInput::set(auth()->user()->establishment_id);
+        $shipping_two_steps = ($type_environment_id == 2);
 
         $document = Document::create([
             'user_id' => auth()->id(),
@@ -34,6 +38,7 @@ class DocumentHelper{
             'soap_type_id' => Company::active()->soap_type_id,
             'send_server' => false,
             'type_environment_id' => $type_environment_id,
+            'shipping_two_steps' => $shipping_two_steps,
             'type_document_id' => $request->type_document_id,
             'prefix' => $nextConsecutive->prefix,
             'number' => $correlative_api,
@@ -241,6 +246,56 @@ class DocumentHelper{
         }
 
         return $items;
+    }
+
+    
+    /**
+     * 
+     * Actualizar mensaje de respuesta al consultar zipkey
+     *
+     * @param  string $response_message_query_zipkey
+     * @param  Document $document
+     * @return void
+     */
+    public function updateMessageQueryZipkey($response_message_query_zipkey, Document $document)
+    {
+        $document->update([
+            'response_message_query_zipkey' => $response_message_query_zipkey
+        ]);
+    }
+
+    /**
+     * 
+     * Actualizar estado dependiendo de la validación al enviar a la dian
+     *
+     * @param  int $state_document_id
+     * @param  Document $document
+     * @return void
+     */
+    public function updateStateDocument($state_document_id, Document $document)
+    {
+        $document->update([
+            'state_document_id' => $state_document_id
+        ]);
+    }
+    
+    /**
+     *
+     * @param  bool $success
+     * @param  string $message
+     * @return array
+     */
+    public function responseMessage($success, $message)
+    {
+        return [
+            'success' => $success,
+            'message' => $message,
+        ];
+    }
+
+    public function throwException($message)
+    {
+        throw new Exception($message);
     }
 
 }

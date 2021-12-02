@@ -33,6 +33,7 @@ if($current_hostname) {
                 Route::get('documents/search/externalId/{external_id}', 'Tenant\DocumentController@searchExternalId');
                 Route::post('store_aiu', 'Tenant\DocumentController@store_aiu');
                 Route::get('downloadFile/{filename}', 'Tenant\DocumentController@downloadFile');
+                Route::post('query-zipkey', 'Tenant\DocumentController@queryZipkey');
             });
 
             Route::prefix('co-documents-aiu')->group(function () {

@@ -32,7 +32,7 @@
                         <th class="text-center">Fecha Emisión</th>
                         <th>Cliente</th>
                         <th>Documento</th>
-                        <th>Estado DIAN</th>
+                        <th>Estado</th>
                         <!-- <th>Acuse recibido cliente</th> -->
                         <th class="text-center">Moneda</th>
                         <th class="text-right">T.Venta</th>
@@ -51,7 +51,11 @@
                         <td>{{ row.number_full }}<br/>
                             <small v-text="row.type_document_name"></small><br/>
                         </td>
-                        <td class="text-center">{{ row.state_document_name }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-secondary text-white" :class="{'bg-secondary': (row.state_document_id === 1), 'bg-success': (row.state_document_id === 5), 'bg-dark': (row.state_document_id === 6)}">
+                                {{ row.state_document_name }}
+                            </span>    
+                        </td>
                         <!-- <td class="text-center">{{ row.acknowledgment_received }}</td> -->
                         <td class="text-center">{{ row.currency_name }}</td>
 

@@ -128,7 +128,8 @@ class Document extends ModelTenant
         'response_api_status',
         'order_reference',
         'type_environment_id',
-
+        'shipping_two_steps',
+        'response_message_query_zipkey',
 
     ];
 
@@ -296,6 +297,14 @@ class Document extends ModelTenant
     {
         return $this->prefix.'-'.$this->number;
     }
+    
+    /**
+     * Retorna el codigo del tipo de documento para enviar a la api
+     */
+    public function getTypeDocumentService()
+    {
+        return $this->type_document->code;
+    }
 
     public function getSeriesAttribute()
     {
@@ -459,6 +468,11 @@ class Document extends ModelTenant
         $legend = collect($legends)->where('code', '1000')->first();
         return $legend->value;
     }
+    
+    // public function getResponseApiAttribute($value)
+    // {
+    //     return (is_null($value))?null:(object) json_decode($value);
+    // }
 
     public function getDownloadExternalXmlAttribute()
     {

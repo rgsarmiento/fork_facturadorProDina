@@ -13,7 +13,7 @@ class DocumentCollection extends ResourceCollection
 
     public function toArray($request) {
 
-        $company = ServiceTenantCompany::firstOrFail();
+        $company = ServiceTenantCompany::select('identification_number')->whereFilterWithOutAllRelations()->firstOrFail();
 
         return $this->collection->transform(function($row, $key) use ($company){ 
         
@@ -21,6 +21,15 @@ class DocumentCollection extends ResourceCollection
             $download_xml = "{$base_url_api}download/{$company->identification_number}/{$row->response_api_invoice->urlinvoicexml}";
             $download_pdf = "{$base_url_api}download/{$company->identification_number}/{$row->response_api_invoice->urlinvoicepdf}";
 
+
+            //mostrar el boton consultar si el estado es registrado y el entorno es habilitacion
+            // shipping_two_steps aplica para documentos generados en habilitacion
+
+            $btn_query = false;
+
+            if($row->state_document_id === 1 && $row->type_environment_id == 2 && $row->shipping_two_steps){
+                $btn_query = true;
+            }
 
             return [
                 'id' => $row->id, 
@@ -41,6 +50,9 @@ class DocumentCollection extends ResourceCollection
                 'total_tax' => $row->total_tax, 
                 'subtotal' => $row->subtotal, 
                 'total' => $row->total, 
+                'type_environment_id' => $row->type_environment_id, 
+                'state_document_id' => $row->state_document_id, 
+                'btn_query' => $btn_query, 
 
             ];
             

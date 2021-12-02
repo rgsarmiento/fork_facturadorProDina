@@ -11,6 +11,16 @@
             </div>
         </div>
 
+        <div class="row mb-4" v-if="form.response_message_query_zipkey && form.type_environment_id == 2">
+            <div class="col-md-12">
+                <el-alert
+                    :title="`Consulta Zipkey: ${form.response_message_query_zipkey}`"
+                    :type="form.state_document_id == 5 ? 'success' : 'error'"
+                    show-icon>
+                </el-alert>
+            </div>
+        </div>
+
         <div class="row" v-if="showDownload">
 
             <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold mt-3">
