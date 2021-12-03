@@ -135,7 +135,7 @@
         methods: {
             async clickQueryZipKey(recordId) {
 
-                // this.loading = true
+                this.loading = true
                 
                 await this.$http.post(`/${this.resource}/query-zipkey`, {
                     id : recordId

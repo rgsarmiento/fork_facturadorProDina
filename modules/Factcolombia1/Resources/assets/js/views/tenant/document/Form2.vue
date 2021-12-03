@@ -819,7 +819,7 @@
                 this.form.service_invoice = await this.createInvoiceService();
                 // return
 
-                // this.loading_submit = true
+                this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                     if (response.data.success) {
                         this.resetForm();

@@ -196,7 +196,8 @@ class DocumentController extends Controller
                 $response_status_decoded = json_decode($response_status);
                 // dd($response_status_decoded);
 
-                $document_type_description = 'Factura';
+                $type_document_service = $document->getTypeDocumentService();
+                $document_type_description = ($type_document_service == '1') ? 'Factura' : 'Nota';
 
                 if(property_exists($response_status_decoded, 'ResponseDian')){
 
@@ -205,7 +206,7 @@ class DocumentController extends Controller
                     if($dian_response->IsValid == "true"){
 
                         // api
-                        $this->setStateDocument($document->getTypeDocumentService(), $correlative_api);
+                        $this->setStateDocument($type_document_service, $correlative_api);
 
                         //actualizar datos del documento aceptado
                         $message_zip_key = "{$dian_response->StatusCode} - {$dian_response->StatusDescription} - {$dian_response->StatusMessage}";
@@ -601,7 +602,7 @@ class DocumentController extends Controller
             $response_status = null;
 
             // return $response_model;
-            dd($correlative_api,  $response_model);
+            // dd($correlative_api,  $response_model);
 
             if($company->type_environment_id == 2 && $company->test_id != 'no_test_set_id'){
                 if(array_key_exists('urlinvoicepdf', $response_model) && array_key_exists('urlinvoicexml', $response_model) )
