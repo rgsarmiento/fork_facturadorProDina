@@ -140,7 +140,7 @@
                 await this.$http.post(`/${this.resource}/query-zipkey`, {
                     id : recordId
                 }).then(response => {
-                    console.log(response)
+                    // console.log(response)
 
                     if (response.data.success) {
                         this.$message.success(response.data.message)

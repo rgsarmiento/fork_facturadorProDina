@@ -196,7 +196,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.salary']}">
                                             <label class="control-label">Salario<span class="text-danger"> *</span></label>
-                                            <el-input-number v-model="form.accrued.salary" :min="0" controls-position="right"></el-input-number>
+                                            <el-input-number v-model="form.accrued.salary" :min="0" controls-position="right" @change="changeAccruedSalary"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['accrued.salary']" v-text="errors['accrued.salary'][0]"></small>
                                         </div>
                                     </div>
@@ -225,7 +225,13 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-md waves-effect waves-light btn-primary" @click.prevent="clickAddExtraHours">Agregar Horas Extras</button>
+                                        </div>
+                                    </div>
                                 </div>  
+
 
                                 <div class="row mt-2">
                                     <div class="col-md-12">
@@ -469,6 +475,12 @@
                             :showDownload="true"
                             :showClose="false">
                             </document-payroll-options>
+                            
+            <document-payroll-extra-hours :showDialog.sync="showDialogDocumentPayrollExtraHours"     
+                            :form="form"
+                            :errors="errors"
+                            >
+                            </document-payroll-extra-hours>
         </div>
     </div>
 </template>
@@ -477,9 +489,10 @@
 
     import WorkerForm from '../workers/form.vue' 
     import DocumentPayrollOptions from './partials/options.vue' 
+    import DocumentPayrollExtraHours from './partials/extra_hours.vue' 
 
     export default {
-        components: {WorkerForm, DocumentPayrollOptions},
+        components: {WorkerForm, DocumentPayrollOptions, DocumentPayrollExtraHours},
         data() {
             return {
                 resource: 'payroll/document-payrolls',
@@ -503,6 +516,7 @@
                 form_disabled: {},
                 show_inputs_payment_method: true,
                 advanced_configuration: {},
+                showDialogDocumentPayrollExtraHours: false
             }
         }, 
         async created() {
@@ -514,6 +528,14 @@
             this.loading_form = true
         }, 
         methods: { 
+            clickAddExtraHours(){
+
+                if(parseFloat(this.form.accrued.salary) <= 0){
+                    return this.$message.warning('El campo Salario debe ser mayor a 0')
+                }
+
+                this.showDialogDocumentPayrollExtraHours = true
+            },
             changePaymentMethod(){
 
                 //mostrar campos adicionales, si el metodo de pago es el definido en el arreglo/obligatorio
@@ -547,7 +569,8 @@
                         accrued_total: 0,
                         transportation_allowance: undefined, //se usa undefined ya que el valor null, el componente input-number lo toma a 0
                         telecommuting: undefined,
-                        work_disabilities: []
+                        work_disabilities: [],
+                        heds: [],
                     },
                     deduction: {
                         eps_type_law_deductions_id: 1,
@@ -707,7 +730,7 @@
             },
             calculateTotalAccrued(){
 
-                this.form.accrued.accrued_total = parseFloat(this.form.accrued.salary) + parseFloat(this.form.accrued.transportation_allowance)
+                this.form.accrued.accrued_total = parseFloat(this.form.accrued.salary) + (this.form.accrued.transportation_allowance ? parseFloat(this.form.accrued.transportation_allowance) : 0)
 
             },
             async changeWorker() { 
@@ -729,18 +752,18 @@
                 this.form_disabled.admision_date = worker.work_start_date ? true : false
 
 
-                this.autocompleteDataSalary(worker)
+                this.autocompleteDataSalary(worker.salary)
 
                 this.autocompleteDataPayment(worker)
 
             },
-            autocompleteDataSalary(worker){
+            autocompleteDataSalary(worker_salary){
 
-                this.form.accrued.salary = parseFloat(worker.salary)
+                this.form.accrued.salary = parseFloat(worker_salary)
 
                 let minimum_salary = parseFloat(this.advanced_configuration.minimum_salary)
 
-                if(this.form.accrued.salary < (minimum_salary * 2)){
+                if(this.form.accrued.salary <= (minimum_salary * 2)){
                     this.form.accrued.transportation_allowance = this.advanced_configuration.transportation_allowance
                 }else{
                     this.form.accrued.transportation_allowance = undefined
@@ -748,6 +771,9 @@
 
                 // console.log(this.advanced_configuration)
 
+            },
+            changeAccruedSalary(){
+                this.autocompleteDataSalary(this.form.accrued.salary)
             },
             autocompleteDataPayment(worker){
 

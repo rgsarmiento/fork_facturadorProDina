@@ -320,6 +320,7 @@ class DocumentPayrollHelper
                 'transportation_allowance' => $accrued->transportation_allowance,
                 'telecommuting' => $accrued->telecommuting,
                 'work_disabilities' => $accrued->work_disabilities,
+                'HEDs' => $accrued->heds,
             ],
             'deductions' => [
                 'eps_type_law_deductions_id' => $deduction->eps_type_law_deductions_id,

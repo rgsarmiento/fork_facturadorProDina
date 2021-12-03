@@ -14,7 +14,7 @@ if($hostname) {
                     Route::get('tables', 'DocumentPayrollController@tables');
                     Route::get('columns', 'DocumentPayrollController@columns');
                     Route::get('records', 'DocumentPayrollController@records');
-                    Route::get('tables', 'DocumentPayrollController@tables');
+                    Route::get('table/{table}', 'DocumentPayrollController@table');
                     Route::post('', 'DocumentPayrollController@store');
                     Route::get('record/{record}', 'DocumentPayrollController@record');
                     Route::get('downloadFile/{filename}', 'DocumentPayrollController@downloadFile');

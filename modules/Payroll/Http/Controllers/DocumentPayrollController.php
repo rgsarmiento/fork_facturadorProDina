@@ -18,7 +18,8 @@ use Modules\Factcolombia1\Models\TenantService\{
     PayrollPeriod,
     TypeLawDeductions,
     TypeDisability,
-    AdvancedConfiguration
+    AdvancedConfiguration,
+    TypeOvertimeSurcharge,
 };
 use Modules\Factcolombia1\Models\Tenant\{
     PaymentMethod,
@@ -76,6 +77,11 @@ class DocumentPayrollController extends Controller
             return Worker::take(20)->get()->transform(function($row){
                 return $row->getSearchRowResource();
             });
+        }
+
+        if($table == 'type_overtime_surcharges') 
+        {
+            return TypeOvertimeSurcharge::get();
         }
 
         return [];
