@@ -20,6 +20,10 @@ class TypeOvertimeSurcharge extends Model
         'name', 'code', 'percentage',
     ];
 
+    public function getTypeAttribute($value)
+    {
+        return trim($value);
+    }
         
     /**
      * Use in resource and collection
@@ -33,6 +37,7 @@ class TypeOvertimeSurcharge extends Model
             'name' => $this->name,
             'code' => $this->code,
             'percentage' => $this->percentage,
+            'type' => $this->type,
         ];
 
     }

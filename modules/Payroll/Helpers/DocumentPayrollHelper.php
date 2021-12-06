@@ -274,6 +274,8 @@ class DocumentPayrollHelper
         $worker = $document->worker;
         $accrued = $document->accrued;
         $deduction = $document->deduction;
+
+        // dd($accrued->heds, $accrued->parseExtraHoursToFormatApi($accrued->heds));
         
         // dd($document->period, $inputs);
 
@@ -320,7 +322,10 @@ class DocumentPayrollHelper
                 'transportation_allowance' => $accrued->transportation_allowance,
                 'telecommuting' => $accrued->telecommuting,
                 'work_disabilities' => $accrued->work_disabilities,
-                'HEDs' => $accrued->heds,
+                'HEDs' => $accrued->parseExtraHoursToFormatApi($accrued->heds),
+                'HENs' => $accrued->parseExtraHoursToFormatApi($accrued->hens),
+                'HRNs' => $accrued->parseExtraHoursToFormatApi($accrued->hrns),
+                'HEDDFs' => $accrued->parseExtraHoursToFormatApi($accrued->heddfs),
             ],
             'deductions' => [
                 'eps_type_law_deductions_id' => $deduction->eps_type_law_deductions_id,

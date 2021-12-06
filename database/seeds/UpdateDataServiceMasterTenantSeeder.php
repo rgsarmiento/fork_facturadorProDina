@@ -39,7 +39,7 @@ class UpdateDataServiceMasterTenantSeeder extends Seeder
             'columns' => 'id, name, code, @created_at, @updated_at',
         ],
         'co_type_overtime_surcharges' => [
-            'columns' => 'id, name, code, percentage, @created_at, @updated_at'
+            'columns' => 'id, name, code, percentage, type, @created_at, @updated_at'
         ],
     ];
 

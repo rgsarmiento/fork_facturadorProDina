@@ -72,7 +72,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setHedsAttribute($value)
     {
-        $this->attributes['heds'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['heds'] = (is_null($value) || empty($value))?null:json_encode($value);
     }
 
     public function getHensAttribute($value)
@@ -82,7 +82,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setHensAttribute($value)
     {
-        $this->attributes['hens'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['hens'] = (is_null($value) || empty($value))?null:json_encode($value);
     }
 
     public function getHrnsAttribute($value)
@@ -92,7 +92,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setHrnsAttribute($value)
     {
-        $this->attributes['hrns'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['hrns'] = (is_null($value) || empty($value))?null:json_encode($value);
     }
 
     public function getHeddfsAttribute($value)
@@ -102,7 +102,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setHeddfsAttribute($value)
     {
-        $this->attributes['heddfs'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['heddfs'] = (is_null($value) || empty($value))?null:json_encode($value);
     }
 
     public function getHrddfsAttribute($value)
@@ -310,7 +310,29 @@ class DocumentPayrollAccrued extends ModelTenant
     {
         return $this->belongsTo(DocumentPayroll::class, 'co_document_payroll_id');
     }
+    
+    /**
+     * Retorna data de las horas extras con los campos necesarios para enviar a la api
+     *
+     * @param  array $records
+     * @return array
+     */
+    public function parseExtraHoursToFormatApi($records)
+    {
+        if(empty($records)) return null;
 
+        return collect($records)
+                ->map(function($row, $key){
+                    return [
+                        'start_time' => $row->start_time,
+                        'end_time' => $row->end_time,
+                        'quantity' => $row->quantity,
+                        'percentage' => $row->percentage,
+                        'payment' => $row->payment
+                    ];
+                })
+                ->toArray();
+    }
 
     /**
      * Use in resource and collection

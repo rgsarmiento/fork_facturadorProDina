@@ -571,6 +571,9 @@
                         telecommuting: undefined,
                         work_disabilities: [],
                         heds: [],
+                        hens: [],
+                        hrns: [],
+                        heddfs: [],
                     },
                     deduction: {
                         eps_type_law_deductions_id: 1,
@@ -799,7 +802,7 @@
             },
             async submit() {
  
-                this.loading_submit = true
+                // this.loading_submit = true
                 
                 await this.$http.post(`/${this.resource}`, this.form).then(response => {
                     // console.log(response)

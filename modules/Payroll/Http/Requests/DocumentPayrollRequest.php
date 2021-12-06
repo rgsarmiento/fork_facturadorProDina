@@ -58,6 +58,37 @@ class DocumentPayrollRequest extends FormRequest
             'accrued.salary' => 'required|numeric',
             'accrued.accrued_total' => 'required|numeric',
             
+            // heds
+            'accrued.heds' => 'nullable|array',
+            'accrued.heds.*.start_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.heds.*.end_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.heds.*.quantity' => 'required|numeric',
+            'accrued.heds.*.percentage' => 'required|exists:tenant.co_type_overtime_surcharges,id',
+            'accrued.heds.*.payment' => 'required|numeric',
+
+            // hens
+            'accrued.hens' => 'nullable|array',
+            'accrued.hens.*.start_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.hens.*.end_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.hens.*.quantity' => 'required|numeric',
+            'accrued.hens.*.percentage' => 'required|exists:tenant.co_type_overtime_surcharges,id',
+            'accrued.hens.*.payment' => 'required|numeric',
+            
+            // hrns
+            'accrued.hrns' => 'nullable|array',
+            'accrued.hrns.*.start_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.hrns.*.end_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.hrns.*.quantity' => 'required|numeric',
+            'accrued.hrns.*.percentage' => 'required|exists:tenant.co_type_overtime_surcharges,id',
+            'accrued.hrns.*.payment' => 'required|numeric',
+            
+            // heddfs
+            'accrued.heddfs' => 'nullable|array',
+            'accrued.heddfs.*.start_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.heddfs.*.end_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.heddfs.*.quantity' => 'required|numeric',
+            'accrued.heddfs.*.percentage' => 'required|exists:tenant.co_type_overtime_surcharges,id',
+            'accrued.heddfs.*.payment' => 'required|numeric',
             
             // Deductions
             'deduction' => 'required|array',
