@@ -112,7 +112,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setHrddfsAttribute($value)
     {
-        $this->attributes['hrddfs'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['hrddfs'] = (is_null($value) || empty($value))?null:json_encode($value);
     }
 
     public function getHendfsAttribute($value)
@@ -122,7 +122,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setHendfsAttribute($value)
     {
-        $this->attributes['hendfs'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['hendfs'] = (is_null($value) || empty($value))?null:json_encode($value);
     }
 
     public function getHrndfsAttribute($value)
@@ -132,7 +132,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setHrndfsAttribute($value)
     {
-        $this->attributes['hrndfs'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['hrndfs'] = (is_null($value) || empty($value))?null:json_encode($value);
     }
     
     public function getCommonVacationAttribute($value)

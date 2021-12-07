@@ -90,6 +90,30 @@ class DocumentPayrollRequest extends FormRequest
             'accrued.heddfs.*.percentage' => 'required|exists:tenant.co_type_overtime_surcharges,id',
             'accrued.heddfs.*.payment' => 'required|numeric',
             
+            // hrddfs
+            'accrued.hrddfs' => 'nullable|array',
+            'accrued.hrddfs.*.start_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.hrddfs.*.end_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.hrddfs.*.quantity' => 'required|numeric',
+            'accrued.hrddfs.*.percentage' => 'required|exists:tenant.co_type_overtime_surcharges,id',
+            'accrued.hrddfs.*.payment' => 'required|numeric',
+
+            // hendfs
+            'accrued.hendfs' => 'nullable|array',
+            'accrued.hendfs.*.start_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.hendfs.*.end_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.hendfs.*.quantity' => 'required|numeric',
+            'accrued.hendfs.*.percentage' => 'required|exists:tenant.co_type_overtime_surcharges,id',
+            'accrued.hendfs.*.payment' => 'required|numeric',
+
+            // hrndfs
+            'accrued.hrndfs' => 'nullable|array',
+            'accrued.hrndfs.*.start_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.hrndfs.*.end_time' => 'required|date_format:Y-m-d\TH:i:s',
+            'accrued.hrndfs.*.quantity' => 'required|numeric',
+            'accrued.hrndfs.*.percentage' => 'required|exists:tenant.co_type_overtime_surcharges,id',
+            'accrued.hrndfs.*.payment' => 'required|numeric',
+
             // Deductions
             'deduction' => 'required|array',
             'deduction.eps_type_law_deductions_id' => 'required',

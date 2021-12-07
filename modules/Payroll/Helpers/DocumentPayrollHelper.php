@@ -322,10 +322,13 @@ class DocumentPayrollHelper
                 'transportation_allowance' => $accrued->transportation_allowance,
                 'telecommuting' => $accrued->telecommuting,
                 'work_disabilities' => $accrued->work_disabilities,
-                'HEDs' => $accrued->parseExtraHoursToFormatApi($accrued->heds),
-                'HENs' => $accrued->parseExtraHoursToFormatApi($accrued->hens),
-                'HRNs' => $accrued->parseExtraHoursToFormatApi($accrued->hrns),
-                'HEDDFs' => $accrued->parseExtraHoursToFormatApi($accrued->heddfs),
+                'HEDs' => $accrued->parseExtraHoursToFormatApi($accrued->heds), //Hora Extra Diurna
+                'HENs' => $accrued->parseExtraHoursToFormatApi($accrued->hens), //Hora Extra Nocturna
+                'HRNs' => $accrued->parseExtraHoursToFormatApi($accrued->hrns), //Hora Recargo Nocturno
+                'HEDDFs' => $accrued->parseExtraHoursToFormatApi($accrued->heddfs), //Hora Extra Diurna Dominical y Festivos
+                'HRDDFs' => $accrued->parseExtraHoursToFormatApi($accrued->hrddfs), //Hora Recargo Diurno Dominical y Festivos
+                'HENDFs' => $accrued->parseExtraHoursToFormatApi($accrued->hendfs), //Hora Extra Nocturna Dominical y Festivos
+                'HRNDFs' => $accrued->parseExtraHoursToFormatApi($accrued->hrndfs), //Hora Recargo Nocturno Dominical y Festivos
             ],
             'deductions' => [
                 'eps_type_law_deductions_id' => $deduction->eps_type_law_deductions_id,

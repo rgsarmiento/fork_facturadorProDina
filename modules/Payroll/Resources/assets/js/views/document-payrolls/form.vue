@@ -479,6 +479,8 @@
             <document-payroll-extra-hours :showDialog.sync="showDialogDocumentPayrollExtraHours"     
                             :form="form"
                             :errors="errors"
+                            @sumTotalsExtraHoursForm="sumTotalsExtraHoursForm"
+                            ref="componentDocumentPayrollExtraHours"
                             >
                             </document-payroll-extra-hours>
         </div>
@@ -574,6 +576,10 @@
                         hens: [],
                         hrns: [],
                         heddfs: [],
+                        hrddfs: [],
+                        hendfs: [],
+                        hrndfs: [],
+                        total_extra_hours: 0, //usado para controlar los totales de horas extras en vista y sumar al total devengados
                     },
                     deduction: {
                         eps_type_law_deductions_id: 1,
@@ -733,17 +739,22 @@
             },
             calculateTotalAccrued(){
 
-                this.form.accrued.accrued_total = parseFloat(this.form.accrued.salary) + (this.form.accrued.transportation_allowance ? parseFloat(this.form.accrued.transportation_allowance) : 0)
+                this.form.accrued.accrued_total = parseFloat(this.form.accrued.salary) 
+                                                + (this.form.accrued.transportation_allowance ? parseFloat(this.form.accrued.transportation_allowance) : 0)
+                                                + this.form.accrued.total_extra_hours
 
+            },
+            sumTotalsExtraHoursForm(){
+                this.calculateTotalAccrued()
             },
             async changeWorker() { 
 
                 let worker = await _.find(this.workers, {id : this.form.worker_id})
 
                 //autocompletar campos
-                this.autocompleteDataFromWorker(worker)
+                await this.autocompleteDataFromWorker(worker)
 
-                this.calculateTotal()
+                await this.calculateTotal()
 
             },
             autocompleteDataFromWorker(worker){
@@ -760,7 +771,7 @@
                 this.autocompleteDataPayment(worker)
 
             },
-            autocompleteDataSalary(worker_salary){
+            async autocompleteDataSalary(worker_salary){
 
                 this.form.accrued.salary = parseFloat(worker_salary)
 
@@ -772,11 +783,20 @@
                     this.form.accrued.transportation_allowance = undefined
                 }
 
-                // console.log(this.advanced_configuration)
+                //recalcular pagos(totales) de las horas extras, estas se calculan en base al salario base
+                await this.$refs.componentDocumentPayrollExtraHours.recalculateDataExtraHours()
 
             },
-            changeAccruedSalary(){
-                this.autocompleteDataSalary(this.form.accrued.salary)
+            async changeAccruedSalary(){
+
+                await this.autocompleteDataSalary(this.form.accrued.salary)
+
+                //recalcular pagos(totales) de las horas extras, estas se calculan en base al salario base
+                await this.$refs.componentDocumentPayrollExtraHours.recalculateDataExtraHours()
+
+                //calcular total devengados
+                await this.calculateTotalAccrued()
+
             },
             autocompleteDataPayment(worker){
 
@@ -802,7 +822,7 @@
             },
             async submit() {
  
-                // this.loading_submit = true
+                this.loading_submit = true
                 
                 await this.$http.post(`/${this.resource}`, this.form).then(response => {
                     // console.log(response)
