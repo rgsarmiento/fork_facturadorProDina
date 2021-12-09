@@ -77,15 +77,15 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['period.settlement_start_date']}">
-                                            <label class="control-label">Fecha de inicio de liquidación<span class="text-danger"> *</span></label>
-                                            <el-date-picker v-model="form.period.settlement_start_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
+                                            <label class="control-label">F. Inicio de periodo de liquidación<span class="text-danger"> *</span></label>
+                                            <el-date-picker v-model="form.period.settlement_start_date" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changePeriodSettlement"></el-date-picker>
                                             <small class="form-control-feedback" v-if="errors['period.settlement_start_date']" v-text="errors['period.settlement_start_date'][0]"></small>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['period.settlement_end_date']}">
-                                            <label class="control-label">Fecha de finalización de liquidación<span class="text-danger"> *</span></label>
-                                            <el-date-picker v-model="form.period.settlement_end_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
+                                            <label class="control-label">F. Finalización de periodo de liquidación<span class="text-danger"> *</span></label>
+                                            <el-date-picker v-model="form.period.settlement_end_date" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changePeriodSettlement"></el-date-picker>
                                             <small class="form-control-feedback" v-if="errors['period.settlement_end_date']" v-text="errors['period.settlement_end_date'][0]"></small>
                                         </div>
                                     </div>
@@ -188,7 +188,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.worked_days']}">
                                             <label class="control-label">Días trabajados<span class="text-danger"> *</span></label>
-                                            <el-input-number v-model="form.accrued.worked_days" :min="0" controls-position="right"></el-input-number>
+                                            <el-input-number v-model="form.accrued.worked_days" :min="1" :max="30" :precision="0" controls-position="right" @change="changeWorkedDays"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['accrued.worked_days']" v-text="errors['accrued.worked_days'][0]"></small>
                                         </div>
                                     </div>
@@ -196,7 +196,8 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.salary']}">
                                             <label class="control-label">Salario<span class="text-danger"> *</span></label>
-                                            <el-input-number v-model="form.accrued.salary" :min="0" controls-position="right" @change="changeAccruedSalary"></el-input-number>
+                                            <el-input-number v-model="form.accrued.salary" :min="0" controls-position="right" disabled></el-input-number>
+                                            <!-- <el-input-number v-model="form.accrued.salary" :min="0" controls-position="right" @change="changeAccruedSalary"></el-input-number> -->
                                             <small class="form-control-feedback" v-if="errors['accrued.salary']" v-text="errors['accrued.salary'][0]"></small>
                                         </div>
                                     </div>
@@ -302,8 +303,10 @@
                                 <div class="row"> 
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.eps_type_law_deductions_id']}">
-                                            <label class="control-label">EPS - Deducciones por ley<span class="text-danger"> *</span></label>
-                                            <el-select v-model="form.deduction.eps_type_law_deductions_id"   filterable>
+                                            <label class="control-label">EPS - Deducciones por ley
+                                                <span class="text-danger"> *</span>
+                                            </label>
+                                            <el-select v-model="form.deduction.eps_type_law_deductions_id"   filterable @change="changeEpsTypeLawDeduction">
                                                 <el-option v-for="option in type_law_deductions" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="errors['deduction.eps_type_law_deductions_id']" v-text="errors['deduction.eps_type_law_deductions_id'][0]"></small>
@@ -311,7 +314,10 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.eps_deduction']}">
-                                            <label class="control-label">Deducción EPS<span class="text-danger"> *</span></label>
+                                            <label class="control-label">Deducción EPS
+                                                <span v-if="getPercentageEpsTypeLawDeduction"> ({{ getPercentageEpsTypeLawDeduction.percentage }}%) </span>
+                                                <span class="text-danger"> *</span>
+                                            </label>
                                             <el-input-number v-model="form.deduction.eps_deduction" :min="0" controls-position="right" @change="changeEpsDeduction"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.eps_deduction']" v-text="errors['deduction.eps_deduction'][0]"></small>
                                         </div>
@@ -319,7 +325,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.pension_type_law_deductions_id']}">
                                             <label class="control-label">Pensión - Deducciones por ley<span class="text-danger"> *</span></label>
-                                            <el-select v-model="form.deduction.pension_type_law_deductions_id"   filterable>
+                                            <el-select v-model="form.deduction.pension_type_law_deductions_id"   filterable @change="changePensionTypeLawDeduction">
                                                 <el-option v-for="option in type_law_deductions" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="errors['deduction.pension_type_law_deductions_id']" v-text="errors['deduction.pension_type_law_deductions_id'][0]"></small>
@@ -327,7 +333,10 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.pension_deduction']}">
-                                            <label class="control-label">Deducción de pensión<span class="text-danger"> *</span></label>
+                                            <label class="control-label">Deducción de pensión
+                                                <span v-if="getPercentagePensionTypeLawDeduction"> ({{ getPercentagePensionTypeLawDeduction.percentage }}%) </span>
+                                                <span class="text-danger"> *</span>
+                                            </label>
                                             <el-input-number v-model="form.deduction.pension_deduction" :min="0" controls-position="right" @change="changePensionDeduction"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.pension_deduction']" v-text="errors['deduction.pension_deduction'][0]"></small>
                                         </div>
@@ -518,7 +527,8 @@
                 form_disabled: {},
                 show_inputs_payment_method: true,
                 advanced_configuration: {},
-                showDialogDocumentPayrollExtraHours: false
+                showDialogDocumentPayrollExtraHours: false,
+                quantity_days_month: 30
             }
         }, 
         async created() {
@@ -529,10 +539,48 @@
 
             this.loading_form = true
         }, 
+        computed: {
+            getPercentageEpsTypeLawDeduction: function () {
+                return this.getTypeLawDeduction(this.form.deduction.eps_type_law_deductions_id)
+            },
+            getPercentagePensionTypeLawDeduction: function () {
+                return this.getTypeLawDeduction(this.form.deduction.pension_type_law_deductions_id)
+            },
+        },
         methods: { 
+            getValueFromInputUndefined(value){
+                return value ? value : 0 //obtener el valor de un input que puede ser un campo undefined
+            },
+            getTypeLawDeduction(id){
+                return _.find(this.type_law_deductions, { id : id })
+            },
+            percentageToFactor(percentage){
+                return percentage / 100
+            },
+            getTotalLawDeduction(type_law_deductions_id){
+
+                let type_law_deduction = this.getTypeLawDeduction(type_law_deductions_id)
+
+                // total devengados – subsidio transporte *  % deducciones por ley (type law deductions)
+                return _.round((this.form.accrued.accrued_total - this.getValueFromInputUndefined(this.form.accrued.transportation_allowance)) * this.percentageToFactor(type_law_deduction.percentage), 2)
+
+            },
+            changeEpsTypeLawDeduction(){
+                this.form.deduction.eps_deduction = this.getTotalLawDeduction(this.form.deduction.eps_type_law_deductions_id)
+                this.calculateTotalDeduction()
+            },
+            changePensionTypeLawDeduction(){
+                this.form.deduction.pension_deduction = this.getTotalLawDeduction(this.form.deduction.pension_type_law_deductions_id)
+                this.calculateTotalDeduction()
+            },
+            calculateTotalTypeLawDeduction(){
+                //calcular eps y pension
+                this.changeEpsTypeLawDeduction()
+                this.changePensionTypeLawDeduction()
+            },
             clickAddExtraHours(){
 
-                if(parseFloat(this.form.accrued.salary) <= 0){
+                if(parseFloat(this.form.accrued.salary) <= 0 || parseFloat(this.form.accrued.total_base_salary) <= 0){
                     return this.$message.warning('El campo Salario debe ser mayor a 0')
                 }
 
@@ -544,6 +592,20 @@
                 this.show_inputs_payment_method = [2,3,4,5,6,7,21,22,30,31,42,45,46,47].includes(this.form.payment.payment_method_id)
 
             },
+            changePeriodSettlement(){
+
+                this.form.period.worked_time = moment(this.form.period.settlement_end_date).diff(moment(this.form.period.settlement_start_date), 'days', true)
+                
+            },
+            setInitialDataPeriod(){
+
+                let last_month = moment().subtract(1, 'months')
+
+                this.form.period.settlement_start_date = last_month.startOf('month').format('YYYY-MM-DD')
+                this.form.period.settlement_end_date = last_month.endOf('month').format('YYYY-MM-DD')
+                this.form.period.worked_time = this.quantity_days_month
+
+            },
             initForm() {
 
                 this.form = {
@@ -551,9 +613,9 @@
                     prefix: null,
                     period: {
                         admision_date: moment().format('YYYY-MM-DD'),
-                        settlement_start_date: moment().format('YYYY-MM-DD'),
-                        settlement_end_date: moment().format('YYYY-MM-DD'),
-                        worked_time: 1,
+                        settlement_start_date: null,
+                        settlement_end_date: null,
+                        worked_time: 0,
                         issue_date: moment().format('YYYY-MM-DD'),
                     },
                     payroll_period_id: null,
@@ -566,10 +628,11 @@
                     }, 
                     payment_dates: [], 
                     accrued :{
-                        worked_days: 30, 
+                        worked_days: this.quantity_days_month, 
+                        total_base_salary: 0, //salario base del empleado (equivalente a 30 dias), no se afecta por los dias trabajados
                         salary: 0, 
                         accrued_total: 0,
-                        transportation_allowance: undefined, //se usa undefined ya que el valor null, el componente input-number lo toma a 0
+                        transportation_allowance: undefined, //se usa undefined ya que el componente input-number le asigna 0 al valor null
                         telecommuting: undefined,
                         work_disabilities: [],
                         heds: [],
@@ -605,6 +668,7 @@
                     payment : false,
                 }
 
+                this.setInitialDataPeriod()
             },
             clickAddLaborUnion(){
                 
@@ -642,10 +706,14 @@
             clickCancelWorkDisability(index){
                 this.form.accrued.work_disabilities.splice(index, 1)
             },
-            clickAddPaymentDate() {
+            clickAddPaymentDate(param_payment_date = null) {
+
+                let payment_date = param_payment_date ? param_payment_date : moment().format('YYYY-MM-DD')
+
                 this.form.payment_dates.push({
-                    payment_date:  moment().format('YYYY-MM-DD')
+                    payment_date: payment_date
                 })
+
             },
             clickCancelPaymentDate(index) {
                 this.form.payment_dates.splice(index, 1)
@@ -723,13 +791,16 @@
                 })
             },
             changePensionDeduction(){
-                this.calculateTotal()
+                // this.calculateTotal()
+                this.calculateTotalDeduction()
             },
             changeEpsDeduction(){
-                this.calculateTotal()
+                // this.calculateTotal()
+                this.calculateTotalDeduction()
             },
             calculateTotal(){
                 this.calculateTotalAccrued()
+                this.calculateTotalTypeLawDeduction()
                 this.calculateTotalDeduction()
             },
             calculateTotalDeduction(){
@@ -745,7 +816,8 @@
 
             },
             sumTotalsExtraHoursForm(){
-                this.calculateTotalAccrued()
+                // this.calculateTotalAccrued()
+                this.calculateTotal()
             },
             async changeWorker() { 
 
@@ -765,39 +837,94 @@
                 this.form.period.admision_date = worker.work_start_date
                 this.form_disabled.admision_date = worker.work_start_date ? true : false
 
-
                 this.autocompleteDataSalary(worker.salary)
 
                 this.autocompleteDataPayment(worker)
 
+                this.changePayrollPeriod()
+
             },
             async autocompleteDataSalary(worker_salary){
 
+                this.form.accrued.worked_days = this.quantity_days_month
                 this.form.accrued.salary = parseFloat(worker_salary)
+                this.form.accrued.total_base_salary = parseFloat(worker_salary) //salario completo
+                this.calculateTransportationAllowance()
 
+                //recalcular pagos(totales) de las horas extras, estas se calculan en base al salario base
+                await this.$refs.componentDocumentPayrollExtraHours.recalculateDataExtraHours()
+
+            },
+            changePayrollPeriod(){
+                
+                let payroll_period = _.find(this.payroll_periods, { id : this.form.payroll_period_id })
+                this.cleanPaymentDates()
+
+                // mensual
+                if(payroll_period.id == 5){
+                    // agregar pago con el ultimo dia del mes
+                    this.clickAddPaymentDate(moment().endOf('month').format('YYYY-MM-DD'))
+                }
+
+                // quincenal
+                if(payroll_period.id == 4){
+                    
+                    const start_date = moment().startOf('month')
+                    const end_date = moment().endOf('month').format('YYYY-MM-DD')
+                    let add_quantity_days = parseInt(moment().daysInMonth() / 2) - 1
+                    const fortnight = start_date.add(add_quantity_days, 'days').format('YYYY-MM-DD')
+
+                    // quincena
+                    this.clickAddPaymentDate(fortnight)
+
+                    // fin de mes
+                    this.clickAddPaymentDate(end_date)
+                    
+                }
+
+            },
+            cleanPaymentDates(){
+                this.form.payment_dates = []
+            },
+            getPaymentPerDay(){
+                return this.form.accrued.total_base_salary / this.quantity_days_month
+            },
+            getTransportationAllowancePerDay(){
+                return this.advanced_configuration.transportation_allowance / this.quantity_days_month
+            },
+            changeWorkedDays(){
+
+                this.form.accrued.salary = _.round(this.getPaymentPerDay() * this.form.accrued.worked_days, 2)
+
+                this.calculateTransportationAllowance()
+                this.calculateTotal()
+
+            },
+            calculateTransportationAllowance(){
+
+                // validar si corresponde subsidio y asignar valor
                 let minimum_salary = parseFloat(this.advanced_configuration.minimum_salary)
 
-                if(this.form.accrued.salary <= (minimum_salary * 2)){
-                    this.form.accrued.transportation_allowance = this.advanced_configuration.transportation_allowance
+                if(this.form.accrued.total_base_salary <= (minimum_salary * 2)){
+
+                    this.form.accrued.transportation_allowance = _.round(this.getTransportationAllowancePerDay() * this.form.accrued.worked_days, 2)
+
                 }else{
                     this.form.accrued.transportation_allowance = undefined
                 }
 
-                //recalcular pagos(totales) de las horas extras, estas se calculan en base al salario base
-                await this.$refs.componentDocumentPayrollExtraHours.recalculateDataExtraHours()
-
             },
-            async changeAccruedSalary(){
+            // async changeAccruedSalary(){
 
-                await this.autocompleteDataSalary(this.form.accrued.salary)
+            //     await this.autocompleteDataSalary(this.form.accrued.salary)
 
-                //recalcular pagos(totales) de las horas extras, estas se calculan en base al salario base
-                await this.$refs.componentDocumentPayrollExtraHours.recalculateDataExtraHours()
+            //     //recalcular pagos(totales) de las horas extras, estas se calculan en base al salario base
+            //     await this.$refs.componentDocumentPayrollExtraHours.recalculateDataExtraHours()
 
-                //calcular total devengados
-                await this.calculateTotalAccrued()
+            //     //calcular total devengados
+            //     await this.calculateTotalAccrued()
 
-            },
+            // },
             autocompleteDataPayment(worker){
 
                 if(worker.payment){

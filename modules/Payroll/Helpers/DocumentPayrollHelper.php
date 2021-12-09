@@ -270,22 +270,18 @@ class DocumentPayrollHelper
     public function getParamsForApi($document, $inputs)
     {
 
-        $establishment = $document->establishment;
+        // $establishment = $document->establishment;
         $worker = $document->worker;
         $accrued = $document->accrued;
         $deduction = $document->deduction;
 
-        // dd($accrued->heds, $accrued->parseExtraHoursToFormatApi($accrued->heds));
-        
-        // dd($document->period, $inputs);
-
         return [
             'type_document_id' => 9, //id tipo documento nomina
-            'establishment_name' => $establishment->description,
-            'establishment_address' => $establishment->address,
-            'establishment_phone' => $establishment->telephone,
-            'establishment_municipality' => null,
-            'establishment_email' => $establishment->email,
+            // 'establishment_name' => $establishment->description,
+            // 'establishment_address' => $establishment->address,
+            // 'establishment_phone' => $establishment->telephone,
+            // 'establishment_municipality' => null,
+            // 'establishment_email' => $establishment->email,
             'head_note' => $document->head_note,
             'foot_note' => $document->foot_note,
             'novelty' => $document->novelty ?? [

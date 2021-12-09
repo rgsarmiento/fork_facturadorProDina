@@ -19,4 +19,10 @@ class PayrollPeriod extends Model
     protected $fillable = [
         'name', 'code',
     ];
+    
+    public function getCodeAttribute($value)
+    {
+        return trim($value);
+    }
+
 }
