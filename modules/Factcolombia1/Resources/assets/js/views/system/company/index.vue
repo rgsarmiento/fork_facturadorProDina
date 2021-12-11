@@ -2,7 +2,7 @@
     <div>
         <header class="page-header">
             <h2>
-                <a href="/dashboard">
+                <a href="/co-companies">
                     <i class="fa fa-list-alt"></i>
                 </a>
             </h2>

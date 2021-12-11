@@ -64,9 +64,9 @@
 </template>
 
 <script>
-    import Helper from "../../../mixins/Helper";
+    // import Helper from "../../../mixins/Helper";
     export default {
-        mixins: [Helper],
+        // mixins: [Helper],
         props: {
             route: {
                 required: true
@@ -82,14 +82,26 @@
                 test_id: ''
             },
             loadingSoftware: false,
+            company: {}
         }),
 
-        mounted() {
-            this.errors = {
-            }
+        async mounted() {
+            this.errors = {}
+            await this.initForm()
+            await this.getCompany()
+            await this.setDataSoftware()
         },
-
         methods: {
+            async getCompany(){
+                await this.$http.post(`/company`).then(response => {
+                    this.company = response.data;
+                })
+            },
+            setDataSoftware() {
+                this.software.id_software = this.company.id_software
+                this.software.pin_software = this.company.pin_software
+                this.software.test_id = this.company.test_id
+            },
             initForm() {
                 this.software.id_software = ''
                 this.software.pin_software = ''
@@ -101,6 +113,7 @@
                     .then(response => {
                         if (response.data.success) {
                             this.$message.success(response.data.message)
+                            // this.initForm()
                         } else {
                             this.$message.error(response.data.message)
                         }
@@ -114,7 +127,6 @@
                     })
                     .then(() => {
                         this.loadingSoftware = false
-                        this.initForm()
                     })
             },
         }

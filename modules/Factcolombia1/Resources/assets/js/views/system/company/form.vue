@@ -113,7 +113,7 @@
 
                     <div class="col-md-6">
                         <div  class="form-group" :class="{'has-danger': errors.type_document_identification_id}">
-                            <label class="control-label">Seleccionar Tipo Documentación</label>
+                            <label class="control-label">Seleccionar Tipo Documento</label>
                             <el-select filterable  v-model="form.type_document_identification_id">
                                 <el-option v-for="option in type_document_identifications" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>

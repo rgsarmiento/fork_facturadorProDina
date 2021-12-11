@@ -71,15 +71,26 @@
         data: () => ({
             errors: {},
             form: {},
+            company: {},
             loadingSoftware: false,
         }),
-
-        created() {
-            this.initForm()
+        async created() {
+            await this.initForm()
+            await this.getCompany()
+            await this.setDataForm()
         },
         methods: {
+            async getCompany(){
+                await this.$http.post(`/company`).then(response => {
+                    this.company = response.data
+                })
+            },
+            setDataForm() {
+                this.form.idpayroll = this.company.id_software_payroll
+                this.form.pinpayroll = this.company.pin_software_payroll
+                this.form.test_set_id_payroll = this.company.test_set_id_payroll
+            },
             initForm() {
-
                 this.form = {
                     idpayroll: null,
                     pinpayroll: null,
@@ -92,7 +103,7 @@
                     .then(response => {
                         if (response.data.success) {
                             this.$message.success(response.data.message)
-                            this.initForm()
+                            // this.initForm()
                         } else {
                             this.$message.error(response.data.message)
                         }

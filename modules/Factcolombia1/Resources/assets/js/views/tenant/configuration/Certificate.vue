@@ -7,7 +7,10 @@
             <div class="certificado">
                 <form autocomplete="off">
                     <div class="form-body">
-                        <div class="row mt-4">
+                        <div class="row mt-2">
+                            <div class="col-lg-12" v-if="response_message_certificate">
+                                <h4><b>{{ response_message_certificate }}</b></h4>
+                            </div>
                             <div class="col-lg-4">
                                 <div class="form-group" :class="{'has-danger': errors.certificate64}">
                                     <el-upload
@@ -99,8 +102,11 @@
             },
             fileCertificado: "",
             loadingCertificate: false,
+            response_message_certificate: null,
         }),
-
+        async created() {
+            await this.getCompany()
+        },
         mounted() {
             this.errors = {
             }
@@ -111,6 +117,17 @@
         },
 
         methods: {
+            async getCompany(){
+                await this.$http.post(`/company`).then(response => {
+                    this.company = response.data
+                    
+                    if(this.company.response_certificate){
+                        const parse_certificate = JSON.parse(this.company.response_certificate)
+                        this.response_message_certificate = `${parse_certificate.message} - ${parse_certificate.certificado.name}`
+                    }
+
+                })
+            },
             initForm() {
                 this.certificate.password_certificate = '';
                 this.certificate.certificate64 = '';

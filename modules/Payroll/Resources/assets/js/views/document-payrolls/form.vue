@@ -158,7 +158,7 @@
                                             <thead>
                                                 <tr width="100%">
                                                     <th v-if="form.payment_dates.length>0" class="pb-2">Fecha<span class="text-danger"> *</span></th>
-                                                    <th width="30%"><a href="#" @click.prevent="clickAddPaymentDate" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                    <th width="30%"><a href="#" @click.prevent="clickAddPaymentDate()" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
