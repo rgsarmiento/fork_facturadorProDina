@@ -7,8 +7,8 @@
         <h2 class="text-sm">{{user.name}}</h2>
       </div> -->
       <div class="row">
-        <div class="col-md-4">
-          <h2 class="text-sm">POS</h2>
+        <div class="col-md-6">
+          <!-- <h2 class="text-sm">POS</h2> -->
           <h2><el-switch v-model="search_item_by_barcode" active-text="Buscar por código de barras" @change="changeSearchItemBarcode"></el-switch></h2>
           <h2><el-switch v-model="type_refund" active-text="Devolución"></el-switch></h2>
 
@@ -18,7 +18,7 @@
             <h2>  <button type="button" :disabled="place == 'cat2'" @click="setView"  class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-bars"></i></button> </h2>
             <h2>  <button type="button" :disabled="place== 'cat'" @click="back()" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-undo"></i></button> </h2>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
           <div class="right-wrapper">
             <!-- <h2 class="text-sm pr-5">T/C  {{form.exchange_rate_sale}}</h2> -->
             <h2 class="text-sm  pull-right">{{user.name}}</h2>
