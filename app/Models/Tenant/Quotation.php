@@ -9,6 +9,9 @@ use Modules\Sale\Models\Contract;
 use Modules\Factcolombia1\Models\Tenant\{
     Currency,
 };
+use Modules\Sale\Models\{
+    Remission
+};
 
 class Quotation extends ModelTenant
 {
@@ -131,6 +134,11 @@ class Quotation extends ModelTenant
     public function sale_notes()
     {
         return $this->hasMany(SaleNote::class);
+    }
+
+    public function remissions()
+    {
+        return $this->hasMany(Remission::class);
     }
 
     public function payment_method_type()

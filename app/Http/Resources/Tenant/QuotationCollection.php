@@ -19,6 +19,8 @@ class QuotationCollection extends ResourceCollection
             $btn_generate = (count($row->documents) > 0 || count($row->sale_notes) > 0)?false:true;
             $btn_generate_cnt = $row->contract ?false:true;
 
+            $btn_generate_remission = $row->remissions->count() == 0;
+
             return [
                 'id' => $row->id, 
                 'soap_type_id' => $row->soap_type_id,
@@ -54,6 +56,7 @@ class QuotationCollection extends ResourceCollection
                 'sale_opportunity' => ($row->sale_opportunity) ? $row->sale_opportunity:null,
                 'btn_generate' => $btn_generate,
                 'btn_generate_cnt' => $btn_generate_cnt,
+                'btn_generate_remission' => $btn_generate_remission,
                 'created_at' => $row->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $row->updated_at->format('Y-m-d H:i:s'),
             ];
