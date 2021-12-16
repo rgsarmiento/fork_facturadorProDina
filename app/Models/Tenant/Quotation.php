@@ -136,9 +136,9 @@ class Quotation extends ModelTenant
         return $this->hasMany(SaleNote::class);
     }
 
-    public function remissions()
+    public function remission()
     {
-        return $this->hasMany(Remission::class);
+        return $this->hasOne(Remission::class);
     }
 
     public function payment_method_type()

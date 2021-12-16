@@ -33,6 +33,7 @@
                         <th>Estado</th>
                         <th>Cotización</th>
                         <th>Comprobantes</th>
+                        <th class="text-center">Remisiones</th>
                         <!-- <th>Notas de venta</th> -->
                         <!-- <th>Estado</th> -->
                         <th class="text-center">Moneda</th>
@@ -63,6 +64,7 @@
                                 <label :key="i" v-text="document.number_full" class="d-block"></label>
                             </template>
                         </td>
+                        <td class="text-center">{{ row.remission_number_full }}</td>
                         <!-- <td>
                             <template v-for="(sale_note,i) in row.sale_notes">
                                 <label :key="i" v-text="sale_note.identifier" class="d-block"></label>
