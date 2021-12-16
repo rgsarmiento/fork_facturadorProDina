@@ -14,6 +14,7 @@ use App\Models\Tenant\{
     StateType,
     User,
     Establishment,
+    Quotation,
 };
 use App\Models\Tenant\ModelTenant;
 
@@ -55,6 +56,7 @@ class Remission extends ModelTenant
         'payment_method_id',
         'time_days_credit',
         'filename',
+        'quotation_id',
 
     ];
 
@@ -87,6 +89,11 @@ class Remission extends ModelTenant
     public function payment_form()
     {
         return $this->belongsTo(PaymentForm::class);
+    }
+
+    public function quotation()
+    {
+        return $this->belongsTo(Quotation::class);
     }
 
     public function payment_method()

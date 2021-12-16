@@ -33,6 +33,7 @@
                         <th>Estado</th>
                         <th>Cotización</th>
                         <th>Comprobantes</th>
+                        <th class="text-center">Remisiones</th>
                         <!-- <th>Notas de venta</th> -->
                         <!-- <th>Estado</th> -->
                         <th class="text-center">Moneda</th>
@@ -63,6 +64,7 @@
                                 <label :key="i" v-text="document.number_full" class="d-block"></label>
                             </template>
                         </td>
+                        <td class="text-center">{{ row.remission_number_full }}</td>
                         <!-- <td>
                             <template v-for="(sale_note,i) in row.sale_notes">
                                 <label :key="i" v-text="sale_note.identifier" class="d-block"></label>
@@ -78,12 +80,23 @@
                         </td>
 
                         <td class="text-right">
-                            <button v-if="row.state_type_id != '11' && row.btn_generate && typeUser == 'admin' && soapCompany != '03'"
-                                    type="button"
-                                    class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickOptions(row.id)" >
-                                Generar comprobante
-                            </button>
+                            <el-tooltip class="item" effect="dark" content="Generar comprobante" placement="top-start">
+                                <button v-if="row.state_type_id != '11' && row.btn_generate && typeUser == 'admin' && soapCompany != '03'"
+                                        type="button"
+                                        class="btn waves-effect waves-light btn-xs btn-info"
+                                        @click.prevent="clickOptions(row.id)" >
+                                    Comprobante
+                                </button>
+                            </el-tooltip>
+
+                            <el-tooltip class="item" effect="dark" content="Generar remisión" placement="top-start">
+                                <button v-if="row.state_type_id != '11' && row.btn_generate_remission && typeUser == 'admin'"
+                                        type="button"
+                                        class="btn waves-effect waves-light btn-xs btn-primary"
+                                        @click.prevent="clickGenerateRemission(row.id)" >
+                                    Remisión
+                                </button>
+                            </el-tooltip>
 
                             <a v-if="row.documents.length == 0 && row.state_type_id != '11'" :href="`/${resource}/edit/${row.id}`" type="button" class="btn waves-effect waves-light btn-xs btn-info">Editar</a>
                             <button v-if="row.documents.length == 0 && row.state_type_id != '11'" type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickAnulate(row.id)">Anular</button>
@@ -106,6 +119,9 @@
             <quotation-options-pdf :showDialog.sync="showDialogOptionsPdf"
                               :recordId="recordId"
                               :showClose="true"></quotation-options-pdf>
+                              
+            <quotation-generate-remission :showDialog.sync="showDialogGenerateRemission"
+                              :recordId="recordId"></quotation-generate-remission>
         </div>
     </div>
 </template>
@@ -120,17 +136,19 @@
     import QuotationOptionsPdf from './partials/options_pdf.vue'
     import DataTable from '../../../components/DataTable.vue'
     import {deletable} from '../../../mixins/deletable'
+    import QuotationGenerateRemission from './partials/generate_remission.vue'
 
     export default {
         props:['typeUser', 'soapCompany'],
         mixins: [deletable],
-        components: {DataTable,QuotationOptions, QuotationOptionsPdf},
+        components: {DataTable,QuotationOptions, QuotationOptionsPdf, QuotationGenerateRemission},
         data() {
             return {
                 resource: 'quotations',
                 recordId: null,
                 showDialogOptions: false,
                 showDialogOptionsPdf: false,
+                showDialogGenerateRemission: false,
                 state_types: [],
                 columns: {
                     delivery_date: {
@@ -144,6 +162,10 @@
             await this.filter()
         },
         methods: {
+            clickGenerateRemission(recordId){
+                this.recordId = recordId
+                this.showDialogGenerateRemission = true
+            },
             async changeStateType(row){
 
                 await this.updateStateType(`/${this.resource}/state-type/${row.state_type_id}/${row.id}`).then(() =>

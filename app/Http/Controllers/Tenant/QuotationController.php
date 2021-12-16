@@ -45,6 +45,8 @@ use Modules\Factcolombia1\Models\Tenant\{
     Currency,
     TypeDocument,
     Tax,
+    PaymentMethod,
+    PaymentForm,
 };
 use App\Models\Tenant\Document;
 use Carbon\Carbon;
@@ -185,7 +187,10 @@ class QuotationController extends Controller
                                 $typeDocument->alert_date = ($typeDocument->resolution_date_end == null) ? false : Carbon::parse($typeDocument->resolution_date_end)->subMonth(1)->lt(Carbon::now());
                             });
 
-        return compact('type_documents');
+        $payment_methods = PaymentMethod::all();
+        $payment_forms = PaymentForm::all();
+
+        return compact('type_documents', 'payment_methods', 'payment_forms');
     }
 
     public function item_tables() {
