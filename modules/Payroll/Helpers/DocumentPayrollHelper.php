@@ -131,7 +131,7 @@ class DocumentPayrollHelper
         else{
 
             //TODO parsear respuesta y verificar
-            $send_bill_sync_result = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendBillSyncResponse']['SendBillSyncResult'];
+            $send_bill_sync_result = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendNominaSyncResponse']['SendNominaSyncResult'];
 
             if($send_bill_sync_result['IsValid'] == "true")
             {
