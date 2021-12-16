@@ -70,7 +70,11 @@ class DocumentPayrollHelper
         $params = $this->getParamsForApi($document, $inputs);
         // dd($params);
         $connection_api = new HttpConnectionApi($this->company->api_token);
-        $send_request_to_api = $connection_api->sendRequestToApi("ubl2.1/payroll/{$this->company->test_set_id_payroll}", $params, 'POST');
+        // $send_request_to_api = $connection_api->sendRequestToApi("ubl2.1/payroll/{$this->company->test_set_id_payroll}", $params, 'POST');
+
+        $url = ($this->company->payroll_type_environment_id == 2) ? "ubl2.1/payroll/{$this->company->test_set_id_payroll}" : "ubl2.1/payroll";
+        $send_request_to_api = $connection_api->sendRequestToApi($url, $params, 'POST');
+
         $number_full = "{$params['prefix']}-{$params['consecutive']}";
 
         //error validacion form request api
@@ -131,7 +135,7 @@ class DocumentPayrollHelper
         else{
 
             //TODO parsear respuesta y verificar
-            $send_bill_sync_result = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendBillSyncResponse']['SendBillSyncResult'];
+            $send_bill_sync_result = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendNominaSyncResponse']['SendNominaSyncResult'];
 
             if($send_bill_sync_result['IsValid'] == "true")
             {
