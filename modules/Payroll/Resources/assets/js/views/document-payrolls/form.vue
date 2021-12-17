@@ -620,6 +620,7 @@
                     },
                     payroll_period_id: null,
                     worker_id: null,
+                    resolution_number: null,
                     payment: {
                         payment_method_id: null,
                         bank_name: null,
@@ -749,6 +750,7 @@
                 let resolution = _.find(this.resolutions, {id : this.form.type_document_id})
                 if(resolution) {
                     this.form.prefix = resolution.prefix
+                    this.form.resolution_number = resolution.resolution_number
                 }
 
             }, 
@@ -948,6 +950,10 @@
 
             },
             async submit() {
+
+                if(!this.form.resolution_number){
+                    return this.$message.error("El número de resolución es obligatorio, debe asignarle un valor")
+                }
  
                 this.loading_submit = true
                 

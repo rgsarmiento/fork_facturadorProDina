@@ -278,9 +278,11 @@ class DocumentPayrollHelper
         $worker = $document->worker;
         $accrued = $document->accrued;
         $deduction = $document->deduction;
+        // dd($inputs);
 
         return [
             'type_document_id' => 9, //id tipo documento nomina
+            'resolution_number' => $inputs['resolution_number'], //id tipo documento nomina
             // 'establishment_name' => $establishment->description,
             // 'establishment_address' => $establishment->address,
             // 'establishment_phone' => $establishment->telephone,
