@@ -17,6 +17,7 @@ use App\Models\Tenant\{
     Quotation,
 };
 use App\Models\Tenant\ModelTenant;
+use Modules\Inventory\Models\InventoryKardex;
 
 
 class Remission extends ModelTenant
@@ -156,15 +157,15 @@ class Remission extends ModelTenant
         return Company::first();
     }
 
-    // public function inventory_kardex()
-    // {
-    //     return $this->morphMany(InventoryKardex::class, 'inventory_kardexable');
-    // }
-
     public function scopeWhereTypeUser($query)
     {
         $user = auth()->user();
         return ($user->type == 'seller') ? $query->where('user_id', $user->id) : null;
+    }
+
+    public function inventory_kardex()
+    {
+        return $this->morphMany(InventoryKardex::class, 'inventory_kardexable');
     }
 
     public function scopeWhereCurrency($query, $currency_id)

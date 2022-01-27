@@ -14,9 +14,7 @@ use Modules\Order\Models\OrderNoteItem;
 use Modules\Item\Models\ItemLotsGroup;
 use Modules\Item\Models\ItemLot;
 use App\Models\Tenant\DocumentPosItem;
-
-
-
+use Modules\Sale\Models\RemissionItem;
 
 
 class InventoryKardexServiceProvider extends ServiceProvider
@@ -27,7 +25,8 @@ class InventoryKardexServiceProvider extends ServiceProvider
         //
     }
 
-    public function boot() {
+    public function boot() 
+    {
         $this->purchase();
         $this->sale();
         $this->sale_note();
@@ -36,6 +35,8 @@ class InventoryKardexServiceProvider extends ServiceProvider
         $this->order_note();
         $this->order_note_item_delete();
         $this->document_pos();
+
+        $this->remission_item();
 
     }
 
@@ -324,5 +325,43 @@ class InventoryKardexServiceProvider extends ServiceProvider
         });
     }
 
+    
+    /**
+     * 
+     * Registro de inventario para remisiones
+     *
+     * @return void
+     */
+    private function remission_item() 
+    {
+        RemissionItem::created(function($remission_item){
+
+            $remission = $remission_item->remission;
+            $warehouse = $this->findWarehouse($remission->establishment_id);
+
+            if(!$remission_item->item->is_set)
+            {
+                $presentationQuantity = (!empty($remission_item->item->presentation)) ? $remission_item->item->presentation->quantity_unit : 1;
+                $quantity_discount = ($remission_item->quantity * $presentationQuantity) * -1;
+
+                $this->createInventoryKardex($remission, $remission_item->item_id, $quantity_discount, $warehouse->id);
+                $this->updateStock($remission_item->item_id, $quantity_discount, $warehouse->id);
+
+            }
+            // habilitar si es que se agrega conjuntos/packs
+            // else
+            // {
+            //     $item = Item::findOrFail($remission_item->item_id);
+
+            //     foreach ($item->sets as $it) 
+            //     {
+            //         $ind_item  = $it->individual_item;
+            //         $this->createInventoryKardex($remission, $ind_item->id, -$remission_item->quantity, $warehouse->id);
+            //         $this->updateStock($ind_item->id, -$remission_item->quantity, $warehouse->id);
+            //     }
+            // }
+
+        });
+    }
 
 }

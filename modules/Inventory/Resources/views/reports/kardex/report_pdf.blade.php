@@ -126,6 +126,10 @@
                                             @case($models[4])
                                                 {{($value->quantity < 0) ? "Pedido":"Anulación pedido"}}
                                                 @break
+
+                                            @case($models[6])
+                                                {{"Remisión"}}                                                    
+                                                @break  
                                         @endswitch
 
                                         
@@ -149,6 +153,10 @@
 
                                             @case($models[4])
                                                 {{  optional($value->inventory_kardexable)->prefix."-".optional($value->inventory_kardexable)->id }}                                                    
+                                                @break  
+
+                                            @case($models[6])
+                                                {{  optional($value->inventory_kardexable)->number_full }}                                                    
                                                 @break  
                                         @endswitch
 
@@ -181,6 +189,9 @@
                                                 {{"-"}}                                                 
                                                 @break  
                                             @case($models[4])
+                                                {{ isset($value->inventory_kardexable->date_of_issue) ? $value->inventory_kardexable->date_of_issue->format('Y-m-d') : '' }}
+                                                @break
+                                            @case($models[6])
                                                 {{ isset($value->inventory_kardexable->date_of_issue) ? $value->inventory_kardexable->date_of_issue->format('Y-m-d') : '' }}
                                                 @break
                                         @endswitch
@@ -265,6 +276,10 @@
                                             @case($models[4])
                                                 {{ ($value->quantity < 0) ?  $value->quantity:"-"}}                                                    
                                                 @break     
+                                                
+                                            @case($models[6])
+                                                {{ ($value->quantity < 0) ?  $value->quantity:"-"}}                                                    
+                                                @break   
                                                 
                                             @default
                                                 {{"-"}}                                                 
