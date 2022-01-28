@@ -18,6 +18,7 @@ use Modules\Finance\Models\IncomePayment;
 use Modules\Factcolombia1\Models\Tenant\{
     Currency,
 };
+use Modules\Sale\Models\RemissionPayment;
 
 
 trait FinanceTrait
@@ -137,6 +138,7 @@ trait FinanceTrait
             ['id'=> QuotationPayment::class, 'description' => 'COTIZACIÓN'],
             // ['id'=> ContractPayment::class, 'description' => 'CONTRATO'],
             ['id'=> IncomePayment::class, 'description' => 'INGRESO'],
+            ['id'=> RemissionPayment::class, 'description' => 'REMISIÓN'],
         ];
     }
 

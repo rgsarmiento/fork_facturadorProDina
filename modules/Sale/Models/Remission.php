@@ -168,6 +168,11 @@ class Remission extends ModelTenant
         return $this->morphMany(InventoryKardex::class, 'inventory_kardexable');
     }
 
+    public function payments()
+    {
+        return $this->hasMany(RemissionPayment::class);
+    }
+
     public function scopeWhereCurrency($query, $currency_id)
     {
         return $query->where('currency_id', $currency_id);
@@ -183,7 +188,9 @@ class Remission extends ModelTenant
             'establishment_id' => $this->establishment_id,
             'establishment' => $this->establishment,
             'state_type_id' => $this->state_type_id,
+            'state_type_description' => $this->state_type->description,
             'number_full' => $this->number_full,
+            'quotation_number_full' => optional($this->quotation)->number_full,
 
             'date_of_issue' => $this->date_of_issue->format('Y-m-d'),
             'time_of_issue' => $this->time_of_issue,
@@ -191,6 +198,7 @@ class Remission extends ModelTenant
             'customer_id' => $this->customer_id,
             'customer_number' => $this->customer->number,
             'customer_name' => $this->customer->name,
+            'user_name' => $this->user->name,
 
             'prefix' => $this->prefix,
             'number' => $this->number,

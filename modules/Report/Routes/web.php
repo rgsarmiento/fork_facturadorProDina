@@ -122,7 +122,16 @@ if($current_hostname) {
 
                 Route::get('/report-taxes', 'ReportTaxController@index')->name('tenant.reports.taxes');
                 Route::get('/report-taxes/pdf', 'ReportTaxController@downloadDocumentPos');
+                
 
+                // colombia
+                Route::prefix('co-remissions')->group(function () {
+                    Route::get('', 'ReportRemissionController@index')->name('tenant.reports.co-remissions.index');
+                    Route::get('pdf', 'ReportRemissionController@pdf');
+                    Route::get('excel', 'ReportRemissionController@excel');
+                    Route::get('filter', 'ReportRemissionController@filter');
+                    Route::get('records', 'ReportRemissionController@records');
+                });
 
             });
 
