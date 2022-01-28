@@ -233,6 +233,8 @@ Vue.component('tenant-report-user-commissions-index', require('../../modules/Rep
 
 Vue.component('tenant-report-tax-index', require('../../modules/Report/Resources/assets/js/views/taxes/index.vue'));
 
+Vue.component('tenant-report-co-remissions-index', require('../../modules/Report/Resources/assets/js/views/co-remissions/index.vue'));
+
 
 Vue.component('tenant-categories-index', require('../../modules/Item/Resources/assets/js/views/categories/index.vue'));
 Vue.component('tenant-brands-index', require('../../modules/Item/Resources/assets/js/views/brands/index.vue'));

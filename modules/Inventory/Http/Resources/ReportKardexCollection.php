@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Modules\Inventory\Models\InventoryTransaction;
 use Modules\Inventory\Models\InventoryKardex;
 use Modules\Inventory\Models\Warehouse;
+use Modules\Sale\Models\Remission;
 
 class ReportKardexCollection extends ResourceCollection
 {
@@ -32,7 +33,8 @@ class ReportKardexCollection extends ResourceCollection
             "App\Models\Tenant\SaleNote",
             "Modules\Inventory\Models\Inventory",
             "Modules\Order\Models\OrderNote",
-            "App\Models\Tenant\DocumentPos"
+            "App\Models\Tenant\DocumentPos",
+            Remission::class
         ];
 
         switch ($row->inventory_kardexable_type) {
@@ -117,7 +119,6 @@ class ReportKardexCollection extends ResourceCollection
                 ];
             }
 
-
             case $models[4]:
                 return [
                     'id' => $row->id,
@@ -133,23 +134,37 @@ class ReportKardexCollection extends ResourceCollection
                 ];
 
             case $models[5]:
-                    return [
-                        'id' => $row->id,
-                        'item_name' => $row->item->description,
-                        'date_time' => $row->created_at->format('Y-m-d H:i:s'),
-                        'date_of_issue' => isset($row->inventory_kardexable->date_of_issue) ? $row->inventory_kardexable->date_of_issue->format('Y-m-d') : '',
-                        'type_transaction' => "Venta POS",
-                        'number' => optional($row->inventory_kardexable)->prefix.'-'.optional($row->inventory_kardexable)->number,
-                        'input' => ($row->quantity > 0) ?  $row->quantity:"-",
-                        'output' => ($row->quantity < 0) ?  $row->quantity:"-",
-                        'balance' => self::$balance+= $row->quantity,
-                        'sale_note_asoc' => '-',
-                    ];
+                return [
+                    'id' => $row->id,
+                    'item_name' => $row->item->description,
+                    'date_time' => $row->created_at->format('Y-m-d H:i:s'),
+                    'date_of_issue' => isset($row->inventory_kardexable->date_of_issue) ? $row->inventory_kardexable->date_of_issue->format('Y-m-d') : '',
+                    'type_transaction' => "Venta POS",
+                    'number' => optional($row->inventory_kardexable)->prefix.'-'.optional($row->inventory_kardexable)->number,
+                    'input' => ($row->quantity > 0) ?  $row->quantity:"-",
+                    'output' => ($row->quantity < 0) ?  $row->quantity:"-",
+                    'balance' => self::$balance+= $row->quantity,
+                    'sale_note_asoc' => '-',
+                ];
+
+            case $models[6]: // Remisiones
+                return [
+                    'id' => $row->id,
+                    'item_name' => $row->item->description,
+                    'date_time' => $row->created_at->format('Y-m-d H:i:s'),
+                    'type_transaction' => "Remisión",
+                    'date_of_issue' => isset($row->inventory_kardexable->date_of_issue) ? $row->inventory_kardexable->date_of_issue->format('Y-m-d') : '',
+                    'number' => optional($row->inventory_kardexable)->number_full,
+                    'input' => ($row->quantity > 0) ?  $row->quantity:"-",
+                    'output' => ($row->quantity < 0) ?  $row->quantity:"-",
+                    'balance' => self::$balance+= $row->quantity,
+                    'sale_note_asoc' => '-',
+                ];
 
         }
 
-
     }
+    
 
     public function calcularRestante($request)
     {

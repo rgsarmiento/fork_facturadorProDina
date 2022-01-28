@@ -22,6 +22,7 @@ use Modules\Item\Models\ItemLot;
 
 use Modules\Inventory\Http\Resources\ReportKardexLotsGroupCollection;
 use Modules\Inventory\Http\Resources\ReportKardexItemLotCollection;
+use Modules\Sale\Models\Remission;
 
 
 class ReportKardexController extends Controller
@@ -37,7 +38,9 @@ class ReportKardexController extends Controller
         "App\Models\Tenant\Purchase",
         "App\Models\Tenant\SaleNote",
         "Modules\Inventory\Models\Inventory",
-        "Modules\Order\Models\OrderNote"
+        "Modules\Order\Models\OrderNote",
+        "App\Models\Tenant\DocumentPos",
+        Remission::class
     ];
 
     public function index() {

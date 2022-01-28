@@ -190,6 +190,18 @@
                                                     @click.prevent="clickDocumentPayment(row.id)"
                                                 >Pagos</button>
                                                 </template>
+
+                                                <template v-else-if="row.type === 'remission'">
+                                                    <button
+                                                        type="button"
+                                                        style="min-width: 41px"
+                                                        class="btn waves-effect waves-light btn-xs btn-info m-1__2"
+                                                        @click.prevent="clickRemissionPayment(row.id)"
+                                                    >
+                                                        Pagos
+                                                    </button>
+                                                </template>
+
                                                 <template v-else>
                                                 <button
                                                     type="button"
@@ -230,6 +242,11 @@
             :external="true"
             ></sale-note-payments>
 
+        <remission-payments
+            :showDialog.sync="showDialogRemissionPayments"
+            :remissionId="recordId"
+            :external="true"
+            ></remission-payments>
     </div>
 </template>
 
@@ -239,9 +256,10 @@
     import SaleNotePayments from "@views/sale_notes/partials/payments.vue";
     import DataTable from '../../components/DataTableWithoutPaging.vue'
     import queryString from "query-string";
+    import RemissionPayments from "@viewsModuleSale/co-remissions/partials/payments.vue";
 
     export default {
-        components: {DocumentPayments, SaleNotePayments, DataTable},
+        components: {DocumentPayments, SaleNotePayments, DataTable, RemissionPayments},
         data() {
             return {
                 resource: 'finances/unpaid',
@@ -263,7 +281,8 @@
                     }
                 },
                 showDialogDocumentPayments: false,
-                showDialogSaleNotePayments: false
+                showDialogSaleNotePayments: false,
+                showDialogRemissionPayments: false,
             }
         },
         async created() {
@@ -404,6 +423,10 @@
                     });
 
                 }
+            },
+            clickRemissionPayment(recordId) {
+                this.recordId = recordId;
+                this.showDialogRemissionPayments = true;
             },
             clickDocumentPayment(recordId) {
                 this.recordId = recordId;

@@ -17,20 +17,28 @@ if($current_hostname) {
                 Route::get('records', 'RemissionController@records');
                 Route::get('record/{id}', 'RemissionController@record');
                 Route::get('create/{id?}', 'RemissionController@create')->name('tenant.co-remissions.create');
-                // Route::get('search/customers', 'RemissionController@searchCustomers');
-                // Route::get('search/customer/{id}', 'RemissionController@searchCustomerById');
-
                 Route::get('tables', 'RemissionController@tables');
                 Route::get('item/tables', 'RemissionController@item_tables');
                 Route::get('download/{external_id}/{format?}', 'RemissionController@download');
                 Route::get('print/{external_id}/{format?}', 'RemissionController@toPrint');
-                
+
             });
+
+            Route::prefix('co-remission-payments')->group(function() {
+                
+                Route::get('records/{remission_id}', 'RemissionPaymentController@records');
+                Route::get('remission/{remission_id}', 'RemissionPaymentController@remission');
+                Route::get('tables', 'RemissionPaymentController@tables');
+                Route::post('', 'RemissionPaymentController@store');
+                Route::delete('{remission_payment}', 'RemissionPaymentController@destroy');
+
+            });
+
+            
+
 
             // colombia
 
-
-            
 
             Route::prefix('sale-opportunities')->group(function() {
 
