@@ -288,6 +288,7 @@ trait FinanceTrait
             $quotation_payment = $this->getSumByPMT($row->quotation_payments); 
             $contract_payment = $this->getSumByPMT($row->contract_payments); 
             $income_payment = $this->getSumByPMT($row->income_payments); 
+            $remission_payment = $this->getSumByPMT($row->remission_payments); 
 
             return [
 
@@ -300,6 +301,7 @@ trait FinanceTrait
                 'quotation_payment' => number_format($quotation_payment,2, ".", ""),
                 'contract_payment' => number_format($contract_payment,2, ".", ""),
                 'income_payment' => number_format($income_payment,2, ".", ""),
+                'remission_payment' => number_format($remission_payment,2, ".", ""),
                 
             ];
 
@@ -327,7 +329,8 @@ trait FinanceTrait
                 'quotation_payment' => '-',
                 'contract_payment' => '-',
                 'income_payment' => '-',
-                'purchase_payment' => '-'
+                'purchase_payment' => '-',
+                'remission_payment' => '-'
                 
             ];
 
@@ -353,6 +356,7 @@ trait FinanceTrait
         $t_purchases = 0;
         $t_expenses = 0;
         $t_income = 0;
+        $t_remissions = 0;
 
         foreach ($records_by_pmt as $value) {
 
@@ -362,6 +366,7 @@ trait FinanceTrait
             $t_contracts += $value['contract_payment'];
             $t_purchases += $value['purchase_payment'];
             $t_income += $value['income_payment'];
+            $t_remissions += $value['remission_payment'];
 
         }
 
@@ -379,6 +384,7 @@ trait FinanceTrait
             't_purchases' => number_format($t_purchases,2, ".", ""),
             't_expenses' => number_format($t_expenses,2, ".", ""),
             't_income' => number_format($t_income,2, ".", ""),
+            't_remissions' => number_format($t_remissions,2, ".", ""),
         ];
 
     }

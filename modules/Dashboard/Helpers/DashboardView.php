@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Modules\Factcolombia1\Models\Tenant\{
     Currency,
 };
+use Modules\Sale\Models\RemissionPayment;
+
 
 class DashboardView
 {
@@ -79,7 +81,8 @@ class DashboardView
                     $join->on('documents.id', '=', 'payments.document_id');
                 })
                 ->whereIn('state_document_id', [1, 2, 3, 4, 5])
-                ->whereIn('type_document_id', [1, 2])
+                ->whereIn('type_document_id', [1, 2, 4])
+                // ->whereIn('type_document_id', [1, 2])
                 ->select(DB::raw("documents.id as id, ".
                                     "DATE_FORMAT(documents.date_of_issue, '%Y-%m-%d') as date_of_issue, ".
                                     "persons.name as customer_name, persons.id as customer_id, documents.type_document_id,".
@@ -164,7 +167,9 @@ class DashboardView
 
         }
 
-        $records = $documents->union($sale_notes)->get();
+        $remissions  = self::getRecordsRemissions($customer_id, $establishment_id, $d_start, $d_end);
+
+        $records = ($documents->union($sale_notes))->union($remissions)->get();
 
         return collect($records)->transform(function($row) {
 
@@ -192,13 +197,15 @@ class DashboardView
 
                 $date_payment_last = '';
 
-                if($row->type_document_id){ 
+                // if($row->type_document_id){ 
 
-                    $date_payment_last = DocumentPayment::where('document_id', $row->id)->orderBy('date_of_payment', 'desc')->first();
-                }
-                else{
-                    $date_payment_last = SaleNotePayment::where('sale_note_id', $row->id)->orderBy('date_of_payment', 'desc')->first();
-                }
+                //     $date_payment_last = DocumentPayment::where('document_id', $row->id)->orderBy('date_of_payment', 'desc')->first();
+                // }
+                // else{
+                //     $date_payment_last = SaleNotePayment::where('sale_note_id', $row->id)->orderBy('date_of_payment', 'desc')->first();
+                // }
+
+                $date_payment_last = self::getDatePaymentLast($row);
 
                 return [
                     'id' => $row->id,
@@ -216,6 +223,65 @@ class DashboardView
                 ];
 //            }
         });
+    }
+
+
+    private static function getDatePaymentLast($row)
+    {
+        
+        $date_payment_last = null;
+
+        if($row->type == 'document')
+        {
+            $date_payment_last = DocumentPayment::where('document_id', $row->id)->orderBy('date_of_payment', 'desc')->first();
+        
+        }elseif($row->type == 'remission')
+        {
+            $date_payment_last = RemissionPayment::where('remission_id', $row->id)->orderBy('date_of_payment', 'desc')->first();
+        
+        }else
+        {
+            $date_payment_last = SaleNotePayment::where('sale_note_id', $row->id)->orderBy('date_of_payment', 'desc')->first();
+        }
+
+        return $date_payment_last;
+
+    }
+
+    
+    /**
+     * Filtrar remisiones
+     *
+     * @param $customer_id
+     * @param $establishment_id
+     * @param $d_start
+     * @param $d_end
+     */
+    private static function getRecordsRemissions($customer_id, $establishment_id, $d_start, $d_end)
+    {
+
+        $remission_payments = DB::table('co_remission_payments')
+                                ->select('remission_id', DB::raw('SUM(payment) as total_payment'))
+                                ->groupBy('remission_id');
+
+
+        return DB::connection('tenant')
+                    ->table('co_remissions')
+                    ->where('customer_id', $customer_id)
+                    ->join('persons', 'persons.id', '=', 'co_remissions.customer_id')
+                    ->leftJoinSub($remission_payments, 'payments', function ($join) {
+                        $join->on('co_remissions.id', '=', 'payments.remission_id');
+                    })
+                    ->select(DB::raw("co_remissions.id as id, ".
+                                        "DATE_FORMAT(co_remissions.date_of_issue, '%Y-%m-%d') as date_of_issue, ".
+                                        "persons.name as customer_name, persons.id as customer_id, null as type_document_id,".
+                                        "CONCAT(co_remissions.prefix,'-',co_remissions.number) AS number_full, ".
+                                        "co_remissions.total as total, ".
+                                        "IFNULL(payments.total_payment, 0) as total_payment, ".
+                                        "'remission' AS 'type', ". "co_remissions.currency_id, ". "co_remissions.date_expiration"))
+                    ->where('co_remissions.establishment_id', $establishment_id)
+                    ->whereBetween('co_remissions.date_of_issue', [$d_start, $d_end]);
+
     }
 
 }
