@@ -196,8 +196,9 @@ trait FinanceTrait
         $quotation_payment = $this->getSumPayment($cash, QuotationPayment::class); 
         $contract_payment = $this->getSumPayment($cash, ContractPayment::class); 
         $income_payment = $this->getSumPayment($cash, IncomePayment::class); 
+        $remission_payment = $this->getSumPayment($cash, RemissionPayment::class); 
 
-        $entry = $document_payment + $sale_note_payment + $quotation_payment + $contract_payment + $income_payment;
+        $entry = $document_payment + $sale_note_payment + $quotation_payment + $contract_payment + $income_payment + $remission_payment;
         $egress = $expense_payment + $purchase_payment;
         
         $balance = $entry - $egress;
@@ -213,6 +214,7 @@ trait FinanceTrait
             'income_payment' => number_format($income_payment,2, ".", ""),
             'document_payment' => number_format($document_payment,2, ".", ""),
             'purchase_payment' => number_format($purchase_payment,2, ".", ""),
+            'remission_payment' => number_format($remission_payment,2, ".", ""),
             'balance' => number_format($balance,2, ".", "")
             
         ];
@@ -232,8 +234,9 @@ trait FinanceTrait
             $quotation_payment = $this->getSumPayment($row->global_destination, QuotationPayment::class); 
             $contract_payment = $this->getSumPayment($row->global_destination, ContractPayment::class); 
             $income_payment = $this->getSumPayment($row->global_destination, IncomePayment::class); 
+            $remission_payment = $this->getSumPayment($row->global_destination, RemissionPayment::class); 
 
-            $entry = $document_payment + $sale_note_payment + $quotation_payment + $contract_payment + $income_payment;
+            $entry = $document_payment + $sale_note_payment + $quotation_payment + $contract_payment + $income_payment + $remission_payment;
             $egress = $expense_payment + $purchase_payment;
             $balance = $entry - $egress;
 
@@ -248,6 +251,7 @@ trait FinanceTrait
                 'document_payment' => number_format($document_payment,2, ".", ""),
                 'purchase_payment' => number_format($purchase_payment,2, ".", ""),
                 'income_payment' => number_format($income_payment,2, ".", ""),
+                'remission_payment' => number_format($remission_payment,2, ".", ""),
                 'balance' => number_format($balance,2, ".", "")
                 
             ];
