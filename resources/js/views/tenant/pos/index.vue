@@ -123,21 +123,20 @@
                                     </el-col>
                                     <el-col :span="6">
                                         <el-tooltip class="item" effect="dark" content="Visualizar lista de precios disponibles" placement="bottom-end">
-                                            <el-popover placement="top" title="Precios" width="370" trigger="click">
+                                            <el-popover placement="top" title="Precios" width="400" trigger="click">
                                                 <el-table v-if="item.item_unit_types" :data="item.item_unit_types">
-                                                    <el-table-column width="90" label="Precio">
+                                                    <el-table-column width="140" label="Descripción" property="description"></el-table-column>
+                                                    <el-table-column width="80" label="Unidad" property="unit_type_name"></el-table-column>
+                                                    <el-table-column width="80" label="Precio">
                                                         <template slot-scope="{row}">
-                                                            <span v-if="row.price_default == 1">{{row.price1}}</span>
-                                                            <span v-else-if="row.price_default == 2">{{row.price2}}</span>
-                                                            <span v-else-if="row.price_default == 3">{{row.price3}}</span>
+                                                            <span v-if="row.price_default == 1">{{ row.price1 }}</span>
+                                                            <span v-else-if="row.price_default == 2">{{ row.price2 }}</span>
+                                                            <span v-else-if="row.price_default == 3">{{ row.price3 }}</span>
                                                         </template>
                                                     </el-table-column>
-                                                    <el-table-column width="80" label="Unidad" property="unit_type_id"></el-table-column>
-                                                    <el-table-column width="120" label="Descripción" property="description"></el-table-column>
-
-                                                    <el-table-column width="80" label="">
+                                                    <el-table-column width="70" label="">
                                                         <template slot-scope="{row}">
-                                                            <button @click="setPriceItem(row,index)" type="button" class="btn btn-custom btn-xs">
+                                                            <button @click="setListPriceItem(row,index)" type="button" class="btn btn-custom btn-xs">
                                                                 <i class="fas fa-check"></i>
                                                             </button>
                                                         </template>
@@ -181,7 +180,7 @@
 
                                             <el-table-column width="80" label="">
                                                 <template slot-scope="{row}">
-                                                    <button @click="setPriceItem(row,index)" type="button" class="btn btn-custom btn-xs">
+                                                    <button @click="setListPriceItem(row,index)" type="button" class="btn btn-custom btn-xs">
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                 </template>
@@ -230,6 +229,9 @@
                         <table class="table table-sm table-borderless mb-0">
                             <template v-for="(item,index) in form.items">
                                 <tr :key="index">
+                                    <td width="5%" style="text-align: center;" class="pos-list-label" v-if="item.unit_type">
+                                        {{ item.unit_type.name }}
+                                    </td>
                                     <td width="20%">
                                         <el-input v-model="item.item.aux_quantity" :readonly="item.item.calculate_quantity" class @input="clickAddItem(item,index,true)"></el-input>
                                     </td>
@@ -255,6 +257,8 @@
                             </template>
                             <template v-for="(item,index) in items_refund">
                                 <tr :key="index + 'R'">
+                                    <td width="5%">
+                                    </td>
                                     <td width="20%">
                                         <el-input :value=" '-' +item.quantity" :readonly="true" class></el-input>
                                     </td>
@@ -522,24 +526,28 @@ export default {
 
     methods: {
 
-        setPriceItem(price, index) {
-            let value = 0;
-            switch (price.price_default) {
+        setListPriceItem(item_unit_type, index) {
+
+            let list_price = 0
+
+            switch (item_unit_type.price_default) {
                 case 1:
-                    value = price.price1;
-                    break;
+                    list_price = item_unit_type.price1
+                    break
                 case 2:
-                    value = price.price2;
-                    break;
+                    list_price = item_unit_type.price2
+                    break
                 case 3:
-                    value = price.price3;
-                    break;
+                    list_price = item_unit_type.price3
+                    break
             }
 
-            this.items[index].sale_unit_price = value;
-            this.items[index].unit_type_id = price.unit_type_id;
-            this.items[index].presentation = price;
-            this.$message.success("Precio seleccionado");
+            this.items[index].sale_unit_price = parseFloat(list_price)
+            this.items[index].unit_type_id = item_unit_type.unit_type_id
+            this.items[index].unit_type = item_unit_type.unit_type
+            this.items[index].presentation = item_unit_type
+
+            this.$message.success("Precio seleccionado")
         },
         filterCategorie(id, mod = false) {
 
@@ -874,6 +882,9 @@ export default {
         },
         async clickAddItem(item, index, input = false) {
 
+            const presentation = item.presentation
+            // console.log(item)
+
             if (this.type_refund) {
 
                 this.form_item.item = item;
@@ -903,10 +914,31 @@ export default {
             } else {
 
                 this.loading = true;
+
                 // let exchangeRateSale = this.form.exchange_rate_sale;
-                let exist_item = _.find(this.form.items, {
-                    item_id: item.item_id
-                });
+                // let exist_item = _.find(this.form.items, {
+                //     item_id: item.item_id
+                // });
+
+                let exist_item = null
+                
+                if(!presentation) {
+
+                    exist_item = _.find(this.form.items, {
+                        item_id: item.item_id,
+                        unit_type_id: item.unit_type_id
+                    })
+
+                }else{
+
+                    exist_item = _.find(this.form.items, {
+                        item_id: item.item_id,
+                        presentation: presentation,
+                        unit_type_id: item.unit_type_id
+                    })
+                }
+
+                
                 let pos = this.form.items.indexOf(exist_item);
                 let response = null;
 
@@ -949,6 +981,8 @@ export default {
                     let unit_price = exist_item.item.sale_unit_price
                     exist_item.item.unit_price = unit_price
 
+                    exist_item.unit_type_id = item.unit_type_id
+
                     this.form.items[pos] = exist_item;
 
                 } else {
@@ -960,7 +994,9 @@ export default {
                         return this.$message.error(response.message);
                     }
 
-                    this.form_item.item = item;
+                    this.form_item.item = { ...item }
+                    // this.form_item.item = item;
+
                     this.form_item.unit_price_value = this.form_item.item.sale_unit_price;
                     this.form_item.quantity = 1;
                     this.form_item.aux_quantity = 1;
@@ -969,16 +1005,29 @@ export default {
 
                     this.form_item.unit_price = unit_price;
                     this.form_item.item.unit_price = unit_price;
-                    this.form_item.item.presentation = null;
+                    // this.form_item.item.presentation = null;
 
                     // this.form_item.id = this.form_item.item.item_id
                     this.form_item.item_id = this.form_item.item.item_id
-                    this.form_item.unit_type_id = this.form_item.item.unit_type_id
                     this.form_item.tax_id = (this.taxes.length > 0) ? this.form_item.item.tax.id : null
                     this.form_item.tax = _.find(this.taxes, {
                         'id': this.form_item.tax_id
                     })
-                    this.form_item.unit_type = this.form_item.item.unit_type
+
+                    // lista precios
+                    if(presentation)
+                    {
+                        this.form_item.presentation = presentation
+                        this.form_item.unit_type_id = presentation.unit_type_id
+                        this.form_item.unit_type = presentation.unit_type
+
+                    }else
+                    {
+                        this.form_item.presentation = null
+                        this.form_item.unit_type_id = this.form_item.item.unit_type_id
+                        this.form_item.unit_type = this.form_item.item.unit_type
+                    }
+
 
                     this.form.items.push(this.form_item);
                     item.aux_quantity = 1;

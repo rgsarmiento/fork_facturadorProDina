@@ -33,5 +33,26 @@ class ItemUnitType extends ModelTenant
     public function item() {
         return $this->belongsTo(Item::class);
     }
- 
+     
+    /**
+     * Retornar datos para lista de precios (POS)
+     *
+     * @return void
+     */
+    public function getSearchRowResource() 
+    {
+        return [
+            'description' => $this->description,
+            'item_id' => $this->item_id,
+            'unit_type_id' => $this->unit_type_id,
+            'unit_type_name' => trim($this->unit_type->name),
+            'quantity_unit' => $this->quantity_unit,
+            'price1' => $this->price1,
+            'price2' => $this->price2,
+            'price3' => $this->price3,
+            'price_default' => $this->price_default,
+            'unit_type' => $this->unit_type,
+        ];
+    }
+
 }
