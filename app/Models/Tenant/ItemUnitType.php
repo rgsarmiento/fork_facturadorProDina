@@ -37,7 +37,7 @@ class ItemUnitType extends ModelTenant
     /**
      * Retornar datos para lista de precios (POS)
      *
-     * @return void
+     * @return array
      */
     public function getSearchRowResource() 
     {
