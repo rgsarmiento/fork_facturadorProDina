@@ -151,7 +151,7 @@ class PosController extends Controller
                                             'stock' => $row->stock,
                                         ];
                                     }),
-                                    'item_unit_types' => $row->item_unit_types,
+                                    'item_unit_types' => $row->item_unit_types->transform(function($row) { return $row->getSearchRowResource();}),
                                     'unit_type' => $row->unit_type,
                                     'tax' => $row->tax,
                                 ];
@@ -294,7 +294,7 @@ class PosController extends Controller
                                     }),
                                     'unit_type' => $row->unit_type,
                                     'tax' => $row->tax,
-                                    'item_unit_types' => $row->item_unit_types,
+                                    'item_unit_types' => $row->item_unit_types->transform(function($row) { return $row->getSearchRowResource();}),
                                     //'sale_unit_price_calculate' => self::calculateSalePrice($row)
                                 ];
                             });
