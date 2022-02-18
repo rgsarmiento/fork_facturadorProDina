@@ -90,7 +90,8 @@
                                 <template v-if="!item.edit_unit_price">
                                     <h5 class="font-weight-semibold text-right text-white">
                                         <!--<button v-if="configuration.options_pos" type="button" class="btn btn-xs btn-primary-pos" @click="clickOpenInputEditUP(index)"><span style='font-size:16px;'>&#9998;</span> </button>-->
-                                        {{currency.symbol}} {{item.sale_unit_price * 1.19}}
+                                        <!-- {{currency.symbol}} {{item.sale_unit_price * 1.19}} -->
+                                        {{currency.symbol}} {{ item.sale_unit_price_with_tax }}
                                     </h5>
                                 </template>
                                 <template v-else>
@@ -292,7 +293,7 @@
                     <div class="col-md-12" style="display: flex; flex-direction: column; align-items: flex-end;">
                         <table>
                             <tr class="font-weight-semibold  m-0" v-if="form.sale > 0">
-                                <td class="font-weight-semibold">TOTAL VENTA</td>
+                                <td class="font-weight-semibold">SUBTOTAL</td>
                                 <td class="font-weight-semibold">:</td>
                                 <td class="text-right text-blue">{{currency.symbol}} {{ form.sale }}</td>
                             </tr>
@@ -311,7 +312,7 @@
                                 </tr>
                             </template>
                             <tr class="font-weight-semibold  m-0" v-if="form.subtotal > 0">
-                                <td class="font-weight-semibold">SUBTOTAL</td>
+                                <td class="font-weight-semibold">TOTAL VENTA</td>
                                 <td class="font-weight-semibold">:</td>
                                 <td class="text-right text-blue">{{currency.symbol}} {{ form.subtotal }}</td>
                             </tr>
@@ -525,7 +526,6 @@ export default {
     },
 
     methods: {
-
         setListPriceItem(item_unit_type, index) {
 
             let list_price = 0

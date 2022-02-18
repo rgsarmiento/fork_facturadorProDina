@@ -154,12 +154,27 @@ class PosController extends Controller
                                     'item_unit_types' => $row->item_unit_types->transform(function($row) { return $row->getSearchRowResource();}),
                                     'unit_type' => $row->unit_type,
                                     'tax' => $row->tax,
+                                    'sale_unit_price_with_tax' => $this->getSaleUnitPriceWithTax($row, $configuration->decimal_quantity)
                                 ];
                             });
 
         return compact('items');
 
     }
+    
+    
+    /**
+     * Retorna el precio de venta mas impuesto asignado al producto
+     * 
+     * @param  Item $item
+     * @param  $decimal_quantity
+     * @return double
+     */
+    private function getSaleUnitPriceWithTax($item, $decimal_quantity)
+    {
+        return number_format($item->sale_unit_price * ( 1 + $item->tax->rate / $item->tax->conversion ), $decimal_quantity, ".","");
+    }
+
 
     public function tables()
     {
@@ -296,6 +311,7 @@ class PosController extends Controller
                                     'tax' => $row->tax,
                                     'item_unit_types' => $row->item_unit_types->transform(function($row) { return $row->getSearchRowResource();}),
                                     //'sale_unit_price_calculate' => self::calculateSalePrice($row)
+                                    'sale_unit_price_with_tax' => $this->getSaleUnitPriceWithTax($row, $configuration->decimal_quantity)
                                 ];
                             });
             return $items;

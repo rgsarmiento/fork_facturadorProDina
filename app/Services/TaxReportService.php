@@ -10,15 +10,8 @@ class TaxReportService
 
     public function getTotalExcento($items)
     {
-        $tax = Tax::where('name', 'IVA0')->first();
-        if(!$tax)
-        {
-            throw new Exception("Tax IVA0 no encontrado");
-            //return 0;
-        }
-        $sum = collect($items)->where('tax_id', $tax->id )->sum('total');
-
-        return  $sum;
+        $taxes_id = Tax::whereIn('name', ['IVA0', 'EXCENTO'])->get()->pluck('id')->toArray();
+        return collect($items)->whereIn('tax_id', $taxes_id )->sum('total');
     }
 
     public function getTotalIva5($items, $total_sale = false)
@@ -39,8 +32,8 @@ class TaxReportService
         $tax = Tax::where('name', 'IVA')->first();
         if(!$tax)
         {
-            throw new Exception("Tax IVA no encontrado");
-            //return 0;
+            return 0;
+            // throw new Exception("Tax IVA no encontrado");
         }
         $sum = collect($items)->where('tax_id', $tax->id )->sum('total');
 
