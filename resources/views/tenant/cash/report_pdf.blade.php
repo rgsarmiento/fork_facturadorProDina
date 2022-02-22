@@ -11,28 +11,27 @@ $cash_final_balance = 0;
 $cash_documents = $cash->cash_documents;
 
 
-
 foreach ($cash_documents as $cash_document) {
 
     if($cash_document->document_pos){
 
-        $cash_income += $cash_document->document_pos->total;
-        $final_balance += $cash_document->document_pos->total;
+        // $cash_income += $cash_document->document_pos->total;
+        // $final_balance += $cash_document->document_pos->total;
+
+        $cash_income += $cash_document->document_pos->getTotalCash();
+        $final_balance += $cash_document->document_pos->getTotalCash();
 
         if( count($cash_document->document_pos->payments) > 0)
         {
-            $pays = $cash_document->document_pos->payments;
+            // $pays = $cash_document->document_pos->payments;
+            $pays = ($cash_document->document_pos->state_type_id === '11') ? collect() : $cash_document->document_pos->payments;
 
-            foreach ($methods_payment as $record) {
-
+            foreach ($methods_payment as $record) 
+            {
                 $record->sum = ($record->sum + $pays->where('payment_method_type_id', $record->id)->sum('payment') );
-
             }
-
         }
-
     }
-
 
 }
 
@@ -192,9 +191,10 @@ $cash_final_balance = $final_balance + $cash->beginning_balance;
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Tipo transacción</th>
+                                {{-- <th>Tipo transacción</th> --}}
                                 <th>Tipo documento</th>
                                 <th>Documento</th>
+                                <th>Estado</th>
                                 <th>Fecha emisión</th>
                                 <th>Cliente/Proveedor</th>
                                 <th>N° Documento</th>
@@ -215,7 +215,7 @@ $cash_final_balance = $final_balance + $cash->beginning_balance;
                                 <tr>
                                     @php
 
-                                        $type_transaction =  null;
+                                        // $type_transaction =  null;
                                         $document_type_description = null;
                                         $number = null;
                                         $date_of_issue = null;
@@ -224,25 +224,23 @@ $cash_final_balance = $final_balance + $cash->beginning_balance;
                                         $currency_type_id = null;
                                         $total = null;
 
-                                            $type_transaction =  'Venta';
-                                            $document_type_description =  'FACT POS';
-                                            $number = $value->document_pos->number;
-                                            $date_of_issue = $value->document_pos->date_of_issue->format('Y-m-d');
-                                            $customer_name = $value->document_pos->customer->name;
-                                            $customer_number = $value->document_pos->customer->number;
-                                            $total = $value->document_pos->total;
-                                            $currency_type_id = $value->document_pos->currency_type_id;
-
-
-
+                                        // $type_transaction =  'Venta';
+                                        $document_type_description =  'FACT POS';
+                                        $number = $value->document_pos->number;
+                                        $date_of_issue = $value->document_pos->date_of_issue->format('Y-m-d');
+                                        $customer_name = $value->document_pos->customer->name;
+                                        $customer_number = $value->document_pos->customer->number;
+                                        $total = $value->document_pos->total;
+                                        $currency_type_id = $value->document_pos->currency_type_id;
 
                                     @endphp
 
 
                                     <td class="celda">{{ $loop->iteration }}</td>
-                                    <td class="celda">{{ $type_transaction }}</td>
+                                    {{-- <td class="celda">{{ $type_transaction }}</td> --}}
                                     <td class="celda">{{ $document_type_description }}</td>
                                     <td class="celda">{{ $number }}</td>
+                                    <td class="celda">{{ $value->document_pos->state_type->description ?? null }}</td>
                                     <td class="celda">{{ $date_of_issue}}</td>
                                     <td class="celda">{{ $customer_name }}</td>
                                     <td class="celda">{{$customer_number }}</td>

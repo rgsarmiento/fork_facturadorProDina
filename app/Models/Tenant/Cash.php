@@ -53,6 +53,21 @@ class Cash extends ModelTenant
     {
         return $this->belongsTo(ConfigurationPos::class, 'resolution_id');
     }
-
+    
+    /**
+     * 
+     * Retornar el balance final (total de ingresos - gastos)
+     *
+     * Usado en:
+     * CashController - Cierre de caja chica
+     * 
+     * @return double
+     */
+    public function getSumCashFinalBalance()
+    {
+        return $this->cash_documents->sum(function($row){
+            return $row->document_pos ? $row->document_pos->getTotalCash() : 0;
+        });
+    }
 
 }

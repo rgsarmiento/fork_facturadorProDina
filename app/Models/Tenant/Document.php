@@ -528,4 +528,19 @@ class Document extends ModelTenant
     {
         return $query->where('currency_id', $currency_id);
     }
+        
+    /**
+     * 
+     * Obtener el total del documento
+     * 
+     * Usado en:
+     * Cash - Cierre de caja chica
+     *
+     * @return double
+     */
+    // public function getTotalCash()
+    // {
+    //     return $this->total;
+    // }
+    
 }

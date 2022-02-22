@@ -22,7 +22,6 @@ class CashDocument extends ModelTenant
     ];
 
 
-
     public function cash()
     {
         return $this->belongsTo(Cash::class);
@@ -47,6 +46,26 @@ class CashDocument extends ModelTenant
     {
         return $this->belongsTo(DocumentPos::class);
     }
+
+    /**
+     * 
+     * Retornar el modelo asociado dependiendo del campo foráneo que no tenga valor null
+     *
+     * Usado en:
+     * Cash - Cierre de caja chica
+     * 
+     */
+    // public function getMorphModel()
+    // {
+    //     if(!is_null($this->document_pos_id)) return $this->document_pos;
+        
+    //     if(!is_null($this->document_id)) return $this->document;
+
+    //     if(!is_null($this->sale_note_id)) return $this->sale_note;
+        
+    //     if(!is_null($this->expense_payment_id)) return $this->expense_payment;
+    // }
+
 
     // public function purchase()
     // {

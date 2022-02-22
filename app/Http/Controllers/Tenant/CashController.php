@@ -123,40 +123,10 @@ class CashController extends Controller
 
         $cash = Cash::findOrFail($id);
 
-        // dd($cash->cash_documents);
-
         $cash->date_closed = date('Y-m-d');
         $cash->time_closed = date('H:i:s');
 
-        $final_balance = 0;
-        $income = 0;
-
-        foreach ($cash->cash_documents as $cash_document) {
-
-
-            if($cash_document->sale_note){
-
-                // $final_balance += ($cash_document->sale_note->currency_type_id == 'PEN') ? $cash_document->sale_note->total : ($cash_document->sale_note->total * $cash_document->sale_note->exchange_rate_sale);
-
-                $final_balance += $cash_document->sale_note->total;
-
-            }
-            else if($cash_document->document){
-
-                // $final_balance += ($cash_document->document->currency_type_id == 'PEN') ? $cash_document->document->total : ($cash_document->document->total * $cash_document->document->exchange_rate_sale);
-
-                $final_balance += $cash_document->document->total;
-
-            }
-            else if($cash_document->expense_payment){
-
-                // $final_balance -= ($cash_document->expense_payment->expense->currency_type_id == 'PEN') ? $cash_document->expense_payment->payment:($cash_document->expense_payment->payment  * $cash_document->expense_payment->expense->exchange_rate_sale);
-                $final_balance -= $cash_document->expense_payment->payment;
-
-            }
-
-        }
-
+        $final_balance = $cash->getSumCashFinalBalance();
         $cash->final_balance = round($final_balance + $cash->beginning_balance, 2);
         $cash->income = round($final_balance, 2);
         $cash->state = false;
@@ -166,6 +136,34 @@ class CashController extends Controller
             'success' => true,
             'message' => 'Caja cerrada con éxito',
         ];
+
+        // $final_balance = 0;
+
+        // foreach ($cash->cash_documents as $cash_document) {
+
+
+        //     if($cash_document->sale_note){
+
+        //         // $final_balance += ($cash_document->sale_note->currency_type_id == 'PEN') ? $cash_document->sale_note->total : ($cash_document->sale_note->total * $cash_document->sale_note->exchange_rate_sale);
+
+        //         $final_balance += $cash_document->sale_note->total;
+
+        //     }
+        //     else if($cash_document->document){
+
+        //         // $final_balance += ($cash_document->document->currency_type_id == 'PEN') ? $cash_document->document->total : ($cash_document->document->total * $cash_document->document->exchange_rate_sale);
+
+        //         $final_balance += $cash_document->document->total;
+
+        //     }
+        //     else if($cash_document->expense_payment){
+
+        //         // $final_balance -= ($cash_document->expense_payment->expense->currency_type_id == 'PEN') ? $cash_document->expense_payment->payment:($cash_document->expense_payment->payment  * $cash_document->expense_payment->expense->exchange_rate_sale);
+        //         $final_balance -= $cash_document->expense_payment->payment;
+
+        //     }
+
+        // }
 
     }
 

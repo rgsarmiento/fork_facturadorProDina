@@ -623,19 +623,19 @@
                 }*/
 
                     //this.form.prefix = "NV";
-                    this.form.paid = 1;
-                    this.resource_documents = "document-pos";
-                    this.resource_payments = "document_pos_payments";
-                    this.resource_options = this.resource_documents;
+                this.form.paid = 1;
+                this.resource_documents = "document-pos";
+                this.resource_payments = "document_pos_payments";
+                this.resource_options = this.resource_documents;
 
-                    const items_final = this.form.items.concat(this.items_refund);
-                    this.form.items = items_final
+                const items_final = this.form.items.concat(this.items_refund);
+                this.form.items = items_final
 
                 this.loading_submit = true
                 await this.$http.post(`/${this.resource_documents}`, this.form).then(response => {
                     if (response.data.success) {
 
-                        this.form_cash_document.document_pos_id = response.data.id;
+                        this.form_cash_document.document_pos_id = response.data.data.id;
                         this.saleNotesNewId = response.data.data.id;
                         this.showDialogSaleNote = true;
 
