@@ -56,4 +56,18 @@ class ExpensePayment extends ModelTenant
         return $this->morphOne(PaymentFile::class, 'payment');
     }
 
+    /**
+     * 
+     * Obtener el total del documento
+     * 
+     * Usado en:
+     * Cash - Cierre de caja chica
+     *
+     * @return double
+     */
+    // public function getTotalCash()
+    // {
+    //     return $this->payment * -1;
+    // }
+    
 }

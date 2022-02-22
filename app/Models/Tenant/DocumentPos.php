@@ -209,4 +209,19 @@ class DocumentPos extends ModelTenant
         'reference'
     ];
 
+
+    /**
+     * 
+     * Obtener el total del documento
+     * 
+     * Usado en:
+     * Cash - Cierre de caja chica/Reporte
+     *
+     * @return double
+     */
+    public function getTotalCash()
+    {
+        return ($this->state_type_id === '11') ? 0 : $this->total;
+    }
+    
 }
