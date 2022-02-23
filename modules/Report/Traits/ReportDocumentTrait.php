@@ -316,4 +316,15 @@ trait ReportDocumentTrait
         });
 
     }
+
+    public function getTransformEstablishments(){
+
+        return Establishment::all()->transform(function($row) {
+            return [
+                'id' => $row->id,
+                'name' => $row->description
+            ];
+        });
+
+    }
 }
