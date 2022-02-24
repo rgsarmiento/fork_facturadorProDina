@@ -11,6 +11,7 @@ use App\Models\Tenant\Person;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\User;
 use App\Models\Tenant\StateType;
+use App\Models\Tenant\Company;
 
 
 trait ReportDocumentTrait
@@ -80,7 +81,8 @@ trait ReportDocumentTrait
         }elseif($establishment_id){
 
             $data = $model::whereBetween('date_of_issue', [$date_start, $date_end])->latest()
-                                ->where('establishment_id', 'like', '%' . $establishment_id . '%')->whereTypeUser();
+                                ->where('establishment_id', $establishment_id)->whereTypeUser();
+                                // ->where('establishment_id', 'like', '%' . $establishment_id . '%')->whereTypeUser();
 
         }else{
             $data = $model::whereBetween('date_of_issue', [$date_start, $date_end])->latest()->whereTypeUser();
@@ -327,4 +329,38 @@ trait ReportDocumentTrait
         });
 
     }
+
+        
+    /**
+     * 
+     * Obtener establecimiento
+     *
+     * @param  int $establishment_id
+     * @return Establishment
+     */
+    public function getEstablishmentForReport($establishment_id)
+    {
+        return ($establishment_id) ? Establishment::findOrFail($establishment_id) : auth()->user()->establishment;
+    }
+
+        
+    /**
+     *
+     * @return Company
+     */
+    public function getCompanyReport()
+    {
+        return Company::first();
+    }
+
+
+    /**
+     *
+     * @return string
+     */
+    public function getFilenameReport($prefix, $extension = 'pdf')
+    {
+        return $prefix.'_'.date('YmdHis').'.'.$extension;
+    }
+
 }

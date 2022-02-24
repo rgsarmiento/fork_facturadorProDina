@@ -160,9 +160,7 @@ class DocumentPos extends ModelTenant
 
     public function getNumberFullAttribute()
     {
-        $number_full = ($this->series && $this->number) ? $this->series.'-'.$this->number : $this->prefix.'-'.$this->id;
-
-        return $number_full;
+        return $this->number;
     }
 
 
@@ -224,4 +222,34 @@ class DocumentPos extends ModelTenant
         return ($this->state_type_id === '11') ? 0 : $this->total;
     }
     
+    public function getDocumentTypeDescription()
+    {
+        return 'FACT POS';
+    }
+    
+    /**
+     * Obetener arreglo con los datos necesarios para mostrar en vista/reporte
+     *
+     * Usado en:
+     * DocumentPosCollection - Reportes
+     * 
+     * @return array
+     */
+    public function getRowResource()
+    {
+        return [
+            'id' => $this->id,
+            'date_of_issue' => $this->date_of_issue->format('Y-m-d'),
+            'customer_name' => $this->customer->name,
+            'customer_number' => $this->customer->number,
+            'currency_type_id' => $this->currency->name,
+            'total' => number_format($this->total,2),
+            'state_type_id' => $this->state_type_id,
+            'state_type_description' => $this->state_type->description,
+            'user_name' => optional($this->user)->name,
+            'number_full' => $this->number_full,
+            'document_type_description' => $this->getDocumentTypeDescription(),
+        ];
+    }
+
 }
