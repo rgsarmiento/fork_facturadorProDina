@@ -141,7 +141,7 @@
                         <tfoot v-if="colspan">
                             <tr>
                                 <td class="text-right" :colspan="colspan">Total calculado:</td>
-                                <td class="text-left">$ {{ returnTotal }}</td>
+                                <td class="text-right">$ {{ returnTotal }}</td>
                             </tr>
                         </tfoot>
                         <!-- <tfoot v-if="resource == 'reports/sales' || resource == 'reports/purchases'">

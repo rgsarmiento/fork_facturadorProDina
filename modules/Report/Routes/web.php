@@ -106,6 +106,12 @@ if($current_hostname) {
                 Route::get('sales-consolidated/filter', 'ReportSaleConsolidatedController@filter');
                 Route::get('sales-consolidated/records', 'ReportSaleConsolidatedController@records');
 
+                // pos
+                Route::get('document-pos', 'ReportDocumentPosController@index')->name('tenant.reports.document_pos.index');
+                Route::get('document-pos/pdf', 'ReportDocumentPosController@pdf');
+                Route::get('document-pos/excel', 'ReportDocumentPosController@excel');
+                Route::get('document-pos/filter', 'ReportDocumentPosController@filter');
+                Route::get('document-pos/records', 'ReportDocumentPosController@records');
 
                 Route::prefix('user-commissions')->group(function () {
 
