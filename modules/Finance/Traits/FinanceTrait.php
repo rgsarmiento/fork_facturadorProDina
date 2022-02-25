@@ -10,7 +10,8 @@ use Modules\Expense\Models\ExpensePayment;
 use App\Models\Tenant\{
     DocumentPayment,
     SaleNotePayment,
-    PurchasePayment
+    PurchasePayment,
+    DocumentPosPayment
 };
 use Modules\Sale\Models\QuotationPayment;
 use Modules\Sale\Models\ContractPayment;
@@ -132,6 +133,7 @@ trait FinanceTrait
 
         return [
             ['id'=> DocumentPayment::class, 'description' => 'FACTURA ELECTRÓNICA'],
+            ['id'=> DocumentPosPayment::class, 'description' => 'DOCUMENTO POS'],
             ['id'=> SaleNotePayment::class, 'description' => 'NOTAS DE VENTA'],
             ['id'=> PurchasePayment::class, 'description' => 'COMPRAS'],
             ['id'=> ExpensePayment::class, 'description' => 'GASTOS'],

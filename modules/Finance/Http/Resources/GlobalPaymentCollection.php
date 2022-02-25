@@ -18,17 +18,7 @@ class GlobalPaymentCollection extends ResourceCollection
  
             $data_person = $row->data_person;
 
-            $document_type = '';
-
-            if($row->payment->associated_record_payment->document_type){
-
-                $document_type = $row->payment->associated_record_payment->document_type->description ?? $row->payment->associated_record_payment->document_type->name;
-            
-            }elseif(isset($row->payment->associated_record_payment->prefix)){
-                
-                $document_type = $row->payment->associated_record_payment->prefix;
-
-            }
+            $document_type = $row->getDocumentTypeDescription();
 
             return [
                 'id' => $row->id, 
@@ -50,6 +40,6 @@ class GlobalPaymentCollection extends ResourceCollection
             ];
         });
     }
- 
+
 
 }

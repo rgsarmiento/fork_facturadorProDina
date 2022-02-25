@@ -66,18 +66,7 @@
                                 <tr>
                                     @php 
                                         $data_person = $value->data_person;
-                                        $document_type = '';
-
-                                        if($value->payment->associated_record_payment->document_type){
-
-                                            // $document_type = $value->payment->associated_record_payment->document_type->description;
-                                            $document_type = $value->payment->associated_record_payment->document_type->description ?? $value->payment->associated_record_payment->document_type->name;
-                                        
-                                        }elseif(isset($value->payment->associated_record_payment->prefix)){
-                                            
-                                            $document_type = $value->payment->associated_record_payment->prefix;
-
-                                        }
+                                        $document_type = $value->getDocumentTypeDescription();
                                     @endphp
                                     <td class="celda">{{$loop->iteration}}</td>
                                     <td class="celda">{{$data_person->name}}</td>
