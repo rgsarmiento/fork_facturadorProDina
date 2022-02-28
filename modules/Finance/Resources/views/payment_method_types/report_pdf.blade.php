@@ -85,7 +85,8 @@
                                 <th class="">Método de pago / Total pagos</th>
                                 <th class="">Factura Electrónica</th>
                                 <th class="">Remisión</th>
-                                <th class="">NV</th>
+                                <th class="">Documento POS</th>
+                                {{-- <th class="">NV</th> --}}
                                 <th class="">COT</th>
                                 {{-- <th class="">Contrato</th> --}}
                                 <th class="">Ingresos</th>
@@ -100,7 +101,8 @@
                                     <td class="celda">{{$value['description']}}</td>
                                     <td class="celda">{{$value['document_payment']}}</td>
                                     <td class="celda">{{$value['remission_payment']}}</td>
-                                    <td class="celda">{{$value['sale_note_payment']}}</td>
+                                    <td class="celda">{{$value['document_pos_payment']}}</td>
+                                    {{-- <td class="celda">{{$value['sale_note_payment']}}</td> --}}
                                     <td class="celda">{{$value['quotation_payment']}}</td>
                                     {{-- <td class="celda">{{$value['contract_payment']}}</td> --}}
                                     <td class="celda">{{$value['income_payment']}}</td>
@@ -115,7 +117,8 @@
                                 <td class="celda" colspan="2">Totales</td>
                                 <td class="celda">{{$records['totals']['t_documents']}}</td>
                                 <td class="celda">{{$records['totals']['t_remissions']}}</td>
-                                <td class="celda">{{$records['totals']['t_sale_notes']}}</td>
+                                <td class="celda">{{$records['totals']['t_document_pos']}}</td>
+                                {{-- <td class="celda">{{$records['totals']['t_sale_notes']}}</td> --}}
                                 <td class="celda">{{$records['totals']['t_quotations']}}</td>
                                 {{-- <td class="celda">{{$records['totals']['t_contracts']}}</td> --}}
                                 <td class="celda">{{$records['totals']['t_income']}}</td>

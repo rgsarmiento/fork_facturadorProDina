@@ -11,7 +11,8 @@
                             <th class=""><strong>Nombre de la cuenta / Total pagos</strong></th>
                             <th class="text-center"> <strong>Factura Electrónica</strong></th>
                             <th class="text-center"> <strong>Remisión</strong></th>
-                            <th class="text-center"> <strong>N. Venta</strong></th>
+                            <th class="text-center"> <strong>Documento POS</strong></th>
+                            <!-- <th class="text-center"> <strong>N. Venta</strong></th> --> 
                             <th class="text-center"> <strong>Cotización</strong></th>
                             <!-- <th class="text-center"> <strong>Contrato</strong></th> -->
                             <th class="text-center"> <strong>Ingresos</strong></th>
@@ -24,7 +25,8 @@
                             <td>{{row.description}}</td>
                             <td class="text-center">{{row.document_payment}}</td>
                             <td class="text-center">{{row.remission_payment}}</td>
-                            <td class="text-center">{{row.sale_note_payment}}</td>
+                            <td class="text-center">{{row.document_pos_payment}}</td>
+                            <!-- <td class="text-center">{{row.sale_note_payment}}</td> -->
                             <td class="text-center">{{row.quotation_payment}}</td>
                             <!-- <td class="text-center">{{row.contract_payment}}</td> -->
                             <td class="text-center">{{row.income_payment}}</td>

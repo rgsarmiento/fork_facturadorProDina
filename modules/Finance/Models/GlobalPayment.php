@@ -210,14 +210,14 @@ class GlobalPayment extends ModelTenant
                         });
 
                 })
-                ->OrWhereHas('sln_payments', function($q) use($params){
-                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p) use($params){
-                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
-                                ->whereNotChanged();
-                        });
+                // ->OrWhereHas('sln_payments', function($q) use($params){
+                //     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
+                //         ->whereHas('associated_record_payment', function($p) use($params){
+                //             $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
+                //                 ->whereNotChanged();
+                //         });
                     
-                })
+                // })
                 ->OrWhereHas('pur_payment', function($q) use($params){
                     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
                         ->whereHas('associated_record_payment', function($p) use($params){

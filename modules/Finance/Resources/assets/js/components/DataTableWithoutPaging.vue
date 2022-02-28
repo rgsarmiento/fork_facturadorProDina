@@ -98,7 +98,8 @@
                                 <td class="text-center" colspan="2">Totales</td>
                                 <td class="text-center"> {{totals.t_documents}}</td>
                                 <td class="text-center"> {{totals.t_remissions}}</td>
-                                <td class="text-center"> {{totals.t_sale_notes}}</td>
+                                <td class="text-center"> {{totals.t_document_pos}}</td>
+                                <!-- <td class="text-center"> {{totals.t_sale_notes}}</td> -->
                                 <td class="text-center"> {{totals.t_quotations}}</td>
                                 <!-- <td class="text-center"> {{totals.t_contracts}}</td> -->
                                 <td class="text-center"> {{totals.t_income}}</td>
