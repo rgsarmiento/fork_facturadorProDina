@@ -226,7 +226,8 @@ $cash_final_balance = $final_balance + $cash->beginning_balance;
 
                                         // $type_transaction =  'Venta';
                                         $document_type_description =  'FACT POS';
-                                        $number = $value->document_pos->number;
+                                        $number = $value->document_pos->number_full;
+                                        // $number = $value->document_pos->number;
                                         $date_of_issue = $value->document_pos->date_of_issue->format('Y-m-d');
                                         $customer_name = $value->document_pos->customer->name;
                                         $customer_number = $value->document_pos->customer->number;

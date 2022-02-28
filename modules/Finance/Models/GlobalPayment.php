@@ -11,7 +11,8 @@ use Modules\Expense\Models\ExpensePayment;
 use App\Models\Tenant\{
     DocumentPayment,
     SaleNotePayment,
-    PurchasePayment
+    PurchasePayment,
+    DocumentPosPayment
 };
 use Modules\Sale\Models\ContractPayment;
 use Modules\Sale\Models\RemissionPayment;
@@ -91,6 +92,12 @@ class GlobalPayment extends ModelTenant
                     ->wherePaymentType(RemissionPayment::class);
     } 
 
+    public function doc_pos_payment()
+    {
+        return $this->belongsTo(DocumentPosPayment::class, 'payment_id')
+                    ->wherePaymentType(DocumentPosPayment::class);
+    }
+
     public function getDestinationDescriptionAttribute()
     {
         return $this->destination_type === Cash::class ? 'CAJA CHICA': "{$this->destination->bank->description} - {$this->destination->currency_type_id} - {$this->destination->description}";
@@ -112,6 +119,7 @@ class GlobalPayment extends ModelTenant
             ContractPayment::class => 'contract',
             IncomePayment::class => 'income',
             RemissionPayment::class => 'remission',
+            DocumentPosPayment::class => 'document_pos',
         ];
 
         return $instance_type[$this->payment_type];
@@ -147,6 +155,8 @@ class GlobalPayment extends ModelTenant
                 break;
             case 'remission':
                 $description = 'REMISIÓN';
+            case 'document_pos':
+                $description = 'DOCUMENTO POS';
                 break;
              
         } 
@@ -164,6 +174,7 @@ class GlobalPayment extends ModelTenant
             case 'sale_note':
             case 'quotation':
             case 'remission':
+            case 'document_pos':
             case 'contract':
                 $person['name'] = $record->customer->name;
                 $person['number'] = $record->customer->number;
@@ -199,14 +210,14 @@ class GlobalPayment extends ModelTenant
                         });
 
                 })
-                ->OrWhereHas('sln_payments', function($q) use($params){
-                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p) use($params){
-                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
-                                ->whereNotChanged();
-                        });
+                // ->OrWhereHas('sln_payments', function($q) use($params){
+                //     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
+                //         ->whereHas('associated_record_payment', function($p) use($params){
+                //             $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
+                //                 ->whereNotChanged();
+                //         });
                     
-                })
+                // })
                 ->OrWhereHas('pur_payment', function($q) use($params){
                     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
                         ->whereHas('associated_record_payment', function($p) use($params){
@@ -242,9 +253,37 @@ class GlobalPayment extends ModelTenant
                         ->whereHas('associated_record_payment', function($p) use($params){
                             $p->whereTypeUser()->where('currency_id', $params->currency_id);
                         });
-
+                })
+                ->OrWhereHas('doc_pos_payment', function($q) use($params){
+                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
+                        ->whereHas('associated_record_payment', function($p) use($params){
+                            $p->whereTypeUser()->where('currency_id', $params->currency_id);
+                        });
                 });
 
     }
+
+
+    public function getDocumentTypeDescription()
+    {
+        $row = $this;
+        $document_type = '';
+
+        if($row->payment->associated_record_payment->document_type)
+        {
+            $document_type = $row->payment->associated_record_payment->document_type->description ?? $row->payment->associated_record_payment->document_type->name;
+        }
+        elseif($row->instance_type === 'document_pos')
+        {
+            $document_type = $row->payment->associated_record_payment->getDocumentTypeDescription();
+        }
+        elseif(isset($row->payment->associated_record_payment->prefix))
+        {
+            $document_type = $row->payment->associated_record_payment->prefix;
+        }
+
+        return $document_type;
+    }
+ 
 
 }

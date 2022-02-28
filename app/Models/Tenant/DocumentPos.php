@@ -160,7 +160,7 @@ class DocumentPos extends ModelTenant
 
     public function getNumberFullAttribute()
     {
-        return $this->number;
+        return "{$this->series}-{$this->number}";
     }
 
 

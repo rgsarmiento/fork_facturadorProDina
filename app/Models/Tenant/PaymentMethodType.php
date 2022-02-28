@@ -5,7 +5,8 @@ namespace App\Models\Tenant;
 use App\Models\Tenant\{
     DocumentPayment,
     SaleNotePayment,
-    PurchasePayment
+    PurchasePayment,
+    DocumentPosPayment,
 };
 use Modules\Sale\Models\QuotationPayment;
 use Modules\Sale\Models\ContractPayment;
@@ -32,10 +33,10 @@ class PaymentMethodType extends ModelTenant
         return $this->hasMany(DocumentPayment::class,  'payment_method_type_id');
     }
     
-    public function sale_note_payments()
-    {
-        return $this->hasMany(SaleNotePayment::class,  'payment_method_type_id');
-    }
+    // public function sale_note_payments()
+    // {
+    //     return $this->hasMany(SaleNotePayment::class,  'payment_method_type_id');
+    // }
     
     public function purchase_payments()
     {
@@ -62,6 +63,11 @@ class PaymentMethodType extends ModelTenant
         return $this->hasMany(RemissionPayment::class,  'payment_method_type_id');
     }
 
+    public function document_pos_payments()
+    {
+        return $this->hasMany(DocumentPosPayment::class,  'payment_method_type_id');
+    }
+
     public function scopeWhereFilterPayments($query, $params)
     {
 
@@ -71,13 +77,13 @@ class PaymentMethodType extends ModelTenant
                             $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id);
                         });
                 },
-                'sale_note_payments' => function($q) use($params){
-                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p) use($params){
-                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
-                                ->whereNotChanged();
-                        });
-                },
+                // 'sale_note_payments' => function($q) use($params){
+                //     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
+                //         ->whereHas('associated_record_payment', function($p) use($params){
+                //             $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
+                //                 ->whereNotChanged();
+                //         });
+                // },
                 'quotation_payments' => function($q) use($params){
                     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
                         ->whereHas('associated_record_payment', function($p) use($params){
@@ -105,6 +111,12 @@ class PaymentMethodType extends ModelTenant
                         });
                 },
                 'remission_payments' => function($q) use($params){
+                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
+                        ->whereHas('associated_record_payment', function($p) use($params){
+                            $p->whereTypeUser()->where('currency_id', $params->currency_id);
+                        });
+                },
+                'document_pos_payments' => function($q) use($params){
                     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
                         ->whereHas('associated_record_payment', function($p) use($params){
                             $p->whereTypeUser()->where('currency_id', $params->currency_id);
