@@ -147,7 +147,7 @@ class DocumentController extends Controller
         ];
     }
 
-    
+
     /**
      * Consultar zipkey - usado en habilitación
      *
@@ -166,10 +166,10 @@ class DocumentController extends Controller
 
             // aceptado
             // $zip_key = "b6bfa75d-3f26-4b8b-8b65-3d1b547445e0";
-            
+
             // rechazo
             // $zip_key = "9cb17852-6401-4d98-829c-132a74b63386";
-            
+
             if($zip_key)
             {
                 $company = ServiceTenantCompany::select('api_token')->whereFilterWithOutAllRelations()->firstOrFail();
@@ -192,7 +192,7 @@ class DocumentController extends Controller
 
                 $response_status = curl_exec($ch2);
                 curl_close($ch2);
-                
+
                 $response_status_decoded = json_decode($response_status);
                 // dd($response_status_decoded);
 
@@ -221,16 +221,16 @@ class DocumentController extends Controller
 
                         $extract_error_zip_key = $dian_response->ErrorMessage->string ?? $dian_response->StatusDescription;
                         $error_message_zip_key = is_array($extract_error_zip_key) ?  implode(",", $extract_error_zip_key) : $extract_error_zip_key;
-    
+
                         //excepcion
                         $status_code = $dian_response->StatusCode ?? [];
                         // $status_code = [];
-                        
+
                         // 'Batch en proceso de validación.'
                         if(empty($status_code)){
                             $document_helper->throwException("Error al Validar {$document_type_description} Nro: {$correlative_api} Errores: {$error_message_zip_key}");
                         }
-                        
+
                         //estado rechazado
                         $document_helper->updateStateDocument(self::REJECTED, $document);
                         $document_helper->updateMessageQueryZipkey($error_message_zip_key, $document);
@@ -248,19 +248,19 @@ class DocumentController extends Controller
                 }
             }
             else{
-                
+
                 return $document_helper->responseMessage(false, "Error de ZipKey.");
-                
+
             }
 
-            
+
         } catch (Exception $e)
         {
             return $this->getErrorFromException($e->getMessage(), $e);
         }
 
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -338,7 +338,7 @@ class DocumentController extends Controller
             $service_invoice['tarifaica'] = $datoscompany->ica_rate;
             $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;
             $service_invoice['notes'] = $request->observation;
-            $service_invoice['date'] = date('Y-m-d');
+            $service_invoice['date'] = date('Y-m-d', strtotime($request->date_issue));
             $service_invoice['time'] = date('H:i:s');
             $service_invoice['payment_form']['payment_form_id'] = $request->payment_form_id;
             $service_invoice['payment_form']['payment_method_id'] = $request->payment_method_id;
@@ -353,7 +353,7 @@ class DocumentController extends Controller
             $base_url = config('tenant.service_fact');
 
             if($company->type_environment_id == 2 && $company->test_id != 'no_test_set_id'){
-                \Log::debug("Alexander");
+//                \Log::debug("Alexander");
                 $ch = curl_init("{$base_url}ubl2.1/invoice/{$id_test}");
             }
             else
@@ -557,7 +557,7 @@ class DocumentController extends Controller
             }
 
             $note_service['number'] = $correlative_api;
-            $note_service['date'] = date('Y-m-d');
+            $note_service['date'] = date('Y-m-d', strtotime($request->date_issue));
             $note_service['time'] = date('H:i:s');
 
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
@@ -1354,10 +1354,10 @@ class DocumentController extends Controller
 
         return compact('customers');
     }
-    
-    
+
+
     /**
-     * 
+     *
      * Descargar xml - pdf
      * Usado en:
      * DocumentController - comprobantes
