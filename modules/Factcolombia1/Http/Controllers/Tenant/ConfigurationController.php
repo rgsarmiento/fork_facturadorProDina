@@ -135,6 +135,7 @@ class ConfigurationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function cities(Department $department) {
+        \Log::debug($department);
         return City::query()
             ->where('department_id', $department->id)
             ->get();
@@ -466,7 +467,7 @@ class ConfigurationController extends Controller
             }
         }
     }
-    
+
     /**
      * Actualizar tipo de entorno empresa facturacion/nomina
      *
@@ -477,7 +478,7 @@ class ConfigurationController extends Controller
     private function updateTypeEnvironmentCompany($environment, $company)
     {
         $message = null;
-        
+
         switch ($environment) {
 
             case 'P':
@@ -510,9 +511,9 @@ class ConfigurationController extends Controller
         ];
 
     }
-    
+
     /**
-     * 
+     *
      * Retorna arreglo con tipo de entorno a actualizar facturacion/nomina
      *
      * @param  string $environment
@@ -545,7 +546,7 @@ class ConfigurationController extends Controller
         }
 
         return $data;
- 
+
     }
 
 
