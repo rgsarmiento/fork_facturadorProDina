@@ -62,7 +62,8 @@
             </td>
             <td>{{row.total}}</td>
             <td>{{row.created_at}}</td>
-            <td>{{row.reference_payment}}</td>
+            <td>{{row.payment_method_description}}</td>
+            <!-- <td>{{row.reference_payment}}</td> -->
             <td>
               <el-select v-model="row.status_order_id" placeholder="Estatus Pedido" :value="row.status_order_id" @change="updateStatus(row)">
                 <el-option

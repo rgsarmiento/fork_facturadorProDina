@@ -18,6 +18,15 @@
                         </div>
                     </div> 
                 </div>
+                <div class="row" style="margin-top:15px">                    
+                    <div class="col-md-4">
+                        <div class="form-group" :class="{'has-danger': errors.show_ecommerce}">
+                            <label class="control-label">¿Mostrar en tienda virtual?</label><br>
+                            <el-switch v-model="form.show_ecommerce" active-text="Si" inactive-text="No"></el-switch>
+                            <small class="form-control-feedback" v-if="errors.show_ecommerce" v-text="errors.show_ecommerce[0]"></small>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="form-actions text-right mt-4">
                 <el-button @click.prevent="close()">Cancelar</el-button>
@@ -50,6 +59,7 @@
                 this.form = {
                     id: null,
                     description: null, 
+                    show_ecommerce: false
                 }
             },
             create() {

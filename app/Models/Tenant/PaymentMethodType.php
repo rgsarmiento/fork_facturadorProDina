@@ -25,8 +25,12 @@ class PaymentMethodType extends ModelTenant
         'has_card',
         'charge',
         'number_days',
+        'show_ecommerce',
     ];
 
+    protected $casts = [
+        'show_ecommerce' => 'boolean',
+    ];
 
     public function document_payments()
     {
@@ -67,62 +71,15 @@ class PaymentMethodType extends ModelTenant
     {
         return $this->hasMany(DocumentPosPayment::class,  'payment_method_type_id');
     }
-
-    public function scopeWhereFilterPayments($query, $params)
+    
+    /**
+     * Mostrar métodos de pago en tienda virtual
+     *
+     * @param $query
+     */
+    public function scopeWhereShowInEcommerce($query)
     {
-
-        return $query->with(['document_payments' => function($q) use($params){
-                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p) use($params){
-                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id);
-                        });
-                },
-                // 'sale_note_payments' => function($q) use($params){
-                //     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                //         ->whereHas('associated_record_payment', function($p) use($params){
-                //             $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
-                //                 ->whereNotChanged();
-                //         });
-                // },
-                'quotation_payments' => function($q) use($params){
-                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p) use($params){
-                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
-                                ->whereNotChanged();
-                        });
-                },
-                // 'contract_payments' => function($q) use($params){
-                //     $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                //         ->whereHas('associated_record_payment', function($p) use($params){
-                //             $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id)
-                //                 ->whereNotChanged();
-                //         });
-                // },
-                'purchase_payments' => function($q) use($params){
-                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p) use($params){
-                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id);
-                        });
-                },
-                'income_payments' => function($q) use($params){
-                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p) use($params){
-                            $p->whereStateTypeAccepted()->whereTypeUser()->where('currency_id', $params->currency_id);
-                        });
-                },
-                'remission_payments' => function($q) use($params){
-                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p) use($params){
-                            $p->whereTypeUser()->where('currency_id', $params->currency_id);
-                        });
-                },
-                'document_pos_payments' => function($q) use($params){
-                    $q->whereBetween('date_of_payment', [$params->date_start, $params->date_end])
-                        ->whereHas('associated_record_payment', function($p) use($params){
-                            $p->whereTypeUser()->where('currency_id', $params->currency_id);
-                        });
-                }
-            ]);
-
+        return $query->where('show_ecommerce', true);
     }
+
 }
