@@ -23,6 +23,8 @@ use App\Models\Tenant\Document;
 use Modules\Factcolombia1\Models\Tenant\{
     Tax,
 };
+use App\Models\Tenant\PaymentMethodType;
+
 
 class EcommerceController extends Controller
 {
@@ -248,6 +250,8 @@ class EcommerceController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        $payment_method_type_id = $request->payment_method_type_id ?? null;
+
         try {
 
             $user = auth()->user();
@@ -257,8 +261,10 @@ class EcommerceController extends Controller
                 'shipping_address' => 'direccion 1',
                 'items' =>  $request->items,
                 'total' => $request->precio_culqi,
-                'reference_payment' => 'efectivo',
-                'status_order_id' => 1
+                // 'reference_payment' => 'efectivo',
+                'reference_payment' => is_null($payment_method_type_id) ? 'efectivo' : null,
+                'status_order_id' => 1,
+                'payment_method_type_id' => $payment_method_type_id,
             ]);
 
             $customer_email = $user->email;
@@ -395,7 +401,11 @@ class EcommerceController extends Controller
     }
 
 
-
-
+    public function tables()
+    {
+        return [
+            'payment_method_types' => PaymentMethodType::whereShowInEcommerce()->get()
+        ];
+    }
 
 }

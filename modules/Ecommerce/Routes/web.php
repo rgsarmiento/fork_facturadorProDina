@@ -29,6 +29,7 @@ Route::prefix('ecommerce')->group(function() {
     Route::post('rating_item', 'EcommerceController@ratingItem')->name('tenant_ecommerce_rating_item');
     Route::get('rating_item/{id}', 'EcommerceController@getRating');
     Route::get('table/{table}', 'EcommerceController@table');
+    Route::get('tables', 'EcommerceController@tables');
 
 
 

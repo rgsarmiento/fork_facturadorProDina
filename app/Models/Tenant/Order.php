@@ -18,6 +18,7 @@ class Order extends ModelTenant
         'items',
         'total',
         'reference_payment',
+        'payment_method_type_id',
         'document_external_id',
         'number_document',
         'status_order_id'
@@ -33,5 +34,13 @@ class Order extends ModelTenant
         return $this->belongsTo(StatusOrder::class);
     }
 
+    public function payment_method_type()
+    {
+        return $this->belongsTo(PaymentMethodType::class);
+    }
 
+    public function getPaymentMethodDescription()
+    {
+        return !is_null($this->payment_method_type_id) ? $this->payment_method_type->description : $this->reference_payment;
+    }
 }

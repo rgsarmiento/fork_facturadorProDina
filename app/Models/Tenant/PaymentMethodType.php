@@ -25,8 +25,12 @@ class PaymentMethodType extends ModelTenant
         'has_card',
         'charge',
         'number_days',
+        'show_ecommerce',
     ];
 
+    protected $casts = [
+        'show_ecommerce' => 'boolean',
+    ];
 
     public function document_payments()
     {
@@ -125,4 +129,16 @@ class PaymentMethodType extends ModelTenant
             ]);
 
     }
+    
+    
+    /**
+     * Mostrar métodos de pago en tienda virtual
+     *
+     * @param $query
+     */
+    public function scopeWhereShowInEcommerce($query)
+    {
+        return $query->where('show_ecommerce', true);
+    }
+
 }

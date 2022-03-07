@@ -18,6 +18,7 @@ class PaymentMethodTypeResource extends JsonResource
             'id' => $this->id,
             'active' => (bool) $this->active,
             'description' => $this->description,
+            'show_ecommerce' => $this->show_ecommerce,
         ];
     }
 }

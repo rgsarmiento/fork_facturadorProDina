@@ -97,8 +97,15 @@
                 </a>
                 @else
                 <button @click="payment_cash.clicked = !payment_cash.clicked" class="btn btn-block btn-sm btn-primary">
-                    Pagar con EFECTIVO </button>
+                    Pagar
+                    {{-- Pagar con EFECTIVO  --}}
+                </button>
                 <div v-show="payment_cash.clicked" style="margin: 3%" class="form-group">
+                    <div>
+                        <select class="form-control mb-1" v-model="form_document.payment_method_type_id">
+                            <option v-for="option in payment_method_types" :key="option.id" :value="option.id" :label="option.description"></option>
+                        </select>
+                    </div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">$</span>
@@ -192,6 +199,7 @@
             response_order_total:0,
             errors: {},
             taxes: [],
+            payment_method_types: []
 
         },
         computed: {
@@ -206,6 +214,7 @@
         },
         async mounted() {
 
+            await this.getTables()
             await this.getTaxes()
 
             let contex = this
@@ -243,6 +252,11 @@
                     this.taxes = response.data
                 })
             },
+            async getTables(){
+                await axios.get(`/ecommerce/tables`).then(response => { 
+                    this.payment_method_types = response.data.payment_method_types
+                })
+            },
             getFormPaymentCash() {
 
                 const customer = this.getCustomer()
@@ -257,6 +271,7 @@
                     precio_culqi: Number(this.summary.total),
                     customer: customer,
                     items: this.records,
+                    payment_method_type_id: this.form_document.payment_method_type_id,
                     //telephone: this.form_contact.telephone,
                     //address: this.form_contact.address
                 }
@@ -445,6 +460,7 @@
                     service_invoice: {},
                     payment_form_id: null,
                     payment_method_id: null,
+                    payment_method_type_id: '01',
                 }
 
                 this.formIdentity = {
