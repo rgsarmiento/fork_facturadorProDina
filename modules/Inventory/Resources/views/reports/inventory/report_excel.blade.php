@@ -50,8 +50,8 @@
                                 <th>#</th>
                                 <th>Descripción</th>
                                 <th>Inventario actual</th>
-                                <th>Costo</th>
                                 <th>Precio de venta</th>
+                                <th>Costo</th>
                                 <th>Almacén</th>
                             </tr>
                         </thead>
