@@ -75,35 +75,8 @@
                 </tr>
             </table>
         </div>
-        @if(!empty($reports))
-            <div class="">
-                <div class=" ">
-                    <table class="">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Descripción</th>
-                                <th>Inventario actual</th>
-                                <th>Precio de venta</th>
-                                <th>Costo</th>
-                                <th>Almacén</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($reports as $key => $value)
-                                <tr>
-                                    <td class="celda">{{$loop->iteration}}</td>
-                                    <td class="celda">{{$value->item->name ?? ''}}</td>
-                                    <td class="celda">{{$value->stock}}</td>
-                                    <td class="celda">{{$value->item->sale_unit_price}}</td>
-                                    <td class="celda">{{$value->item->purchase_unit_price}}</td>
-                                    <td class="celda">{{$value->warehouse->description}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        @if(!empty($records))
+            @include('inventory::reports.inventory.table_records')
         @else
             <div class="callout callout-info">
                 <p>No se encontraron registros.</p>

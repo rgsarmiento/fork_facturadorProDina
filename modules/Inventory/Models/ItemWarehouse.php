@@ -24,4 +24,15 @@ class ItemWarehouse extends ModelTenant
     {
         return $this->belongsTo(Item::class);
     }
+    
+    public function getGlobalPurchaseUnitPrice()
+    {
+        return number_format($this->item->purchase_unit_price * $this->stock, 6, ".", "");
+    }
+    
+    public function getGlobalSaleUnitPrice()
+    {
+        return number_format($this->item->sale_unit_price * $this->stock, 6, ".", "");
+    }
+
 }
