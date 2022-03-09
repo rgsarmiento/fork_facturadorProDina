@@ -72,19 +72,59 @@
                                         <th>Precio de venta</th>
                                         <th>Costo</th>
                                         <th>Almacén</th>
+
+                                        <th class="text-right">
+                                            Precio de venta Global
+                                            <el-tooltip class="item" effect="dark" content="Precio de venta * Inventario actual (Stock)" placement="top-start">
+                                                <i class="fa fa-info-circle"></i>
+                                            </el-tooltip>
+                                        </th>
+                                        <th class="text-right">
+                                            Costo Global
+                                            <el-tooltip class="item" effect="dark" content="Costo * Inventario actual (Stock)" placement="top-start">
+                                                <i class="fa fa-info-circle"></i>
+                                            </el-tooltip>
+                                        </th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    
+                                    {{-- @php
+                                        $total_global_sale_unit_price = 0;
+                                        $total_global_purchase_unit_price = 0;
+                                    @endphp --}}
+
                                     @foreach($reports as $key => $value)
-                                    <tr>
-                                        <td class="celda">{{$loop->iteration}}</td>
-                                        <td class="celda">{{$value->item->internal_id ?? ''}} {{$value->item->internal_id ? '-':''}} {{$value->item->name ?? ''}}</td>
-                                        <td class="celda">{{$value->stock}}</td>
-                                        <td class="celda">{{$value->item->sale_unit_price}}</td>
-                                        <td class="celda">{{$value->item->purchase_unit_price}}</td>
-                                        <td class="celda">{{$value->warehouse->description}}</td>
-                                    </tr>
+
+                                        @php
+                                            $global_sale_unit_price = $value->getGlobalSaleUnitPrice();
+                                            $global_purchase_unit_price = $value->getGlobalPurchaseUnitPrice();
+                                            
+                                            // $total_global_sale_unit_price += $global_sale_unit_price;
+                                            // $total_global_purchase_unit_price += $global_purchase_unit_price;
+                                        @endphp
+
+                                        <tr>
+                                            <td class="celda">{{$loop->iteration}}</td>
+                                            <td class="celda">{{$value->item->internal_id ?? ''}} {{$value->item->internal_id ? '-':''}} {{$value->item->name ?? ''}}</td>
+                                            <td class="celda">{{$value->stock}}</td>
+                                            <td class="celda">{{$value->item->sale_unit_price}}</td>
+                                            <td class="celda">{{$value->item->purchase_unit_price}}</td>
+                                            <td class="celda">{{$value->warehouse->description}}</td>
+
+                                            <td class="celda text-right">{{$global_sale_unit_price}}</td>
+                                            <td class="celda text-right">{{$global_purchase_unit_price}}</td>
+                                        </tr>
                                     @endforeach
+
+                                    {{-- <tr>
+                                        <td class="celda" colspan="5"></td>
+                                        <td class="celda">Total</td>
+                                        <td class="celda text-right">{{ number_format($total_global_sale_unit_price, 6, ".", "") }}</td>
+                                        <td class="celda text-right">{{ number_format($total_global_purchase_unit_price, 6, ".", "") }}</td>
+                                    </tr> --}}
+
                                 </tbody>
                             </table>
                             Total {{$reports->total()}}

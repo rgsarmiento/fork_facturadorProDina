@@ -42,7 +42,10 @@
         </div>
         <br>
         @if(!empty($records))
-            <div class="">
+
+            @include('inventory::reports.inventory.table_records')
+            
+            {{-- <div class="">
                 <div class=" ">
                     <table class="">
                         <thead>
@@ -70,7 +73,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div> --}}
         @else
             <div>
                 <p>No se encontraron registros.</p>
