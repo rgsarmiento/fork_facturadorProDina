@@ -205,7 +205,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.transportation_allowance']}">
                                             <label class="control-label">Subsidio de transporte</label>
-                                            <el-input-number v-model="form.accrued.transportation_allowance" :min="0" disabled controls-position="right"></el-input-number>
+                                            <el-input-number v-model="form.accrued.transportation_allowance" :min="0" :disabled="form_disabled.inputs_type_worker_sena" controls-position="right" @change="changeTransportationAllowance"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['accrued.transportation_allowance']" v-text="errors['accrued.transportation_allowance'][0]"></small>
                                         </div>
                                     </div>
@@ -306,7 +306,7 @@
                                             <label class="control-label">EPS - Deducciones por ley
                                                 <span class="text-danger"> *</span>
                                             </label>
-                                            <el-select v-model="form.deduction.eps_type_law_deductions_id"   filterable @change="changeEpsTypeLawDeduction">
+                                            <el-select v-model="form.deduction.eps_type_law_deductions_id"   filterable @change="changeEpsTypeLawDeduction" :disabled="form_disabled.inputs_type_worker_sena">
                                                 <el-option v-for="option in type_law_deductions" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="errors['deduction.eps_type_law_deductions_id']" v-text="errors['deduction.eps_type_law_deductions_id'][0]"></small>
@@ -318,14 +318,14 @@
                                                 <span v-if="getPercentageEpsTypeLawDeduction"> ({{ getPercentageEpsTypeLawDeduction.percentage }}%) </span>
                                                 <span class="text-danger"> *</span>
                                             </label>
-                                            <el-input-number v-model="form.deduction.eps_deduction" :min="0" controls-position="right" @change="changeEpsDeduction"></el-input-number>
+                                            <el-input-number v-model="form.deduction.eps_deduction" :min="0" controls-position="right" @change="changeEpsDeduction" :disabled="form_disabled.inputs_type_worker_sena"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.eps_deduction']" v-text="errors['deduction.eps_deduction'][0]"></small>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.pension_type_law_deductions_id']}">
                                             <label class="control-label">Pensión - Deducciones por ley<span class="text-danger"> *</span></label>
-                                            <el-select v-model="form.deduction.pension_type_law_deductions_id"   filterable @change="changePensionTypeLawDeduction">
+                                            <el-select v-model="form.deduction.pension_type_law_deductions_id"   filterable @change="changePensionTypeLawDeduction" :disabled="form_disabled.inputs_type_worker_sena">
                                                 <el-option v-for="option in type_law_deductions" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="errors['deduction.pension_type_law_deductions_id']" v-text="errors['deduction.pension_type_law_deductions_id'][0]"></small>
@@ -337,7 +337,7 @@
                                                 <span v-if="getPercentagePensionTypeLawDeduction"> ({{ getPercentagePensionTypeLawDeduction.percentage }}%) </span>
                                                 <span class="text-danger"> *</span>
                                             </label>
-                                            <el-input-number v-model="form.deduction.pension_deduction" :min="0" controls-position="right" @change="changePensionDeduction"></el-input-number>
+                                            <el-input-number v-model="form.deduction.pension_deduction" :min="0" controls-position="right" @change="changePensionDeduction" :disabled="form_disabled.inputs_type_worker_sena"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.pension_deduction']" v-text="errors['deduction.pension_deduction'][0]"></small>
                                         </div>
                                     </div>
@@ -404,12 +404,12 @@
                                                 <tr v-for="(row, index) in form.deduction.labor_union" :key="index"> 
                                                     <td>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.percentage" :min="0" controls-position="right"></el-input-number>
+                                                            <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="changePercentageLaborUnion(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.deduction" :min="0" controls-position="right"></el-input-number>
+                                                            <el-input-number v-model="row.deduction" :min="0" controls-position="right" disabled></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td class="series-table-actions text-center">
@@ -574,9 +574,27 @@
                 this.calculateTotalDeduction()
             },
             calculateTotalTypeLawDeduction(){
-                //calcular eps y pension
-                this.changeEpsTypeLawDeduction()
-                this.changePensionTypeLawDeduction()
+
+                // si el tipo de trabajador es relacionado al sena, no tiene dscto de pension ni salud
+
+                if(this.form.select_worker.is_type_worker_sena)
+                {
+                    this.form.deduction.eps_type_law_deductions_id = 1
+                    this.form.deduction.pension_type_law_deductions_id = 5
+
+                    this.form.deduction.eps_deduction = 0
+                    this.form.deduction.pension_deduction = 0
+
+                    this.form_disabled.inputs_type_worker_sena = true
+                }
+                else
+                {
+                    //calcular eps y pension
+                    this.form_disabled.inputs_type_worker_sena = false
+                    this.changeEpsTypeLawDeduction()
+                    this.changePensionTypeLawDeduction()
+                }
+                
             },
             clickAddExtraHours(){
 
@@ -620,6 +638,7 @@
                     },
                     payroll_period_id: null,
                     worker_id: null,
+                    select_worker: {}, //se usa para asignar el empleado seleccionado - solo en interfaz
                     resolution_number: null,
                     payment: {
                         payment_method_id: null,
@@ -667,11 +686,37 @@
                     payroll_period_id : false,
                     admision_date : false,
                     payment : false,
+                    inputs_type_worker_sena : false,
                 }
 
                 this.setInitialDataPeriod()
             },
+            changePercentageLaborUnion(index){
+
+                this.form.deduction.labor_union[index].deduction = this.roundNumber(this.form.accrued.total_base_salary * this.percentageToFactor(this.form.deduction.labor_union[index].percentage))
+                this.calculateTotalDeduction()
+                
+            },
+            roundNumber(number, decimals = 2){
+                return _.round(number, decimals)
+            },
+            salaryValidation(){
+
+                if(parseFloat(this.form.accrued.salary) <= 0 || parseFloat(this.form.accrued.total_base_salary) <= 0){
+                    return {
+                        success : false,
+                        message : 'El campo Salario debe ser mayor a 0'
+                    }
+                }
+
+                return {
+                    success : true
+                }
+            },
             clickAddLaborUnion(){
+
+                const salary_validation = this.salaryValidation()
+                if(!salary_validation.success) return this.$message.warning(salary_validation.message)
                 
                 this.form.deduction.labor_union.push({
                     percentage :  0,
@@ -681,6 +726,7 @@
             },
             clickCancelLaborUnion(index){
                 this.form.deduction.labor_union.splice(index, 1)
+                this.calculateTotalDeduction()
             },
             clickAddSanction(){
                 
@@ -807,7 +853,9 @@
             },
             calculateTotalDeduction(){
 
-                this.form.deduction.deductions_total = parseFloat(this.form.deduction.eps_deduction) + parseFloat(this.form.deduction.pension_deduction)
+                let total_labor_union = _.sumBy(this.form.deduction.labor_union, 'deduction');
+
+                this.form.deduction.deductions_total = parseFloat(this.form.deduction.eps_deduction) + parseFloat(this.form.deduction.pension_deduction) + total_labor_union
 
             },
             calculateTotalAccrued(){
@@ -823,10 +871,11 @@
             },
             async changeWorker() { 
 
-                let worker = await _.find(this.workers, {id : this.form.worker_id})
+                // let worker = await _.find(this.workers, {id : this.form.worker_id})
+                this.form.select_worker = await _.find(this.workers, {id : this.form.worker_id})
 
                 //autocompletar campos
-                await this.autocompleteDataFromWorker(worker)
+                await this.autocompleteDataFromWorker(this.form.select_worker)
 
                 await this.calculateTotal()
 
@@ -902,12 +951,16 @@
                 this.calculateTotal()
 
             },
+            changeTransportationAllowance(){
+                this.calculateTotalAccrued()
+            },
             calculateTransportationAllowance(){
 
                 // validar si corresponde subsidio y asignar valor
+
                 let minimum_salary = parseFloat(this.advanced_configuration.minimum_salary)
 
-                if(this.form.accrued.total_base_salary <= (minimum_salary * 2)){
+                if(this.form.accrued.total_base_salary <= (minimum_salary * 2) && !this.form.select_worker.is_type_worker_sena){
 
                     this.form.accrued.transportation_allowance = _.round(this.getTransportationAllowancePerDay() * this.form.accrued.worked_days, 2)
 
@@ -955,7 +1008,7 @@
                     return this.$message.error("El número de resolución es obligatorio, debe asignarle un valor")
                 }
  
-                this.loading_submit = true
+                // this.loading_submit = true
                 
                 await this.$http.post(`/${this.resource}`, this.form).then(response => {
                     // console.log(response)

@@ -113,7 +113,17 @@ class DocumentPayrollHelper
             if(array_key_exists('urlpayrollpdf', $send_request_to_api) && array_key_exists('urlpayrollxml', $send_request_to_api))
             {
                 
-                $send_test_set_async_result = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult'];
+                //error desconocido - certificado
+                $send_test_set_async_response = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse'] ?? null;
+
+                if(is_null($send_test_set_async_response))
+                {
+                    $unknown_error = $send_request_to_api['ResponseDian']['Envelope']['Body']['Fault']['Reason']['Text']['_value'] ?? null;
+                    if(!is_null($unknown_error)) $this->throwException('Error desconocido: '.$unknown_error);
+                }
+                //error desconocido - certificado
+
+                $send_test_set_async_result = $send_test_set_async_response['SendTestSetAsyncResult'];
                 $zip_key = $send_test_set_async_result['ZipKey'];
     
                 if(!is_string($zip_key))

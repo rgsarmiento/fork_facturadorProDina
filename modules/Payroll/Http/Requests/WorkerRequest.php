@@ -68,6 +68,7 @@ class WorkerRequest extends FormRequest
             'cellphone' => [
                 'nullable',
                 'numeric',
+                'integer',
             ], 
             'email' => [
                 'nullable',

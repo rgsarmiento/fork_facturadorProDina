@@ -66,7 +66,7 @@
                             <div class="col-md-3">
                                 <div class="form-group" :class="{'has-danger': errors.cellphone}">
                                     <label class="control-label">Celular</label>
-                                    <el-input v-model="form.cellphone" ></el-input>
+                                    <el-input v-model="form.cellphone" :maxlength="11"></el-input>
                                     <small class="form-control-feedback" v-if="errors.cellphone" v-text="errors.cellphone[0]"></small>
                                 </div>
                             </div>

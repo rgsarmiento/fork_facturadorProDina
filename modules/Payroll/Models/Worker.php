@@ -54,6 +54,9 @@ class Worker extends ModelTenant
     ];
 
 
+    public const ID_TYPE_WORKERS_SENA = [4, 6];
+
+
     public function type_worker()
     {
         return $this->belongsTo(TypeWorker::class);
@@ -118,9 +121,21 @@ class Worker extends ModelTenant
             'account_number' => null,
         ];
     }
+    
+    /**
+     * Determinar si el tipo de trabajador esta relacionado al SENA, para no considerar subsidio de transporte, descuento salud  y pension.
+     *
+     * @return bool
+     */
+    public function getIsTypeWorkerSenaAttribute()
+    {
+        return in_array($this->type_worker_id, self::ID_TYPE_WORKERS_SENA);
+    }
+
 
     public function getSearchRowResource()
     { 
+
         return [
             'id' => $this->id,
             'search_fullname' => $this->search_fullname,
@@ -128,6 +143,7 @@ class Worker extends ModelTenant
             'work_start_date' => $this->work_start_date,
             'payroll_period_id' => $this->payroll_period_id,
             'payment' => $this->payment,
+            'is_type_worker_sena' => $this->is_type_worker_sena,
         ];
     }
  
