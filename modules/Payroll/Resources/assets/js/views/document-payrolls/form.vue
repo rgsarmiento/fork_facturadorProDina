@@ -233,7 +233,67 @@
                                     </div>
                                 </div>  
 
+                                <!-- Prima de servicio -->
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.service_bonus']}">
+                                            <h4>Prima de servicio</h4>
+                                            <small class="form-control-feedback" v-if="errors['accrued.service_bonus']" v-text="errors['accrued.service_bonus'][0]"></small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.service_bonus']}">
+                                            <h4>Cesantías</h4>
+                                            <small class="form-control-feedback" v-if="errors['accrued.service_bonus']" v-text="errors['accrued.service_bonus'][0]"></small>
+                                        </div>
+                                    </div>
 
+                                    <div class="col-md-6">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.accrued.service_bonus.length>0">
+                                                        <th class="pb-2">N° de días</th>
+                                                        <th class="pb-2">Prima salarial</th>
+                                                        <th class="pb-2">Prima no salarial</th>
+                                                        <th class="pb-2"></th>
+                                                    </template>
+                                                    <th width="10%"><a href="#" @click.prevent="clickAddServiceBonus" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.accrued.service_bonus" :key="index"> 
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.quantity" :min="0" controls-position="right" @change="changeQuantityServiceBonus(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentServiceBonus(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.paymentNS" :min="0" controls-position="right" @change="changePaymentNSServiceBonus(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelServiceBonus(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- Prima de servicio -->
+
+
+                                <!-- Incapacidades -->
                                 <div class="row mt-2">
                                     <div class="col-md-12">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.work_disabilities']}">
@@ -246,11 +306,11 @@
                                             <thead>
                                                 <tr width="100%">
                                                     <template v-if="form.accrued.work_disabilities.length>0">
-                                                        <th class="pb-2">Fecha inicio</th>
-                                                        <th class="pb-2">Fecha término</th>
+                                                        <th class="pb-2">Fecha inicio - Fecha término</th>
                                                         <th class="pb-2">Tipo</th>
                                                         <th class="pb-2">Cantidad</th>
                                                         <th class="pb-2">Pago</th>
+                                                        <th class="pb-2"></th>
                                                     </template>
                                                     <th width="10%"><a href="#" @click.prevent="clickAddWorkDisability" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
                                                 </tr>
@@ -258,15 +318,24 @@
                                             <tbody>
                                                 <tr v-for="(row, index) in form.accrued.work_disabilities" :key="index"> 
                                                     <td>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-date-picker v-model="row.start_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
+                                                        <div class="form-group mb-2 mr-2">
+                                                            <el-date-picker
+                                                                v-model="row.start_end_date"
+                                                                type="daterange"
+                                                                format="yyyy-MM-dd"
+                                                                value-format="yyyy-MM-dd"
+                                                                range-separator="H"
+                                                                :clearable="false"
+                                                                @change="changeWDisabilityStartEndDate(index)"
+                                                                >
+                                                            </el-date-picker>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <!-- <td>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-date-picker v-model="row.end_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
                                                         </div>
-                                                    </td>
+                                                    </td> -->
                                                     <td>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-select v-model="row.type" filterable>
@@ -276,13 +345,17 @@
                                                     </td>
                                                     <td>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.quantity" :min="0" controls-position="right"></el-input-number>
+                                                            <el-input-number v-model="row.quantity" :min="0" controls-position="right" disabled></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right"></el-input-number>
+                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" disabled></el-input-number>
                                                         </div>
+                                                    </td>
+
+                                                    <td class="series-table-actions text-center">
+                                                        <el-checkbox v-model="row.is_complete" @change="changeCompleteWorkDisability(index)">Completo</el-checkbox><br>
                                                     </td>
 
                                                     <td class="series-table-actions text-center">
@@ -296,6 +369,7 @@
                                         </table>
                                     </div>
                                 </div>
+                                <!-- Incapacidades -->
 
                             </el-tab-pane>
                             <el-tab-pane label="Deducciones" name="deduction">
@@ -528,7 +602,8 @@
                 show_inputs_payment_method: true,
                 advanced_configuration: {},
                 showDialogDocumentPayrollExtraHours: false,
-                quantity_days_month: 30
+                quantity_days_month: 30,
+                quantity_days_year: 360,
             }
         }, 
         async created() {
@@ -546,6 +621,9 @@
             getPercentagePensionTypeLawDeduction: function () {
                 return this.getTypeLawDeduction(this.form.deduction.pension_type_law_deductions_id)
             },
+            percentageWorkDisability: function() {
+                return 66.67
+            }
         },
         methods: { 
             getValueFromInputUndefined(value){
@@ -655,6 +733,7 @@
                         transportation_allowance: undefined, //se usa undefined ya que el componente input-number le asigna 0 al valor null
                         telecommuting: undefined,
                         work_disabilities: [],
+                        service_bonus: [],
                         heds: [],
                         hens: [],
                         hrns: [],
@@ -739,19 +818,96 @@
             clickCancelSanction(index){
                 this.form.deduction.sanctions.splice(index, 1)
             },
-            clickAddWorkDisability(){
 
-                this.form.accrued.work_disabilities.push({
-                    start_date :  moment().format('YYYY-MM-DD'),
-                    end_date :  moment().format('YYYY-MM-DD'),
-                    type :  null,
+            // service_bonus
+             
+            clickAddServiceBonus(){
+                
+                const salary_validation = this.salaryValidation()
+                if(!salary_validation.success) return this.$message.warning(salary_validation.message)
+
+                this.form.accrued.service_bonus.push({
                     quantity :  0,
                     payment :  0,
+                    paymentNS :  0,
                 })
+
+            },
+            changePaymentNSServiceBonus(index){
+                this.calculateTotal()
+            },
+            changePaymentServiceBonus(index){
+                this.calculateTotal()
+            },
+            changeQuantityServiceBonus(index){
+                this.form.accrued.service_bonus[index].payment = this.roundNumber((this.form.accrued.total_base_salary / this.quantity_days_year) * this.form.accrued.service_bonus[index].quantity)
+                this.calculateTotal()
+            },
+            clickCancelServiceBonus(index){
+                this.form.accrued.service_bonus.splice(index, 1)
+                this.calculateTotal()
+            },
+            // service_bonus
+
+            changeWDisabilityStartEndDate(index){
+                this.calculateWDisabilityStartEndDate(index)
+            },
+            changeCompleteWorkDisability(index){
+                this.calculateWDisabilityStartEndDate(index)
+            },
+            calculateWDisabilityStartEndDate(index){
+
+                const start_end_date = this.form.accrued.work_disabilities[index].start_end_date
+                const start_date = start_end_date[0]
+                const end_date = start_end_date[1]
+                const quantity = this.roundNumber(moment(end_date, "YYYY-MM-DD").diff(moment(start_date, "YYYY-MM-DD"), 'days', true))
+                let payment = this.getPaymentWorkDisability(quantity, this.form.accrued.work_disabilities[index].is_complete)
+
+                //calcular valores finales
+                this.form.accrued.work_disabilities[index].start_date = start_date
+                this.form.accrued.work_disabilities[index].end_date = end_date
+                this.form.accrued.work_disabilities[index].quantity = quantity
+                this.form.accrued.work_disabilities[index].payment =  payment
+
+                this.calculateTotal()
+
+            },
+            getPaymentWorkDisability(quantity, is_complete = false){
+
+                let payment = is_complete ? (this.getPaymentPerDay() * quantity) : (this.getPaymentPerDay() * this.percentageToFactor(this.percentageWorkDisability) * quantity)
+
+                return this.roundNumber(payment)
+            },
+            clickAddWorkDisability(){
+
+                const salary_validation = this.salaryValidation()
+                if(!salary_validation.success) return this.$message.warning(salary_validation.message)
+
+                const quantity = 1
+                const start_date = moment().format('YYYY-MM-DD')
+                const end_date = moment().add(quantity, 'days').format('YYYY-MM-DD')
+                const type = (this.type_disabilities.length > 0) ? this.type_disabilities[0].id : null
+                let payment = this.getPaymentWorkDisability(quantity)
+
+                this.form.accrued.work_disabilities.push({
+                    is_complete :  false,
+                    start_date :  start_date,
+                    end_date :  end_date,
+                    type :  type,
+                    quantity :  quantity,
+                    payment :  payment,
+                    start_end_date: [
+                        start_date,
+                        end_date
+                    ]
+                })
+
+                this.calculateTotal()
 
             },
             clickCancelWorkDisability(index){
                 this.form.accrued.work_disabilities.splice(index, 1)
+                this.calculateTotal()
             },
             clickAddPaymentDate(param_payment_date = null) {
 
@@ -858,11 +1014,21 @@
                 this.form.deduction.deductions_total = parseFloat(this.form.deduction.eps_deduction) + parseFloat(this.form.deduction.pension_deduction) + total_labor_union
 
             },
+            sumValueFromArray(array, property){
+                return _.sumBy(array, property)
+            },
             calculateTotalAccrued(){
 
-                this.form.accrued.accrued_total = parseFloat(this.form.accrued.salary) 
-                                                + (this.form.accrued.transportation_allowance ? parseFloat(this.form.accrued.transportation_allowance) : 0)
-                                                + this.form.accrued.total_extra_hours
+                let total_work_disability = this.sumValueFromArray(this.form.accrued.work_disabilities, 'payment')
+                let total_service_bonus = this.sumValueFromArray(this.form.accrued.service_bonus, 'payment') + this.sumValueFromArray(this.form.accrued.service_bonus, 'paymentNS')
+
+                this.form.accrued.accrued_total = this.roundNumber(
+                                                    parseFloat(this.form.accrued.salary) 
+                                                    + (this.form.accrued.transportation_allowance ? parseFloat(this.form.accrued.transportation_allowance) : 0)
+                                                    + this.form.accrued.total_extra_hours
+                                                    + total_work_disability
+                                                    + total_service_bonus
+                                                )
 
             },
             sumTotalsExtraHoursForm(){
