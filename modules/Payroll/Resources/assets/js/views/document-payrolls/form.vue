@@ -233,7 +233,6 @@
                                     </div>
                                 </div>  
 
-                                <!-- Prima de servicio -->
                                 <div class="row mt-2">
                                     <div class="col-md-6">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.service_bonus']}">
@@ -248,6 +247,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Prima de servicio -->
                                     <div class="col-md-6">
                                         <table>
                                             <thead>
@@ -289,8 +289,167 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <!-- Prima de servicio -->
+
+                                    <!-- Cesantías -->
+                                    <div class="col-md-6">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.accrued.severance.length>0">
+                                                        <th class="pb-2">Pago cesantías</th>
+                                                        <th class="pb-2">% Interes</th>
+                                                        <th class="pb-2">Pago intereses</th>
+                                                        <th class="pb-2"></th>
+                                                    </template>
+                                                    <th width="10%"><a href="#" @click.prevent="clickAddSeverance" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.accrued.severance" :key="index"> 
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.interest_payment" :min="0" controls-position="right" disabled></el-input-number>
+                                                        </div>
+                                                    </td>
+
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelSeverance(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Cesantías -->
+
                                 </div>
-                                <!-- Prima de servicio -->
+
+
+                                <div class="row mt-2">
+                                    <div class="col-md-12">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.common_vacation']}">
+                                            <h4>Vacaciones disfrutadas</h4>
+                                            <small class="form-control-feedback" v-if="errors['accrued.common_vacation']" v-text="errors['accrued.common_vacation'][0]"></small>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-md-6">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.service_bonus']}">
+                                            <h4>Vacaciones compensadas</h4>
+                                            <small class="form-control-feedback" v-if="errors['accrued.service_bonus']" v-text="errors['accrued.service_bonus'][0]"></small>
+                                        </div>
+                                    </div> -->
+
+                                    <!-- Vacaciones disfrutadas -->
+                                    <div class="col-md-12">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.accrued.common_vacation.length > 0">
+                                                        <th class="pb-2">Fecha inicio - Fecha término</th>
+                                                        <th class="pb-2">N° de días</th>
+                                                        <th class="pb-2">Pago</th>
+                                                        <th class="pb-2"></th>
+                                                    </template>
+                                                    <th width="10%"><a href="#" @click.prevent="clickAddCommonVacation" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.accrued.common_vacation" :key="index"> 
+                                                     <td>
+                                                        <div class="form-group mb-2 mr-2">
+                                                            <el-date-picker
+                                                                v-model="row.start_end_date"
+                                                                type="daterange"
+                                                                format="yyyy-MM-dd"
+                                                                value-format="yyyy-MM-dd"
+                                                                range-separator="H"
+                                                                :clearable="false"
+                                                                @change="changeCommonVacationStartEndDate(index)"
+                                                                >
+                                                            </el-date-picker>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.quantity" :min="0" controls-position="right" disabled></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentCommonVacation(index)"></el-input-number>
+                                                        </div>
+                                                    </td> 
+
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelCommonVacation(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Vacaciones disfrutadas -->
+
+                                    <!-- Cesantías -->
+                                    <!-- <div class="col-md-6">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.accrued.severance.length>0">
+                                                        <th class="pb-2">Pago cesantías</th>
+                                                        <th class="pb-2">% Interes</th>
+                                                        <th class="pb-2">Pago intereses</th>
+                                                        <th class="pb-2"></th>
+                                                    </template>
+                                                    <th width="10%"><a href="#" @click.prevent="clickAddSeverance" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.accrued.severance" :key="index"> 
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.interest_payment" :min="0" controls-position="right" disabled></el-input-number>
+                                                        </div>
+                                                    </td>
+
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelSeverance(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div> -->
+                                    <!-- Cesantías -->
+
+                                </div>
 
 
                                 <!-- Incapacidades -->
@@ -575,8 +734,10 @@
     import WorkerForm from '../workers/form.vue' 
     import DocumentPayrollOptions from './partials/options.vue' 
     import DocumentPayrollExtraHours from './partials/extra_hours.vue' 
+    import {documentPayrollMixin} from '../../mixins/document_payroll'
 
     export default {
+        mixins: [documentPayrollMixin],
         components: {WorkerForm, DocumentPayrollOptions, DocumentPayrollExtraHours},
         data() {
             return {
@@ -734,6 +895,8 @@
                         telecommuting: undefined,
                         work_disabilities: [],
                         service_bonus: [],
+                        severance: [],
+                        common_vacation: [],
                         heds: [],
                         hens: [],
                         hrns: [],
@@ -1019,8 +1182,15 @@
             },
             calculateTotalAccrued(){
 
+                // sum_accrued
+
                 let total_work_disability = this.sumValueFromArray(this.form.accrued.work_disabilities, 'payment')
+
                 let total_service_bonus = this.sumValueFromArray(this.form.accrued.service_bonus, 'payment') + this.sumValueFromArray(this.form.accrued.service_bonus, 'paymentNS')
+
+                let total_severance = this.sumValueFromArray(this.form.accrued.severance, 'payment') + this.sumValueFromArray(this.form.accrued.severance, 'interest_payment')
+
+                let total_common_vacation = this.sumValueFromArray(this.form.accrued.common_vacation, 'payment')
 
                 this.form.accrued.accrued_total = this.roundNumber(
                                                     parseFloat(this.form.accrued.salary) 
@@ -1028,6 +1198,8 @@
                                                     + this.form.accrued.total_extra_hours
                                                     + total_work_disability
                                                     + total_service_bonus
+                                                    + total_severance
+                                                    + total_common_vacation
                                                 )
 
             },

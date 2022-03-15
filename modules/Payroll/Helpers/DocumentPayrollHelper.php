@@ -335,6 +335,8 @@ class DocumentPayrollHelper
                 'telecommuting' => $accrued->telecommuting,
                 'work_disabilities' => $accrued->parseWorkDisabilitiesToFormatApi($accrued->work_disabilities),
                 'service_bonus' => $accrued->service_bonus,
+                'severance' => $accrued->severance,
+                'common_vacation' => $accrued->parseCommonVacationToFormatApi($accrued->common_vacation),
                 'HEDs' => $accrued->parseExtraHoursToFormatApi($accrued->heds), //Hora Extra Diurna
                 'HENs' => $accrued->parseExtraHoursToFormatApi($accrued->hens), //Hora Extra Nocturna
                 'HRNs' => $accrued->parseExtraHoursToFormatApi($accrued->hrns), //Hora Recargo Nocturno

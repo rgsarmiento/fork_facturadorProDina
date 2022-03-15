@@ -142,7 +142,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setCommonVacationAttribute($value)
     {
-        $this->attributes['common_vacation'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['common_vacation'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getPaidVacationAttribute($value)
@@ -162,7 +162,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setServiceBonusAttribute($value)
     {
-        $this->attributes['service_bonus'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['service_bonus'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getSeveranceAttribute($value)
@@ -172,7 +172,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setSeveranceAttribute($value)
     {
-        $this->attributes['severance'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['severance'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getWorkDisabilitiesAttribute($value)
@@ -305,6 +305,16 @@ class DocumentPayrollAccrued extends ModelTenant
         $this->attributes['Advances'] = (is_null($value))?null:json_encode($value);
     }
 
+    /**
+     * 
+     * Validar dato y retornar valor correspondiente para campos tipo json
+     *
+     * @param $value
+     */
+    public function getArrayValueAndValidate($value)
+    {
+        return (is_null($value) || empty($value)) ? null : json_encode($value);
+    }
 
     public function payroll() 
     {
@@ -351,6 +361,28 @@ class DocumentPayrollAccrued extends ModelTenant
                         'start_date' => $row->start_date,
                         'end_date' => $row->end_date,
                         'type' => $row->type,
+                        'quantity' => $row->quantity,
+                        'payment' => $row->payment
+                    ];
+                })
+                ->toArray();
+    }
+
+    /**
+     * Retorna data de las vaciones disfrutadas con los campos necesarios para enviar a la api
+     *
+     * @param  array $records
+     * @return array
+     */
+    public function parseCommonVacationToFormatApi($records)
+    {
+        if(empty($records)) return null;
+
+        return collect($records)
+                ->map(function($row, $key){
+                    return [
+                        'start_date' => $row->start_date,
+                        'end_date' => $row->end_date,
                         'quantity' => $row->quantity,
                         'payment' => $row->payment
                     ];
