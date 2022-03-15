@@ -132,10 +132,12 @@ class ReportTaxController extends Controller
         //$taxesAll = collect();
 
         $records = DocumentPos::select('id', 'date_of_issue', 'total', 'subtotal')->whereBetween('date_of_issue', [
-                Carbon::parse($request->date_start)->startOfDay()->format('Y-m-d H:m:s'),
-                Carbon::parse($request->date_end)->endOfDay()->format('Y-m-d H:m:s')
+                Carbon::parse($request->date_start)->startOfDay(),
+                Carbon::parse($request->date_end)->endOfDay()
             ])
             ->get();
+
+        $records = DocumentPos::select('id', 'date_of_issue', 'total', 'subtotal')->get();
 
         $items = collect( DocumentPosItem::whereIn('document_pos_id', $records->pluck('id'))->get() );
 
