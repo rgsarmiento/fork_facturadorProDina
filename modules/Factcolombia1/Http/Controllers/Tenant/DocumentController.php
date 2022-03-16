@@ -317,6 +317,7 @@ class DocumentController extends Controller
             $service_invoice['number'] = $correlative_api;
             $service_invoice['prefix'] = $request->prefix;
             $service_invoice['resolution_number'] = $request->resolution_number;
+            $service_invoice['web_site'] = env('APP_NAME', 'FACTURALATAM');
 
 
             if ($request->order_reference)
