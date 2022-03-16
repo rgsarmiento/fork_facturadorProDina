@@ -337,22 +337,67 @@
 
                                 </div>
 
+                                
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.bonuses']}">
+                                            <h4>Bonificaciones</h4>
+                                            <small class="form-control-feedback" v-if="errors['accrued.bonuses']" v-text="errors['accrued.bonuses'][0]"></small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                    </div>
 
+                                    <!-- Bonificaciones -->
+                                    <div class="col-md-6">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.accrued.bonuses.length>0">
+                                                        <th class="pb-2">Bonificación salarial</th>
+                                                        <th class="pb-2">Bonificación no salarial</th>
+                                                        <th class="pb-2"></th>
+                                                    </template>
+                                                    <th width="10%"><a href="#" @click.prevent="clickAddBonuses" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.accrued.bonuses" :key="index">  
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.salary_bonus" :min="0" controls-position="right" @change="changeSalaryBonus(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.non_salary_bonus" :min="0" controls-position="right" @change="changeSalaryBonus(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelBonuses(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Bonificaciones -->
+
+                                </div>
+
+
+                                <!-- Vacaciones disfrutadas -->
                                 <div class="row mt-2">
                                     <div class="col-md-12">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.common_vacation']}">
                                             <h4>Vacaciones disfrutadas</h4>
                                             <small class="form-control-feedback" v-if="errors['accrued.common_vacation']" v-text="errors['accrued.common_vacation'][0]"></small>
                                         </div>
-                                    </div>
-                                    <!-- <div class="col-md-6">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.service_bonus']}">
-                                            <h4>Vacaciones compensadas</h4>
-                                            <small class="form-control-feedback" v-if="errors['accrued.service_bonus']" v-text="errors['accrued.service_bonus'][0]"></small>
-                                        </div>
-                                    </div> -->
+                                    </div> 
 
-                                    <!-- Vacaciones disfrutadas -->
                                     <div class="col-md-12">
                                         <table>
                                             <thead>
@@ -403,42 +448,61 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <!-- Vacaciones disfrutadas -->
+                                </div>
+                                <!-- Vacaciones disfrutadas -->
+ 
 
-                                    <!-- Cesantías -->
-                                    <!-- <div class="col-md-6">
+                                <!-- Vacaciones compensadas --> 
+                                <div class="row mt-2">
+                                    <div class="col-md-12">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.paid_vacation']}">
+                                            <h4>Vacaciones compensadas</h4>
+                                            <small class="form-control-feedback" v-if="errors['accrued.paid_vacation']" v-text="errors['accrued.paid_vacation'][0]"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
                                         <table>
                                             <thead>
                                                 <tr width="100%">
-                                                    <template v-if="form.accrued.severance.length>0">
-                                                        <th class="pb-2">Pago cesantías</th>
-                                                        <th class="pb-2">% Interes</th>
-                                                        <th class="pb-2">Pago intereses</th>
+                                                    <template v-if="form.accrued.paid_vacation.length > 0">
+                                                        <th class="pb-2">Fecha inicio - Fecha término</th>
+                                                        <th class="pb-2">N° de días</th>
+                                                        <th class="pb-2">Pago</th>
                                                         <th class="pb-2"></th>
                                                     </template>
-                                                    <th width="10%"><a href="#" @click.prevent="clickAddSeverance" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                    <th width="10%"><a href="#" @click.prevent="clickAddPaidVacation" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="(row, index) in form.accrued.severance" :key="index"> 
-                                                    <td>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
+                                                <tr v-for="(row, index) in form.accrued.paid_vacation" :key="index"> 
+                                                     <td>
+                                                        <div class="form-group mb-2 mr-2">
+                                                            <el-date-picker
+                                                                v-model="row.start_end_date"
+                                                                type="daterange"
+                                                                format="yyyy-MM-dd"
+                                                                value-format="yyyy-MM-dd"
+                                                                range-separator="H"
+                                                                :clearable="false"
+                                                                @change="changePaidVacationStartEndDate(index)"
+                                                                >
+                                                            </el-date-picker>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
+                                                            <el-input-number v-model="row.quantity" :min="0" controls-position="right" ></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.interest_payment" :min="0" controls-position="right" disabled></el-input-number>
+                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentPaidVacation(index)"></el-input-number>
                                                         </div>
-                                                    </td>
+                                                    </td> 
 
                                                     <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelSeverance(index)">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelPaidVacation(index)">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </td>
@@ -446,11 +510,10 @@
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </div> -->
-                                    <!-- Cesantías -->
+                                    </div>
 
                                 </div>
-
+                                <!-- Vacaciones compensadas --> 
 
                                 <!-- Incapacidades -->
                                 <div class="row mt-2">
@@ -673,12 +736,12 @@
                                                 <tr v-for="(row, index) in form.deduction.sanctions" :key="index"> 
                                                     <td>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.public_sanction" :min="0" controls-position="right"></el-input-number>
+                                                            <el-input-number v-model="row.public_sanction" :min="0" controls-position="right" @change="changeSanction(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.private_sanction" :min="0" controls-position="right"></el-input-number>
+                                                            <el-input-number v-model="row.private_sanction" :min="0" controls-position="right" @change="changeSanction(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td class="series-table-actions text-center">
@@ -897,6 +960,8 @@
                         service_bonus: [],
                         severance: [],
                         common_vacation: [],
+                        paid_vacation: [],
+                        bonuses: [],
                         heds: [],
                         hens: [],
                         hrns: [],
@@ -933,12 +998,6 @@
 
                 this.setInitialDataPeriod()
             },
-            changePercentageLaborUnion(index){
-
-                this.form.deduction.labor_union[index].deduction = this.roundNumber(this.form.accrued.total_base_salary * this.percentageToFactor(this.form.deduction.labor_union[index].percentage))
-                this.calculateTotalDeduction()
-                
-            },
             roundNumber(number, decimals = 2){
                 return _.round(number, decimals)
             },
@@ -955,6 +1014,23 @@
                     success : true
                 }
             },
+            // sindicatos
+            recalculateLaborUnion(){
+                
+                this.form.deduction.labor_union.forEach((element, index) => {
+                    this.setDeductionLaborUnion(index)
+                })
+
+            },
+            changePercentageLaborUnion(index){
+
+                this.setDeductionLaborUnion(index)
+                this.calculateTotalDeduction()
+                
+            },
+            setDeductionLaborUnion(index){
+                this.form.deduction.labor_union[index].deduction = this.roundNumber(this.form.accrued.total_base_salary * this.percentageToFactor(this.form.deduction.labor_union[index].percentage))
+            },
             clickAddLaborUnion(){
 
                 const salary_validation = this.salaryValidation()
@@ -970,6 +1046,11 @@
                 this.form.deduction.labor_union.splice(index, 1)
                 this.calculateTotalDeduction()
             },
+            // sindicatos
+            // sanciones
+            changeSanction(index){
+                this.calculateTotalDeduction()
+            },
             clickAddSanction(){
                 
                 this.form.deduction.sanctions.push({
@@ -980,38 +1061,21 @@
             },
             clickCancelSanction(index){
                 this.form.deduction.sanctions.splice(index, 1)
+                this.calculateTotalDeduction()
             },
+            // sanciones
 
-            // service_bonus
-             
-            clickAddServiceBonus(){
-                
-                const salary_validation = this.salaryValidation()
-                if(!salary_validation.success) return this.$message.warning(salary_validation.message)
+            // incapacidades
+            recalculateWorkDisability(){
 
-                this.form.accrued.service_bonus.push({
-                    quantity :  0,
-                    payment :  0,
-                    paymentNS :  0,
+                this.form.accrued.work_disabilities.forEach((element, index) => {
+
+                    let payment = this.getPaymentWorkDisability(element.quantity, element.is_complete)
+                    this.form.accrued.work_disabilities[index].payment =  payment
+
                 })
 
             },
-            changePaymentNSServiceBonus(index){
-                this.calculateTotal()
-            },
-            changePaymentServiceBonus(index){
-                this.calculateTotal()
-            },
-            changeQuantityServiceBonus(index){
-                this.form.accrued.service_bonus[index].payment = this.roundNumber((this.form.accrued.total_base_salary / this.quantity_days_year) * this.form.accrued.service_bonus[index].quantity)
-                this.calculateTotal()
-            },
-            clickCancelServiceBonus(index){
-                this.form.accrued.service_bonus.splice(index, 1)
-                this.calculateTotal()
-            },
-            // service_bonus
-
             changeWDisabilityStartEndDate(index){
                 this.calculateWDisabilityStartEndDate(index)
             },
@@ -1072,6 +1136,8 @@
                 this.form.accrued.work_disabilities.splice(index, 1)
                 this.calculateTotal()
             },
+            // incapacidades
+
             clickAddPaymentDate(param_payment_date = null) {
 
                 let payment_date = param_payment_date ? param_payment_date : moment().format('YYYY-MM-DD')
@@ -1172,9 +1238,16 @@
             },
             calculateTotalDeduction(){
 
-                let total_labor_union = _.sumBy(this.form.deduction.labor_union, 'deduction');
+                let total_labor_union = _.sumBy(this.form.deduction.labor_union, 'deduction')
 
-                this.form.deduction.deductions_total = parseFloat(this.form.deduction.eps_deduction) + parseFloat(this.form.deduction.pension_deduction) + total_labor_union
+                let total_sanctions = this.sumValueFromArray(this.form.deduction.sanctions, 'private_sanction') + this.sumValueFromArray(this.form.deduction.sanctions, 'public_sanction')
+
+                this.form.deduction.deductions_total = this.roundNumber( 
+                                                            parseFloat(this.form.deduction.eps_deduction) 
+                                                            + parseFloat(this.form.deduction.pension_deduction) 
+                                                            + total_labor_union
+                                                            + total_sanctions
+                                                        )
 
             },
             sumValueFromArray(array, property){
@@ -1192,6 +1265,11 @@
 
                 let total_common_vacation = this.sumValueFromArray(this.form.accrued.common_vacation, 'payment')
 
+                let total_paid_vacation = this.sumValueFromArray(this.form.accrued.paid_vacation, 'payment')
+
+                let total_bonuses = this.sumValueFromArray(this.form.accrued.bonuses, 'salary_bonus') + this.sumValueFromArray(this.form.accrued.bonuses, 'non_salary_bonus')
+                
+
                 this.form.accrued.accrued_total = this.roundNumber(
                                                     parseFloat(this.form.accrued.salary) 
                                                     + (this.form.accrued.transportation_allowance ? parseFloat(this.form.accrued.transportation_allowance) : 0)
@@ -1200,6 +1278,8 @@
                                                     + total_service_bonus
                                                     + total_severance
                                                     + total_common_vacation
+                                                    + total_paid_vacation
+                                                    + total_bonuses
                                                 )
 
             },
@@ -1215,7 +1295,24 @@
                 //autocompletar campos
                 await this.autocompleteDataFromWorker(this.form.select_worker)
 
+                //recalcular campos que utilizan el salario base del empleado para calculos, estos se ven afectados por el mismo
+                await this.recalculateData()
+
                 await this.calculateTotal()
+
+            },
+            recalculateData(){
+
+                // recalcular campos devengados
+                // prima de servicio
+                this.recalculateServiceBonus()
+
+                // incapacidades
+                this.recalculateWorkDisability()
+
+                // recalcular campos deducciones
+                // sindicatos
+                this.recalculateLaborUnion()
 
             },
             autocompleteDataFromWorker(worker){

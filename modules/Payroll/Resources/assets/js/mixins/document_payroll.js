@@ -4,6 +4,47 @@ export const documentPayrollMixin = {
         }
     },
     methods: {
+        // prima de servicio
+        clickAddServiceBonus(){
+            
+            const salary_validation = this.salaryValidation()
+            if(!salary_validation.success) return this.$message.warning(salary_validation.message)
+
+            this.form.accrued.service_bonus.push({
+                quantity :  0,
+                payment :  0,
+                paymentNS :  0,
+            })
+
+        },
+        changePaymentNSServiceBonus(index){
+            this.calculateTotal()
+        },
+        changePaymentServiceBonus(index){
+            this.calculateTotal()
+        },
+        changeQuantityServiceBonus(index){
+            
+            this.setPaymentServiceBonus(index)
+            this.calculateTotal()
+
+        },
+        setPaymentServiceBonus(index){
+            this.form.accrued.service_bonus[index].payment = this.roundNumber((this.form.accrued.total_base_salary / this.quantity_days_year) * this.form.accrued.service_bonus[index].quantity)
+        },
+        clickCancelServiceBonus(index){
+            this.form.accrued.service_bonus.splice(index, 1)
+            this.calculateTotal()
+        },
+        recalculateServiceBonus(){
+
+            this.form.accrued.service_bonus.forEach((element, index) => {
+                this.setPaymentServiceBonus(index)
+            })
+
+        },
+        // prima de servicio
+
         // cesantias
         clickAddSeverance(){
 
@@ -27,7 +68,25 @@ export const documentPayrollMixin = {
         },
         // cesantias
 
-        // Vacaciones disfrutadas
+        // bonificaciones
+        clickAddBonuses(){
+
+            this.form.accrued.bonuses.push({
+                salary_bonus :  0,
+                non_salary_bonus :  0,
+            })
+
+        },
+        clickCancelBonuses(index){
+            this.form.accrued.bonuses.splice(index, 1)
+            this.calculateTotal()
+        },
+        changeSalaryBonus(index){
+            this.calculateTotal()
+        },
+        // bonificaciones
+
+        // vacaciones disfrutadas
         clickAddCommonVacation(){
 
             const salary_validation = this.salaryValidation()
@@ -66,8 +125,43 @@ export const documentPayrollMixin = {
         changePaymentCommonVacation(index){
             this.calculateTotal()
         },
-        // Vacaciones disfrutadas
+        // vacaciones disfrutadas
 
+
+        // vacaciones compensadas
+        clickAddPaidVacation(){
+
+            const salary_validation = this.salaryValidation()
+            if(!salary_validation.success) return this.$message.warning(salary_validation.message)
+
+            const quantity = 1
+            const date_range = this.getStartEndDateRange(quantity)
+
+            this.form.accrued.paid_vacation.push({
+                start_date : date_range[0],
+                end_date : date_range[1],
+                quantity :  quantity,
+                payment :  0,
+                start_end_date: date_range
+            })
+
+        },
+        clickCancelPaidVacation(index){
+            this.form.accrued.paid_vacation.splice(index, 1)
+            this.calculateTotal()
+        },
+        changePaidVacationStartEndDate(index){
+            
+            const start_end_date = this.form.accrued.paid_vacation[index].start_end_date
+            const start_date = start_end_date[0]
+            const end_date = start_end_date[1]
+            this.form.accrued.paid_vacation[index].quantity = this.roundNumber(moment(end_date, "YYYY-MM-DD").diff(moment(start_date, "YYYY-MM-DD"), 'days', true))
+
+        },
+        changePaymentPaidVacation(index){
+            this.calculateTotal()
+        },
+        // vacaciones compensadas
 
     }
 }

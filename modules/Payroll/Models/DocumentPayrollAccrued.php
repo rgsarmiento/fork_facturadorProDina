@@ -152,7 +152,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setPaidVacationAttribute($value)
     {
-        $this->attributes['paid_vacation'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['paid_vacation'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getServiceBonusAttribute($value)
@@ -222,7 +222,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setBonusesAttribute($value)
     {
-        $this->attributes['bonuses'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['bonuses'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getAidAttribute($value)
@@ -371,6 +371,8 @@ class DocumentPayrollAccrued extends ModelTenant
     /**
      * Retorna data de las vaciones disfrutadas con los campos necesarios para enviar a la api
      *
+     * Usado para vacaciones compensadas y disfrutadas
+     * 
      * @param  array $records
      * @return array
      */
