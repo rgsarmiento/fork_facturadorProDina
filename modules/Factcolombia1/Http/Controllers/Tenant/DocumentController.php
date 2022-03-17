@@ -331,6 +331,10 @@ class DocumentController extends Controller
 
 
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
+            if(file_exists(storage_path('template.api'))){
+                $service_invoice['invoice_template'] = "one";
+                $service_invoice['template_token'] = password_hash($company->identification_number, PASSWORD_DEFAULT);
+            }
 
             if(file_exists(storage_path('sendmail.api')))
                 $service_invoice['sendmail'] = true;
