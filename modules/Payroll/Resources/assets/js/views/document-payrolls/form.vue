@@ -346,6 +346,11 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
+                                        
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.aid']}">
+                                            <h4>Ayudas</h4>
+                                            <small class="form-control-feedback" v-if="errors['accrued.aid']" v-text="errors['accrued.aid'][0]"></small>
+                                        </div>
                                     </div>
 
                                     <!-- Bonificaciones -->
@@ -385,8 +390,107 @@
                                         </table>
                                     </div>
                                     <!-- Bonificaciones -->
+                                    
+                                    <!-- Ayudas -->
+                                    <div class="col-md-6">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.accrued.aid.length>0">
+                                                        <th class="pb-2">Ayuda salarial</th>
+                                                        <th class="pb-2">Ayuda no salarial</th>
+                                                        <th class="pb-2"></th>
+                                                    </template>
+                                                    <th width="10%"><a href="#" @click.prevent="clickAddAid" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.accrued.aid" :key="index">  
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.salary_assistance" :min="0" controls-position="right" @change="changeSalaryAid(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.non_salary_assistance" :min="0" controls-position="right" @change="changeSalaryAid(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
 
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelAid(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Ayudas -->
                                 </div>
+
+
+                                <!-- Otros conceptos -->
+                                <div class="row mt-2">
+                                    <div class="col-md-12">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.other_concepts']}">
+                                            <h4>Otros conceptos</h4>
+                                            <small class="form-control-feedback" v-if="errors['accrued.other_concepts']" v-text="errors['accrued.other_concepts'][0]"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <table>
+                                            <thead>
+                                                <tr width="100%">
+                                                    <template v-if="form.accrued.other_concepts.length>0">
+                                                        <th class="pb-2" width="60%">Concepto</th>
+                                                        <th class="pb-2">Salarial</th>
+                                                        <th class="pb-2">No salarial</th>
+                                                        <th class="pb-2"></th>
+                                                    </template>
+                                                    <th width="10%"><a href="#" @click.prevent="clickAddOtherConcepts" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in form.accrued.other_concepts" :key="index">  
+                                                    <td>
+                                                        
+                                                        <template v-if="errors[`accrued.other_concepts.${index}.description_concept`]">
+                                                            <div class="form-group" :class="{'has-danger': errors[`accrued.other_concepts.${index}.description_concept`]}">
+                                                                <small class="form-control-feedback" v-text="errors[`accrued.other_concepts.${index}.description_concept`][0]"></small>
+                                                            </div>
+                                                        </template>
+
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input v-model="row.description_concept"></el-input>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.salary_concept" :min="0" controls-position="right" @change="changeSalaryOtherConcepts(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-2 mr-2"  >
+                                                            <el-input-number v-model="row.non_salary_concept" :min="0" controls-position="right" @change="changeSalaryOtherConcepts(index)"></el-input-number>
+                                                        </div>
+                                                    </td>
+
+                                                    <td class="series-table-actions text-center">
+                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelOtherConcepts(index)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <br>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                     
+                                </div>
+                                <!-- Otros conceptos -->
 
 
                                 <!-- Vacaciones disfrutadas -->
@@ -962,6 +1066,8 @@
                         common_vacation: [],
                         paid_vacation: [],
                         bonuses: [],
+                        aid: [],
+                        other_concepts: [],
                         heds: [],
                         hens: [],
                         hrns: [],
@@ -1269,6 +1375,9 @@
 
                 let total_bonuses = this.sumValueFromArray(this.form.accrued.bonuses, 'salary_bonus') + this.sumValueFromArray(this.form.accrued.bonuses, 'non_salary_bonus')
                 
+                let total_aid = this.sumValueFromArray(this.form.accrued.aid, 'salary_assistance') + this.sumValueFromArray(this.form.accrued.aid, 'non_salary_assistance')
+                
+                let total_other_concepts = this.sumValueFromArray(this.form.accrued.other_concepts, 'salary_concept') + this.sumValueFromArray(this.form.accrued.other_concepts, 'non_salary_concept')
 
                 this.form.accrued.accrued_total = this.roundNumber(
                                                     parseFloat(this.form.accrued.salary) 
@@ -1280,6 +1389,8 @@
                                                     + total_common_vacation
                                                     + total_paid_vacation
                                                     + total_bonuses
+                                                    + total_aid
+                                                    + total_other_concepts
                                                 )
 
             },

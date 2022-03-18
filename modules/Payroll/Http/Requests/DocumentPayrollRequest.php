@@ -114,6 +114,12 @@ class DocumentPayrollRequest extends FormRequest
             'accrued.hrndfs.*.percentage' => 'required|exists:tenant.co_type_overtime_surcharges,id',
             'accrued.hrndfs.*.payment' => 'required|numeric',
 
+            // other_concepts
+            'accrued.other_concepts' => 'nullable|array',
+            'accrued.other_concepts.*.salary_concept' => 'nullable|numeric',
+            'accrued.other_concepts.*.non_salary_concept' => 'nullable|numeric',
+            'accrued.other_concepts.*.description_concept' => 'required|string',
+
             // Deductions
             'deduction' => 'required|array',
             'deduction.eps_type_law_deductions_id' => 'required',

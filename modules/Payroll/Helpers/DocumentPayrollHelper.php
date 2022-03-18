@@ -337,6 +337,8 @@ class DocumentPayrollHelper
                 'service_bonus' => $accrued->service_bonus,
                 'severance' => $accrued->severance,
                 'bonuses' => $accrued->bonuses,
+                'aid' => $accrued->aid,
+                'other_concepts' => $accrued->other_concepts,
                 'common_vacation' => $accrued->parseCommonVacationToFormatApi($accrued->common_vacation),
                 'paid_vacation' => $accrued->parseCommonVacationToFormatApi($accrued->paid_vacation),
                 'HEDs' => $accrued->parseExtraHoursToFormatApi($accrued->heds), //Hora Extra Diurna

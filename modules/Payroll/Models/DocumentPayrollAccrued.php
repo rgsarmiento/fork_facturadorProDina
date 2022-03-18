@@ -232,7 +232,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setAidAttribute($value)
     {
-        $this->attributes['aid'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['aid'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getLegalStrikeAttribute($value)
@@ -252,7 +252,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setOtherConceptsAttribute($value)
     {
-        $this->attributes['other_concepts'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['other_concepts'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getCompensationsAttribute($value)

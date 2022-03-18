@@ -163,5 +163,42 @@ export const documentPayrollMixin = {
         },
         // vacaciones compensadas
 
+        // ayudas
+        clickAddAid(){
+
+            this.form.accrued.aid.push({
+                salary_assistance :  0,
+                non_salary_assistance :  0,
+            })
+
+        },
+        clickCancelAid(index){
+            this.form.accrued.aid.splice(index, 1)
+            this.calculateTotal()
+        },
+        changeSalaryAid(index){
+            this.calculateTotal()
+        },
+        // ayudas
+        
+        // otros conceptos
+        clickAddOtherConcepts(){
+
+            this.form.accrued.other_concepts.push({
+                salary_concept :  0,
+                non_salary_concept :  0,
+                description_concept :  null,
+            })
+
+        },
+        clickCancelOtherConcepts(index){
+            this.form.accrued.other_concepts.splice(index, 1)
+            this.calculateTotal()
+        },
+        changeSalaryOtherConcepts(index){
+            this.calculateTotal()
+        },
+        // otros conceptos
+
     }
 }
