@@ -340,7 +340,7 @@ class DocumentPayrollHelper
                 'aid' => $accrued->aid,
                 'other_concepts' => $accrued->other_concepts,
                 'common_vacation' => $accrued->parseCommonVacationToFormatApi($accrued->common_vacation),
-                'paid_vacation' => $accrued->parseCommonVacationToFormatApi($accrued->paid_vacation),
+                'paid_vacation' => $accrued->parsePaidVacationToFormatApi($accrued->paid_vacation),
                 'HEDs' => $accrued->parseExtraHoursToFormatApi($accrued->heds), //Hora Extra Diurna
                 'HENs' => $accrued->parseExtraHoursToFormatApi($accrued->hens), //Hora Extra Nocturna
                 'HRNs' => $accrued->parseExtraHoursToFormatApi($accrued->hrns), //Hora Recargo Nocturno

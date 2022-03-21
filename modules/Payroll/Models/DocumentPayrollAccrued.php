@@ -371,7 +371,7 @@ class DocumentPayrollAccrued extends ModelTenant
     /**
      * Retorna data de las vaciones disfrutadas con los campos necesarios para enviar a la api
      *
-     * Usado para vacaciones compensadas y disfrutadas
+     * Usado para vacaciones disfrutadas
      * 
      * @param  array $records
      * @return array
@@ -392,6 +392,28 @@ class DocumentPayrollAccrued extends ModelTenant
                 ->toArray();
     }
 
+    /**
+     * Retorna data de las vaciones compensadas con los campos necesarios para enviar a la api
+     * 
+     * @param  array $records
+     * @return array
+     */
+    public function parsePaidVacationToFormatApi($records)
+    {
+        if(empty($records)) return null;
+
+        return collect($records)
+                ->map(function($row, $key){
+                    return [
+                        // 'start_date' => $row->start_date,
+                        // 'end_date' => $row->end_date,
+                        'quantity' => $row->quantity,
+                        'payment' => $row->payment
+                    ];
+                })
+                ->toArray();
+    }
+    
     /**
      * Use in resource and collection
      *

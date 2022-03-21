@@ -329,5 +329,44 @@ return [
         'deduction.deductions_total' => 'deducción Total',
         'work_start_date' => 'fecha inicio de labores',
 
+        'accrued.service_bonus.*.quantity' => 'n° de días',
+        'accrued.service_bonus.*.payment' => 'prima salarial',
+        'accrued.service_bonus.*.paymentNS' => 'prima no salarial',
+
+        'accrued.severance.*.payment' => 'pago cesantías',
+        'accrued.severance.*.percentage' => '% interes',
+        'accrued.severance.*.interest_payment' => 'pago intereses',
+        
+        'accrued.bonuses.*.salary_bonus' => 'bonificación salarial',
+        'accrued.bonuses.*.non_salary_bonus' => 'bonificación no salarial',
+
+        'accrued.aid.*.salary_assistance' => 'ayuda salarial',
+        'accrued.aid.*.non_salary_assistance' => 'ayuda no salarial',
+
+        'accrued.other_concepts.*.salary_concept' => 'salarial',
+        'accrued.other_concepts.*.non_salary_concept' => 'no salarial',
+        'accrued.other_concepts.*.description_concept' => 'concepto',
+
+        'accrued.common_vacation.*.start_date' => 'fecha inicio',
+        'accrued.common_vacation.*.end_date' => 'fecha término',
+        'accrued.common_vacation.*.quantity' => 'n° de días',
+        'accrued.common_vacation.*.payment' => 'pago',
+        
+        'accrued.paid_vacation.*.start_date' => 'fecha inicio',
+        'accrued.paid_vacation.*.end_date' => 'fecha término',
+        'accrued.paid_vacation.*.quantity' => 'n° de días',
+        'accrued.paid_vacation.*.payment' => 'pago',
+
+        'accrued.work_disabilities.*.start_date' => 'fecha inicio',
+        'accrued.work_disabilities.*.end_date' => 'fecha término',
+        'accrued.work_disabilities.*.quantity' => 'cantidad',
+        'accrued.work_disabilities.*.type' => 'tipo',
+        'accrued.work_disabilities.*.payment' => 'pago',
+
+        'deduction.labor_union.*.percentage' => 'porcentaje',
+        'deduction.labor_union.*.deduction' => 'deducción',
+        
+        'deduction.sanctions.*.public_sanction' => 'sanción pública',
+        'deduction.sanctions.*.private_sanction' => 'sanción privada',
     ],
 ];

@@ -264,16 +264,31 @@
                                             <tbody>
                                                 <tr v-for="(row, index) in form.accrued.service_bonus" :key="index"> 
                                                     <td>
+                                                        
+                                                        <div class="form-group" v-if="errors[`accrued.service_bonus.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.service_bonus.${index}.quantity`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.service_bonus.${index}.quantity`][0]"></small>
+                                                        </div>
+
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.quantity" :min="0" controls-position="right" @change="changeQuantityServiceBonus(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+
+                                                        <div class="form-group" v-if="errors[`accrued.service_bonus.${index}.payment`]"  :class="{'has-danger': errors[`accrued.service_bonus.${index}.payment`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.service_bonus.${index}.payment`][0]"></small>
+                                                        </div>
+
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentServiceBonus(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        
+                                                        <div class="form-group" v-if="errors[`accrued.service_bonus.${index}.paymentNS`]"  :class="{'has-danger': errors[`accrued.service_bonus.${index}.paymentNS`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.service_bonus.${index}.paymentNS`][0]"></small>
+                                                        </div>
+
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.paymentNS" :min="0" controls-position="right" @change="changePaymentNSServiceBonus(index)"></el-input-number>
                                                         </div>
@@ -308,16 +323,27 @@
                                             <tbody>
                                                 <tr v-for="(row, index) in form.accrued.severance" :key="index"> 
                                                     <td>
+                                                        
+                                                        <div class="form-group" v-if="errors[`accrued.severance.${index}.payment`]"  :class="{'has-danger': errors[`accrued.severance.${index}.payment`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.payment`][0]"></small>
+                                                        </div>
+
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.severance.${index}.percentage`]"  :class="{'has-danger': errors[`accrued.severance.${index}.percentage`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.percentage`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.severance.${index}.interest_payment`]"  :class="{'has-danger': errors[`accrued.severance.${index}.interest_payment`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.interest_payment`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.interest_payment" :min="0" controls-position="right" disabled></el-input-number>
                                                         </div>
@@ -369,13 +395,19 @@
                                             <tbody>
                                                 <tr v-for="(row, index) in form.accrued.bonuses" :key="index">  
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.bonuses.${index}.salary_bonus`]"  :class="{'has-danger': errors[`accrued.bonuses.${index}.salary_bonus`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.bonuses.${index}.salary_bonus`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.salary_bonus" :min="0" controls-position="right" @change="changeSalaryBonus(index)"></el-input-number>
+                                                            <el-input-number v-model="row.salary_bonus" :min="0.01" controls-position="right" @change="changeSalaryBonus(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.bonuses.${index}.non_salary_bonus`]"  :class="{'has-danger': errors[`accrued.bonuses.${index}.non_salary_bonus`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.bonuses.${index}.non_salary_bonus`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.non_salary_bonus" :min="0" controls-position="right" @change="changeSalaryBonus(index)"></el-input-number>
+                                                            <el-input-number v-model="row.non_salary_bonus" :min="0.01" controls-position="right" @change="changeSalaryBonus(index)"></el-input-number>
                                                         </div>
                                                     </td>
 
@@ -407,13 +439,19 @@
                                             <tbody>
                                                 <tr v-for="(row, index) in form.accrued.aid" :key="index">  
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.aid.${index}.salary_assistance`]"  :class="{'has-danger': errors[`accrued.aid.${index}.salary_assistance`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.aid.${index}.salary_assistance`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.salary_assistance" :min="0" controls-position="right" @change="changeSalaryAid(index)"></el-input-number>
+                                                            <el-input-number v-model="row.salary_assistance" :min="0.01" controls-position="right" @change="changeSalaryAid(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.aid.${index}.non_salary_assistance`]"  :class="{'has-danger': errors[`accrued.aid.${index}.non_salary_assistance`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.aid.${index}.non_salary_assistance`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.non_salary_assistance" :min="0" controls-position="right" @change="changeSalaryAid(index)"></el-input-number>
+                                                            <el-input-number v-model="row.non_salary_assistance" :min="0.01" controls-position="right" @change="changeSalaryAid(index)"></el-input-number>
                                                         </div>
                                                     </td>
 
@@ -468,13 +506,19 @@
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.other_concepts.${index}.salary_concept`]"  :class="{'has-danger': errors[`accrued.other_concepts.${index}.salary_concept`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.other_concepts.${index}.salary_concept`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.salary_concept" :min="0" controls-position="right" @change="changeSalaryOtherConcepts(index)"></el-input-number>
+                                                            <el-input-number v-model="row.salary_concept" :min="0.01" controls-position="right" @change="changeSalaryOtherConcepts(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.other_concepts.${index}.non_salary_concept`]"  :class="{'has-danger': errors[`accrued.other_concepts.${index}.non_salary_concept`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.other_concepts.${index}.non_salary_concept`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.non_salary_concept" :min="0" controls-position="right" @change="changeSalaryOtherConcepts(index)"></el-input-number>
+                                                            <el-input-number v-model="row.non_salary_concept" :min="0.01" controls-position="right" @change="changeSalaryOtherConcepts(index)"></el-input-number>
                                                         </div>
                                                     </td>
 
@@ -532,11 +576,18 @@
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.common_vacation.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.common_vacation.${index}.quantity`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.common_vacation.${index}.quantity`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.quantity" :min="0" controls-position="right" disabled></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        
+                                                        <div class="form-group" v-if="errors[`accrued.common_vacation.${index}.payment`]"  :class="{'has-danger': errors[`accrued.common_vacation.${index}.payment`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.common_vacation.${index}.payment`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentCommonVacation(index)"></el-input-number>
                                                         </div>
@@ -595,11 +646,17 @@
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.paid_vacation.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.paid_vacation.${index}.quantity`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.paid_vacation.${index}.quantity`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.quantity" :min="0" controls-position="right" ></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.paid_vacation.${index}.payment`]"  :class="{'has-danger': errors[`accrued.paid_vacation.${index}.payment`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.paid_vacation.${index}.payment`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentPaidVacation(index)"></el-input-number>
                                                         </div>
@@ -670,11 +727,17 @@
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.work_disabilities.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.work_disabilities.${index}.quantity`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.work_disabilities.${index}.quantity`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.quantity" :min="0" controls-position="right" disabled></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`accrued.work_disabilities.${index}.payment`]"  :class="{'has-danger': errors[`accrued.work_disabilities.${index}.payment`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`accrued.work_disabilities.${index}.payment`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.payment" :min="0" controls-position="right" disabled></el-input-number>
                                                         </div>
@@ -803,11 +866,17 @@
                                             <tbody>
                                                 <tr v-for="(row, index) in form.deduction.labor_union" :key="index"> 
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`deduction.labor_union.${index}.percentage`]"  :class="{'has-danger': errors[`deduction.labor_union.${index}.percentage`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`deduction.labor_union.${index}.percentage`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="changePercentageLaborUnion(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`deduction.labor_union.${index}.deduction`]"  :class="{'has-danger': errors[`deduction.labor_union.${index}.deduction`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`deduction.labor_union.${index}.deduction`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.deduction" :min="0" controls-position="right" disabled></el-input-number>
                                                         </div>
@@ -839,11 +908,17 @@
                                             <tbody>
                                                 <tr v-for="(row, index) in form.deduction.sanctions" :key="index"> 
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`deduction.sanctions.${index}.public_sanction`]"  :class="{'has-danger': errors[`deduction.sanctions.${index}.public_sanction`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`deduction.sanctions.${index}.public_sanction`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.public_sanction" :min="0" controls-position="right" @change="changeSanction(index)"></el-input-number>
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div class="form-group" v-if="errors[`deduction.sanctions.${index}.private_sanction`]"  :class="{'has-danger': errors[`deduction.sanctions.${index}.private_sanction`]}">
+                                                            <small class="form-control-feedback"  v-text="errors[`deduction.sanctions.${index}.private_sanction`][0]"></small>
+                                                        </div>
                                                         <div class="form-group mb-2 mr-2"  >
                                                             <el-input-number v-model="row.private_sanction" :min="0" controls-position="right" @change="changeSanction(index)"></el-input-number>
                                                         </div>
@@ -1359,13 +1434,18 @@
             sumValueFromArray(array, property){
                 return _.sumBy(array, property)
             },
+            sumValueArrayValidateProperty(array, property){
+                return _.sumBy(array, (row) => {
+                    return this.getValueFromInputUndefined(row[property])
+                })
+            },
             calculateTotalAccrued(){
 
                 // sum_accrued
 
                 let total_work_disability = this.sumValueFromArray(this.form.accrued.work_disabilities, 'payment')
 
-                let total_service_bonus = this.sumValueFromArray(this.form.accrued.service_bonus, 'payment') + this.sumValueFromArray(this.form.accrued.service_bonus, 'paymentNS')
+                let total_service_bonus = this.sumValueFromArray(this.form.accrued.service_bonus, 'payment') + this.sumValueArrayValidateProperty(this.form.accrued.service_bonus, 'paymentNS')
 
                 let total_severance = this.sumValueFromArray(this.form.accrued.severance, 'payment') + this.sumValueFromArray(this.form.accrued.severance, 'interest_payment')
 
@@ -1373,11 +1453,11 @@
 
                 let total_paid_vacation = this.sumValueFromArray(this.form.accrued.paid_vacation, 'payment')
 
-                let total_bonuses = this.sumValueFromArray(this.form.accrued.bonuses, 'salary_bonus') + this.sumValueFromArray(this.form.accrued.bonuses, 'non_salary_bonus')
+                let total_bonuses = this.sumValueArrayValidateProperty(this.form.accrued.bonuses, 'salary_bonus') + this.sumValueArrayValidateProperty(this.form.accrued.bonuses, 'non_salary_bonus')
                 
-                let total_aid = this.sumValueFromArray(this.form.accrued.aid, 'salary_assistance') + this.sumValueFromArray(this.form.accrued.aid, 'non_salary_assistance')
+                let total_aid = this.sumValueArrayValidateProperty(this.form.accrued.aid, 'salary_assistance') + this.sumValueArrayValidateProperty(this.form.accrued.aid, 'non_salary_assistance')
                 
-                let total_other_concepts = this.sumValueFromArray(this.form.accrued.other_concepts, 'salary_concept') + this.sumValueFromArray(this.form.accrued.other_concepts, 'non_salary_concept')
+                let total_other_concepts = this.sumValueArrayValidateProperty(this.form.accrued.other_concepts, 'salary_concept') + this.sumValueArrayValidateProperty(this.form.accrued.other_concepts, 'non_salary_concept')
 
                 this.form.accrued.accrued_total = this.roundNumber(
                                                     parseFloat(this.form.accrued.salary) 

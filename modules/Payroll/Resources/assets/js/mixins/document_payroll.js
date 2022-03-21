@@ -13,7 +13,7 @@ export const documentPayrollMixin = {
             this.form.accrued.service_bonus.push({
                 quantity :  0,
                 payment :  0,
-                paymentNS :  0,
+                paymentNS :  undefined,
             })
 
         },
@@ -72,8 +72,8 @@ export const documentPayrollMixin = {
         clickAddBonuses(){
 
             this.form.accrued.bonuses.push({
-                salary_bonus :  0,
-                non_salary_bonus :  0,
+                salary_bonus :  undefined,
+                non_salary_bonus :  undefined,
             })
 
         },
@@ -167,8 +167,8 @@ export const documentPayrollMixin = {
         clickAddAid(){
 
             this.form.accrued.aid.push({
-                salary_assistance :  0,
-                non_salary_assistance :  0,
+                salary_assistance :  undefined,
+                non_salary_assistance :  undefined,
             })
 
         },
@@ -185,8 +185,8 @@ export const documentPayrollMixin = {
         clickAddOtherConcepts(){
 
             this.form.accrued.other_concepts.push({
-                salary_concept :  0,
-                non_salary_concept :  0,
+                salary_concept :  undefined,
+                non_salary_concept :  undefined,
                 description_concept :  null,
             })
 

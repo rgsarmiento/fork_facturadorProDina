@@ -114,11 +114,58 @@ class DocumentPayrollRequest extends FormRequest
             'accrued.hrndfs.*.percentage' => 'required|exists:tenant.co_type_overtime_surcharges,id',
             'accrued.hrndfs.*.payment' => 'required|numeric',
 
-            // other_concepts
+            // otros conceptos
             'accrued.other_concepts' => 'nullable|array',
-            'accrued.other_concepts.*.salary_concept' => 'nullable|numeric',
-            'accrued.other_concepts.*.non_salary_concept' => 'nullable|numeric',
+            'accrued.other_concepts.*.salary_concept' => 'required_if:accrued.other_concepts.*.non_salary_concept, ""|numeric',
+            'accrued.other_concepts.*.non_salary_concept' => 'required_if:accrued.other_concepts.*.salary_concept, ""|numeric',
             'accrued.other_concepts.*.description_concept' => 'required|string',
+            
+            // prima de servicio
+            'accrued.service_bonus' => 'nullable|array',
+            'accrued.service_bonus.*.quantity' => 'required|numeric',
+            'accrued.service_bonus.*.payment' => 'required|numeric',
+            'accrued.service_bonus.*.paymentNS' => 'nullable|numeric',
+
+            // cesantias
+            'accrued.severance' => 'nullable|array',
+            'accrued.severance.*.payment' => 'required|numeric',
+            'accrued.severance.*.percentage' => 'required|numeric',
+            'accrued.severance.*.interest_payment' => 'required|numeric',
+
+            // bonificaciones
+            'accrued.bonuses' => 'nullable|array',
+            'accrued.bonuses.*.salary_bonus' => 'required_if:accrued.bonuses.*.non_salary_bonus, ""|numeric',
+            'accrued.bonuses.*.non_salary_bonus' => 'required_if:accrued.bonuses.*.salary_bonus, ""|numeric',
+
+            // ayudas
+            'accrued.aid' => 'nullable|array',
+            'accrued.aid.*.salary_assistance' => 'required_if:accrued.aid.*.non_salary_assistance, ""|numeric',
+            'accrued.aid.*.non_salary_assistance' => 'required_if:accrued.aid.*.salary_assistance, ""|numeric',
+
+            // vacaciones disfrutadas
+            'accrued.common_vacation' => 'nullable|array',
+            'accrued.common_vacation.*.start_date' => 'required|date_format:Y-m-d',
+            'accrued.common_vacation.*.end_date' => 'required|date_format:Y-m-d',
+            'accrued.common_vacation.*.quantity' => 'required|numeric',
+            'accrued.common_vacation.*.payment' => 'required|numeric',
+
+            // vacaciones compensadas
+            'accrued.paid_vacation' => 'nullable|array',
+            'accrued.paid_vacation.*.start_date' => 'required|date_format:Y-m-d',
+            'accrued.paid_vacation.*.end_date' => 'required|date_format:Y-m-d',
+            'accrued.paid_vacation.*.quantity' => 'required|numeric',
+            'accrued.paid_vacation.*.payment' => 'required|numeric',
+
+            // discapacidades
+            'accrued.work_disabilities' => 'nullable|array',
+            'accrued.work_disabilities.*.start_date' => 'required|date_format:Y-m-d',
+            'accrued.work_disabilities.*.end_date' => 'required|date_format:Y-m-d',
+            'accrued.work_disabilities.*.quantity' => 'required|numeric',
+            'accrued.work_disabilities.*.type' => 'required',
+            'accrued.work_disabilities.*.payment' => 'required|numeric',
+
+            // Accrued
+
 
             // Deductions
             'deduction' => 'required|array',
@@ -127,6 +174,18 @@ class DocumentPayrollRequest extends FormRequest
             'deduction.pension_type_law_deductions_id' => 'required',
             'deduction.pension_deduction' => 'required|numeric',
             'deduction.deductions_total' => 'required|numeric',
+
+            // Sindicatos
+            'deduction.labor_union' => 'nullable|array',
+            'deduction.labor_union.*.percentage' => 'required|numeric',
+            'deduction.labor_union.*.deduction' => 'required|numeric',
+
+            // Sanciones
+            'deduction.sanctions' => 'nullable|array',
+            // no puede ir nulo porque genera error en el xml
+            'deduction.sanctions.*.public_sanction' => 'required|numeric',
+            'deduction.sanctions.*.private_sanction' => 'required|numeric',
+            
         ];
     }
 
