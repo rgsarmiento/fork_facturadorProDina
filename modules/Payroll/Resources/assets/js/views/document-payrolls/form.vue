@@ -233,532 +233,554 @@
                                     </div>
                                 </div>  
 
-                                <div class="row mt-2">
-                                    <div class="col-md-6">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.service_bonus']}">
-                                            <h4>Prima de servicio</h4>
-                                            <small class="form-control-feedback" v-if="errors['accrued.service_bonus']" v-text="errors['accrued.service_bonus'][0]"></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.service_bonus']}">
-                                            <h4>Cesantías</h4>
-                                            <small class="form-control-feedback" v-if="errors['accrued.service_bonus']" v-text="errors['accrued.service_bonus'][0]"></small>
-                                        </div>
-                                    </div>
-
-                                    <!-- Prima de servicio -->
-                                    <div class="col-md-6">
-                                        <table>
-                                            <thead>
-                                                <tr width="100%">
-                                                    <template v-if="form.accrued.service_bonus.length>0">
-                                                        <th class="pb-2">N° de días</th>
-                                                        <th class="pb-2">Prima salarial</th>
-                                                        <th class="pb-2">Prima no salarial</th>
-                                                        <th class="pb-2"></th>
-                                                    </template>
-                                                    <th width="10%"><a href="#" @click.prevent="clickAddServiceBonus" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row, index) in form.accrued.service_bonus" :key="index"> 
-                                                    <td>
-                                                        
-                                                        <div class="form-group" v-if="errors[`accrued.service_bonus.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.service_bonus.${index}.quantity`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.service_bonus.${index}.quantity`][0]"></small>
-                                                        </div>
-
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.quantity" :min="0" controls-position="right" @change="changeQuantityServiceBonus(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-
-                                                        <div class="form-group" v-if="errors[`accrued.service_bonus.${index}.payment`]"  :class="{'has-danger': errors[`accrued.service_bonus.${index}.payment`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.service_bonus.${index}.payment`][0]"></small>
-                                                        </div>
-
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentServiceBonus(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        
-                                                        <div class="form-group" v-if="errors[`accrued.service_bonus.${index}.paymentNS`]"  :class="{'has-danger': errors[`accrued.service_bonus.${index}.paymentNS`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.service_bonus.${index}.paymentNS`][0]"></small>
-                                                        </div>
-
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.paymentNS" :min="0" controls-position="right" @change="changePaymentNSServiceBonus(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-
-                                                    <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelServiceBonus(index)">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <br>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- Prima de servicio -->
-
-                                    <!-- Cesantías -->
-                                    <div class="col-md-6">
-                                        <table>
-                                            <thead>
-                                                <tr width="100%">
-                                                    <template v-if="form.accrued.severance.length>0">
-                                                        <th class="pb-2">Pago cesantías</th>
-                                                        <th class="pb-2">% Interes</th>
-                                                        <th class="pb-2">Pago intereses</th>
-                                                        <th class="pb-2"></th>
-                                                    </template>
-                                                    <th width="10%"><a href="#" @click.prevent="clickAddSeverance" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row, index) in form.accrued.severance" :key="index"> 
-                                                    <td>
-                                                        
-                                                        <div class="form-group" v-if="errors[`accrued.severance.${index}.payment`]"  :class="{'has-danger': errors[`accrued.severance.${index}.payment`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.payment`][0]"></small>
-                                                        </div>
-
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.severance.${index}.percentage`]"  :class="{'has-danger': errors[`accrued.severance.${index}.percentage`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.percentage`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.severance.${index}.interest_payment`]"  :class="{'has-danger': errors[`accrued.severance.${index}.interest_payment`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.interest_payment`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.interest_payment" :min="0" controls-position="right" disabled></el-input-number>
-                                                        </div>
-                                                    </td>
-
-                                                    <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelSeverance(index)">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <br>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- Cesantías -->
-
-                                </div>
-
                                 
-                                <div class="row mt-2">
-                                    <div class="col-md-6">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.bonuses']}">
-                                            <h4>Bonificaciones</h4>
-                                            <small class="form-control-feedback" v-if="errors['accrued.bonuses']" v-text="errors['accrued.bonuses'][0]"></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                <el-tabs type="border-card" v-model="activeNameAccrued" class="mt-3">
+                                    <el-tab-pane label="General" name="accrued-general">
                                         
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.aid']}">
-                                            <h4>Ayudas</h4>
-                                            <small class="form-control-feedback" v-if="errors['accrued.aid']" v-text="errors['accrued.aid'][0]"></small>
+                                        <!-- Incapacidades -->
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.work_disabilities']}">
+                                                    <h4>Incapacidades</h4>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.work_disabilities']" v-text="errors['accrued.work_disabilities'][0]"></small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.accrued.work_disabilities.length>0">
+                                                                <th class="pb-2">Fecha inicio - Fecha término</th>
+                                                                <th class="pb-2">Tipo</th>
+                                                                <th class="pb-2">Cantidad</th>
+                                                                <th class="pb-2">Pago</th>
+                                                                <th class="pb-2"></th>
+                                                            </template>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddWorkDisability" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.accrued.work_disabilities" :key="index"> 
+                                                            <td>
+                                                                <div class="form-group mb-2 mr-2">
+                                                                    <el-date-picker
+                                                                        v-model="row.start_end_date"
+                                                                        type="daterange"
+                                                                        format="yyyy-MM-dd"
+                                                                        value-format="yyyy-MM-dd"
+                                                                        range-separator="H"
+                                                                        :clearable="false"
+                                                                        @change="changeWDisabilityStartEndDate(index)"
+                                                                        >
+                                                                    </el-date-picker>
+                                                                </div>
+                                                            </td>
+                                                            <!-- <td>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-date-picker v-model="row.end_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
+                                                                </div>
+                                                            </td> -->
+                                                            <td>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-select v-model="row.type" filterable>
+                                                                        <el-option v-for="option in type_disabilities" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                                                    </el-select>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.work_disabilities.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.work_disabilities.${index}.quantity`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.work_disabilities.${index}.quantity`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.quantity" :min="0" controls-position="right" disabled></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.work_disabilities.${index}.payment`]"  :class="{'has-danger': errors[`accrued.work_disabilities.${index}.payment`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.work_disabilities.${index}.payment`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.payment" :min="0" controls-position="right" disabled></el-input-number>
+                                                                </div>
+                                                            </td>
+
+                                                            <td class="series-table-actions text-center">
+                                                                <el-checkbox v-model="row.is_complete" @change="changeCompleteWorkDisability(index)">Completo</el-checkbox><br>
+                                                            </td>
+
+                                                            <td class="series-table-actions text-center">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelWorkDisability(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <!-- Incapacidades -->
+                                        
+                                    </el-tab-pane>
 
-                                    <!-- Bonificaciones -->
-                                    <div class="col-md-6">
-                                        <table>
-                                            <thead>
-                                                <tr width="100%">
-                                                    <template v-if="form.accrued.bonuses.length>0">
-                                                        <th class="pb-2">Bonificación salarial</th>
-                                                        <th class="pb-2">Bonificación no salarial</th>
-                                                        <th class="pb-2"></th>
-                                                    </template>
-                                                    <th width="10%"><a href="#" @click.prevent="clickAddBonuses" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row, index) in form.accrued.bonuses" :key="index">  
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.bonuses.${index}.salary_bonus`]"  :class="{'has-danger': errors[`accrued.bonuses.${index}.salary_bonus`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.bonuses.${index}.salary_bonus`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.salary_bonus" :min="0.01" controls-position="right" @change="changeSalaryBonus(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.bonuses.${index}.non_salary_bonus`]"  :class="{'has-danger': errors[`accrued.bonuses.${index}.non_salary_bonus`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.bonuses.${index}.non_salary_bonus`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.non_salary_bonus" :min="0.01" controls-position="right" @change="changeSalaryBonus(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
+                                    <el-tab-pane label="Vacaciones" name="accrued-vacations">
 
-                                                    <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelBonuses(index)">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <br>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- Bonificaciones -->
-                                    
-                                    <!-- Ayudas -->
-                                    <div class="col-md-6">
-                                        <table>
-                                            <thead>
-                                                <tr width="100%">
-                                                    <template v-if="form.accrued.aid.length>0">
-                                                        <th class="pb-2">Ayuda salarial</th>
-                                                        <th class="pb-2">Ayuda no salarial</th>
-                                                        <th class="pb-2"></th>
-                                                    </template>
-                                                    <th width="10%"><a href="#" @click.prevent="clickAddAid" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row, index) in form.accrued.aid" :key="index">  
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.aid.${index}.salary_assistance`]"  :class="{'has-danger': errors[`accrued.aid.${index}.salary_assistance`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.aid.${index}.salary_assistance`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.salary_assistance" :min="0.01" controls-position="right" @change="changeSalaryAid(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.aid.${index}.non_salary_assistance`]"  :class="{'has-danger': errors[`accrued.aid.${index}.non_salary_assistance`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.aid.${index}.non_salary_assistance`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.non_salary_assistance" :min="0.01" controls-position="right" @change="changeSalaryAid(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
+                                        <!-- Vacaciones disfrutadas -->
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.common_vacation']}">
+                                                    <h4>Vacaciones disfrutadas</h4>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.common_vacation']" v-text="errors['accrued.common_vacation'][0]"></small>
+                                                </div>
+                                            </div> 
 
-                                                    <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelAid(index)">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <br>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- Ayudas -->
-                                </div>
+                                            <div class="col-md-12">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.accrued.common_vacation.length > 0">
+                                                                <th class="pb-2">Fecha inicio - Fecha término</th>
+                                                                <th class="pb-2">N° de días</th>
+                                                                <th class="pb-2">Pago</th>
+                                                                <th class="pb-2"></th>
+                                                            </template>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddCommonVacation" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.accrued.common_vacation" :key="index"> 
+                                                            <td>
+                                                                <div class="form-group mb-2 mr-2">
+                                                                    <el-date-picker
+                                                                        v-model="row.start_end_date"
+                                                                        type="daterange"
+                                                                        format="yyyy-MM-dd"
+                                                                        value-format="yyyy-MM-dd"
+                                                                        range-separator="H"
+                                                                        :clearable="false"
+                                                                        @change="changeCommonVacationStartEndDate(index)"
+                                                                        >
+                                                                    </el-date-picker>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.common_vacation.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.common_vacation.${index}.quantity`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.common_vacation.${index}.quantity`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.quantity" :min="0" controls-position="right" disabled></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                
+                                                                <div class="form-group" v-if="errors[`accrued.common_vacation.${index}.payment`]"  :class="{'has-danger': errors[`accrued.common_vacation.${index}.payment`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.common_vacation.${index}.payment`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentCommonVacation(index)"></el-input-number>
+                                                                </div>
+                                                            </td> 
 
-
-                                <!-- Otros conceptos -->
-                                <div class="row mt-2">
-                                    <div class="col-md-12">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.other_concepts']}">
-                                            <h4>Otros conceptos</h4>
-                                            <small class="form-control-feedback" v-if="errors['accrued.other_concepts']" v-text="errors['accrued.other_concepts'][0]"></small>
+                                                            <td class="series-table-actions text-center">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelCommonVacation(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <!-- Vacaciones disfrutadas -->
+        
+                                        <!-- Vacaciones compensadas --> 
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.paid_vacation']}">
+                                                    <h4>Vacaciones compensadas</h4>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.paid_vacation']" v-text="errors['accrued.paid_vacation'][0]"></small>
+                                                </div>
+                                            </div>
 
-                                    <div class="col-md-12">
-                                        <table>
-                                            <thead>
-                                                <tr width="100%">
-                                                    <template v-if="form.accrued.other_concepts.length>0">
-                                                        <th class="pb-2" width="60%">Concepto</th>
-                                                        <th class="pb-2">Salarial</th>
-                                                        <th class="pb-2">No salarial</th>
-                                                        <th class="pb-2"></th>
-                                                    </template>
-                                                    <th width="10%"><a href="#" @click.prevent="clickAddOtherConcepts" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row, index) in form.accrued.other_concepts" :key="index">  
-                                                    <td>
-                                                        
-                                                        <template v-if="errors[`accrued.other_concepts.${index}.description_concept`]">
-                                                            <div class="form-group" :class="{'has-danger': errors[`accrued.other_concepts.${index}.description_concept`]}">
-                                                                <small class="form-control-feedback" v-text="errors[`accrued.other_concepts.${index}.description_concept`][0]"></small>
-                                                            </div>
-                                                        </template>
+                                            <div class="col-md-12">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.accrued.paid_vacation.length > 0">
+                                                                <th class="pb-2">Fecha inicio - Fecha término</th>
+                                                                <th class="pb-2">N° de días</th>
+                                                                <th class="pb-2">Pago</th>
+                                                                <th class="pb-2"></th>
+                                                            </template>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddPaidVacation" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.accrued.paid_vacation" :key="index"> 
+                                                            <td>
+                                                                <div class="form-group mb-2 mr-2">
+                                                                    <el-date-picker
+                                                                        v-model="row.start_end_date"
+                                                                        type="daterange"
+                                                                        format="yyyy-MM-dd"
+                                                                        value-format="yyyy-MM-dd"
+                                                                        range-separator="H"
+                                                                        :clearable="false"
+                                                                        @change="changePaidVacationStartEndDate(index)"
+                                                                        >
+                                                                    </el-date-picker>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.paid_vacation.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.paid_vacation.${index}.quantity`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.paid_vacation.${index}.quantity`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.quantity" :min="0" controls-position="right" ></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.paid_vacation.${index}.payment`]"  :class="{'has-danger': errors[`accrued.paid_vacation.${index}.payment`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.paid_vacation.${index}.payment`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentPaidVacation(index)"></el-input-number>
+                                                                </div>
+                                                            </td> 
 
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input v-model="row.description_concept"></el-input>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.other_concepts.${index}.salary_concept`]"  :class="{'has-danger': errors[`accrued.other_concepts.${index}.salary_concept`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.other_concepts.${index}.salary_concept`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.salary_concept" :min="0.01" controls-position="right" @change="changeSalaryOtherConcepts(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.other_concepts.${index}.non_salary_concept`]"  :class="{'has-danger': errors[`accrued.other_concepts.${index}.non_salary_concept`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.other_concepts.${index}.non_salary_concept`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.non_salary_concept" :min="0.01" controls-position="right" @change="changeSalaryOtherConcepts(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
+                                                            <td class="series-table-actions text-center">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelPaidVacation(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
 
-                                                    <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelOtherConcepts(index)">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <br>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                     
-                                </div>
-                                <!-- Otros conceptos -->
-
-
-                                <!-- Vacaciones disfrutadas -->
-                                <div class="row mt-2">
-                                    <div class="col-md-12">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.common_vacation']}">
-                                            <h4>Vacaciones disfrutadas</h4>
-                                            <small class="form-control-feedback" v-if="errors['accrued.common_vacation']" v-text="errors['accrued.common_vacation'][0]"></small>
                                         </div>
-                                    </div> 
+                                        <!-- Vacaciones compensadas --> 
 
-                                    <div class="col-md-12">
-                                        <table>
-                                            <thead>
-                                                <tr width="100%">
-                                                    <template v-if="form.accrued.common_vacation.length > 0">
-                                                        <th class="pb-2">Fecha inicio - Fecha término</th>
-                                                        <th class="pb-2">N° de días</th>
-                                                        <th class="pb-2">Pago</th>
-                                                        <th class="pb-2"></th>
-                                                    </template>
-                                                    <th width="10%"><a href="#" @click.prevent="clickAddCommonVacation" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row, index) in form.accrued.common_vacation" :key="index"> 
-                                                     <td>
-                                                        <div class="form-group mb-2 mr-2">
-                                                            <el-date-picker
-                                                                v-model="row.start_end_date"
-                                                                type="daterange"
-                                                                format="yyyy-MM-dd"
-                                                                value-format="yyyy-MM-dd"
-                                                                range-separator="H"
-                                                                :clearable="false"
-                                                                @change="changeCommonVacationStartEndDate(index)"
-                                                                >
-                                                            </el-date-picker>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.common_vacation.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.common_vacation.${index}.quantity`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.common_vacation.${index}.quantity`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.quantity" :min="0" controls-position="right" disabled></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        
-                                                        <div class="form-group" v-if="errors[`accrued.common_vacation.${index}.payment`]"  :class="{'has-danger': errors[`accrued.common_vacation.${index}.payment`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.common_vacation.${index}.payment`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentCommonVacation(index)"></el-input-number>
-                                                        </div>
-                                                    </td> 
+                                    </el-tab-pane>
+                                    <el-tab-pane label="Prestación social" name="accrued-social">
+                                        
+                                        <div class="row mt-2">
+                                            <div class="col-md-6">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.service_bonus']}">
+                                                    <h4>Prima de servicio</h4>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.service_bonus']" v-text="errors['accrued.service_bonus'][0]"></small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.service_bonus']}">
+                                                    <h4>Cesantías</h4>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.service_bonus']" v-text="errors['accrued.service_bonus'][0]"></small>
+                                                </div>
+                                            </div>
 
-                                                    <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelCommonVacation(index)">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <br>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <!-- Vacaciones disfrutadas -->
- 
+                                            <!-- Prima de servicio -->
+                                            <div class="col-md-6">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.accrued.service_bonus.length>0">
+                                                                <th class="pb-2">N° de días</th>
+                                                                <th class="pb-2">Prima salarial</th>
+                                                                <th class="pb-2">Prima no salarial</th>
+                                                                <th class="pb-2"></th>
+                                                            </template>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddServiceBonus" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.accrued.service_bonus" :key="index"> 
+                                                            <td>
+                                                                
+                                                                <div class="form-group" v-if="errors[`accrued.service_bonus.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.service_bonus.${index}.quantity`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.service_bonus.${index}.quantity`][0]"></small>
+                                                                </div>
 
-                                <!-- Vacaciones compensadas --> 
-                                <div class="row mt-2">
-                                    <div class="col-md-12">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.paid_vacation']}">
-                                            <h4>Vacaciones compensadas</h4>
-                                            <small class="form-control-feedback" v-if="errors['accrued.paid_vacation']" v-text="errors['accrued.paid_vacation'][0]"></small>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.quantity" :min="0" controls-position="right" @change="changeQuantityServiceBonus(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+
+                                                                <div class="form-group" v-if="errors[`accrued.service_bonus.${index}.payment`]"  :class="{'has-danger': errors[`accrued.service_bonus.${index}.payment`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.service_bonus.${index}.payment`][0]"></small>
+                                                                </div>
+
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentServiceBonus(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                
+                                                                <div class="form-group" v-if="errors[`accrued.service_bonus.${index}.paymentNS`]"  :class="{'has-danger': errors[`accrued.service_bonus.${index}.paymentNS`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.service_bonus.${index}.paymentNS`][0]"></small>
+                                                                </div>
+
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.paymentNS" :min="0" controls-position="right" @change="changePaymentNSServiceBonus(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+
+                                                            <td class="series-table-actions text-center">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelServiceBonus(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- Prima de servicio -->
+
+                                            <!-- Cesantías -->
+                                            <div class="col-md-6">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.accrued.severance.length>0">
+                                                                <th class="pb-2">Pago cesantías</th>
+                                                                <th class="pb-2">% Interes</th>
+                                                                <th class="pb-2">Pago intereses</th>
+                                                                <th class="pb-2"></th>
+                                                            </template>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddSeverance" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.accrued.severance" :key="index"> 
+                                                            <td>
+                                                                
+                                                                <div class="form-group" v-if="errors[`accrued.severance.${index}.payment`]"  :class="{'has-danger': errors[`accrued.severance.${index}.payment`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.payment`][0]"></small>
+                                                                </div>
+
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.severance.${index}.percentage`]"  :class="{'has-danger': errors[`accrued.severance.${index}.percentage`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.percentage`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.severance.${index}.interest_payment`]"  :class="{'has-danger': errors[`accrued.severance.${index}.interest_payment`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.interest_payment`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.interest_payment" :min="0" controls-position="right" disabled></el-input-number>
+                                                                </div>
+                                                            </td>
+
+                                                            <td class="series-table-actions text-center">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelSeverance(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- Cesantías -->
                                         </div>
-                                    </div>
+                                    </el-tab-pane>
 
-                                    <div class="col-md-12">
-                                        <table>
-                                            <thead>
-                                                <tr width="100%">
-                                                    <template v-if="form.accrued.paid_vacation.length > 0">
-                                                        <th class="pb-2">Fecha inicio - Fecha término</th>
-                                                        <th class="pb-2">N° de días</th>
-                                                        <th class="pb-2">Pago</th>
-                                                        <th class="pb-2"></th>
-                                                    </template>
-                                                    <th width="10%"><a href="#" @click.prevent="clickAddPaidVacation" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row, index) in form.accrued.paid_vacation" :key="index"> 
-                                                     <td>
-                                                        <div class="form-group mb-2 mr-2">
-                                                            <el-date-picker
-                                                                v-model="row.start_end_date"
-                                                                type="daterange"
-                                                                format="yyyy-MM-dd"
-                                                                value-format="yyyy-MM-dd"
-                                                                range-separator="H"
-                                                                :clearable="false"
-                                                                @change="changePaidVacationStartEndDate(index)"
-                                                                >
-                                                            </el-date-picker>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.paid_vacation.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.paid_vacation.${index}.quantity`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.paid_vacation.${index}.quantity`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.quantity" :min="0" controls-position="right" ></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.paid_vacation.${index}.payment`]"  :class="{'has-danger': errors[`accrued.paid_vacation.${index}.payment`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.paid_vacation.${index}.payment`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changePaymentPaidVacation(index)"></el-input-number>
-                                                        </div>
-                                                    </td> 
+                                    <el-tab-pane label="Licencias" name="accrued-license">
+                                        <document-payroll-licenses
+                                                :form="form"
+                                                :errors="errors"
+                                                :salaryValidation="salaryValidation"
+                                                :getPaymentPerDay="getPaymentPerDay"
+                                                @sumTotalLincese="sumTotalLincese"
+                                                ref="componentDocumentPayrollLicenses"
+                                        ></document-payroll-licenses>
+                                    </el-tab-pane>
 
-                                                    <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelPaidVacation(index)">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <br>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <el-tab-pane label="Otros" name="accrued-others">
+                                        
+                                        <div class="row mt-2">
+                                            <div class="col-md-6">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.bonuses']}">
+                                                    <h4>Bonificaciones</h4>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.bonuses']" v-text="errors['accrued.bonuses'][0]"></small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.aid']}">
+                                                    <h4>Ayudas</h4>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.aid']" v-text="errors['accrued.aid'][0]"></small>
+                                                </div>
+                                            </div>
 
-                                </div>
-                                <!-- Vacaciones compensadas --> 
+                                            <!-- Bonificaciones -->
+                                            <div class="col-md-6">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.accrued.bonuses.length>0">
+                                                                <th class="pb-2">Bonificación salarial</th>
+                                                                <th class="pb-2">Bonificación no salarial</th>
+                                                                <th class="pb-2"></th>
+                                                            </template>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddBonuses" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.accrued.bonuses" :key="index">  
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.bonuses.${index}.salary_bonus`]"  :class="{'has-danger': errors[`accrued.bonuses.${index}.salary_bonus`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.bonuses.${index}.salary_bonus`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.salary_bonus" :min="0.01" controls-position="right" @change="changeSalaryBonus(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.bonuses.${index}.non_salary_bonus`]"  :class="{'has-danger': errors[`accrued.bonuses.${index}.non_salary_bonus`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.bonuses.${index}.non_salary_bonus`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.non_salary_bonus" :min="0.01" controls-position="right" @change="changeSalaryBonus(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
 
-                                <!-- Incapacidades -->
-                                <div class="row mt-2">
-                                    <div class="col-md-12">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.work_disabilities']}">
-                                            <h4>Incapacidades</h4>
-                                            <small class="form-control-feedback" v-if="errors['accrued.work_disabilities']" v-text="errors['accrued.work_disabilities'][0]"></small>
+                                                            <td class="series-table-actions text-center">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelBonuses(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- Bonificaciones -->
+                                            
+                                            <!-- Ayudas -->
+                                            <div class="col-md-6">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.accrued.aid.length>0">
+                                                                <th class="pb-2">Ayuda salarial</th>
+                                                                <th class="pb-2">Ayuda no salarial</th>
+                                                                <th class="pb-2"></th>
+                                                            </template>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddAid" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.accrued.aid" :key="index">  
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.aid.${index}.salary_assistance`]"  :class="{'has-danger': errors[`accrued.aid.${index}.salary_assistance`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.aid.${index}.salary_assistance`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.salary_assistance" :min="0.01" controls-position="right" @change="changeSalaryAid(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.aid.${index}.non_salary_assistance`]"  :class="{'has-danger': errors[`accrued.aid.${index}.non_salary_assistance`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.aid.${index}.non_salary_assistance`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.non_salary_assistance" :min="0.01" controls-position="right" @change="changeSalaryAid(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+
+                                                            <td class="series-table-actions text-center">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelAid(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- Ayudas -->
                                         </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <table>
-                                            <thead>
-                                                <tr width="100%">
-                                                    <template v-if="form.accrued.work_disabilities.length>0">
-                                                        <th class="pb-2">Fecha inicio - Fecha término</th>
-                                                        <th class="pb-2">Tipo</th>
-                                                        <th class="pb-2">Cantidad</th>
-                                                        <th class="pb-2">Pago</th>
-                                                        <th class="pb-2"></th>
-                                                    </template>
-                                                    <th width="10%"><a href="#" @click.prevent="clickAddWorkDisability" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row, index) in form.accrued.work_disabilities" :key="index"> 
-                                                    <td>
-                                                        <div class="form-group mb-2 mr-2">
-                                                            <el-date-picker
-                                                                v-model="row.start_end_date"
-                                                                type="daterange"
-                                                                format="yyyy-MM-dd"
-                                                                value-format="yyyy-MM-dd"
-                                                                range-separator="H"
-                                                                :clearable="false"
-                                                                @change="changeWDisabilityStartEndDate(index)"
-                                                                >
-                                                            </el-date-picker>
-                                                        </div>
-                                                    </td>
-                                                    <!-- <td>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-date-picker v-model="row.end_date" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
-                                                        </div>
-                                                    </td> -->
-                                                    <td>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-select v-model="row.type" filterable>
-                                                                <el-option v-for="option in type_disabilities" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                                                            </el-select>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.work_disabilities.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.work_disabilities.${index}.quantity`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.work_disabilities.${index}.quantity`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.quantity" :min="0" controls-position="right" disabled></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`accrued.work_disabilities.${index}.payment`]"  :class="{'has-danger': errors[`accrued.work_disabilities.${index}.payment`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`accrued.work_disabilities.${index}.payment`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.payment" :min="0" controls-position="right" disabled></el-input-number>
-                                                        </div>
-                                                    </td>
 
-                                                    <td class="series-table-actions text-center">
-                                                        <el-checkbox v-model="row.is_complete" @change="changeCompleteWorkDisability(index)">Completo</el-checkbox><br>
-                                                    </td>
+                                        <!-- Otros conceptos -->
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.other_concepts']}">
+                                                    <h4>Otros conceptos</h4>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.other_concepts']" v-text="errors['accrued.other_concepts'][0]"></small>
+                                                </div>
+                                            </div>
 
-                                                    <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelWorkDisability(index)">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <br>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <!-- Incapacidades -->
+                                            <div class="col-md-12">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.accrued.other_concepts.length>0">
+                                                                <th class="pb-2" width="60%">Concepto</th>
+                                                                <th class="pb-2">Salarial</th>
+                                                                <th class="pb-2">No salarial</th>
+                                                                <th class="pb-2"></th>
+                                                            </template>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddOtherConcepts" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.accrued.other_concepts" :key="index">  
+                                                            <td>
+                                                                
+                                                                <template v-if="errors[`accrued.other_concepts.${index}.description_concept`]">
+                                                                    <div class="form-group" :class="{'has-danger': errors[`accrued.other_concepts.${index}.description_concept`]}">
+                                                                        <small class="form-control-feedback" v-text="errors[`accrued.other_concepts.${index}.description_concept`][0]"></small>
+                                                                    </div>
+                                                                </template>
+
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input v-model="row.description_concept"></el-input>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.other_concepts.${index}.salary_concept`]"  :class="{'has-danger': errors[`accrued.other_concepts.${index}.salary_concept`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.other_concepts.${index}.salary_concept`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.salary_concept" :min="0.01" controls-position="right" @change="changeSalaryOtherConcepts(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.other_concepts.${index}.non_salary_concept`]"  :class="{'has-danger': errors[`accrued.other_concepts.${index}.non_salary_concept`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.other_concepts.${index}.non_salary_concept`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.non_salary_concept" :min="0.01" controls-position="right" @change="changeSalaryOtherConcepts(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+
+                                                            <td class="series-table-actions text-center">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelOtherConcepts(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            
+                                        </div>
+                                        <!-- Otros conceptos -->
+                                    </el-tab-pane>
+                                </el-tabs>
 
                             </el-tab-pane>
                             <el-tab-pane label="Deducciones" name="deduction">
@@ -976,11 +998,12 @@
     import WorkerForm from '../workers/form.vue' 
     import DocumentPayrollOptions from './partials/options.vue' 
     import DocumentPayrollExtraHours from './partials/extra_hours.vue' 
+    import DocumentPayrollLicenses from './partials/licenses.vue' 
     import {documentPayrollMixin} from '../../mixins/document_payroll'
 
     export default {
         mixins: [documentPayrollMixin],
-        components: {WorkerForm, DocumentPayrollOptions, DocumentPayrollExtraHours},
+        components: {WorkerForm, DocumentPayrollOptions, DocumentPayrollExtraHours, DocumentPayrollLicenses},
         data() {
             return {
                 resource: 'payroll/document-payrolls',
@@ -999,6 +1022,7 @@
                 type_disabilities: [],
                 showDialogNewWorker: false,
                 activeName: 'period',
+                activeNameAccrued: 'accrued-general',
                 recordId:null,
                 showDialogDocumentPayrollOptions:false,
                 form_disabled: {},
@@ -1143,6 +1167,9 @@
                         bonuses: [],
                         aid: [],
                         other_concepts: [],
+                        maternity_leave: [],
+                        paid_leave: [],
+                        non_paid_leave: [],
                         heds: [],
                         hens: [],
                         hrns: [],
@@ -1151,6 +1178,7 @@
                         hendfs: [],
                         hrndfs: [],
                         total_extra_hours: 0, //usado para controlar los totales de horas extras en vista y sumar al total devengados
+                        total_license: 0, //usado para controlar los totales de licencias en vista y sumar al total devengados
                     },
                     deduction: {
                         eps_type_law_deductions_id: 1,
@@ -1471,8 +1499,12 @@
                                                     + total_bonuses
                                                     + total_aid
                                                     + total_other_concepts
+                                                    + this.form.accrued.total_license
                                                 )
 
+            },
+            sumTotalLincese(){
+                this.calculateTotal()
             },
             sumTotalsExtraHoursForm(){
                 // this.calculateTotalAccrued()
@@ -1492,6 +1524,9 @@
                 await this.calculateTotal()
 
             },
+            recalculateLicense(){
+                this.$refs.componentDocumentPayrollLicenses.recalculateDataLicense()
+            },
             recalculateData(){
 
                 // recalcular campos devengados
@@ -1500,6 +1535,9 @@
 
                 // incapacidades
                 this.recalculateWorkDisability()
+
+                // licencias
+                this.recalculateLicense()
 
                 // recalcular campos deducciones
                 // sindicatos

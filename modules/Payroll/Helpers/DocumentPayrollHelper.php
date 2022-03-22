@@ -341,6 +341,9 @@ class DocumentPayrollHelper
                 'other_concepts' => $accrued->other_concepts,
                 'common_vacation' => $accrued->parseCommonVacationToFormatApi($accrued->common_vacation),
                 'paid_vacation' => $accrued->parsePaidVacationToFormatApi($accrued->paid_vacation),
+                'maternity_leave' => $accrued->parseLicensesToFormatApi($accrued->maternity_leave, 'maternity'),
+                'paid_leave' => $accrued->parseLicensesToFormatApi($accrued->paid_leave, 'paid'),
+                'non_paid_leave' => $accrued->parseLicensesToFormatApi($accrued->non_paid_leave, 'non_paid'),
                 'HEDs' => $accrued->parseExtraHoursToFormatApi($accrued->heds), //Hora Extra Diurna
                 'HENs' => $accrued->parseExtraHoursToFormatApi($accrued->hens), //Hora Extra Nocturna
                 'HRNs' => $accrued->parseExtraHoursToFormatApi($accrued->hrns), //Hora Recargo Nocturno

@@ -368,5 +368,20 @@ return [
         
         'deduction.sanctions.*.public_sanction' => 'sanción pública',
         'deduction.sanctions.*.private_sanction' => 'sanción privada',
+
+        'accrued.maternity_leave.*.start_date' => 'fecha inicio',
+        'accrued.maternity_leave.*.end_date' => 'fecha término',
+        'accrued.maternity_leave.*.quantity' => 'cantidad',
+        'accrued.maternity_leave.*.payment' => 'pago',
+
+        'accrued.paid_leave.*.start_date' => 'fecha inicio',
+        'accrued.paid_leave.*.end_date' => 'fecha término',
+        'accrued.paid_leave.*.quantity' => 'cantidad',
+        'accrued.paid_leave.*.payment' => 'pago',
+        
+        'accrued.non_paid_leave.*.start_date' => 'fecha inicio',
+        'accrued.non_paid_leave.*.end_date' => 'fecha inicio',
+        'accrued.non_paid_leave.*.quantity' => 'cantidad',
+
     ],
 ];

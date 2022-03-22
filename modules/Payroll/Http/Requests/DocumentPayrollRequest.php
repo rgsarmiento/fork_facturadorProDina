@@ -164,6 +164,26 @@ class DocumentPayrollRequest extends FormRequest
             'accrued.work_disabilities.*.type' => 'required',
             'accrued.work_disabilities.*.payment' => 'required|numeric',
 
+            // licencia maternidad
+            'accrued.maternity_leave' => 'nullable|array',
+            'accrued.maternity_leave.*.start_date' => 'required|date_format:Y-m-d',
+            'accrued.maternity_leave.*.end_date' => 'required|date_format:Y-m-d',
+            'accrued.maternity_leave.*.quantity' => 'required|numeric',
+            'accrued.maternity_leave.*.payment' => 'required|numeric',
+
+            // licencia remunerada
+            'accrued.paid_leave' => 'nullable|array',
+            'accrued.paid_leave.*.start_date' => 'required|date_format:Y-m-d',
+            'accrued.paid_leave.*.end_date' => 'required|date_format:Y-m-d',
+            'accrued.paid_leave.*.quantity' => 'required|numeric',
+            'accrued.paid_leave.*.payment' => 'required|numeric',
+
+            // licencia no remunerada
+            'accrued.non_paid_leave' => 'nullable|array',
+            'accrued.non_paid_leave.*.start_date' => 'required|date_format:Y-m-d',
+            'accrued.non_paid_leave.*.end_date' => 'required|date_format:Y-m-d',
+            'accrued.non_paid_leave.*.quantity' => 'required|numeric',
+
             // Accrued
 
 

@@ -192,7 +192,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setMaternityLeaveAttribute($value)
     {
-        $this->attributes['maternity_leave'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['maternity_leave'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getPaidLeaveAttribute($value)
@@ -202,7 +202,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setPaidLeaveAttribute($value)
     {
-        $this->attributes['paid_leave'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['paid_leave'] = $this->getArrayValueAndValidate($value);
     }
  
     public function getNonPaidLeaveAttribute($value)
@@ -212,7 +212,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setNonPaidLeaveAttribute($value)
     {
-        $this->attributes['non_paid_leave'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['non_paid_leave'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getBonusesAttribute($value)
@@ -407,6 +407,41 @@ class DocumentPayrollAccrued extends ModelTenant
                     return [
                         // 'start_date' => $row->start_date,
                         // 'end_date' => $row->end_date,
+                        'quantity' => $row->quantity,
+                        'payment' => $row->payment
+                    ];
+                })
+                ->toArray();
+    }
+
+    
+    /**
+     * Retorna data de las licencias con los campos necesarios para enviar a la api
+     *
+     * Usado para licencias
+     * 
+     * @param  array $records
+     * @return array
+     */
+    public function parseLicensesToFormatApi($records, $type)
+    {
+        if(empty($records)) return null;
+
+        return collect($records)
+                ->map(function($row, $key) use($type){
+
+                    if($type === 'non_paid')
+                    {
+                        return [
+                            'start_date' => $row->start_date,
+                            'end_date' => $row->end_date,
+                            'quantity' => $row->quantity,
+                        ];
+                    }
+
+                    return [
+                        'start_date' => $row->start_date,
+                        'end_date' => $row->end_date,
                         'quantity' => $row->quantity,
                         'payment' => $row->payment
                     ];
