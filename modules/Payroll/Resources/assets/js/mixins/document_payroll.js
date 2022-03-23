@@ -200,5 +200,93 @@ export const documentPayrollMixin = {
         },
         // otros conceptos
 
+        // comisiones
+        clickAddCommission(){
+
+            this.form.accrued.commissions.push({
+                commission :  0,
+            })
+
+        },
+        clickCancelCommission(index){
+            this.form.accrued.commissions.splice(index, 1)
+            this.calculateTotal()
+        },
+        changeCommission(index){
+            this.calculateTotal()
+        },
+        // comisiones
+        
+        // Bono EPCTVs
+        clickAddEpctvBonus(){
+
+            this.form.accrued.epctv_bonuses.push({
+                paymentS :  undefined,
+                paymentNS :  undefined,
+                salary_food_payment :  undefined,
+                non_salary_food_payment :  undefined,
+            })
+
+        },
+        clickCancelEpctvBonus(index){
+            this.form.accrued.epctv_bonuses.splice(index, 1)
+            this.calculateTotal()
+        },
+        changeEpctvBonus(index){
+            this.calculateTotal()
+        },
+        // Bono EPCTVs
+
+        // pagos a terceros
+        clickAddThirdPartyPayment(){
+
+            this.form.accrued.third_party_payments.push({
+                third_party_payment :  0,
+            })
+
+        },
+        clickCancelThirdPartyPayment(index){
+            this.form.accrued.third_party_payments.splice(index, 1)
+            this.calculateTotal()
+        },
+        changeThirdPartyPayment(index){
+            this.calculateTotal()
+        },
+        // pagos a terceros
+        
+        // anticipos
+        clickAddAdvance(){
+
+            this.form.accrued.advances.push({
+                advance :  0,
+            })
+
+        },
+        clickCancelAdvance(index){
+            this.form.accrued.advances.splice(index, 1)
+            this.calculateTotal()
+        },
+        changeAdvance(index){
+            this.calculateTotal()
+        },
+        // anticipos
+        
+        // compensaciones
+        clickAddCompensation(){
+
+            this.form.accrued.compensations.push({
+                ordinary_compensation :  0,
+                extraordinary_compensation :  0,
+            })
+
+        },
+        clickCancelCompensation(index){
+            this.form.accrued.compensations.splice(index, 1)
+            this.calculateTotal()
+        },
+        changeCompensation(index){
+            this.calculateTotal()
+        },
+        // compensaciones
     }
 }

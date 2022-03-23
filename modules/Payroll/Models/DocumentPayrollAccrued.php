@@ -262,7 +262,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setCompensationsAttribute($value)
     {
-        $this->attributes['compensations'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['compensations'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getEpctvBonusesAttribute($value)
@@ -272,7 +272,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setEpctvBonusesAttribute($value)
     {
-        $this->attributes['epctv_bonuses'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['epctv_bonuses'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getCommissionsAttribute($value)
@@ -282,7 +282,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setCommissionsAttribute($value)
     {
-        $this->attributes['commissions'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['commissions'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getThirdPartyPaymentsAttribute($value)
@@ -292,7 +292,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setThirdPartyPaymentsAttribute($value)
     {
-        $this->attributes['third_party_payments'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['third_party_payments'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getAdvancesAttribute($value)
@@ -302,7 +302,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setAdvancesAttribute($value)
     {
-        $this->attributes['Advances'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['advances'] = $this->getArrayValueAndValidate($value);
     }
 
     /**

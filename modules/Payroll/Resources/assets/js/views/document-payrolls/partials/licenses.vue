@@ -1,5 +1,5 @@
 <template>
-    <div class="row mt-2">
+    <div class="row mt-4">
         <!-- Licencia de Materinidad o Paternidad -->
         <template>
             <div class="col-md-12">

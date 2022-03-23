@@ -184,6 +184,30 @@ class DocumentPayrollRequest extends FormRequest
             'accrued.non_paid_leave.*.end_date' => 'required|date_format:Y-m-d',
             'accrued.non_paid_leave.*.quantity' => 'required|numeric',
 
+            // comisiones
+            'accrued.commissions' => 'nullable|array',
+            'accrued.commissions.*.commission' => 'required|numeric|gt:0',
+
+            // Bono EPCTVs
+            'accrued.epctv_bonuses' => 'nullable|array',
+            'accrued.epctv_bonuses.*.paymentS' => 'nullable|numeric|gt:0',
+            'accrued.epctv_bonuses.*.paymentNS' => 'nullable|numeric|gt:0',
+            'accrued.epctv_bonuses.*.salary_food_payment' => 'nullable|numeric|gt:0',
+            'accrued.epctv_bonuses.*.non_salary_food_payment' => 'nullable|numeric|gt:0',
+
+            // pagos terceros
+            'accrued.third_party_payments' => 'nullable|array',
+            'accrued.third_party_payments.*.third_party_payment' => 'required|numeric|gt:0',
+
+            // anticipos
+            'accrued.advances' => 'nullable|array',
+            'accrued.advances.*.advance' => 'required|numeric|gt:0',
+
+            // compensaciones
+            'accrued.compensations' => 'nullable|array',
+            'accrued.compensations.*.ordinary_compensation' => 'required|numeric|gt:0',
+            'accrued.compensations.*.extraordinary_compensation' => 'required|numeric|gt:0',
+
             // Accrued
 
 
@@ -206,6 +230,18 @@ class DocumentPayrollRequest extends FormRequest
             'deduction.sanctions.*.public_sanction' => 'required|numeric',
             'deduction.sanctions.*.private_sanction' => 'required|numeric',
             
+        ];
+    }
+
+    
+    public function messages()
+    {
+        return [
+            'accrued.commissions.*.commission.gt' => 'El campo comisión debe ser mayor que 0.',
+            'accrued.third_party_payments.*.third_party_payment.gt' => 'El campo pago debe ser mayor que 0.',
+            'accrued.advances.*.advance.gt' => 'El campo valor anticipo debe ser mayor que 0.',
+            'accrued.compensations.*.ordinary_compensation.gt' => 'El campo compensación ordinaria anticipo debe ser mayor que 0.',
+            'accrued.compensations.*.extraordinary_compensation.gt' => 'El campo compensación extraordinaria anticipo debe ser mayor que 0.',
         ];
     }
 

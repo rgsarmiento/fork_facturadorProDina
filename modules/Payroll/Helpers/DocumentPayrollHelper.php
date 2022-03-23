@@ -344,6 +344,12 @@ class DocumentPayrollHelper
                 'maternity_leave' => $accrued->parseLicensesToFormatApi($accrued->maternity_leave, 'maternity'),
                 'paid_leave' => $accrued->parseLicensesToFormatApi($accrued->paid_leave, 'paid'),
                 'non_paid_leave' => $accrued->parseLicensesToFormatApi($accrued->non_paid_leave, 'non_paid'),
+                'commissions' => $accrued->commissions,
+                'epctv_bonuses' => $accrued->epctv_bonuses,
+                'third_party_payments' => $accrued->third_party_payments,
+                'advances' => $accrued->advances,
+                'compensations' => $accrued->compensations,
+
                 'HEDs' => $accrued->parseExtraHoursToFormatApi($accrued->heds), //Hora Extra Diurna
                 'HENs' => $accrued->parseExtraHoursToFormatApi($accrued->hens), //Hora Extra Nocturna
                 'HRNs' => $accrued->parseExtraHoursToFormatApi($accrued->hrns), //Hora Recargo Nocturno

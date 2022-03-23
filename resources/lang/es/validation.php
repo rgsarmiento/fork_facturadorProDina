@@ -383,5 +383,20 @@ return [
         'accrued.non_paid_leave.*.end_date' => 'fecha inicio',
         'accrued.non_paid_leave.*.quantity' => 'cantidad',
 
+        'accrued.commissions.*.commission' => 'comisión',
+
+        'accrued.epctv_bonuses.*.paymentS' => 'pago salarial',
+        'accrued.epctv_bonuses.*.paymentNS' => 'pago no salarial',
+        'accrued.epctv_bonuses.*.salary_food_payment' => 'pago alimentacion salarial',
+        'accrued.epctv_bonuses.*.non_salary_food_payment' => 'pago alimentacion no salarial',
+
+        'accrued.third_party_payments.*.third_party_payment' => 'pago',
+
+        'accrued.advances.*.advance' => 'valor anticipo',
+        
+        'accrued.compensations.*.ordinary_compensation' => 'compensación ordinaria',
+        'accrued.compensations.*.extraordinary_compensation' => 'compensación extraordinaria',
+
+
     ],
 ];
