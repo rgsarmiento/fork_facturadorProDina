@@ -208,6 +208,18 @@ class DocumentPayrollRequest extends FormRequest
             'accrued.compensations.*.ordinary_compensation' => 'required|numeric|gt:0',
             'accrued.compensations.*.extraordinary_compensation' => 'required|numeric|gt:0',
 
+            // huelgas
+            'accrued.legal_strike' => 'nullable|array',
+            'accrued.legal_strike.*.start_date' => 'required|date_format:Y-m-d',
+            'accrued.legal_strike.*.end_date' => 'required|date_format:Y-m-d',
+            'accrued.legal_strike.*.quantity' => 'required|numeric',
+
+            'accrued.endowment' => 'nullable|numeric',
+            'accrued.sustenance_support' => 'nullable|numeric',
+            'accrued.telecommuting' => 'nullable|numeric',
+            'accrued.withdrawal_bonus' => 'nullable|numeric',
+            'accrued.compensation' => 'nullable|numeric',
+
             // Accrued
 
 
@@ -229,7 +241,19 @@ class DocumentPayrollRequest extends FormRequest
             // no puede ir nulo porque genera error en el xml
             'deduction.sanctions.*.public_sanction' => 'required|numeric',
             'deduction.sanctions.*.private_sanction' => 'required|numeric',
+
+            // libranzas
+            'deduction.orders' => 'nullable|array',
+            'deduction.orders.*.description' => 'required|string',
+            'deduction.orders.*.deduction' => 'required|numeric',
             
+            // pagos a terceros
+            'deduction.third_party_payments' => 'nullable|array',
+            'deduction.third_party_payments.*.third_party_payment' => 'required|numeric|gt:0',
+            
+            // anticipos
+            'deduction.advances' => 'nullable|array',
+            'deduction.advances.*.advance' => 'required|numeric|gt:0',
         ];
     }
 
@@ -237,11 +261,16 @@ class DocumentPayrollRequest extends FormRequest
     public function messages()
     {
         return [
+            // devengados
             'accrued.commissions.*.commission.gt' => 'El campo comisión debe ser mayor que 0.',
             'accrued.third_party_payments.*.third_party_payment.gt' => 'El campo pago debe ser mayor que 0.',
             'accrued.advances.*.advance.gt' => 'El campo valor anticipo debe ser mayor que 0.',
             'accrued.compensations.*.ordinary_compensation.gt' => 'El campo compensación ordinaria anticipo debe ser mayor que 0.',
             'accrued.compensations.*.extraordinary_compensation.gt' => 'El campo compensación extraordinaria anticipo debe ser mayor que 0.',
+
+            // deducciones
+            'deduction.third_party_payments.*.third_party_payment.gt' => 'El campo pago debe ser mayor que 0.',
+            'deduction.advances.*.advance.gt' => 'El campo valor anticipo debe ser mayor que 0.',
         ];
     }
 

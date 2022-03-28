@@ -397,6 +397,22 @@ return [
         'accrued.compensations.*.ordinary_compensation' => 'compensación ordinaria',
         'accrued.compensations.*.extraordinary_compensation' => 'compensación extraordinaria',
 
+        'accrued.legal_strike.*.start_date' => 'fecha inicio',
+        'accrued.legal_strike.*.end_date' => 'fecha inicio',
+        'accrued.legal_strike.*.quantity' => 'cantidad',
+
+        'accrued.endowment' => 'dotación',
+        'accrued.sustenance_support' => 'apoyo de sustento',
+        'accrued.telecommuting' => 'teletrabajo',
+        'accrued.withdrawal_bonus' => 'bono de retiro',
+        'accrued.compensation' => 'indemnización',
+
+        'deduction.orders.*.description' => 'descripción',
+        'deduction.orders.*.deduction' => 'deducción',
+        
+        'deduction.third_party_payments.*.third_party_payment' => 'valor pago',
+
+        'deduction.advances.*.advance' => 'valor anticipo',
 
     ],
 ];

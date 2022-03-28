@@ -242,7 +242,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setLegalStrikeAttribute($value)
     {
-        $this->attributes['legal_strike'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['legal_strike'] = $this->getArrayValueAndValidate($value);
     }
     
     public function getOtherConceptsAttribute($value)
@@ -415,6 +415,28 @@ class DocumentPayrollAccrued extends ModelTenant
     }
 
     
+    /**
+     * Retorna data de las huelgas con los campos necesarios para enviar a la api
+     * 
+     * @param  array $records
+     * @return array
+     */
+    public function parseStartEndDateQuantityToFormatApi($records)
+    {
+        if(empty($records)) return null;
+
+        return collect($records)
+                ->map(function($row, $key){
+                    return [
+                        'start_date' => $row->start_date,
+                        'end_date' => $row->end_date,
+                        'quantity' => $row->quantity,
+                    ];
+                })
+                ->toArray();
+    }
+
+
     /**
      * Retorna data de las licencias con los campos necesarios para enviar a la api
      *

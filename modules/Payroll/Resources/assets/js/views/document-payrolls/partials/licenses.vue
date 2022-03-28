@@ -17,9 +17,9 @@
                                 <th class="pb-2">Fecha inicio - Fecha término</th>
                                 <th class="pb-2">Cantidad</th>
                                 <th class="pb-2">Pago</th>
-                                <th class="pb-2"></th>
+                                <!-- <th class="pb-2"></th> -->
                             </template>
-                            <th width="10%"><a href="#" @click.prevent="clickAddLicenses(form.accrued.maternity_leave, 'maternity')" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                            <th width="10%"><a href="#" @click.prevent="clickAddLicenses(form.accrued.maternity_leave, 'maternity')" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -87,9 +87,9 @@
                                 <th class="pb-2">Fecha inicio - Fecha término</th>
                                 <th class="pb-2">Cantidad</th>
                                 <th class="pb-2">Pago</th>
-                                <th class="pb-2"></th>
+                                <!-- <th class="pb-2"></th> -->
                             </template>
-                            <th width="10%"><a href="#" @click.prevent="clickAddLicenses(form.accrued.paid_leave, 'paid')" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                            <th width="10%"><a href="#" @click.prevent="clickAddLicenses(form.accrued.paid_leave, 'paid')" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,9 +156,9 @@
                             <template v-if="form.accrued.non_paid_leave.length > 0">
                                 <th class="pb-2">Fecha inicio - Fecha término</th>
                                 <th class="pb-2">Cantidad</th>
-                                <th class="pb-2"></th>
+                                <!-- <th class="pb-2"></th> -->
                             </template>
-                            <th width="10%"><a href="#" @click.prevent="clickAddLicenses(form.accrued.non_paid_leave, 'non_paid')" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                            <th width="10%"><a href="#" @click.prevent="clickAddLicenses(form.accrued.non_paid_leave, 'non_paid')" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                         </tr>
                     </thead>
                     <tbody>

@@ -333,6 +333,10 @@ class DocumentPayrollHelper
                 'accrued_total' => $accrued->accrued_total,
                 'transportation_allowance' => $accrued->transportation_allowance,
                 'telecommuting' => $accrued->telecommuting,
+                'endowment' => $accrued->endowment,
+                'sustenance_support' => $accrued->sustenance_support,
+                'withdrawal_bonus' => $accrued->withdrawal_bonus,
+                'compensation' => $accrued->compensation,
                 'work_disabilities' => $accrued->parseWorkDisabilitiesToFormatApi($accrued->work_disabilities),
                 'service_bonus' => $accrued->service_bonus,
                 'severance' => $accrued->severance,
@@ -349,6 +353,7 @@ class DocumentPayrollHelper
                 'third_party_payments' => $accrued->third_party_payments,
                 'advances' => $accrued->advances,
                 'compensations' => $accrued->compensations,
+                'legal_strike' => $accrued->parseStartEndDateQuantityToFormatApi($accrued->legal_strike),
 
                 'HEDs' => $accrued->parseExtraHoursToFormatApi($accrued->heds), //Hora Extra Diurna
                 'HENs' => $accrued->parseExtraHoursToFormatApi($accrued->hens), //Hora Extra Nocturna
@@ -371,6 +376,9 @@ class DocumentPayrollHelper
                 'labor_union' => $deduction->labor_union,
                 'education' => $deduction->education,
                 'sanctions' => $deduction->sanctions,
+                'orders' => $deduction->orders,
+                'third_party_payments' => $deduction->third_party_payments,
+                'advances' => $deduction->advances,
             ]
         ];
 

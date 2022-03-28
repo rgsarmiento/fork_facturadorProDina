@@ -158,7 +158,7 @@
                                             <thead>
                                                 <tr width="100%">
                                                     <th v-if="form.payment_dates.length>0" class="pb-2">Fecha<span class="text-danger"> *</span></th>
-                                                    <th width="30%"><a href="#" @click.prevent="clickAddPaymentDate()" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                    <th width="30%"><a href="#" @click.prevent="clickAddPaymentDate()" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -213,8 +213,40 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.telecommuting']}">
                                             <label class="control-label">Teletrabajo</label>
-                                            <el-input-number v-model="form.accrued.telecommuting" :min="0" controls-position="right"></el-input-number>
+                                            <el-input-number v-model="form.accrued.telecommuting" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['accrued.telecommuting']" v-text="errors['accrued.telecommuting'][0]"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.endowment']}">
+                                            <label class="control-label">Dotación</label>
+                                            <el-input-number v-model="form.accrued.endowment" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                            <small class="form-control-feedback" v-if="errors['accrued.endowment']" v-text="errors['accrued.endowment'][0]"></small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.sustenance_support']}">
+                                            <label class="control-label">Apoyo de sustento</label>
+                                            <el-input-number v-model="form.accrued.sustenance_support" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                            <small class="form-control-feedback" v-if="errors['accrued.sustenance_support']" v-text="errors['accrued.sustenance_support'][0]"></small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.withdrawal_bonus']}">
+                                            <label class="control-label">Bono de retiro</label>
+                                            <el-input-number v-model="form.accrued.withdrawal_bonus" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                            <small class="form-control-feedback" v-if="errors['accrued.withdrawal_bonus']" v-text="errors['accrued.withdrawal_bonus'][0]"></small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <div class="form-group" :class="{'has-danger': errors['accrued.compensation']}">
+                                            <label class="control-label">Indemnización</label>
+                                            <el-input-number v-model="form.accrued.compensation" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                            <small class="form-control-feedback" v-if="errors['accrued.compensation']" v-text="errors['accrued.compensation'][0]"></small>
                                         </div>
                                     </div>
 
@@ -259,9 +291,9 @@
                                                                 <th class="pb-2">Fecha inicio - Fecha término</th>
                                                                 <th class="pb-2">N° de días</th>
                                                                 <th class="pb-2">Pago</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddCommonVacation" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddCommonVacation" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -328,9 +360,9 @@
                                                                 <th class="pb-2">Fecha inicio - Fecha término</th>
                                                                 <th class="pb-2">N° de días</th>
                                                                 <th class="pb-2">Pago</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddPaidVacation" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddPaidVacation" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -391,9 +423,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="form-group" :class="{'has-danger': errors['accrued.service_bonus']}">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.severance']}">
                                                     <h4>Cesantías</h4>
-                                                    <small class="form-control-feedback" v-if="errors['accrued.service_bonus']" v-text="errors['accrued.service_bonus'][0]"></small>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.severance']" v-text="errors['accrued.severance'][0]"></small>
                                                 </div>
                                             </div>
 
@@ -406,9 +438,9 @@
                                                                 <th class="pb-2">N° de días</th>
                                                                 <th class="pb-2">Prima salarial</th>
                                                                 <th class="pb-2">Prima no salarial</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddServiceBonus" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="15%"><a href="#" @click.prevent="clickAddServiceBonus" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -465,9 +497,9 @@
                                                                 <th class="pb-2">Pago cesantías</th>
                                                                 <th class="pb-2">% Interes</th>
                                                                 <th class="pb-2">Pago intereses</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddSeverance" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="15%"><a href="#" @click.prevent="clickAddSeverance" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -537,7 +569,7 @@
                                                                 <th class="pb-2">Pago</th>
                                                                 <th class="pb-2"></th>
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddWorkDisability" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddWorkDisability" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -637,9 +669,9 @@
                                                             <template v-if="form.accrued.bonuses.length>0">
                                                                 <th class="pb-2">Bonificación salarial</th>
                                                                 <th class="pb-2">Bonificación no salarial</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddBonuses" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="15%"><a href="#" @click.prevent="clickAddBonuses" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -681,9 +713,9 @@
                                                             <template v-if="form.accrued.aid.length>0">
                                                                 <th class="pb-2">Ayuda salarial</th>
                                                                 <th class="pb-2">Ayuda no salarial</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddAid" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="15%"><a href="#" @click.prevent="clickAddAid" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -717,7 +749,8 @@
                                             </div>
                                             <!-- Ayudas -->
                                         </div>
-<div class="row mt-4">
+                                        
+                                        <div class="row mt-4">
                                             <div class="col-md-6">
                                                 <div class="form-group" :class="{'has-danger': errors['accrued.commissions']}">
                                                     <h4>Comisiones</h4>
@@ -726,9 +759,9 @@
                                             </div>
 
                                             <div class="col-md-6">
-                                                <div class="form-group" :class="{'has-danger': errors['accrued.commissions']}">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.third_party_payments']}">
                                                     <h4>Pagos a terceros</h4>
-                                                    <small class="form-control-feedback" v-if="errors['accrued.commissions']" v-text="errors['accrued.commissions'][0]"></small>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.third_party_payments']" v-text="errors['accrued.third_party_payments'][0]"></small>
                                                 </div>
                                             </div>
 
@@ -739,9 +772,9 @@
                                                         <tr width="100%">
                                                             <template v-if="form.accrued.commissions.length>0">
                                                                 <th class="pb-2">Valor comisión</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddCommission" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="20%"><a href="#" @click.prevent="clickAddCommission" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -778,9 +811,9 @@
                                                         <tr width="100%">
                                                             <template v-if="form.accrued.third_party_payments.length>0">
                                                                 <th class="pb-2">Valor pago</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddThirdPartyPayment" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="20%"><a href="#" @click.prevent="clickAddThirdPartyPayment" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -821,22 +854,22 @@
                                             </div>
 
                                             <div class="col-md-6">
-                                                <div class="form-group" :class="{'has-danger': errors['accrued.commissions']}">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.compensations']}">
                                                     <h4>Compensaciones</h4>
-                                                    <small class="form-control-feedback" v-if="errors['accrued.commissions']" v-text="errors['accrued.commissions'][0]"></small>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.compensations']" v-text="errors['accrued.compensations'][0]"></small>
                                                 </div>
                                             </div>
 
-                                            <!-- Comisiones -->
+                                            <!-- anticipo -->
                                             <div class="col-md-5">
                                                 <table>
                                                     <thead>
                                                         <tr width="100%">
                                                             <template v-if="form.accrued.advances.length>0">
                                                                 <th class="pb-2">Valor anticipo</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddAdvance" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="20%"><a href="#" @click.prevent="clickAddAdvance" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -864,7 +897,7 @@
                                             </div>
                                             <div class="col-md-1">
                                             </div>
-                                            <!-- Comisiones -->
+                                            <!-- anticipo -->
                                             
                                             <!-- Compensaciones -->
                                             <div class="col-md-6">
@@ -874,9 +907,9 @@
                                                             <template v-if="form.accrued.compensations.length>0">
                                                                 <th class="pb-2">Compensación ordinaria</th>
                                                                 <th class="pb-2">Compensación extraordinaria</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddCompensation" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="15%"><a href="#" @click.prevent="clickAddCompensation" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -932,9 +965,9 @@
                                                                 <th class="pb-2">Pago no salarial</th>
                                                                 <th class="pb-2">Pago alimentacion salarial</th>
                                                                 <th class="pb-2">Pago alimentacion no salarial</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddEpctvBonus" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddEpctvBonus" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -1003,9 +1036,9 @@
                                                                 <th class="pb-2" width="60%">Concepto</th>
                                                                 <th class="pb-2">Salarial</th>
                                                                 <th class="pb-2">No salarial</th>
-                                                                <th class="pb-2"></th>
+                                                                <!-- <th class="pb-2"></th> -->
                                                             </template>
-                                                            <th width="10%"><a href="#" @click.prevent="clickAddOtherConcepts" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddOtherConcepts" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -1052,6 +1085,76 @@
                                             
                                         </div>
                                         <!-- Otros conceptos -->
+                                        
+                                        <!-- Huelgas Legales -->
+                                        <div class="row mt-4">
+                                            <div class="col-md-12">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.legal_strike']}">
+                                                    <h4>Huelgas Legales</h4>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.legal_strike']" v-text="errors['accrued.legal_strike'][0]"></small>
+                                                </div>
+                                            </div> 
+
+                                            <div class="col-md-12">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.accrued.legal_strike.length > 0">
+                                                                <th class="pb-2">Fecha inicio - Fecha término</th>
+                                                                <th class="pb-2">Cantidad</th>
+                                                                <!-- <th class="pb-2">Pago</th> -->
+                                                                <!-- <th class="pb-2"></th> -->
+                                                            </template>
+                                                            <th width="10%"><a href="#" @click.prevent="clickAddLegalStrike()" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.accrued.legal_strike" :key="index"> 
+                                                            <td>
+                                                                <div class="form-group mb-2 mr-2">
+                                                                    <el-date-picker
+                                                                        v-model="row.start_end_date"
+                                                                        type="daterange"
+                                                                        format="yyyy-MM-dd"
+                                                                        value-format="yyyy-MM-dd"
+                                                                        range-separator="H"
+                                                                        :clearable="false"
+                                                                        @change="changeLegalStrikeStartEndDate(index)"
+                                                                        >
+                                                                    </el-date-picker>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`accrued.legal_strike.${index}.quantity`]"  :class="{'has-danger': errors[`accrued.legal_strike.${index}.quantity`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.legal_strike.${index}.quantity`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.quantity" :min="0" controls-position="right" disabled></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <!-- <td>
+                                                                
+                                                                <div class="form-group" v-if="errors[`accrued.legal_strike.${index}.payment`]"  :class="{'has-danger': errors[`accrued.legal_strike.${index}.payment`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`accrued.legal_strike.${index}.payment`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="changeLegalStrikePayment(index)"></el-input-number>
+                                                                </div>
+                                                            </td>  -->
+
+                                                            <td class="series-table-actions text-center" width="10%">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelLegalStrike(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <!-- Huelgas Legales -->
+
                                     </el-tab-pane>
                                 </el-tabs>
 
@@ -1132,105 +1235,117 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 
-                                <div class="row mt-2">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <h4>Sindicatos</h4>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <h4>Sanciones</h4>
-                                        </div>
-                                    </div>
+                                <el-tabs type="border-card" v-model="activeNameDeduction" class="mt-3">
+                                    <el-tab-pane label="Otros" name="deduction-others">
+                                        
+                                        <div class="row mt-2">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h4>Sindicatos</h4>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h4>Sanciones</h4>
+                                                </div>
+                                            </div>
 
-                                    <!-- Sindicatos -->
-                                    <div class="col-md-6">
-                                        <table>
-                                            <thead>
-                                                <tr width="100%">
-                                                    <template v-if="form.deduction.labor_union.length>0">
-                                                        <th class="pb-2">Porcentaje</th>
-                                                        <th class="pb-2">Deducción</th>
-                                                    </template>
-                                                    <th width="15%"><a href="#" @click.prevent="clickAddLaborUnion" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row, index) in form.deduction.labor_union" :key="index"> 
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`deduction.labor_union.${index}.percentage`]"  :class="{'has-danger': errors[`deduction.labor_union.${index}.percentage`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`deduction.labor_union.${index}.percentage`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="changePercentageLaborUnion(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`deduction.labor_union.${index}.deduction`]"  :class="{'has-danger': errors[`deduction.labor_union.${index}.deduction`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`deduction.labor_union.${index}.deduction`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.deduction" :min="0" controls-position="right" disabled></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelLaborUnion(index)">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <br>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- Sindicatos -->
-                                    
-                                    <!-- Sanciones -->
-                                    <div class="col-md-6">
-                                        <table>
-                                            <thead>
-                                                <tr width="100%">
-                                                    <template v-if="form.deduction.sanctions.length>0">
-                                                        <th class="pb-2">Sanción pública</th>
-                                                        <th class="pb-2">Sanción privada</th>
-                                                    </template>
-                                                    <th width="15%"><a href="#" @click.prevent="clickAddSanction" class="text-center font-weight-bold text-info">[+ Agregar]</a></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row, index) in form.deduction.sanctions" :key="index"> 
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`deduction.sanctions.${index}.public_sanction`]"  :class="{'has-danger': errors[`deduction.sanctions.${index}.public_sanction`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`deduction.sanctions.${index}.public_sanction`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.public_sanction" :min="0" controls-position="right" @change="changeSanction(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group" v-if="errors[`deduction.sanctions.${index}.private_sanction`]"  :class="{'has-danger': errors[`deduction.sanctions.${index}.private_sanction`]}">
-                                                            <small class="form-control-feedback"  v-text="errors[`deduction.sanctions.${index}.private_sanction`][0]"></small>
-                                                        </div>
-                                                        <div class="form-group mb-2 mr-2"  >
-                                                            <el-input-number v-model="row.private_sanction" :min="0" controls-position="right" @change="changeSanction(index)"></el-input-number>
-                                                        </div>
-                                                    </td>
-                                                    <td class="series-table-actions text-center">
-                                                        <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelSanction(index)">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <br>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- Sanciones -->
+                                            <!-- Sindicatos -->
+                                            <div class="col-md-6">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.deduction.labor_union.length>0">
+                                                                <th class="pb-2">Porcentaje</th>
+                                                                <th class="pb-2">Deducción</th>
+                                                            </template>
+                                                            <th width="15%"><a href="#" @click.prevent="clickAddLaborUnion" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.deduction.labor_union" :key="index"> 
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`deduction.labor_union.${index}.percentage`]"  :class="{'has-danger': errors[`deduction.labor_union.${index}.percentage`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`deduction.labor_union.${index}.percentage`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="changePercentageLaborUnion(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`deduction.labor_union.${index}.deduction`]"  :class="{'has-danger': errors[`deduction.labor_union.${index}.deduction`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`deduction.labor_union.${index}.deduction`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.deduction" :min="0" controls-position="right" disabled></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td class="series-table-actions text-center">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelLaborUnion(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- Sindicatos -->
+                                            
+                                            <!-- Sanciones -->
+                                            <div class="col-md-6">
+                                                <table>
+                                                    <thead>
+                                                        <tr width="100%">
+                                                            <template v-if="form.deduction.sanctions.length>0">
+                                                                <th class="pb-2">Sanción pública</th>
+                                                                <th class="pb-2">Sanción privada</th>
+                                                            </template>
+                                                            <th width="15%"><a href="#" @click.prevent="clickAddSanction" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(row, index) in form.deduction.sanctions" :key="index"> 
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`deduction.sanctions.${index}.public_sanction`]"  :class="{'has-danger': errors[`deduction.sanctions.${index}.public_sanction`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`deduction.sanctions.${index}.public_sanction`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.public_sanction" :min="0" controls-position="right" @change="changeSanction(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" v-if="errors[`deduction.sanctions.${index}.private_sanction`]"  :class="{'has-danger': errors[`deduction.sanctions.${index}.private_sanction`]}">
+                                                                    <small class="form-control-feedback"  v-text="errors[`deduction.sanctions.${index}.private_sanction`][0]"></small>
+                                                                </div>
+                                                                <div class="form-group mb-2 mr-2"  >
+                                                                    <el-input-number v-model="row.private_sanction" :min="0" controls-position="right" @change="changeSanction(index)"></el-input-number>
+                                                                </div>
+                                                            </td>
+                                                            <td class="series-table-actions text-center">
+                                                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelSanction(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <br>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- Sanciones -->
 
-                                </div>
+                                        </div>
+
+                                        <!-- separando campos en otro componente -->
+                                        <document-payroll-deduction-others
+                                                :form="form"
+                                                :errors="errors"
+                                                @calculateTotalDeductionOthers="calculateTotalDeductionOthers"
+                                        ></document-payroll-deduction-others>
+
+                                    </el-tab-pane>
+                                </el-tabs>
 
                             </el-tab-pane>
                         </el-tabs>
@@ -1272,11 +1387,18 @@
     import DocumentPayrollOptions from './partials/options.vue' 
     import DocumentPayrollExtraHours from './partials/extra_hours.vue' 
     import DocumentPayrollLicenses from './partials/licenses.vue' 
+    import DocumentPayrollDeductionOthers from './partials/deduction_others.vue' 
     import {documentPayrollMixin} from '../../mixins/document_payroll'
 
     export default {
         mixins: [documentPayrollMixin],
-        components: {WorkerForm, DocumentPayrollOptions, DocumentPayrollExtraHours, DocumentPayrollLicenses},
+        components: {
+            WorkerForm, 
+            DocumentPayrollOptions, 
+            DocumentPayrollExtraHours, 
+            DocumentPayrollLicenses, 
+            DocumentPayrollDeductionOthers
+        },
         data() {
             return {
                 resource: 'payroll/document-payrolls',
@@ -1296,6 +1418,7 @@
                 showDialogNewWorker: false,
                 activeName: 'period',
                 activeNameAccrued: 'accrued-vacations',
+                activeNameDeduction: 'deduction-others',
                 recordId:null,
                 showDialogDocumentPayrollOptions:false,
                 form_disabled: {},
@@ -1432,6 +1555,10 @@
                         accrued_total: 0,
                         transportation_allowance: undefined, //se usa undefined ya que el componente input-number le asigna 0 al valor null
                         telecommuting: undefined,
+                        endowment: undefined,
+                        sustenance_support: undefined,
+                        withdrawal_bonus: undefined,
+                        compensation: undefined,
                         work_disabilities: [],
                         service_bonus: [],
                         severance: [],
@@ -1448,6 +1575,7 @@
                         epctv_bonuses: [],
                         third_party_payments: [],
                         compensations: [],
+                        legal_strike: [],
                         heds: [],
                         hens: [],
                         hrns: [],
@@ -1470,6 +1598,11 @@
                         education: undefined,
                         labor_union: [],
                         sanctions: [],
+                        orders: [],
+                        third_party_payments: [],
+                        advances: [],
+                        // sanctions: [],
+                        // sanctions: [],
                     },
                 }
 
@@ -1723,17 +1856,30 @@
                 this.calculateTotalTypeLawDeduction()
                 this.calculateTotalDeduction()
             },
+            calculateTotalDeductionOthers(){
+                this.calculateTotalDeduction()
+            },
             calculateTotalDeduction(){
 
                 let total_labor_union = _.sumBy(this.form.deduction.labor_union, 'deduction')
 
                 let total_sanctions = this.sumValueFromArray(this.form.deduction.sanctions, 'private_sanction') + this.sumValueFromArray(this.form.deduction.sanctions, 'public_sanction')
 
+                let total_orders = this.sumValueFromArray(this.form.deduction.orders, 'deduction')
+
+                let total_third_party_payments = this.sumValueFromArray(this.form.deduction.third_party_payments, 'third_party_payment')
+
+                let total_advances = this.sumValueFromArray(this.form.deduction.advances, 'advance')
+
+
                 this.form.deduction.deductions_total = this.roundNumber( 
                                                             parseFloat(this.form.deduction.eps_deduction) 
                                                             + parseFloat(this.form.deduction.pension_deduction) 
                                                             + total_labor_union
                                                             + total_sanctions
+                                                            + total_orders
+                                                            + total_third_party_payments
+                                                            + total_advances
                                                         )
 
             },
@@ -1780,6 +1926,10 @@
 
                 let total_compensations = this.sumValueFromArray(this.form.accrued.compensations, 'ordinary_compensation') + this.sumValueFromArray(this.form.accrued.compensations, 'extraordinary_compensation')
 
+                // let total_legal_strike = this.sumValueFromArray(this.form.accrued.legal_strike, 'payment')
+
+                let total_optional_inputs = this.getTotalOptionalInputs()
+
 
                 this.form.accrued.accrued_total = this.roundNumber(
                                                     parseFloat(this.form.accrued.salary) 
@@ -1799,7 +1949,21 @@
                                                     + total_third_party_payments
                                                     + total_advances
                                                     + total_compensations
+                                                    // + total_legal_strike
+                                                    + total_optional_inputs
                                                 )
+
+            },
+            changeOptionalInputs(){
+                this.calculateTotal()
+            },
+            getTotalOptionalInputs(){
+
+                return this.getValueFromInputUndefined(this.form.accrued.endowment)
+                        + this.getValueFromInputUndefined(this.form.accrued.sustenance_support)
+                        + this.getValueFromInputUndefined(this.form.accrued.withdrawal_bonus)
+                        + this.getValueFromInputUndefined(this.form.accrued.compensation)
+                        + this.getValueFromInputUndefined(this.form.accrued.telecommuting)
 
             },
             sumTotalLincese(){
@@ -1998,7 +2162,7 @@
                 const validateData = await this.validateData()
                 if(!validateData.success) return this.$message.error(validateData.message)
 
-                // this.loading_submit = true
+                this.loading_submit = true
                 
                 await this.$http.post(`/${this.resource}`, this.form).then(response => {
                     // console.log(response)

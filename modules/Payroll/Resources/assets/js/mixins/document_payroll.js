@@ -1,3 +1,5 @@
+import {getDiffInDays, getArrayStartEndDate} from '../helpers/functions'
+
 export const documentPayrollMixin = {
     data() {
         return {
@@ -119,6 +121,10 @@ export const documentPayrollMixin = {
             const start_end_date = this.form.accrued.common_vacation[index].start_end_date
             const start_date = start_end_date[0]
             const end_date = start_end_date[1]
+
+            this.form.accrued.common_vacation[index].start_date = start_date
+            this.form.accrued.common_vacation[index].end_date = end_date
+
             this.form.accrued.common_vacation[index].quantity = this.roundNumber(moment(end_date, "YYYY-MM-DD").diff(moment(start_date, "YYYY-MM-DD"), 'days', true))
 
         },
@@ -155,6 +161,10 @@ export const documentPayrollMixin = {
             const start_end_date = this.form.accrued.paid_vacation[index].start_end_date
             const start_date = start_end_date[0]
             const end_date = start_end_date[1]
+
+            this.form.accrued.paid_vacation[index].start_date = start_date
+            this.form.accrued.paid_vacation[index].end_date = end_date
+
             this.form.accrued.paid_vacation[index].quantity = this.roundNumber(moment(end_date, "YYYY-MM-DD").diff(moment(start_date, "YYYY-MM-DD"), 'days', true))
 
         },
@@ -288,5 +298,41 @@ export const documentPayrollMixin = {
             this.calculateTotal()
         },
         // compensaciones
+
+        // huelgas
+        clickCancelLegalStrike(index){
+            this.form.accrued.legal_strike.splice(index, 1)
+            this.calculateTotal()
+        },
+        // changeLegalStrikePayment(index){
+        //     this.calculateTotal()
+        // },
+        changeLegalStrikeStartEndDate(index){
+
+            const start_end_date = this.form.accrued.legal_strike[index].start_end_date
+            const start_date = start_end_date[0]
+            const end_date = start_end_date[1]
+            const quantity = getDiffInDays(start_date, end_date)
+
+            this.form.accrued.legal_strike[index].quantity = quantity
+            this.form.accrued.legal_strike[index].start_date = start_date
+            this.form.accrued.legal_strike[index].end_date = end_date
+
+        },
+        clickAddLegalStrike(){
+
+            const quantity = 1
+            const date_range = getArrayStartEndDate(quantity)
+
+            this.form.accrued.legal_strike.push({
+                start_date : date_range[0],
+                end_date : date_range[1],
+                quantity :  quantity,
+                start_end_date: date_range,
+                // payment :  0
+            })
+
+        },
+        // huelgas
     }
 }

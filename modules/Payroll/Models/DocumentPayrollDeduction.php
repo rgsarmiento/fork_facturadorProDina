@@ -53,7 +53,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function setLaborUnionAttribute($value)
     {
-        $this->attributes['labor_union'] = (is_null($value) || empty($value))?null:json_encode($value);
+        $this->attributes['labor_union'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getSanctionsAttribute($value)
@@ -63,7 +63,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function setSanctionsAttribute($value)
     {
-        $this->attributes['sanctions'] = (is_null($value) || empty($value))?null:json_encode($value);
+        $this->attributes['sanctions'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getOrdersAttribute($value)
@@ -73,7 +73,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function setOrdersAttribute($value)
     {
-        $this->attributes['orders'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['orders'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getThirdPartyPaymentsAttribute($value)
@@ -83,7 +83,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function setThirdPartyPaymentsAttribute($value)
     {
-        $this->attributes['third_party_payments'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['third_party_payments'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getAdvancesAttribute($value)
@@ -93,7 +93,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function setAdvancesAttribute($value)
     {
-        $this->attributes['advances'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['advances'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getOtherDeductionsAttribute($value)
@@ -106,6 +106,17 @@ class DocumentPayrollDeduction extends ModelTenant
         $this->attributes['other_deductions'] = (is_null($value))?null:json_encode($value);
     }
 
+    /**
+     * 
+     * Validar dato y retornar valor correspondiente para campos tipo json
+     *
+     * @param $value
+     * @return array|null
+     */
+    public function getArrayValueAndValidate($value)
+    {
+        return (is_null($value) || empty($value)) ? null : json_encode($value);
+    }
 
     public function eps_type_law_deduction() 
     {
