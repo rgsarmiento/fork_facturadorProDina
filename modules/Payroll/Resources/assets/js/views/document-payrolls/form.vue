@@ -253,7 +253,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.accrued_total']}">
                                             <label class="control-label">Total devengados<span class="text-danger"> *</span></label>
-                                            <el-input-number v-model="form.accrued.accrued_total" :min="0" controls-position="right" ></el-input-number>
+                                            <el-input-number v-model="form.accrued.accrued_total" :min="0" controls-position="right" disabled></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['accrued.accrued_total']" v-text="errors['accrued.accrued_total'][0]"></small>
                                         </div>
                                     </div>
@@ -266,7 +266,7 @@
                                 </div>  
 
                                 
-                                <el-tabs type="border-card" v-model="activeNameAccrued" class="mt-3">
+                                <el-tabs type="border-card" v-model="activeNameAccrued" class="mt-4">
                                     <!-- <el-tab-pane label="General" name="accrued-general">
                                         
                                         
@@ -1202,41 +1202,62 @@
                                             <small class="form-control-feedback" v-if="errors['deduction.pension_deduction']" v-text="errors['deduction.pension_deduction'][0]"></small>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label class="control-label">AFC</label>
-                                            <el-input-number v-model="form.deduction.afc" :min="0" controls-position="right"></el-input-number>
+
+                                    <!-- fondossp -->
+                                    <template>
+                                        
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['deduction.fondossp_type_law_deductions_id']}">
+                                                <label class="control-label">Fondo de seguridad pensional</label>
+                                                <el-select v-model="form.deduction.fondossp_type_law_deductions_id" clearable   filterable @change="changeFondosspTypeLawDeduction" :disabled="form_disabled.inputs_type_worker_sena">
+                                                    <el-option v-for="option in type_law_deductions" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                                </el-select>
+                                                <small class="form-control-feedback" v-if="errors['deduction.fondossp_type_law_deductions_id']" v-text="errors['deduction.fondossp_type_law_deductions_id'][0]"></small>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Reintegro</label>
-                                            <el-input-number v-model="form.deduction.refund" :min="0" controls-position="right"></el-input-number>
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['deduction.fondosp_deduction_SP']}">
+                                                <label class="control-label">Deducción de fondo SP
+                                                    <span v-if="getPercentageFondosspTypeLawDeduction"> ({{ getPercentageFondosspTypeLawDeduction.percentage }}%) </span>
+                                                </label>
+                                                <el-input-number v-model="form.deduction.fondosp_deduction_SP" :min="0" controls-position="right" @change="changeFondosspDeduction" :disabled="form_disabled.inputs_type_worker_sena"></el-input-number>
+                                                <small class="form-control-feedback" v-if="errors['deduction.fondosp_deduction_SP']" v-text="errors['deduction.fondosp_deduction_SP'][0]"></small>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Deuda</label>
-                                            <el-input-number v-model="form.deduction.debt" :min="0" controls-position="right"></el-input-number>
+
+                                        
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['deduction.fondossp_sub_type_law_deductions_id']}">
+                                                <label class="control-label">Fondo de subsistencia</label>
+                                                <el-select v-model="form.deduction.fondossp_sub_type_law_deductions_id" clearable   filterable @change="changeFondosspSubTypeLawDeduction" :disabled="form_disabled.inputs_type_worker_sena">
+                                                    <el-option v-for="option in type_law_deductions" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                                </el-select>
+                                                <small class="form-control-feedback" v-if="errors['deduction.fondossp_sub_type_law_deductions_id']" v-text="errors['deduction.fondossp_sub_type_law_deductions_id'][0]"></small>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Educación</label>
-                                            <el-input-number v-model="form.deduction.education" :min="0" controls-position="right"></el-input-number>
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['deduction.fondosp_deduction_sub']}">
+                                                <label class="control-label">Deducción de fondo subsistencia
+                                                    <span v-if="getPercentageFondosspSubTypeLawDeduction"> ({{ getPercentageFondosspSubTypeLawDeduction.percentage }}%) </span>
+                                                </label>
+                                                <el-input-number v-model="form.deduction.fondosp_deduction_sub" :min="0" controls-position="right" @change="changeFondosspSubDeduction" :disabled="form_disabled.inputs_type_worker_sena"></el-input-number>
+                                                <small class="form-control-feedback" v-if="errors['deduction.fondosp_deduction_sub']" v-text="errors['deduction.fondosp_deduction_sub'][0]"></small>
+                                            </div>
                                         </div>
-                                    </div>
+
+                                    </template>
+                                    <!-- fondossp -->
                                     
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.deductions_total']}">
-                                            <label class="control-label">Deducción Total<span class="text-danger"> *</span></label>
-                                            <el-input-number v-model="form.deduction.deductions_total" :min="0" controls-position="right"></el-input-number>
+                                            <label class="control-label">Total deducciones<span class="text-danger"> *</span></label>
+                                            <el-input-number v-model="form.deduction.deductions_total" :min="0" controls-position="right" disabled></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.deductions_total']" v-text="errors['deduction.deductions_total'][0]"></small>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <el-tabs type="border-card" v-model="activeNameDeduction" class="mt-3">
+                                <el-tabs type="border-card" v-model="activeNameDeduction" class="mt-4">
                                     <el-tab-pane label="Otros" name="deduction-others">
                                         
                                         <div class="row mt-2">
@@ -1345,6 +1366,84 @@
                                         ></document-payroll-deduction-others>
 
                                     </el-tab-pane>
+                                    <el-tab-pane label="Opcionales" name="deduction-optionals">
+                                        
+                                        <!-- opcionales -->
+                                        <div class="row mt-2 mb-2">
+
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['deduction.afc']}">
+                                                    <label class="control-label">AFC</label>
+                                                    <el-input-number v-model="form.deduction.afc" :min="0" controls-position="right" @change="changeDeductionOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['deduction.afc']" v-text="errors['deduction.afc'][0]"></small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['deduction.refund']}">
+                                                    <label class="control-label">Reintegro</label>
+                                                    <el-input-number v-model="form.deduction.refund" :min="0" controls-position="right" @change="changeDeductionOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['deduction.refund']" v-text="errors['deduction.refund'][0]"></small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['deduction.debt']}">
+                                                    <label class="control-label">Deuda</label>
+                                                    <el-input-number v-model="form.deduction.debt" :min="0" controls-position="right" @change="changeDeductionOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['deduction.debt']" v-text="errors['deduction.debt'][0]"></small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['deduction.education']}">
+                                                    <label class="control-label">Educación</label>
+                                                    <el-input-number v-model="form.deduction.education" :min="0" controls-position="right" @change="changeDeductionOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['deduction.education']" v-text="errors['deduction.education'][0]"></small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['deduction.voluntary_pension']}">
+                                                    <label class="control-label">Pensión voluntaria</label>
+                                                    <el-input-number v-model="form.deduction.voluntary_pension" :min="0" controls-position="right" @change="changeDeductionOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['deduction.voluntary_pension']" v-text="errors['deduction.voluntary_pension'][0]"></small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['deduction.withholding_at_source']}">
+                                                    <label class="control-label">Retención fuente</label>
+                                                    <el-input-number v-model="form.deduction.withholding_at_source" :min="0" controls-position="right" @change="changeDeductionOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['deduction.withholding_at_source']" v-text="errors['deduction.withholding_at_source'][0]"></small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['deduction.cooperative']}">
+                                                    <label class="control-label">Cooperativa</label>
+                                                    <el-input-number v-model="form.deduction.cooperative" :min="0" controls-position="right" @change="changeDeductionOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['deduction.cooperative']" v-text="errors['deduction.cooperative'][0]"></small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['deduction.tax_liens']}">
+                                                    <label class="control-label">Embargo fiscal</label>
+                                                    <el-input-number v-model="form.deduction.tax_liens" :min="0" controls-position="right" @change="changeDeductionOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['deduction.tax_liens']" v-text="errors['deduction.tax_liens'][0]"></small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['deduction.supplementary_plan']}">
+                                                    <label class="control-label">Plan complementarios</label>
+                                                    <el-input-number v-model="form.deduction.supplementary_plan" :min="0" controls-position="right" @change="changeDeductionOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['deduction.supplementary_plan']" v-text="errors['deduction.supplementary_plan'][0]"></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- opcionales -->
+
+                                    </el-tab-pane>
+
                                 </el-tabs>
 
                             </el-tab-pane>
@@ -1444,6 +1543,12 @@
             getPercentagePensionTypeLawDeduction: function () {
                 return this.getTypeLawDeduction(this.form.deduction.pension_type_law_deductions_id)
             },
+            getPercentageFondosspTypeLawDeduction: function () {
+                return this.getTypeLawDeduction(this.form.deduction.fondossp_type_law_deductions_id)
+            },
+            getPercentageFondosspSubTypeLawDeduction: function () {
+                return this.getTypeLawDeduction(this.form.deduction.fondossp_sub_type_law_deductions_id)
+            },
             percentageWorkDisability: function() {
                 return 66.67
             }
@@ -1474,6 +1579,34 @@
                 this.form.deduction.pension_deduction = this.getTotalLawDeduction(this.form.deduction.pension_type_law_deductions_id)
                 this.calculateTotalDeduction()
             },
+            changeFondosspTypeLawDeduction(){
+
+                if(this.form.deduction.fondossp_type_law_deductions_id)
+                {
+                    this.form.deduction.fondosp_deduction_SP = this.getTotalLawDeduction(this.form.deduction.fondossp_type_law_deductions_id)
+                }
+                else
+                {
+                    this.form.deduction.fondosp_deduction_SP = undefined
+                }
+
+                this.calculateTotalDeduction()
+
+            },
+            changeFondosspSubTypeLawDeduction(){
+                
+                if(this.form.deduction.fondossp_sub_type_law_deductions_id)
+                {
+                    this.form.deduction.fondosp_deduction_sub = this.getTotalLawDeduction(this.form.deduction.fondossp_sub_type_law_deductions_id)
+                }
+                else
+                {
+                    this.form.deduction.fondosp_deduction_sub = undefined
+                }
+
+                this.calculateTotalDeduction()
+
+            },
             calculateTotalTypeLawDeduction(){
 
                 // si el tipo de trabajador es relacionado al sena, no tiene dscto de pension ni salud
@@ -1487,6 +1620,11 @@
                     this.form.deduction.pension_deduction = 0
 
                     this.form_disabled.inputs_type_worker_sena = true
+                    
+                    this.form.deduction.fondossp_type_law_deductions_id = undefined
+                    this.form.deduction.fondosp_deduction_SP = undefined
+                    this.form.deduction.fondossp_sub_type_law_deductions_id = undefined
+                    this.form.deduction.fondosp_deduction_sub = undefined
                 }
                 else
                 {
@@ -1494,6 +1632,9 @@
                     this.form_disabled.inputs_type_worker_sena = false
                     this.changeEpsTypeLawDeduction()
                     this.changePensionTypeLawDeduction()
+
+                    this.changeFondosspTypeLawDeduction()
+                    this.changeFondosspSubTypeLawDeduction()
                 }
                 
             },
@@ -1592,17 +1733,29 @@
                         pension_type_law_deductions_id: 5,
                         pension_deduction: 0, 
                         deductions_total: 0, 
+                        
+                        fondossp_type_law_deductions_id: undefined,
+                        fondosp_deduction_SP: undefined,
+                        fondossp_sub_type_law_deductions_id: undefined,
+                        fondosp_deduction_sub: undefined,
+
                         afc: undefined, 
                         refund: undefined,
                         debt: undefined,
                         education: undefined,
+                        
+                        voluntary_pension: undefined, 
+                        withholding_at_source: undefined,
+                        cooperative: undefined,
+                        tax_liens: undefined,
+                        supplementary_plan: undefined,
+
                         labor_union: [],
                         sanctions: [],
                         orders: [],
                         third_party_payments: [],
                         advances: [],
-                        // sanctions: [],
-                        // sanctions: [],
+                        other_deductions: [],
                     },
                 }
 
@@ -1847,6 +2000,12 @@
                 // this.calculateTotal()
                 this.calculateTotalDeduction()
             },
+            changeFondosspDeduction(){
+                this.calculateTotalDeduction()
+            },
+            changeFondosspSubDeduction(){
+                this.calculateTotalDeduction()
+            },
             changeEpsDeduction(){
                 // this.calculateTotal()
                 this.calculateTotalDeduction()
@@ -1871,6 +2030,14 @@
 
                 let total_advances = this.sumValueFromArray(this.form.deduction.advances, 'advance')
 
+                let total_other_deductions = this.sumValueFromArray(this.form.deduction.other_deductions, 'other_deduction')
+
+                let total_deduction_optional_inputs = this.getTotalDeductionOptionalInputs()
+
+                let fondosp_deduction_SP = this.getValueFromInputUndefined(this.form.deduction.fondosp_deduction_SP)
+
+                let fondosp_deduction_sub = this.getValueFromInputUndefined(this.form.deduction.fondosp_deduction_sub)
+
 
                 this.form.deduction.deductions_total = this.roundNumber( 
                                                             parseFloat(this.form.deduction.eps_deduction) 
@@ -1880,6 +2047,10 @@
                                                             + total_orders
                                                             + total_third_party_payments
                                                             + total_advances
+                                                            + total_other_deductions
+                                                            + total_deduction_optional_inputs
+                                                            + fondosp_deduction_SP
+                                                            + fondosp_deduction_sub
                                                         )
 
             },
@@ -1964,6 +2135,22 @@
                         + this.getValueFromInputUndefined(this.form.accrued.withdrawal_bonus)
                         + this.getValueFromInputUndefined(this.form.accrued.compensation)
                         + this.getValueFromInputUndefined(this.form.accrued.telecommuting)
+
+            },
+            changeDeductionOptionalInputs(){
+                this.calculateTotalDeduction()
+            },
+            getTotalDeductionOptionalInputs(){
+
+                return this.getValueFromInputUndefined(this.form.deduction.afc)
+                        + this.getValueFromInputUndefined(this.form.deduction.refund)
+                        + this.getValueFromInputUndefined(this.form.deduction.debt)
+                        + this.getValueFromInputUndefined(this.form.deduction.education)
+                        + this.getValueFromInputUndefined(this.form.deduction.voluntary_pension)
+                        + this.getValueFromInputUndefined(this.form.deduction.withholding_at_source)
+                        + this.getValueFromInputUndefined(this.form.deduction.cooperative)
+                        + this.getValueFromInputUndefined(this.form.deduction.tax_liens)
+                        + this.getValueFromInputUndefined(this.form.deduction.supplementary_plan)
 
             },
             sumTotalLincese(){

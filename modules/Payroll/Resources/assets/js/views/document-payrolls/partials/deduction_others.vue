@@ -89,6 +89,58 @@
             <div class="col-md-1">
             </div>
             <!-- Pagos a terceros -->      
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="form-group" :class="{'has-danger': errors['deduction.other_deductions']}">
+                    <h4>Otras deducciones</h4>
+                    <small class="form-control-feedback" v-if="errors['deduction.other_deductions']" v-text="errors['deduction.other_deductions'][0]"></small>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <!-- <div class="form-group" :class="{'has-danger': errors['deduction.third_party_payments']}">
+                    <h4>Pagos a terceros</h4>
+                    <small class="form-control-feedback" v-if="errors['deduction.third_party_payments']" v-text="errors['deduction.third_party_payments'][0]"></small>
+                </div> -->
+            </div>
+
+            <!-- Otras deducciones -->
+            <div class="col-md-5">
+                <table>
+                    <thead>
+                        <tr width="100%">
+                            <template v-if="form.deduction.other_deductions.length>0">
+                                <th class="pb-2">Deducción</th>
+                            </template>
+                            <th width="20%"><a href="#" @click.prevent="clickAddOtherDeduction" class="text-center font-weight-bold text-info pb-1 mt-1">[+ Agregar]</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(row, index) in form.deduction.other_deductions" :key="index"> 
+                            <td>
+                                
+                                <div class="form-group" v-if="errors[`deduction.other_deductions.${index}.other_deduction`]"  :class="{'has-danger': errors[`deduction.other_deductions.${index}.other_deduction`]}">
+                                    <small class="form-control-feedback"  v-text="errors[`deduction.other_deductions.${index}.other_deduction`][0]"></small>
+                                </div>
+                                <div class="form-group mb-2 mr-2"  >
+                                    <el-input-number v-model="row.other_deduction" :min="0" controls-position="right" @change="changeOtherDeduction(index)"></el-input-number>
+                                </div>
+                            </td>
+                            <td class="series-table-actions text-center">
+                                <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancelOtherDeduction(index)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                            <br>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-1">
+            </div>
+            <!-- Otras deducciones -->
             
         </div>
 
@@ -176,6 +228,21 @@
                 this.calculateTotalData()
             },
             // anticipos
+
+            // otras deducciones
+            clickAddOtherDeduction(){
+                this.form.deduction.other_deductions.push({
+                    other_deduction :  0,
+                })
+            },
+            clickCancelOtherDeduction(index){
+                this.form.deduction.other_deductions.splice(index, 1)
+                this.calculateTotalData()
+            },
+            changeOtherDeduction(index){
+                this.calculateTotalData()
+            },
+            // otras deducciones
 
             // pagos a terceros
             clickAddThirdPartyPayment(){

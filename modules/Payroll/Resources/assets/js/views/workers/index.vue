@@ -18,14 +18,16 @@
                     <tr slot="heading" width="100%">
                         <th>#</th>
                         <th>Código</th>
-                        <th>Nombre</th>
+                        <th>Empleado</th>
+                        <!-- <th>Nombre</th> -->
                         <th>Número</th>
                         <th class="text-right">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }">
                         <td>{{ index }}</td>
                         <td>{{ row.code }}</td>
-                        <td>{{ row.first_name }}</td>  
+                        <td>{{ row.fullname }}</td>  
+                        <!-- <td>{{ row.first_name }}</td>   -->
                         <td>{{ row.identification_number }}</td>  
                         <td class="text-right">
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>

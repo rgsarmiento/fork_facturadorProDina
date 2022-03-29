@@ -43,6 +43,10 @@ class DocumentPayrollDeduction extends ModelTenant
         'debt',
         'deductions_total',
 
+        'fondossp_type_law_deductions_id',
+        'fondosp_deduction_SP',
+        'fondossp_sub_type_law_deductions_id',
+        'fondosp_deduction_sub',
     ];
         
 
@@ -103,7 +107,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function setOtherDeductionsAttribute($value)
     {
-        $this->attributes['other_deductions'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['other_deductions'] = $this->getArrayValueAndValidate($value);
     }
 
     /**
@@ -126,6 +130,16 @@ class DocumentPayrollDeduction extends ModelTenant
     public function pension_type_law_deduction() 
     {
         return $this->belongsTo(TypeLawDeductions::class, 'pension_type_law_deductions_id');
+    }
+    
+    public function fondossp_type_law_deduction() 
+    {
+        return $this->belongsTo(TypeLawDeductions::class, 'fondossp_type_law_deductions_id');
+    }
+    
+    public function fondossp_sub_type_law_deduction() 
+    {
+        return $this->belongsTo(TypeLawDeductions::class, 'fondossp_sub_type_law_deductions_id');
     }
 
     public function payroll() 
@@ -163,6 +177,11 @@ class DocumentPayrollDeduction extends ModelTenant
             'refund' => $this->refund,
             'debt' => $this->debt,
             'deductions_total' => $this->deductions_total,
+            'fondossp_type_law_deductions_id' => $this->fondossp_type_law_deductions_id,
+            'fondosp_deduction_SP' => $this->fondosp_deduction_SP,
+            'fondossp_sub_type_law_deductions_id' => $this->fondossp_sub_type_law_deductions_id,
+            'fondosp_deduction_sub' => $this->fondosp_deduction_sub,
+
         ];
 
     }

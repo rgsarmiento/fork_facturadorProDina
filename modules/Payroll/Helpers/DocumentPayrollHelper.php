@@ -370,15 +370,27 @@ class DocumentPayrollHelper
                 'pension_deduction' => $deduction->pension_deduction,
                 'deductions_total' => $deduction->deductions_total,
 
+                'fondossp_type_law_deductions_id' => $deduction->fondossp_type_law_deductions_id,
+                'fondosp_deduction_SP' => $deduction->fondosp_deduction_SP,
+                'fondossp_sub_type_law_deductions_id' => $deduction->fondossp_sub_type_law_deductions_id,
+                'fondosp_deduction_sub' => $deduction->fondosp_deduction_sub,
+
                 'afc' => $deduction->afc,
                 'refund' => $deduction->refund,
                 'debt' => $deduction->debt,
-                'labor_union' => $deduction->labor_union,
                 'education' => $deduction->education,
+                'voluntary_pension' => $deduction->voluntary_pension,
+                'withholding_at_source' => $deduction->withholding_at_source,
+                'cooperative' => $deduction->cooperative,
+                'tax_liens' => $deduction->tax_liens,
+                'supplementary_plan' => $deduction->supplementary_plan,
+
+                'labor_union' => $deduction->labor_union,
                 'sanctions' => $deduction->sanctions,
                 'orders' => $deduction->orders,
                 'third_party_payments' => $deduction->third_party_payments,
                 'advances' => $deduction->advances,
+                'other_deductions' => $deduction->other_deductions,
             ]
         ];
 

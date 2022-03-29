@@ -171,6 +171,7 @@ class Worker extends ModelTenant
             'high_risk_pension' => $this->high_risk_pension,
             'integral_salarary' => $this->integral_salarary,
             'salary' => $this->salary,
+            'fullname' => $this->fullname,
             
             'cellphone' => $this->cellphone,
             'email' => $this->email,

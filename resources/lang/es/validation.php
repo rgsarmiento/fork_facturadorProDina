@@ -87,6 +87,9 @@ return [
     'uploaded' => 'Subir :attribute ha fallado.',
     'url' => 'El formato :attribute es inválido.',
 
+    'gt' => [
+        'numeric' => 'El campo :attribute debe ser mayor que :value.',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -413,6 +416,36 @@ return [
         'deduction.third_party_payments.*.third_party_payment' => 'valor pago',
 
         'deduction.advances.*.advance' => 'valor anticipo',
+
+        'deduction.other_deductions.*.other_deduction' => 'deducción',
+
+        // opcionales
+        'deduction.voluntary_pension' => 'pensión voluntaria',
+        'deduction.withholding_at_source' => 'retención fuente',
+        'deduction.afc' => 'afc',
+        'deduction.cooperative' => 'cooperativa',
+        'deduction.tax_liens' => 'embargo fiscal',
+        'deduction.supplementary_plan' => 'plan complementarios',
+        'deduction.education' => 'educación',
+        'deduction.refund' => 'reintegro',
+        'deduction.debt' => 'deuda',
+
+        // opcionales
+        'accrued.transportation_allowance' => 'subsidio de transporte',
+        'accrued.telecommuting' => 'teletrabajo',
+        'accrued.endowment' => 'dotación',
+        'accrued.sustenance_support' => 'apoyo de sustento',
+        'accrued.withdrawal_bonus' => 'bono de retiro',
+        'accrued.compensation' => 'indemnización',
+        
+        'deduction.fondossp_type_law_deductions_id' => 'fondo de seguridad pensional',
+        'deduction.fondosp_deduction_SP' => 'deducción de fondo SP',
+        
+        'deduction.fondossp_sub_type_law_deductions_id' => 'fondo de subsistencia',
+        'deduction.fondosp_deduction_sub' => 'deducción de fondo subsistencia',
+
+
+
 
     ],
 ];

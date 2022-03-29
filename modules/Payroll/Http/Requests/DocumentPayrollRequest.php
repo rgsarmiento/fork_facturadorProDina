@@ -220,6 +220,15 @@ class DocumentPayrollRequest extends FormRequest
             'accrued.withdrawal_bonus' => 'nullable|numeric',
             'accrued.compensation' => 'nullable|numeric',
 
+            // opcionales
+            'accrued.transportation_allowance' => 'nullable|numeric|gt:0',
+            'accrued.telecommuting' => 'nullable|numeric|gt:0',
+            'accrued.endowment' => 'nullable|numeric|gt:0',
+            'accrued.sustenance_support' => 'nullable|numeric|gt:0',
+            'accrued.withdrawal_bonus' => 'nullable|numeric|gt:0',
+            'accrued.compensation' => 'nullable|numeric|gt:0',
+
+
             // Accrued
 
 
@@ -254,6 +263,28 @@ class DocumentPayrollRequest extends FormRequest
             // anticipos
             'deduction.advances' => 'nullable|array',
             'deduction.advances.*.advance' => 'required|numeric|gt:0',
+            
+            // otras deducciones
+            'deduction.other_deductions' => 'nullable|array',
+            'deduction.other_deductions.*.other_deduction' => 'required|numeric|gt:0',
+            
+            // opcionales
+            'deduction.voluntary_pension' => 'nullable|numeric|gt:0',
+            'deduction.withholding_at_source' => 'nullable|numeric|gt:0',
+            'deduction.afc' => 'nullable|numeric|gt:0',
+            'deduction.cooperative' => 'nullable|numeric|gt:0',
+            'deduction.tax_liens' => 'nullable|numeric|gt:0',
+            'deduction.supplementary_plan' => 'nullable|numeric|gt:0',
+            'deduction.education' => 'nullable|numeric|gt:0',
+            'deduction.refund' => 'nullable|numeric|gt:0',
+            'deduction.debt' => 'nullable|numeric|gt:0',
+
+            'deduction.fondossp_type_law_deductions_id' => 'nullable|exists:tenant.co_type_law_deductions,id',
+            'deduction.fondosp_deduction_SP' => 'required_with:deduction.fondossp_type_law_deductions_id|numeric',
+            
+            'deduction.fondossp_sub_type_law_deductions_id' => 'nullable|exists:tenant.co_type_law_deductions,id',
+            'deduction.fondosp_deduction_sub' => 'required_with:deduction.fondossp_sub_type_law_deductions_id|numeric',
+
         ];
     }
 
@@ -262,15 +293,16 @@ class DocumentPayrollRequest extends FormRequest
     {
         return [
             // devengados
-            'accrued.commissions.*.commission.gt' => 'El campo comisión debe ser mayor que 0.',
-            'accrued.third_party_payments.*.third_party_payment.gt' => 'El campo pago debe ser mayor que 0.',
-            'accrued.advances.*.advance.gt' => 'El campo valor anticipo debe ser mayor que 0.',
-            'accrued.compensations.*.ordinary_compensation.gt' => 'El campo compensación ordinaria anticipo debe ser mayor que 0.',
-            'accrued.compensations.*.extraordinary_compensation.gt' => 'El campo compensación extraordinaria anticipo debe ser mayor que 0.',
+            // 'accrued.commissions.*.commission.gt' => 'El campo comisión debe ser mayor que 0.',
+            // 'accrued.third_party_payments.*.third_party_payment.gt' => 'El campo pago debe ser mayor que 0.',
+            // 'accrued.advances.*.advance.gt' => 'El campo valor anticipo debe ser mayor que 0.',
+            // 'accrued.compensations.*.ordinary_compensation.gt' => 'El campo compensación ordinaria anticipo debe ser mayor que 0.',
+            // 'accrued.compensations.*.extraordinary_compensation.gt' => 'El campo compensación extraordinaria anticipo debe ser mayor que 0.',
 
             // deducciones
-            'deduction.third_party_payments.*.third_party_payment.gt' => 'El campo pago debe ser mayor que 0.',
-            'deduction.advances.*.advance.gt' => 'El campo valor anticipo debe ser mayor que 0.',
+            // 'deduction.third_party_payments.*.third_party_payment.gt' => 'El campo pago debe ser mayor que 0.',
+            // 'deduction.advances.*.advance.gt' => 'El campo valor anticipo debe ser mayor que 0.',
+            // 'deduction.other_deductions.*.other_deduction.gt' => 'El campo deducción debe ser mayor que 0.',
         ];
     }
 
