@@ -87,6 +87,9 @@ return [
     'uploaded' => 'Subir :attribute ha fallado.',
     'url' => 'El formato :attribute es inválido.',
 
+    'gt' => [
+        'numeric' => 'El campo :attribute debe ser mayor que :value.',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -328,6 +331,122 @@ return [
         'deduction.pension_deduction' => 'deducción de pensión',
         'deduction.deductions_total' => 'deducción Total',
         'work_start_date' => 'fecha inicio de labores',
+
+        'accrued.service_bonus.*.quantity' => 'n° de días',
+        'accrued.service_bonus.*.payment' => 'prima salarial',
+        'accrued.service_bonus.*.paymentNS' => 'prima no salarial',
+
+        'accrued.severance.*.payment' => 'pago cesantías',
+        'accrued.severance.*.percentage' => '% interes',
+        'accrued.severance.*.interest_payment' => 'pago intereses',
+        
+        'accrued.bonuses.*.salary_bonus' => 'bonificación salarial',
+        'accrued.bonuses.*.non_salary_bonus' => 'bonificación no salarial',
+
+        'accrued.aid.*.salary_assistance' => 'ayuda salarial',
+        'accrued.aid.*.non_salary_assistance' => 'ayuda no salarial',
+
+        'accrued.other_concepts.*.salary_concept' => 'salarial',
+        'accrued.other_concepts.*.non_salary_concept' => 'no salarial',
+        'accrued.other_concepts.*.description_concept' => 'concepto',
+
+        'accrued.common_vacation.*.start_date' => 'fecha inicio',
+        'accrued.common_vacation.*.end_date' => 'fecha término',
+        'accrued.common_vacation.*.quantity' => 'n° de días',
+        'accrued.common_vacation.*.payment' => 'pago',
+        
+        'accrued.paid_vacation.*.start_date' => 'fecha inicio',
+        'accrued.paid_vacation.*.end_date' => 'fecha término',
+        'accrued.paid_vacation.*.quantity' => 'n° de días',
+        'accrued.paid_vacation.*.payment' => 'pago',
+
+        'accrued.work_disabilities.*.start_date' => 'fecha inicio',
+        'accrued.work_disabilities.*.end_date' => 'fecha término',
+        'accrued.work_disabilities.*.quantity' => 'cantidad',
+        'accrued.work_disabilities.*.type' => 'tipo',
+        'accrued.work_disabilities.*.payment' => 'pago',
+
+        'deduction.labor_union.*.percentage' => 'porcentaje',
+        'deduction.labor_union.*.deduction' => 'deducción',
+        
+        'deduction.sanctions.*.public_sanction' => 'sanción pública',
+        'deduction.sanctions.*.private_sanction' => 'sanción privada',
+
+        'accrued.maternity_leave.*.start_date' => 'fecha inicio',
+        'accrued.maternity_leave.*.end_date' => 'fecha término',
+        'accrued.maternity_leave.*.quantity' => 'cantidad',
+        'accrued.maternity_leave.*.payment' => 'pago',
+
+        'accrued.paid_leave.*.start_date' => 'fecha inicio',
+        'accrued.paid_leave.*.end_date' => 'fecha término',
+        'accrued.paid_leave.*.quantity' => 'cantidad',
+        'accrued.paid_leave.*.payment' => 'pago',
+        
+        'accrued.non_paid_leave.*.start_date' => 'fecha inicio',
+        'accrued.non_paid_leave.*.end_date' => 'fecha inicio',
+        'accrued.non_paid_leave.*.quantity' => 'cantidad',
+
+        'accrued.commissions.*.commission' => 'comisión',
+
+        'accrued.epctv_bonuses.*.paymentS' => 'pago salarial',
+        'accrued.epctv_bonuses.*.paymentNS' => 'pago no salarial',
+        'accrued.epctv_bonuses.*.salary_food_payment' => 'pago alimentacion salarial',
+        'accrued.epctv_bonuses.*.non_salary_food_payment' => 'pago alimentacion no salarial',
+
+        'accrued.third_party_payments.*.third_party_payment' => 'pago',
+
+        'accrued.advances.*.advance' => 'valor anticipo',
+        
+        'accrued.compensations.*.ordinary_compensation' => 'compensación ordinaria',
+        'accrued.compensations.*.extraordinary_compensation' => 'compensación extraordinaria',
+
+        'accrued.legal_strike.*.start_date' => 'fecha inicio',
+        'accrued.legal_strike.*.end_date' => 'fecha inicio',
+        'accrued.legal_strike.*.quantity' => 'cantidad',
+
+        'accrued.endowment' => 'dotación',
+        'accrued.sustenance_support' => 'apoyo de sustento',
+        'accrued.telecommuting' => 'teletrabajo',
+        'accrued.withdrawal_bonus' => 'bono de retiro',
+        'accrued.compensation' => 'indemnización',
+
+        'deduction.orders.*.description' => 'descripción',
+        'deduction.orders.*.deduction' => 'deducción',
+        
+        'deduction.third_party_payments.*.third_party_payment' => 'valor pago',
+
+        'deduction.advances.*.advance' => 'valor anticipo',
+
+        'deduction.other_deductions.*.other_deduction' => 'deducción',
+
+        // opcionales
+        'deduction.voluntary_pension' => 'pensión voluntaria',
+        'deduction.withholding_at_source' => 'retención fuente',
+        'deduction.afc' => 'afc',
+        'deduction.cooperative' => 'cooperativa',
+        'deduction.tax_liens' => 'embargo fiscal',
+        'deduction.supplementary_plan' => 'plan complementarios',
+        'deduction.education' => 'educación',
+        'deduction.refund' => 'reintegro',
+        'deduction.debt' => 'deuda',
+
+        // opcionales
+        'accrued.transportation_allowance' => 'subsidio de transporte',
+        'accrued.telecommuting' => 'teletrabajo',
+        'accrued.endowment' => 'dotación',
+        'accrued.sustenance_support' => 'apoyo de sustento',
+        'accrued.withdrawal_bonus' => 'bono de retiro',
+        'accrued.compensation' => 'indemnización',
+        
+        'deduction.fondossp_type_law_deductions_id' => 'fondo de seguridad pensional',
+        'deduction.fondosp_deduction_SP' => 'deducción de fondo SP',
+        
+        'deduction.fondossp_sub_type_law_deductions_id' => 'fondo de subsistencia',
+        'deduction.fondosp_deduction_sub' => 'deducción de fondo subsistencia',
+
+        'accrued.salary_viatics' => 'manutención y/o alojamiento',
+        'accrued.non_salary_viatics' => 'manutención y/o alojamiento no salariales',
+        'accrued.refund' => 'reintegro',
 
     ],
 ];

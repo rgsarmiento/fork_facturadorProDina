@@ -113,7 +113,17 @@ class DocumentPayrollHelper
             if(array_key_exists('urlpayrollpdf', $send_request_to_api) && array_key_exists('urlpayrollxml', $send_request_to_api))
             {
                 
-                $send_test_set_async_result = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult'];
+                //error desconocido - certificado
+                $send_test_set_async_response = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse'] ?? null;
+
+                if(is_null($send_test_set_async_response))
+                {
+                    $unknown_error = $send_request_to_api['ResponseDian']['Envelope']['Body']['Fault']['Reason']['Text']['_value'] ?? null;
+                    if(!is_null($unknown_error)) $this->throwException('Error desconocido: '.$unknown_error);
+                }
+                //error desconocido - certificado
+
+                $send_test_set_async_result = $send_test_set_async_response['SendTestSetAsyncResult'];
                 $zip_key = $send_test_set_async_result['ZipKey'];
     
                 if(!is_string($zip_key))
@@ -323,7 +333,32 @@ class DocumentPayrollHelper
                 'accrued_total' => $accrued->accrued_total,
                 'transportation_allowance' => $accrued->transportation_allowance,
                 'telecommuting' => $accrued->telecommuting,
-                'work_disabilities' => $accrued->work_disabilities,
+                'endowment' => $accrued->endowment,
+                'salary_viatics' => $accrued->salary_viatics,
+                'non_salary_viatics' => $accrued->non_salary_viatics,
+                'refund' => $accrued->refund,
+                
+                'sustenance_support' => $accrued->sustenance_support,
+                'withdrawal_bonus' => $accrued->withdrawal_bonus,
+                'compensation' => $accrued->compensation,
+                'work_disabilities' => $accrued->parseWorkDisabilitiesToFormatApi($accrued->work_disabilities),
+                'service_bonus' => $accrued->service_bonus,
+                'severance' => $accrued->severance,
+                'bonuses' => $accrued->bonuses,
+                'aid' => $accrued->aid,
+                'other_concepts' => $accrued->other_concepts,
+                'common_vacation' => $accrued->parseCommonVacationToFormatApi($accrued->common_vacation),
+                'paid_vacation' => $accrued->parsePaidVacationToFormatApi($accrued->paid_vacation),
+                'maternity_leave' => $accrued->parseLicensesToFormatApi($accrued->maternity_leave, 'maternity'),
+                'paid_leave' => $accrued->parseLicensesToFormatApi($accrued->paid_leave, 'paid'),
+                'non_paid_leave' => $accrued->parseLicensesToFormatApi($accrued->non_paid_leave, 'non_paid'),
+                'commissions' => $accrued->commissions,
+                'epctv_bonuses' => $accrued->epctv_bonuses,
+                'third_party_payments' => $accrued->third_party_payments,
+                'advances' => $accrued->advances,
+                'compensations' => $accrued->compensations,
+                'legal_strike' => $accrued->parseStartEndDateQuantityToFormatApi($accrued->legal_strike),
+
                 'HEDs' => $accrued->parseExtraHoursToFormatApi($accrued->heds), //Hora Extra Diurna
                 'HENs' => $accrued->parseExtraHoursToFormatApi($accrued->hens), //Hora Extra Nocturna
                 'HRNs' => $accrued->parseExtraHoursToFormatApi($accrued->hrns), //Hora Recargo Nocturno
@@ -339,12 +374,27 @@ class DocumentPayrollHelper
                 'pension_deduction' => $deduction->pension_deduction,
                 'deductions_total' => $deduction->deductions_total,
 
+                'fondossp_type_law_deductions_id' => $deduction->fondossp_type_law_deductions_id,
+                'fondosp_deduction_SP' => $deduction->fondosp_deduction_SP,
+                'fondossp_sub_type_law_deductions_id' => $deduction->fondossp_sub_type_law_deductions_id,
+                'fondosp_deduction_sub' => $deduction->fondosp_deduction_sub,
+
                 'afc' => $deduction->afc,
                 'refund' => $deduction->refund,
                 'debt' => $deduction->debt,
-                'labor_union' => $deduction->labor_union,
                 'education' => $deduction->education,
+                'voluntary_pension' => $deduction->voluntary_pension,
+                'withholding_at_source' => $deduction->withholding_at_source,
+                'cooperative' => $deduction->cooperative,
+                'tax_liens' => $deduction->tax_liens,
+                'supplementary_plan' => $deduction->supplementary_plan,
+
+                'labor_union' => $deduction->labor_union,
                 'sanctions' => $deduction->sanctions,
+                'orders' => $deduction->orders,
+                'third_party_payments' => $deduction->third_party_payments,
+                'advances' => $deduction->advances,
+                'other_deductions' => $deduction->other_deductions,
             ]
         ];
 

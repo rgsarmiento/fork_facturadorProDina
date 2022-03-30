@@ -61,6 +61,10 @@ class DocumentPayrollAccrued extends ModelTenant
         'withdrawal_bonus',
         'compensation',
         'accrued_total',
+        
+        'salary_viatics',
+        'non_salary_viatics',
+        'refund',
 
     ];
 
@@ -142,7 +146,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setCommonVacationAttribute($value)
     {
-        $this->attributes['common_vacation'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['common_vacation'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getPaidVacationAttribute($value)
@@ -152,7 +156,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setPaidVacationAttribute($value)
     {
-        $this->attributes['paid_vacation'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['paid_vacation'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getServiceBonusAttribute($value)
@@ -162,7 +166,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setServiceBonusAttribute($value)
     {
-        $this->attributes['service_bonus'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['service_bonus'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getSeveranceAttribute($value)
@@ -172,7 +176,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setSeveranceAttribute($value)
     {
-        $this->attributes['severance'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['severance'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getWorkDisabilitiesAttribute($value)
@@ -192,7 +196,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setMaternityLeaveAttribute($value)
     {
-        $this->attributes['maternity_leave'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['maternity_leave'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getPaidLeaveAttribute($value)
@@ -202,7 +206,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setPaidLeaveAttribute($value)
     {
-        $this->attributes['paid_leave'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['paid_leave'] = $this->getArrayValueAndValidate($value);
     }
  
     public function getNonPaidLeaveAttribute($value)
@@ -212,7 +216,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setNonPaidLeaveAttribute($value)
     {
-        $this->attributes['non_paid_leave'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['non_paid_leave'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getBonusesAttribute($value)
@@ -222,7 +226,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setBonusesAttribute($value)
     {
-        $this->attributes['bonuses'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['bonuses'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getAidAttribute($value)
@@ -232,7 +236,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setAidAttribute($value)
     {
-        $this->attributes['aid'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['aid'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getLegalStrikeAttribute($value)
@@ -242,7 +246,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setLegalStrikeAttribute($value)
     {
-        $this->attributes['legal_strike'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['legal_strike'] = $this->getArrayValueAndValidate($value);
     }
     
     public function getOtherConceptsAttribute($value)
@@ -252,7 +256,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setOtherConceptsAttribute($value)
     {
-        $this->attributes['other_concepts'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['other_concepts'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getCompensationsAttribute($value)
@@ -262,7 +266,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setCompensationsAttribute($value)
     {
-        $this->attributes['compensations'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['compensations'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getEpctvBonusesAttribute($value)
@@ -272,7 +276,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setEpctvBonusesAttribute($value)
     {
-        $this->attributes['epctv_bonuses'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['epctv_bonuses'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getCommissionsAttribute($value)
@@ -282,7 +286,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setCommissionsAttribute($value)
     {
-        $this->attributes['commissions'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['commissions'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getThirdPartyPaymentsAttribute($value)
@@ -292,7 +296,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setThirdPartyPaymentsAttribute($value)
     {
-        $this->attributes['third_party_payments'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['third_party_payments'] = $this->getArrayValueAndValidate($value);
     }
 
     public function getAdvancesAttribute($value)
@@ -302,9 +306,19 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function setAdvancesAttribute($value)
     {
-        $this->attributes['Advances'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['advances'] = $this->getArrayValueAndValidate($value);
     }
 
+    /**
+     * 
+     * Validar dato y retornar valor correspondiente para campos tipo json
+     *
+     * @param $value
+     */
+    public function getArrayValueAndValidate($value)
+    {
+        return (is_null($value) || empty($value)) ? null : json_encode($value);
+    }
 
     public function payroll() 
     {
@@ -334,6 +348,133 @@ class DocumentPayrollAccrued extends ModelTenant
                 ->toArray();
     }
 
+    
+    /**
+     * Retorna data de las incapacidades con los campos necesarios para enviar a la api
+     *
+     * @param  array $records
+     * @return array
+     */
+    public function parseWorkDisabilitiesToFormatApi($records)
+    {
+        if(empty($records)) return null;
+
+        return collect($records)
+                ->map(function($row, $key){
+                    return [
+                        'start_date' => $row->start_date,
+                        'end_date' => $row->end_date,
+                        'type' => $row->type,
+                        'quantity' => $row->quantity,
+                        'payment' => $row->payment
+                    ];
+                })
+                ->toArray();
+    }
+
+    /**
+     * Retorna data de las vaciones disfrutadas con los campos necesarios para enviar a la api
+     *
+     * Usado para vacaciones disfrutadas
+     * 
+     * @param  array $records
+     * @return array
+     */
+    public function parseCommonVacationToFormatApi($records)
+    {
+        if(empty($records)) return null;
+
+        return collect($records)
+                ->map(function($row, $key){
+                    return [
+                        'start_date' => $row->start_date,
+                        'end_date' => $row->end_date,
+                        'quantity' => $row->quantity,
+                        'payment' => $row->payment
+                    ];
+                })
+                ->toArray();
+    }
+
+    /**
+     * Retorna data de las vaciones compensadas con los campos necesarios para enviar a la api
+     * 
+     * @param  array $records
+     * @return array
+     */
+    public function parsePaidVacationToFormatApi($records)
+    {
+        if(empty($records)) return null;
+
+        return collect($records)
+                ->map(function($row, $key){
+                    return [
+                        // 'start_date' => $row->start_date,
+                        // 'end_date' => $row->end_date,
+                        'quantity' => $row->quantity,
+                        'payment' => $row->payment
+                    ];
+                })
+                ->toArray();
+    }
+
+    
+    /**
+     * Retorna data de las huelgas con los campos necesarios para enviar a la api
+     * 
+     * @param  array $records
+     * @return array
+     */
+    public function parseStartEndDateQuantityToFormatApi($records)
+    {
+        if(empty($records)) return null;
+
+        return collect($records)
+                ->map(function($row, $key){
+                    return [
+                        'start_date' => $row->start_date,
+                        'end_date' => $row->end_date,
+                        'quantity' => $row->quantity,
+                    ];
+                })
+                ->toArray();
+    }
+
+
+    /**
+     * Retorna data de las licencias con los campos necesarios para enviar a la api
+     *
+     * Usado para licencias
+     * 
+     * @param  array $records
+     * @return array
+     */
+    public function parseLicensesToFormatApi($records, $type)
+    {
+        if(empty($records)) return null;
+
+        return collect($records)
+                ->map(function($row, $key) use($type){
+
+                    if($type === 'non_paid')
+                    {
+                        return [
+                            'start_date' => $row->start_date,
+                            'end_date' => $row->end_date,
+                            'quantity' => $row->quantity,
+                        ];
+                    }
+
+                    return [
+                        'start_date' => $row->start_date,
+                        'end_date' => $row->end_date,
+                        'quantity' => $row->quantity,
+                        'payment' => $row->payment
+                    ];
+                })
+                ->toArray();
+    }
+    
     /**
      * Use in resource and collection
      *
@@ -384,6 +525,10 @@ class DocumentPayrollAccrued extends ModelTenant
             'compensation' => $this->compensation,
             'accrued_total' => $this->accrued_total,
 
+            'salary_viatics' => $this->salary_viatics,
+            'non_salary_viatics' => $this->non_salary_viatics,
+            'refund' => $this->refund,
+    
         ];
 
     }
