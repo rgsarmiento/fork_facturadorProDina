@@ -334,6 +334,10 @@ class DocumentPayrollHelper
                 'transportation_allowance' => $accrued->transportation_allowance,
                 'telecommuting' => $accrued->telecommuting,
                 'endowment' => $accrued->endowment,
+                'salary_viatics' => $accrued->salary_viatics,
+                'non_salary_viatics' => $accrued->non_salary_viatics,
+                'refund' => $accrued->refund,
+                
                 'sustenance_support' => $accrued->sustenance_support,
                 'withdrawal_bonus' => $accrued->withdrawal_bonus,
                 'compensation' => $accrued->compensation,

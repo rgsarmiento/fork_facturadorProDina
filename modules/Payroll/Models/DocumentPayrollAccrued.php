@@ -61,6 +61,10 @@ class DocumentPayrollAccrued extends ModelTenant
         'withdrawal_bonus',
         'compensation',
         'accrued_total',
+        
+        'salary_viatics',
+        'non_salary_viatics',
+        'refund',
 
     ];
 
@@ -521,6 +525,10 @@ class DocumentPayrollAccrued extends ModelTenant
             'compensation' => $this->compensation,
             'accrued_total' => $this->accrued_total,
 
+            'salary_viatics' => $this->salary_viatics,
+            'non_salary_viatics' => $this->non_salary_viatics,
+            'refund' => $this->refund,
+    
         ];
 
     }

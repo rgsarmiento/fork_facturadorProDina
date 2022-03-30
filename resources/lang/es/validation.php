@@ -444,8 +444,9 @@ return [
         'deduction.fondossp_sub_type_law_deductions_id' => 'fondo de subsistencia',
         'deduction.fondosp_deduction_sub' => 'deducción de fondo subsistencia',
 
-
-
+        'accrued.salary_viatics' => 'manutención y/o alojamiento',
+        'accrued.non_salary_viatics' => 'manutención y/o alojamiento no salariales',
+        'accrued.refund' => 'reintegro',
 
     ],
 ];

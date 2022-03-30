@@ -211,46 +211,6 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.telecommuting']}">
-                                            <label class="control-label">Teletrabajo</label>
-                                            <el-input-number v-model="form.accrued.telecommuting" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
-                                            <small class="form-control-feedback" v-if="errors['accrued.telecommuting']" v-text="errors['accrued.telecommuting'][0]"></small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.endowment']}">
-                                            <label class="control-label">Dotación</label>
-                                            <el-input-number v-model="form.accrued.endowment" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
-                                            <small class="form-control-feedback" v-if="errors['accrued.endowment']" v-text="errors['accrued.endowment'][0]"></small>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.sustenance_support']}">
-                                            <label class="control-label">Apoyo de sustento</label>
-                                            <el-input-number v-model="form.accrued.sustenance_support" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
-                                            <small class="form-control-feedback" v-if="errors['accrued.sustenance_support']" v-text="errors['accrued.sustenance_support'][0]"></small>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.withdrawal_bonus']}">
-                                            <label class="control-label">Bono de retiro</label>
-                                            <el-input-number v-model="form.accrued.withdrawal_bonus" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
-                                            <small class="form-control-feedback" v-if="errors['accrued.withdrawal_bonus']" v-text="errors['accrued.withdrawal_bonus'][0]"></small>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-3">
-                                        <div class="form-group" :class="{'has-danger': errors['accrued.compensation']}">
-                                            <label class="control-label">Indemnización</label>
-                                            <el-input-number v-model="form.accrued.compensation" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
-                                            <small class="form-control-feedback" v-if="errors['accrued.compensation']" v-text="errors['accrued.compensation'][0]"></small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.accrued_total']}">
                                             <label class="control-label">Total devengados<span class="text-danger"> *</span></label>
                                             <el-input-number v-model="form.accrued.accrued_total" :min="0" controls-position="right" disabled></el-input-number>
@@ -267,10 +227,6 @@
 
                                 
                                 <el-tabs type="border-card" v-model="activeNameAccrued" class="mt-4">
-                                    <!-- <el-tab-pane label="General" name="accrued-general">
-                                        
-                                        
-                                    </el-tab-pane> -->
 
                                     <el-tab-pane label="Vacaciones" name="accrued-vacations">
 
@@ -1156,6 +1112,75 @@
                                         <!-- Huelgas Legales -->
 
                                     </el-tab-pane>
+                                    
+                                    <el-tab-pane label="Opcionales" name="accrued-optional">
+                                        <div class="row mt-2 mb-4">
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.telecommuting']}">
+                                                    <label class="control-label">Teletrabajo</label>
+                                                    <el-input-number v-model="form.accrued.telecommuting" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.telecommuting']" v-text="errors['accrued.telecommuting'][0]"></small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.endowment']}">
+                                                    <label class="control-label">Dotación</label>
+                                                    <el-input-number v-model="form.accrued.endowment" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.endowment']" v-text="errors['accrued.endowment'][0]"></small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.sustenance_support']}">
+                                                    <label class="control-label">Apoyo de sustento</label>
+                                                    <el-input-number v-model="form.accrued.sustenance_support" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.sustenance_support']" v-text="errors['accrued.sustenance_support'][0]"></small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.withdrawal_bonus']}">
+                                                    <label class="control-label">Bono de retiro</label>
+                                                    <el-input-number v-model="form.accrued.withdrawal_bonus" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.withdrawal_bonus']" v-text="errors['accrued.withdrawal_bonus'][0]"></small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.compensation']}">
+                                                    <label class="control-label">Indemnización</label>
+                                                    <el-input-number v-model="form.accrued.compensation" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.compensation']" v-text="errors['accrued.compensation'][0]"></small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.salary_viatics']}">
+                                                    <label class="control-label">Manutención y/o alojamiento</label>
+                                                    <el-input-number v-model="form.accrued.salary_viatics" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.salary_viatics']" v-text="errors['accrued.salary_viatics'][0]"></small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.non_salary_viatics']}">
+                                                    <label class="control-label">Manutención y/o alojamiento no salariales</label>
+                                                    <el-input-number v-model="form.accrued.non_salary_viatics" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.non_salary_viatics']" v-text="errors['accrued.non_salary_viatics'][0]"></small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-3">
+                                                <div class="form-group" :class="{'has-danger': errors['accrued.refund']}">
+                                                    <label class="control-label">Reintegro</label>
+                                                    <el-input-number v-model="form.accrued.refund" :min="0" controls-position="right" @change="changeOptionalInputs"></el-input-number>
+                                                    <small class="form-control-feedback" v-if="errors['accrued.refund']" v-text="errors['accrued.refund'][0]"></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </el-tab-pane>
                                 </el-tabs>
 
                             </el-tab-pane>
@@ -1700,6 +1725,11 @@
                         sustenance_support: undefined,
                         withdrawal_bonus: undefined,
                         compensation: undefined,
+
+                        salary_viatics: undefined,
+                        non_salary_viatics: undefined,
+                        refund: undefined,
+
                         work_disabilities: [],
                         service_bonus: [],
                         severance: [],
@@ -2135,6 +2165,9 @@
                         + this.getValueFromInputUndefined(this.form.accrued.withdrawal_bonus)
                         + this.getValueFromInputUndefined(this.form.accrued.compensation)
                         + this.getValueFromInputUndefined(this.form.accrued.telecommuting)
+                        + this.getValueFromInputUndefined(this.form.accrued.salary_viatics)
+                        + this.getValueFromInputUndefined(this.form.accrued.non_salary_viatics)
+                        + this.getValueFromInputUndefined(this.form.accrued.refund)
 
             },
             changeDeductionOptionalInputs(){

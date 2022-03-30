@@ -228,6 +228,9 @@ class DocumentPayrollRequest extends FormRequest
             'accrued.withdrawal_bonus' => 'nullable|numeric|gt:0',
             'accrued.compensation' => 'nullable|numeric|gt:0',
 
+            'accrued.salary_viatics' => 'nullable|numeric|gt:0',
+            'accrued.non_salary_viatics' => 'nullable|numeric|gt:0',
+            'accrued.refund' => 'nullable|numeric|gt:0',
 
             // Accrued
 
