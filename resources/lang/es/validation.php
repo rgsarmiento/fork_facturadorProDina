@@ -448,5 +448,8 @@ return [
         'accrued.non_salary_viatics' => 'manutención y/o alojamiento no salariales',
         'accrued.refund' => 'reintegro',
 
+        'resolution_id' => 'resolución',
+
+
     ],
 ];

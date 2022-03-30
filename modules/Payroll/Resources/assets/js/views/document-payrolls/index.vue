@@ -43,6 +43,12 @@
                         <td class="text-center">{{ row.deductions_total }}</td>  
                         <td class="text-right">
 
+                            <!-- si la nómina es aceptada -->
+                            <template v-if="row.state_document_id === 5">
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickEliminationPayroll(row.id, row.number_full)">N. Eliminación</button>
+                            </template>
+                            <!-- si la nómina es aceptada -->
+
                             <template v-if="row.btn_query">
                                 <el-tooltip class="item" effect="dark" content="Consultar ZIPKEY a la DIAN" placement="top-start">
                                     <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickQueryZipKey(row.id)">Consultar</button>
@@ -62,6 +68,12 @@
                             :showDownload="true"
                             :showClose="true">
                             </document-payroll-options>
+
+            <document-payroll-elimination :showDialog.sync="showDialogDocumentPayrollElimination"     
+                            :recordId="recordId"
+                            :recordNumberFull="recordNumberFull"
+                            >
+                            </document-payroll-elimination>
         </div>
     </div>
 </template>
@@ -69,24 +81,32 @@
 
     // import WorkersForm from './form.vue'
     import DocumentPayrollOptions from './partials/options.vue' 
+    import DocumentPayrollElimination from './partials/elimination_payroll.vue' 
     import DataTable from '@components/DataTableResource.vue'
     import {deletable} from '@mixins/deletable'
 
     export default {
         mixins: [deletable],
-        components: { DataTable, DocumentPayrollOptions},
+        components: { DataTable, DocumentPayrollOptions, DocumentPayrollElimination},
         data() {
             return {
                 showDialog: false,
                 resource: 'payroll/document-payrolls',
                 recordId: null,
+                recordNumberFull: null,
                 showDialogDocumentPayrollOptions:false,
+                showDialogDocumentPayrollElimination:false,
                 loading: false,
             }
         },
         created() { 
         },
         methods: { 
+            clickEliminationPayroll(recordId, recordNumberFull){
+                this.recordId = recordId
+                this.recordNumberFull = recordNumberFull
+                this.showDialogDocumentPayrollElimination = true
+            },
             async clickQueryZipKey(recordId) {
 
                 this.loading = true

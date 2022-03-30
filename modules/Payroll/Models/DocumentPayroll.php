@@ -24,6 +24,8 @@ class DocumentPayroll extends ModelTenant
 
     protected $table = 'co_document_payrolls';
 
+    public const ADJUST_NOTE_TYPE_DOCUMENT_ID = 10;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -164,7 +166,17 @@ class DocumentPayroll extends ModelTenant
     {
         return $this->belongsTo(PayrollPeriod::class);
     }
+    
+    public function affected_adjust_notes()
+    {
+        return $this->hasMany(DocumentPayrollAdjustNote::class, 'affected_document_payroll_id');
+    }
 
+    public function adjust_note() 
+    {
+        return $this->hasOne(DocumentPayrollAdjustNote::class, 'co_document_payroll_id');
+    }
+    
     public function user() 
     {
         return $this->belongsTo(User::class);
@@ -188,6 +200,11 @@ class DocumentPayroll extends ModelTenant
     public function getNumberFullAttribute()
     {
         return $this->prefix.'-'.$this->consecutive;
+    }
+
+    public function getIsPayrollAdjustNoteAttribute()
+    {
+        return !is_null($this->adjust_note);
     }
 
     /**

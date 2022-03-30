@@ -57,6 +57,71 @@ class DocumentPayrollHelper
         return $inputs->merge($values)->all();
     }
 
+    
+    /**
+     * Retorna arreglo con data para registro en nomina de eliminacion
+     *
+     * @param  mixed $inputs
+     * @return array
+     */
+    public function getInputsAdjustNote($inputs)
+    {
+        $values = $this->getValuesAdjustNote($inputs);
+        // dd($values);
+ 
+        return $inputs->merge($values)->all();
+    }
+    
+
+    /**
+     * Obetener arreglo con data dependiendo del tipo (eliminar/reemplazar)
+     *
+     * @param $inputs
+     * @return array
+     */
+    public function getValuesAdjustNote($inputs)
+    {
+
+        $establishment = EstablishmentInput::set(auth()->user()->establishment_id);
+        $ignore_state_document_id = (int) ($this->company->payroll_type_environment_id === 2);
+        $consecutive = $this->getConsecutive(DocumentPayroll::ADJUST_NOTE_TYPE_DOCUMENT_ID, $ignore_state_document_id, $inputs->prefix);
+        $affected_document_payroll_id = $inputs->document_payroll_id;
+
+        // eliminar
+        if($inputs->type_payroll_adjust_note_id === 2)
+        {
+
+            $document_payroll = DocumentPayroll::findOrFail($affected_document_payroll_id);
+
+            return [
+                'consecutive' => $consecutive,
+                'user_id' => auth()->id(),
+                'external_id' => Str::uuid()->toString(),
+                'establishment_id' => auth()->user()->establishment_id,
+                'establishment' => $establishment,
+                'date_of_issue' => date('Y-m-d'),
+                'time_of_issue' => date('H:i:s'),
+                'state_document_id' => self::REGISTERED, //estado inicial
+                'payroll_type_environment_id' => $this->company->payroll_type_environment_id,
+                'period' => $document_payroll->period,
+                'payroll_period_id' => $document_payroll->payroll_period_id,
+                'worker_id' => $document_payroll->worker_id,
+                'worker' => $document_payroll->worker,
+                'adjust_note' => [
+                    'type_payroll_adjust_note_id' => $inputs->type_payroll_adjust_note_id,
+                    'affected_document_payroll_id' => $affected_document_payroll_id,
+                ],
+            ];
+        }
+
+        //reemplazar
+
+        return [
+
+        ];
+        
+    }
+
         
     /**
      * Enviar nomina a la api
@@ -67,6 +132,7 @@ class DocumentPayrollHelper
     public function sendToApi(DocumentPayroll $document, $inputs)
     {
 
+        dd($document->is_payroll_adjust_note, $inputs);
         $params = $this->getParamsForApi($document, $inputs);
         // dd($params);
         $connection_api = new HttpConnectionApi($this->company->api_token);
@@ -292,7 +358,7 @@ class DocumentPayrollHelper
 
         return [
             'type_document_id' => 9, //id tipo documento nomina
-            'resolution_number' => $inputs['resolution_number'], //id tipo documento nomina
+            'resolution_number' => $inputs['resolution_number'],
             // 'establishment_name' => $establishment->description,
             // 'establishment_address' => $establishment->address,
             // 'establishment_phone' => $establishment->telephone,

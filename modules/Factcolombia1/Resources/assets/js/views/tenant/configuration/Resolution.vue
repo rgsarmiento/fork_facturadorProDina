@@ -223,7 +223,8 @@
                 { id: 4, name: "Nota Crédito", code: '4' },
                 { id: 5, name: "Nota Débito", code: '5' },
                 { id: 6, name: "ZIP", code: '6'},
-                { id: 9, name: "Nomina Individual", code: '9'}
+                { id: 9, name: "Nomina Individual", code: '9'},
+                { id: 10, name: "Nomina Individual de Ajuste", code: '10'},
             ],
             errors: {
             },
