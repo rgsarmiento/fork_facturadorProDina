@@ -11,6 +11,7 @@ class DocumentPayrollAdjustNote extends ModelTenant
     protected $table = 'co_document_payroll_adjust_notes';
     public $timestamps = false;
 
+    public const ADJUST_NOTE_REPLACE_ID = 1;
     public const ADJUST_NOTE_ELIMINATION_ID = 2;
 
     /**

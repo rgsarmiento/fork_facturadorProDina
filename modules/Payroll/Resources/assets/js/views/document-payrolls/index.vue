@@ -58,8 +58,13 @@
                         <td class="text-right">
 
                             <template v-if="row.btn_adjust_note_elimination">
-                                <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickEliminationPayroll(row.id, row.number_full)">N. Eliminación</button>
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-warning" @click.prevent="clickEliminationPayroll(row.id, row.number_full)">N. Eliminación</button>
                             </template>
+
+                            <template v-if="row.btn_adjust_note_replace">
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-primary" @click.prevent="clickReplacePayroll(row.id)">N. Reemplazo</button>
+                            </template>
+
 
                             <template v-if="row.btn_query">
                                 <el-tooltip class="item" effect="dark" content="Consultar ZIPKEY a la DIAN" placement="top-start">
@@ -114,6 +119,9 @@
         created() { 
         },
         methods: { 
+            clickReplacePayroll(recordId){
+                location.href = `document-payroll-adjust-notes/${recordId}`
+            },
             clickEliminationPayroll(recordId, recordNumberFull){
                 this.recordId = recordId
                 this.recordNumberFull = recordNumberFull

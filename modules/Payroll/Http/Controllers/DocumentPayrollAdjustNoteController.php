@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Payroll\Models\{
+    DocumentPayrollAdjustNote,
     DocumentPayroll,
     Worker
 };
 use Modules\Payroll\Http\Resources\{
-    DocumentPayrollCollection,
-    DocumentPayrollResource
+    DocumentPayrollAdjustNoteResource
 };
 use Modules\Payroll\Http\Requests\DocumentPayrollAdjustNoteRequest;
 use Modules\Factcolombia1\Models\TenantService\{
@@ -37,6 +37,13 @@ class DocumentPayrollAdjustNoteController extends Controller
     
     use UtilityTrait;
 
+    public function create($id)
+    {
+        $type_payroll_adjust_note_id = DocumentPayrollAdjustNote::ADJUST_NOTE_REPLACE_ID;
+
+        return view('payroll::document-payrolls.form', compact('id', 'type_payroll_adjust_note_id'));
+    }
+
  
     public function tables($type_payroll_adjust_note_id)
     {
@@ -44,25 +51,38 @@ class DocumentPayrollAdjustNoteController extends Controller
         $resolutions = TypeDocument::select('id', 'prefix', 'resolution_number')->where('code', DocumentPayroll::ADJUST_NOTE_TYPE_DOCUMENT_ID)->get();
 
         // nomina eliminacion
-        if($type_payroll_adjust_note_id == 2)
+        if($type_payroll_adjust_note_id == DocumentPayrollAdjustNote::ADJUST_NOTE_ELIMINATION_ID)
         {
             return [
                 'resolutions' => $resolutions
             ];
         }
 
-        // return [
-        //     'workers' => $this->table('workers'),
-        //     'payroll_periods' => PayrollPeriod::get(),
-        //     'type_disabilities' => TypeDisability::get(),
-        //     'payment_methods' => PaymentMethod::get(),
-        //     'type_law_deductions' => TypeLawDeductions::whereTypeLawDeductionsWorker()->get(),
-        //     'advanced_configuration' => AdvancedConfiguration::first(),
-        //     'resolutions' => $resolutions
-        // ];
+        // nomina de reemplazo
+        
+        return [
+            'workers' => app(DocumentPayrollController::class)->table('workers'),
+            'payroll_periods' => PayrollPeriod::get(),
+            'type_disabilities' => TypeDisability::get(),
+            'payment_methods' => PaymentMethod::get(),
+            'type_law_deductions' => TypeLawDeductions::whereTypeLawDeductionsWorker()->get(),
+            'advanced_configuration' => AdvancedConfiguration::first(),
+            'resolutions' => $resolutions
+        ];
 
     }
-
+        
+    /**
+     * Buscar nómina afectada
+     *
+     * @param  int $id
+     * @return DocumentPayrollAdjustNoteResource
+     */
+    public function record($id)
+    {
+        return new DocumentPayrollAdjustNoteResource(DocumentPayroll::with(['accrued', 'deduction'])->findOrFail((int) $id));
+    }
+    
      
     /**
      * 

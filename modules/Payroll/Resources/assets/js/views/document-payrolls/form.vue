@@ -1515,6 +1515,7 @@
     import {documentPayrollMixin} from '../../mixins/document_payroll'
 
     export default {
+        props: ['affected_document_payroll_id', 'type_payroll_adjust_note_id'],
         mixins: [documentPayrollMixin],
         components: {
             WorkerForm, 
@@ -1526,6 +1527,7 @@
         data() {
             return {
                 resource: 'payroll/document-payrolls',
+                resource_adjust_note: 'payroll/document-payroll-adjust-notes',
                 loading_submit: false,
                 loading_form: false,
                 loading_search: false,
@@ -1558,6 +1560,7 @@
             await this.initForm()
             await this.getTables()
             await this.events()
+            await this.checkDocumentPayrollAdjustNote()
 
             this.loading_form = true
         }, 
@@ -1576,9 +1579,24 @@
             },
             percentageWorkDisability: function() {
                 return 66.67
+            },
+            isAdjustNote: function() {
+                return !_.isEmpty(this.affected_document_payroll_id)
             }
         },
-        methods: { 
+        methods: {
+            async checkDocumentPayrollAdjustNote(){
+                console.log(this.isAdjustNote, this.affected_document_payroll_id)
+
+                if(this.isAdjustNote)
+                {
+                    await this.$http.get(`/${this.resource_adjust_note}/record/${this.affected_document_payroll_id}`).then(response => {
+                        this.form = response.data.data
+                        console.log(response)
+                    })
+                }
+
+            }, 
             getValueFromInputUndefined(value){
                 return value ? value : 0 //obtener el valor de un input que puede ser un campo undefined
             },
@@ -1962,7 +1980,9 @@
             },
             async getTables(){
 
-                await this.$http.get(`/${this.resource}/tables`)
+                const url = (this.isAdjustNote) ? `/${this.resource_adjust_note}/tables/${this.type_payroll_adjust_note_id}` : `/${this.resource}/tables`
+
+                await this.$http.get(`${url}`)
                     .then(response => {
                         
                         this.all_workers = response.data.workers

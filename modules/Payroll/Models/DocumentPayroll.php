@@ -202,7 +202,7 @@ class DocumentPayroll extends ModelTenant
         return $this->prefix.'-'.$this->consecutive;
     }
         
-    
+
     /**
      * 
      * Filtros para listado de nóminas
@@ -225,6 +225,7 @@ class DocumentPayroll extends ModelTenant
 
         return $query;
     }
+
 
     /**
      * Determina si es nómina de ajuste
@@ -284,19 +285,21 @@ class DocumentPayroll extends ModelTenant
             $btn_query = true;
         }
 
-        // nomina eliminacion
+        // nomina eliminacion y reemplazo
         $btn_adjust_note_elimination = false;
-
+        $btn_adjust_note_replace = false;
         
-        // si es aceptada y no es nomina de ajuste y no tiene mas de 1 nómina afectada
+        // si es aceptada y no es nomina de ajuste 
         if($this->state_document_id === 5 && !$this->is_payroll_adjust_note)
         {
-            //cantidad de nominas eliminadas
-            $quantity_adjust_note_elimination = $this->affected_adjust_notes()->whereFilterEliminations()->count();
-            $btn_adjust_note_elimination = ($quantity_adjust_note_elimination === 0);
+            //solo puede tener 1 nómina de eliminación
+            $btn_adjust_note_elimination = ($this->affected_adjust_notes()->whereFilterEliminations()->count() === 0);
+            $btn_adjust_note_replace = true;
         }
 
         $affected_adjust_notes = $this->getDocumentPayrollRelated();
+        // nomina eliminacion y reemplazo
+
 
         return [
             'id' => $this->id,
@@ -323,6 +326,7 @@ class DocumentPayroll extends ModelTenant
             'payroll_type_environment_id' => $this->payroll_type_environment_id,
             'type_payroll_description' => $this->type_payroll_description,
             'btn_adjust_note_elimination' => $btn_adjust_note_elimination,
+            'btn_adjust_note_replace' => $btn_adjust_note_replace,
             'affected_adjust_notes' => $affected_adjust_notes,
             
         ];
@@ -414,4 +418,18 @@ class DocumentPayroll extends ModelTenant
         ];
 
     }
+
+    
+    /**
+     * 
+     * Retorna data de nómina afectada
+     *
+     * @return array
+     */
+    public function getRowResourceAdjustNote()
+    {
+        return $this;
+    }
+    
+
 }
