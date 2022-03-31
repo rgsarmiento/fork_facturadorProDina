@@ -96,7 +96,7 @@ class DocumentPayrollController extends Controller
 
     public function records(Request $request)
     {
-        $records = DocumentPayroll::where($request->column, 'like', "%{$request->value}%")->latest();
+        $records = DocumentPayroll::whereFilterRecords($request)->latest();
 
         return new DocumentPayrollCollection($records->paginate(config('tenant.items_per_page')));
     }

@@ -15,7 +15,7 @@ class DocumentPayrollCollection extends ResourceCollection
     public function toArray($request)
     {
         return $this->collection->transform(function($row, $key) {
-            return $row->getRowResource();
+            return $row->getRowCollection();
         });
     }
 }

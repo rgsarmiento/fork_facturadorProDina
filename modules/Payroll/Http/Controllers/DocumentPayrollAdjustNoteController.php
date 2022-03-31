@@ -63,53 +63,31 @@ class DocumentPayrollAdjustNoteController extends Controller
 
     }
 
-    
+     
     /**
-     * Consultar zipkey - usado en habilitación
+     * 
+     * Registar nómina de eliminación/reemplazo
      *
-     * @param  Request $request
+     * @param  DocumentPayrollAdjustNoteRequest $request
      * @return array
      */
-    // public function queryZipkey(Request $request)
-    // {
-
-    //     try {
-
-    //         $document = DocumentPayroll::findOrFail($request->id);
-    //         $helper = new DocumentPayrollHelper();
-    //         $zip_key = $document->response_api->ResponseDian->Envelope->Body->SendTestSetAsyncResponse->SendTestSetAsyncResult->ZipKey;
-    //         // dd($document);
-
-    //         return $helper->validateZipKey($zip_key, $document->number_full, $document);
-
-            
-    //     } catch (Exception $e)
-    //     {
-    //         return $this->getErrorFromException($e->getMessage(), $e);
-    //     }
-
-    // }
- 
     public function store(DocumentPayrollAdjustNoteRequest $request)
     {
 
-        // try {
+        try {
 
             $data = DB::connection('tenant')->transaction(function () use($request) {
     
                 // inputs
-                // dd($request->all());
-
                 $helper = new DocumentPayrollHelper();
                 $inputs = $helper->getInputsAdjustNote($request);
 
                 // dd($inputs);
-                
                 // registrar nomina en bd
                 $document = DocumentPayroll::create($inputs);
                 $document->adjust_note()->create($inputs['adjust_note']);
     
-                // enviar nomina a la api
+                // enviar nomina ajuste a la api
                 $send_to_api = $helper->sendToApi($document, $inputs);
     
                 $document->update([
@@ -118,43 +96,23 @@ class DocumentPayrollAdjustNoteController extends Controller
     
                 return $document;
             });
+
+            $message = $data->adjust_note->is_adjust_note_elimination ? "Nómina de eliminación {$data->number_full} registrada con éxito" : "Nómina de reemplazo {$data->number_full} registrada con éxito";
     
             return [
                 'success' => true,
-                'message' => 'Nómina registrada con éxito',
+                'message' => $message,
                 'data' => [
                     'id' => $data->id
                 ]
             ];
 
-        // } catch (Exception $e)
-        // {
-        //     return $this->getErrorFromException($e->getMessage(), $e);
-        // }
+        } catch (Exception $e)
+        {
+            return $this->getErrorFromException($e->getMessage(), $e);
+        }
 
     }
  
         
-    /**
-     * Descarga de xml/pdf
-     *
-     * @param  string $filename
-     */
-    // public function downloadFile($filename)
-    // {
-    //     return app(DocumentController::class)->downloadFile($filename);
-    // }
-
-        
-    // /**
-    //  * Envio de correo de la nómina
-    //  *
-    //  * @param  Request $request
-    //  * @return array
-    //  */
-    // public function sendEmail(Request $request)
-    // {
-    //     return (new DocumentPayrollHelper())->sendEmail($request);
-    // }
-
 }

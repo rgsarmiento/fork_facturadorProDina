@@ -201,29 +201,80 @@ class DocumentPayroll extends ModelTenant
     {
         return $this->prefix.'-'.$this->consecutive;
     }
+        
+    
+    /**
+     * 
+     * Filtros para listado de nóminas
+     *
+     * @param $query
+     * @param $request
+     */
+    public function scopeWhereFilterRecords($query, $request)
+    {
 
+        if(!is_null($request->value) && $request->value != '')
+        {
+            if($request->column === 'consecutive')
+            {
+                return $query->where('consecutive', $request->value);
+            }
+    
+            return $query->where($request->column, 'like', "%{$request->value}%");
+        }
+
+        return $query;
+    }
+
+    /**
+     * Determina si es nómina de ajuste
+     *
+     * @return bool
+     */
     public function getIsPayrollAdjustNoteAttribute()
     {
         return !is_null($this->adjust_note);
     }
+    
+
+    public function getTypeDocumentName()
+    {
+        return $this->type_document->name;
+    }
+
 
     /**
-     * Use in resource and collection
+     * Descripción para diferenciar el tipo de nómina
+     *
+     * @return string
+     */
+    public function getTypePayrollDescriptionAttribute()
+    {
+        $description = $this->getTypeDocumentName();
+
+        if($this->is_payroll_adjust_note)  $description .= " ({$this->adjust_note->type_payroll_adjust_note->name})";
+
+        return $description;
+    }
+
+
+    /**
+     * Use in collection
      *
      * @return array
      */
-    public function getRowResource(){
+    public function getRowCollection(){
 
         $filename_xml = null;
         $filename_pdf = null;
         
-        if($this->response_api){
+        if($this->response_api)
+        {
             $response = $this->response_api;
             $response_api_message = isset($response->message) ? $response->message:null;
 
             $filename_xml = $response->urlpayrollxml ?? null;
             $filename_pdf =  $response->urlpayrollpdf ?? null;
-
         }
 
         //mostrar el boton consultar si el estado es registrado y el entorno es habilitacion
@@ -232,6 +283,97 @@ class DocumentPayroll extends ModelTenant
         if($this->state_document_id === 1 && $this->payroll_type_environment_id == 2){
             $btn_query = true;
         }
+
+        // nomina eliminacion
+        $btn_adjust_note_elimination = false;
+
+        
+        // si es aceptada y no es nomina de ajuste y no tiene mas de 1 nómina afectada
+        if($this->state_document_id === 5 && !$this->is_payroll_adjust_note)
+        {
+            //cantidad de nominas eliminadas
+            $quantity_adjust_note_elimination = $this->affected_adjust_notes()->whereFilterEliminations()->count();
+            $btn_adjust_note_elimination = ($quantity_adjust_note_elimination === 0);
+        }
+
+        $affected_adjust_notes = $this->getDocumentPayrollRelated();
+
+        return [
+            'id' => $this->id,
+            'external_id' => $this->external_id,
+            'date_of_issue' => $this->date_of_issue->format('Y-m-d'),
+            'prefix' => $this->prefix,
+            'consecutive' => $this->consecutive,
+            'number_full' => $this->number_full,
+            'worker_id' => $this->worker_id,
+            'worker_full_name' => $this->model_worker->full_name,
+            'worker_email' => $this->model_worker->email,
+
+            'salary' => optional($this->accrued)->salary,
+            'accrued_total' => optional($this->accrued)->accrued_total,
+            'deductions_total' => optional($this->deduction)->deductions_total,
+
+            'filename_xml' => $filename_xml,
+            'filename_pdf' => $filename_pdf,
+
+            'state_document_id' => $this->state_document_id,
+            'state_document_name' => optional($this->state_document)->name,
+            'btn_query' => $btn_query,
+            'response_message_query_zipkey' => $this->response_message_query_zipkey,
+            'payroll_type_environment_id' => $this->payroll_type_environment_id,
+            'type_payroll_description' => $this->type_payroll_description,
+            'btn_adjust_note_elimination' => $btn_adjust_note_elimination,
+            'affected_adjust_notes' => $affected_adjust_notes,
+            
+        ];
+
+    }
+    
+    /**
+     * 
+     * Obtener nóminas relacionados (individuales o de ajuste)
+     *
+     * @return array
+     */
+    public function getDocumentPayrollRelated()
+    {
+
+        $affected_adjust_notes = $this->affected_adjust_notes->transform(function($row){
+            return $row->getAffectedDocumentPayroll();
+        });
+
+        if($this->is_payroll_adjust_note){
+
+            $affected_adjust_notes->push([
+                'number_full' => $this->adjust_note->affected_document_payroll->number_full,
+                'type_payroll_adjust_note_name' => null,
+            ]);
+        }
+
+        return $affected_adjust_notes;
+    }
+
+
+    /**
+     * Use in resource
+     *
+     * @return array
+     */
+    public function getRowResource()
+    {
+
+        $filename_xml = null;
+        $filename_pdf = null;
+        
+        if($this->response_api)
+        {
+            $response = $this->response_api;
+            $response_api_message = isset($response->message) ? $response->message:null;
+
+            $filename_xml = $response->urlpayrollxml ?? null;
+            $filename_pdf =  $response->urlpayrollpdf ?? null;
+        }
+
 
         return [
             'id' => $this->id,
@@ -257,7 +399,6 @@ class DocumentPayroll extends ModelTenant
             'payment' => $this->payment,
             'payment_dates' => $this->payment_dates,
             'response_api_message' => $response_api_message,
-            // 'response_api' => $this->response_api,
 
             'salary' => optional($this->accrued)->salary,
             'accrued_total' => optional($this->accrued)->accrued_total,
@@ -268,12 +409,9 @@ class DocumentPayroll extends ModelTenant
 
             'state_document_id' => $this->state_document_id,
             'state_document_name' => optional($this->state_document)->name,
-            'btn_query' => $btn_query,
             'response_message_query_zipkey' => $this->response_message_query_zipkey,
             'payroll_type_environment_id' => $this->payroll_type_environment_id,
-            
         ];
 
     }
-
 }

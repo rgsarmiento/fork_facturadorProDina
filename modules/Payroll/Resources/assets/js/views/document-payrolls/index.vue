@@ -19,8 +19,10 @@
                         <th>#</th>
                         <th>Fecha</th>
                         <th>Empleado</th>
+                        <th class="text-left">Tipo nómina</th>
                         <th class="text-center">Nómina</th>
                         <th class="text-center">Estado</th>
+                        <th class="text-left">Nóminas relacionadas</th>
                         <th class="text-center">Salario</th>
                         <th class="text-center">T. Devengados</th>
                         <th class="text-center">T. Deducciones</th>
@@ -30,6 +32,7 @@
                         <td>{{ index }}</td>
                         <td>{{ row.date_of_issue }}</td>
                         <td>{{ row.worker_full_name }}</td>  
+                        <td class="text-left">{{ row.type_payroll_description }}</td>  
                         <td class="text-center">{{ row.number_full }}</td>  
                         <td class="text-center">
                             <template v-if="row.state_document_id">
@@ -38,16 +41,25 @@
                                 </span>
                             </template>
                         </td>  
+                        <td>
+                            <template v-for="(item, index) in row.affected_adjust_notes">
+                                <span class="ml-1" :key="index">
+                                    {{ item.number_full }} 
+                                    <template v-if="item.type_payroll_adjust_note_name">
+                                        ({{ item.type_payroll_adjust_note_name }})
+                                    </template>
+                                    <br>
+                                </span>
+                            </template>
+                        </td>  
                         <td class="text-center">{{ row.salary }}</td>  
                         <td class="text-center">{{ row.accrued_total }}</td>  
                         <td class="text-center">{{ row.deductions_total }}</td>  
                         <td class="text-right">
 
-                            <!-- si la nómina es aceptada -->
-                            <template v-if="row.state_document_id === 5">
+                            <template v-if="row.btn_adjust_note_elimination">
                                 <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickEliminationPayroll(row.id, row.number_full)">N. Eliminación</button>
                             </template>
-                            <!-- si la nómina es aceptada -->
 
                             <template v-if="row.btn_query">
                                 <el-tooltip class="item" effect="dark" content="Consultar ZIPKEY a la DIAN" placement="top-start">

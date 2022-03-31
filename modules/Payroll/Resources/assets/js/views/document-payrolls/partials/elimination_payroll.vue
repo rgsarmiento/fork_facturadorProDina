@@ -99,13 +99,14 @@
             }, 
             submit() {
 
-                // this.loading_submit = true
+                this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form)
                     .then(response => {
+
                         if (response.data.success) {
                             this.$message.success(response.data.message)
                             this.$eventHub.$emit('reloadData')
-                            this.close()
+                            this.clickClose()
                         } else {
                             this.$message.error(response.data.message)
                         }

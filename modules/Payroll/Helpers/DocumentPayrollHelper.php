@@ -122,25 +122,51 @@ class DocumentPayrollHelper
         
     }
 
-        
+    
+    /**
+     * 
+     * Obtener url y data para enviar nómina a api
+     *
+     * @param  DocumentPayroll $document
+     * @param  array $inputs
+     */
+    private function getEndpointDataApi(DocumentPayroll $document, $inputs)
+    {
+        if($document->is_payroll_adjust_note)
+        {
+            $params = $this->getParamsAdjustNoteForApi($document, $inputs);
+            $url = ($this->company->payroll_type_environment_id == 2) ? "ubl2.1/payroll-adjust-note/{$this->company->test_set_id_payroll}" : "ubl2.1/payroll-adjust-note";
+        }
+        else
+        {
+            $params = $this->getParamsForApi($document, $inputs);
+            $url = ($this->company->payroll_type_environment_id == 2) ? "ubl2.1/payroll/{$this->company->test_set_id_payroll}" : "ubl2.1/payroll";
+        }
+
+        return [
+            'params' => $params,
+            'url' => $url,
+        ];
+    }
+
+
     /**
      * Enviar nomina a la api
      *
      * @param  DocumentPayroll $document
-     * @param  mixed $inputs
+     * @param  array $inputs
      */
     public function sendToApi(DocumentPayroll $document, $inputs)
     {
 
-        dd($document->is_payroll_adjust_note, $inputs);
-        $params = $this->getParamsForApi($document, $inputs);
-        // dd($params);
         $connection_api = new HttpConnectionApi($this->company->api_token);
-        // $send_request_to_api = $connection_api->sendRequestToApi("ubl2.1/payroll/{$this->company->test_set_id_payroll}", $params, 'POST');
-
-        $url = ($this->company->payroll_type_environment_id == 2) ? "ubl2.1/payroll/{$this->company->test_set_id_payroll}" : "ubl2.1/payroll";
+        
+        $data_api = $this->getEndpointDataApi($document, $inputs);
+        $params = $data_api['params'];
+        $url = $data_api['url'];
+        // dd($url, $params);
+        
         $send_request_to_api = $connection_api->sendRequestToApi($url, $params, 'POST');
-
         $number_full = "{$params['prefix']}-{$params['consecutive']}";
 
         //error validacion form request api
@@ -339,9 +365,61 @@ class DocumentPayrollHelper
         ]);
     }
 
+
+    /**
+     * 
+     * Obtener array para enviar a la api (nómina eliminación y reemplazo)
+     *
+     * @param $document
+     * @param $inputs
+     * @return array
+     */
+    public function getParamsAdjustNoteForApi($document, $inputs)
+    {
+
+        $type_document_id = (int) $document->type_document->code;
+        $adjust_note = $document->adjust_note;
+        $affected_document_payroll = $adjust_note->affected_document_payroll;
+        $type_note = $adjust_note->type_payroll_adjust_note_id;
+
+        // dd($type_note, $document, $inputs);
+
+        $predecessor = [
+            'predecessor_number'=> $affected_document_payroll->consecutive,
+            'predecessor_cune'=> $affected_document_payroll->response_api->cune,
+            'predecessor_issue_date'=> $affected_document_payroll->date_of_issue->format('Y-m-d')
+        ];
+
+        // dd($predecessor);
+
+        // nóminas de eliminación
+        if($adjust_note->is_adjust_note_elimination)
+        {
+            return [
+
+                'type_document_id' => $type_document_id, //id tipo documento nomina eliminación
+                'resolution_number' => $inputs['resolution_number'],
+                'head_note' => $document->head_note,
+                'foot_note' => $document->foot_note,
+                'type_note'=> $type_note,
+                'predecessor'=> $predecessor,
+                'period' => $document->period,
+                'prefix' => $document->prefix,
+                'consecutive' => $document->consecutive,
+                'payroll_period_id' => $document->payroll_period_id,
+                'notes' => $document->notes,
+            ];
+        }
+
+        // nóminas de ajuste
+        return [
+
+        ];
+
+    }
     
     /**
-     * Obtener array para enviar a la api
+     * Obtener array para enviar a la api (nómina inicial)
      *
      * @param  mixed $document
      * @param  mixed $inputs
