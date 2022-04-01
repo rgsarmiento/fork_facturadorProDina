@@ -61,7 +61,7 @@ class DocumentPayrollAdjustNoteController extends Controller
         // nomina de reemplazo
         
         return [
-            'workers' => app(DocumentPayrollController::class)->table('workers'),
+            'workers' => [],
             'payroll_periods' => PayrollPeriod::get(),
             'type_disabilities' => TypeDisability::get(),
             'payment_methods' => PaymentMethod::get(),
@@ -101,18 +101,25 @@ class DocumentPayrollAdjustNoteController extends Controller
                 // inputs
                 $helper = new DocumentPayrollHelper();
                 $inputs = $helper->getInputsAdjustNote($request);
-
                 // dd($inputs);
+
                 // registrar nomina en bd
                 $document = DocumentPayroll::create($inputs);
                 $document->adjust_note()->create($inputs['adjust_note']);
+
+                // si es nómina reemplazo, registrar devengados y deducciones
+                if(!$document->adjust_note->is_adjust_note_elimination)
+                {
+                    $document->accrued()->create($inputs['accrued']);
+                    $document->deduction()->create($inputs['deduction']);
+                }
     
                 // enviar nomina ajuste a la api
-                $send_to_api = $helper->sendToApi($document, $inputs);
+                // $send_to_api = $helper->sendToApi($document, $inputs);
     
-                $document->update([
-                    'response_api' => $send_to_api
-                ]);
+                // $document->update([
+                //     'response_api' => $send_to_api
+                // ]);
     
                 return $document;
             });

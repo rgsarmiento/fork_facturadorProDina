@@ -23,10 +23,14 @@ function sumTotalFromArray(array, property)
     return _.sumBy(array, property)
 }
 
+function getValueIfNull(input, output_value){
+    return input ? input : output_value
+}
 
 export {
     roundNumberFormat, 
     getDiffInDays, 
     getArrayStartEndDate, 
-    sumTotalFromArray
+    sumTotalFromArray,
+    getValueIfNull
 }

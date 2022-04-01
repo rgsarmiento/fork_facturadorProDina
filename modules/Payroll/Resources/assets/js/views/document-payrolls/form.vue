@@ -1,10 +1,16 @@
 <template>
-    <div class="card mb-0 pt-2 pt-md-0">
+    <div class="card mb-0 pt-2 pt-md-0" v-loading="loading">
+
         <div class="tab-content" v-if="loading_form">
             <div class="invoice">
                 <form autocomplete="off" @submit.prevent="submit">
                     <div class="form-body">
                         <div class="row">
+                        </div>
+                        <div class="row" v-if="isAdjustNote">
+                            <div class="col-md-12">
+                                <h4><b>Nómina de reemplazo ({{ form.number_full }})</b></h4>
+                            </div>
                         </div>
                         <div class="row mt-4">
 
@@ -15,12 +21,17 @@
                                         <el-tooltip class="item" effect="dark" content="Escribir al menos 3 caracteres para buscar" placement="top-start">
                                             <i class="fa fa-info-circle"></i>
                                         </el-tooltip>
-                                        <a href="#" @click.prevent="showDialogNewWorker = true">[+ Nuevo]</a>
+
+                                        <template v-if="!isAdjustNote">
+                                            <a href="#" @click.prevent="showDialogNewWorker = true">[+ Nuevo]</a>
+                                        </template>
+
                                     </label>
                                     <el-select v-model="form.worker_id" filterable remote class="border-left rounded-left border-info" popper-class="el-select-workers"
                                         placeholder="Escriba el nombre o número de documento del empleado"
                                         :remote-method="searchRemoteWorkers"
                                         :loading="loading_search"
+                                        :disabled="isAdjustNote"
                                         @change="changeWorker">
 
                                         <el-option v-for="option in workers" :key="option.id" :value="option.id" :label="option.search_fullname"></el-option>
@@ -1502,6 +1513,13 @@
                             >
                             </document-payroll-extra-hours>
         </div>
+        <div class="tab-content" v-else>
+            <div class="invoice">
+                <div class="row mt-5 mb-5">
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
  
@@ -1513,6 +1531,7 @@
     import DocumentPayrollLicenses from './partials/licenses.vue' 
     import DocumentPayrollDeductionOthers from './partials/deduction_others.vue' 
     import {documentPayrollMixin} from '../../mixins/document_payroll'
+    import {getValueIfNull} from '../../helpers/functions'
 
     export default {
         props: ['affected_document_payroll_id', 'type_payroll_adjust_note_id'],
@@ -1553,6 +1572,7 @@
                 showDialogDocumentPayrollExtraHours: false,
                 quantity_days_month: 30,
                 quantity_days_year: 360,
+                loading: false
             }
         }, 
         async created() {
@@ -1586,17 +1606,112 @@
         },
         methods: {
             async checkDocumentPayrollAdjustNote(){
-                console.log(this.isAdjustNote, this.affected_document_payroll_id)
 
                 if(this.isAdjustNote)
                 {
+                    this.loading = true
                     await this.$http.get(`/${this.resource_adjust_note}/record/${this.affected_document_payroll_id}`).then(response => {
-                        this.form = response.data.data
-                        console.log(response)
+                        
+                        this.setFormDataAdjustNote(response.data.data)
+                        // console.log(response)
+                    })
+                    .then(()=> {
+                        this.loading = false
                     })
                 }
 
             }, 
+            setFormDataAdjustNote(data){
+
+                this.form.period = data.period
+                this.form.payroll_period_id = data.payroll_period_id
+                this.form.worker_id = data.worker_id
+                this.form.payment = data.payment 
+                this.form.payment_dates = data.payment_dates
+                this.form.number_full = data.number_full
+                this.form.type_payroll_adjust_note_id = this.type_payroll_adjust_note_id //tipo nómina ajuste (reemplazo)
+                this.form.document_payroll_id = this.affected_document_payroll_id //id de nómina afectada
+
+                this.reloadDataWorkers(this.form.worker_id)
+
+                // devengados
+
+                this.form.accrued.worked_days = data.accrued.worked_days 
+                this.form.accrued.salary = data.accrued.salary 
+                this.form.accrued.accrued_total = data.accrued.accrued_total
+
+                this.form.accrued.transportation_allowance = getValueIfNull(data.accrued.transportation_allowance, undefined)
+                this.form.accrued.telecommuting = getValueIfNull(data.accrued.telecommuting, undefined)
+                this.form.accrued.endowment = getValueIfNull(data.accrued.endowment, undefined)
+                this.form.accrued.sustenance_support = getValueIfNull(data.accrued.sustenance_support, undefined)
+                this.form.accrued.withdrawal_bonus = getValueIfNull(data.accrued.withdrawal_bonus, undefined)
+                this.form.accrued.compensation = getValueIfNull(data.accrued.compensation, undefined)
+                this.form.accrued.salary_viatics = getValueIfNull(data.accrued.salary_viatics, undefined)
+                this.form.accrued.non_salary_viatics = getValueIfNull(data.accrued.non_salary_viatics, undefined)
+                this.form.accrued.refund = getValueIfNull(data.accrued.refund, undefined)
+
+                this.form.accrued.work_disabilities = data.accrued.work_disabilities
+                this.form.accrued.service_bonus = data.accrued.service_bonus
+                this.form.accrued.severance = data.accrued.severance
+                this.form.accrued.common_vacation = data.accrued.common_vacation
+                this.form.accrued.paid_vacation = data.accrued.paid_vacation
+                this.form.accrued.bonuses = data.accrued.bonuses
+                this.form.accrued.aid = data.accrued.aid
+                this.form.accrued.other_concepts = data.accrued.other_concepts
+                this.form.accrued.maternity_leave = data.accrued.maternity_leave
+                this.form.accrued.paid_leave = data.accrued.paid_leave
+                this.form.accrued.non_paid_leave = data.accrued.non_paid_leave
+                this.form.accrued.commissions = data.accrued.commissions
+                this.form.accrued.advances = data.accrued.advances
+                this.form.accrued.epctv_bonuses = data.accrued.epctv_bonuses
+                this.form.accrued.third_party_payments = data.accrued.third_party_payments
+                this.form.accrued.compensations = data.accrued.compensations
+                this.form.accrued.legal_strike = data.accrued.legal_strike
+                this.form.accrued.heds = data.accrued.heds
+                this.form.accrued.hens = data.accrued.hens
+                this.form.accrued.hrns = data.accrued.hrns
+                this.form.accrued.heddfs = data.accrued.heddfs
+                this.form.accrued.hrddfs = data.accrued.hrddfs
+                this.form.accrued.hendfs = data.accrued.hendfs
+                this.form.accrued.hrndfs = data.accrued.hrndfs
+
+                // devengados
+
+
+                // deducciones
+
+                this.form.deduction.eps_type_law_deductions_id = data.deduction.eps_type_law_deductions_id
+                this.form.deduction.eps_deduction = data.deduction.eps_deduction 
+                this.form.deduction.pension_type_law_deductions_id = data.deduction.pension_type_law_deductions_id
+                this.form.deduction.pension_deduction = data.deduction.pension_deduction 
+                this.form.deduction.deductions_total = data.deduction.deductions_total 
+
+                this.form.deduction.fondossp_type_law_deductions_id = getValueIfNull(data.deduction.fondossp_type_law_deductions_id, undefined)
+                this.form.deduction.fondosp_deduction_SP = getValueIfNull(data.deduction.fondosp_deduction_SP, undefined)
+                this.form.deduction.fondossp_sub_type_law_deductions_id = getValueIfNull(data.deduction.fondossp_sub_type_law_deductions_id, undefined)
+                this.form.deduction.fondosp_deduction_sub = getValueIfNull(data.deduction.fondosp_deduction_sub, undefined)
+
+                this.form.deduction.afc = getValueIfNull(data.deduction.afc, undefined)
+                this.form.deduction.refund = getValueIfNull(data.deduction.refund, undefined)
+                this.form.deduction.debt = getValueIfNull(data.deduction.debt, undefined)
+                this.form.deduction.education = getValueIfNull(data.deduction.education, undefined)
+
+                this.form.deduction.voluntary_pension = getValueIfNull(data.deduction.voluntary_pension, undefined)
+                this.form.deduction.withholding_at_source = getValueIfNull(data.deduction.withholding_at_source, undefined)
+                this.form.deduction.cooperative = getValueIfNull(data.deduction.cooperative, undefined)
+                this.form.deduction.tax_liens = getValueIfNull(data.deduction.tax_liens, undefined)
+                this.form.deduction.supplementary_plan = getValueIfNull(data.deduction.supplementary_plan, undefined)
+
+                this.form.deduction.labor_union = data.deduction.labor_union
+                this.form.deduction.sanctions = data.deduction.sanctions
+                this.form.deduction.orders = data.deduction.orders
+                this.form.deduction.third_party_payments = data.deduction.third_party_payments
+                this.form.deduction.advances = data.deduction.advances
+                this.form.deduction.other_deductions = data.deduction.other_deductions
+
+                // deducciones
+
+            },
             getValueFromInputUndefined(value){
                 return value ? value : 0 //obtener el valor de un input que puede ser un campo undefined
             },
@@ -1714,6 +1829,7 @@
                 this.form = {
                     type_document_id: null,
                     prefix: null,
+                    number_full: null,
                     period: {
                         admision_date: moment().format('YYYY-MM-DD'),
                         settlement_start_date: null,
@@ -1982,6 +2098,8 @@
 
                 const url = (this.isAdjustNote) ? `/${this.resource_adjust_note}/tables/${this.type_payroll_adjust_note_id}` : `/${this.resource}/tables`
 
+                this.loading = true
+                
                 await this.$http.get(`${url}`)
                     .then(response => {
                         
@@ -1997,6 +2115,9 @@
                         this.advanced_configuration = response.data.advanced_configuration
 
                         this.filterWorkers(); 
+                    })
+                    .then(()=> {
+                        this.loading = false
                     })
             },
             changeResolution(){
@@ -2402,9 +2523,9 @@
                 const validateData = await this.validateData()
                 if(!validateData.success) return this.$message.error(validateData.message)
 
-                this.loading_submit = true
-                
-                await this.$http.post(`/${this.resource}`, this.form).then(response => {
+                // this.loading_submit = true
+
+                await this.$http.post(`/${(this.isAdjustNote) ? this.resource_adjust_note : this.resource}`, this.form).then(response => {
                     // console.log(response)
                     if (response.data.success) {
                         this.resetForm()

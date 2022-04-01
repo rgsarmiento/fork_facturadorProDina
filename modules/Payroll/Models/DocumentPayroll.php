@@ -3,7 +3,6 @@
 namespace Modules\Payroll\Models;
 
 use App\Models\Tenant\{
-    ModelTenant,
     User
 };
 use Modules\Factcolombia1\Models\Tenant\{
@@ -19,7 +18,7 @@ use App\Models\Tenant\{
 };
 
 
-class DocumentPayroll extends ModelTenant
+class DocumentPayroll extends PayrollBaseModel
 {
 
     protected $table = 'co_document_payrolls';
@@ -124,7 +123,7 @@ class DocumentPayroll extends ModelTenant
 
     public function getPaymentDatesAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setPaymentDatesAttribute($value)
@@ -422,13 +421,36 @@ class DocumentPayroll extends ModelTenant
     
     /**
      * 
-     * Retorna data de nómina afectada
+     * Retorna data de nómina afectada, usado cuando se genera nómina de reemplazo
      *
      * @return array
      */
     public function getRowResourceAdjustNote()
     {
-        return $this;
+        return [
+
+            'date_of_issue' => $this->date_of_issue,
+            'time_of_issue' => $this->time_of_issue,
+    
+            'number_full' => $this->number_full,
+    
+            'head_note' => $this->head_note,
+            'foot_note' => $this->foot_note,
+    
+            'novelty' => $this->novelty,
+    
+            'period' => $this->period,
+            
+            'payroll_period_id' => $this->payroll_period_id,
+            'notes' => $this->notes,
+            
+            'worker_id' => $this->worker_id,
+            'payment' => $this->payment,
+            'payment_dates' => $this->payment_dates,
+            'accrued' => $this->accrued->getRowResourceAdjustNote(),
+            'deduction' => $this->deduction->getRowResourceAdjustNote(),
+
+        ];
     }
     
 

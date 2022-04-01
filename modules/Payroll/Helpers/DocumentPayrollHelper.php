@@ -10,6 +10,7 @@ use Modules\Factcolombia1\Models\TenantService\{
 };
 use Modules\Payroll\Models\{
     DocumentPayroll,
+    DocumentPayrollAdjustNote
 };
 use Exception;
 
@@ -82,42 +83,62 @@ class DocumentPayrollHelper
     public function getValuesAdjustNote($inputs)
     {
 
-        $establishment = EstablishmentInput::set(auth()->user()->establishment_id);
+        $establishment_id = auth()->user()->establishment_id;
+        $establishment = EstablishmentInput::set($establishment_id);
         $ignore_state_document_id = (int) ($this->company->payroll_type_environment_id === 2);
         $consecutive = $this->getConsecutive(DocumentPayroll::ADJUST_NOTE_TYPE_DOCUMENT_ID, $ignore_state_document_id, $inputs->prefix);
         $affected_document_payroll_id = $inputs->document_payroll_id;
 
+        $user_id = auth()->id();
+        $external_id = Str::uuid()->toString();
+        $date_of_issue = date('Y-m-d');
+        $time_of_issue = date('H:i:s');
+
+        $adjust_note = [
+            'type_payroll_adjust_note_id' => $inputs->type_payroll_adjust_note_id,
+            'affected_document_payroll_id' => $affected_document_payroll_id,
+        ];
+
         // eliminar
-        if($inputs->type_payroll_adjust_note_id === 2)
+        if($inputs->type_payroll_adjust_note_id === DocumentPayrollAdjustNote::ADJUST_NOTE_ELIMINATION_ID)
         {
 
-            $document_payroll = DocumentPayroll::findOrFail($affected_document_payroll_id);
+            $document_payroll = DocumentPayroll::select('period', 'payroll_period_id', 'worker_id', 'worker')->findOrFail($affected_document_payroll_id);
 
             return [
                 'consecutive' => $consecutive,
-                'user_id' => auth()->id(),
-                'external_id' => Str::uuid()->toString(),
-                'establishment_id' => auth()->user()->establishment_id,
+                'user_id' => $user_id,
+                'external_id' => $external_id,
+                'establishment_id' => $establishment_id,
                 'establishment' => $establishment,
-                'date_of_issue' => date('Y-m-d'),
-                'time_of_issue' => date('H:i:s'),
+                'date_of_issue' => $date_of_issue,
+                'time_of_issue' => $time_of_issue,
                 'state_document_id' => self::REGISTERED, //estado inicial
                 'payroll_type_environment_id' => $this->company->payroll_type_environment_id,
                 'period' => $document_payroll->period,
                 'payroll_period_id' => $document_payroll->payroll_period_id,
                 'worker_id' => $document_payroll->worker_id,
                 'worker' => $document_payroll->worker,
-                'adjust_note' => [
-                    'type_payroll_adjust_note_id' => $inputs->type_payroll_adjust_note_id,
-                    'affected_document_payroll_id' => $affected_document_payroll_id,
-                ],
+                'adjust_note' => $adjust_note,
             ];
         }
 
-        //reemplazar
+
+        //nómina reemplazo
+        $worker = WorkerInput::set($inputs->worker_id);
 
         return [
-
+            'consecutive' => $consecutive,
+            'user_id' => $user_id,
+            'external_id' => $external_id,
+            'establishment_id' => $establishment_id,
+            'establishment' => $establishment,
+            'date_of_issue' => $date_of_issue,
+            'time_of_issue' => $time_of_issue,
+            'worker' => $worker,
+            'state_document_id' => self::REGISTERED, //estado inicial
+            'payroll_type_environment_id' => $this->company->payroll_type_environment_id,
+            'adjust_note' => $adjust_note,
         ];
         
     }

@@ -2,13 +2,12 @@
 
 namespace Modules\Payroll\Models;
 
-use App\Models\Tenant\ModelTenant;
 use Modules\Factcolombia1\Models\Tenant\{
     TypeDocument,
 };
 
 
-class DocumentPayrollAccrued extends ModelTenant
+class DocumentPayrollAccrued extends PayrollBaseModel
 {
 
     protected $table = 'co_document_payroll_accrued';
@@ -71,7 +70,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getHedsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setHedsAttribute($value)
@@ -81,7 +80,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getHensAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setHensAttribute($value)
@@ -91,7 +90,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getHrnsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setHrnsAttribute($value)
@@ -101,7 +100,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getHeddfsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setHeddfsAttribute($value)
@@ -111,7 +110,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getHrddfsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setHrddfsAttribute($value)
@@ -121,7 +120,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getHendfsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setHendfsAttribute($value)
@@ -131,7 +130,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getHrndfsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setHrndfsAttribute($value)
@@ -141,7 +140,7 @@ class DocumentPayrollAccrued extends ModelTenant
     
     public function getCommonVacationAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setCommonVacationAttribute($value)
@@ -151,7 +150,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getPaidVacationAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setPaidVacationAttribute($value)
@@ -161,7 +160,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getServiceBonusAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setServiceBonusAttribute($value)
@@ -171,7 +170,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getSeveranceAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setSeveranceAttribute($value)
@@ -181,7 +180,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getWorkDisabilitiesAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setWorkDisabilitiesAttribute($value)
@@ -191,7 +190,7 @@ class DocumentPayrollAccrued extends ModelTenant
  
     public function getMaternityLeaveAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setMaternityLeaveAttribute($value)
@@ -201,7 +200,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getPaidLeaveAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setPaidLeaveAttribute($value)
@@ -211,7 +210,7 @@ class DocumentPayrollAccrued extends ModelTenant
  
     public function getNonPaidLeaveAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setNonPaidLeaveAttribute($value)
@@ -221,7 +220,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getBonusesAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setBonusesAttribute($value)
@@ -231,7 +230,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getAidAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setAidAttribute($value)
@@ -241,7 +240,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getLegalStrikeAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setLegalStrikeAttribute($value)
@@ -251,7 +250,7 @@ class DocumentPayrollAccrued extends ModelTenant
     
     public function getOtherConceptsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setOtherConceptsAttribute($value)
@@ -261,7 +260,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getCompensationsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setCompensationsAttribute($value)
@@ -271,7 +270,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getEpctvBonusesAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setEpctvBonusesAttribute($value)
@@ -281,7 +280,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getCommissionsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setCommissionsAttribute($value)
@@ -291,7 +290,7 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getThirdPartyPaymentsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setThirdPartyPaymentsAttribute($value)
@@ -301,23 +300,12 @@ class DocumentPayrollAccrued extends ModelTenant
 
     public function getAdvancesAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setAdvancesAttribute($value)
     {
         $this->attributes['advances'] = $this->getArrayValueAndValidate($value);
-    }
-
-    /**
-     * 
-     * Validar dato y retornar valor correspondiente para campos tipo json
-     *
-     * @param $value
-     */
-    public function getArrayValueAndValidate($value)
-    {
-        return (is_null($value) || empty($value)) ? null : json_encode($value);
     }
 
     public function payroll() 
@@ -529,6 +517,65 @@ class DocumentPayrollAccrued extends ModelTenant
             'non_salary_viatics' => $this->non_salary_viatics,
             'refund' => $this->refund,
     
+        ];
+
+    }
+
+    
+    /**
+     * 
+     * Retorna data de nómina afectada, usado cuando se genera nómina de reemplazo
+     *
+     * @return array
+     */
+    public function getRowResourceAdjustNote()
+    {
+        return [
+            
+            'co_document_payroll_id' => $this->co_document_payroll_id,
+            'worked_days' => $this->worked_days,
+            'salary' => $this->salary,
+            'transportation_allowance' => $this->transportation_allowance,
+
+            'heds' => $this->checkValueFromArray($this->heds),
+            'hens' => $this->checkValueFromArray($this->hens),
+            'hrns' => $this->checkValueFromArray($this->hrns),
+            'heddfs' => $this->checkValueFromArray($this->heddfs),
+            'hrddfs' => $this->checkValueFromArray($this->hrddfs),
+            'hendfs' => $this->checkValueFromArray($this->hendfs),
+            'hrndfs' => $this->checkValueFromArray($this->hrndfs),
+
+            'common_vacation' => $this->checkValueFromArray($this->common_vacation),
+            'paid_vacation' => $this->checkValueFromArray($this->paid_vacation),
+            'service_bonus' => $this->checkValueFromArray($this->service_bonus),
+            'severance' => $this->checkValueFromArray($this->severance),
+
+            'work_disabilities' => $this->checkValueFromArray($this->work_disabilities),
+            'maternity_leave' => $this->checkValueFromArray($this->maternity_leave),
+            'paid_leave' => $this->checkValueFromArray($this->paid_leave),
+            'non_paid_leave' => $this->checkValueFromArray($this->non_paid_leave),
+
+            'bonuses' => $this->checkValueFromArray($this->bonuses),
+            'aid' => $this->checkValueFromArray($this->aid),
+            'legal_strike' => $this->checkValueFromArray($this->legal_strike),
+            'other_concepts' => $this->checkValueFromArray($this->other_concepts),
+
+            'compensations' => $this->checkValueFromArray($this->compensations),
+            'epctv_bonuses' => $this->checkValueFromArray($this->epctv_bonuses),
+            'commissions' => $this->checkValueFromArray($this->commissions),
+            'third_party_payments' => $this->checkValueFromArray($this->third_party_payments),
+            'advances' => $this->checkValueFromArray($this->advances),
+
+            'endowment' => $this->endowment,
+            'sustenance_support' => $this->sustenance_support,
+            'telecommuting' => $this->telecommuting,
+            'withdrawal_bonus' => $this->withdrawal_bonus,
+            'compensation' => $this->compensation,
+            'accrued_total' => $this->accrued_total,
+            
+            'salary_viatics' => $this->salary_viatics,
+            'non_salary_viatics' => $this->non_salary_viatics,
+            'refund' => $this->refund,
         ];
 
     }

@@ -2,9 +2,8 @@
 
 namespace Modules\Payroll\Models;
 
-use App\Models\Tenant\ModelTenant; 
 
-class TypePayrollAdjustNote extends ModelTenant
+class TypePayrollAdjustNote extends PayrollBaseModel
 {
 
     protected $table = 'co_type_payroll_adjust_notes';

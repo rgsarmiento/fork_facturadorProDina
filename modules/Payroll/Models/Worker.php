@@ -2,7 +2,6 @@
 
 namespace Modules\Payroll\Models;
 
-use App\Models\Tenant\ModelTenant;
 use Modules\Factcolombia1\Models\TenantService\{
     TypeWorker,
     SubTypeWorker,
@@ -13,7 +12,7 @@ use Modules\Factcolombia1\Models\TenantService\{
 };
 
 
-class Worker extends ModelTenant
+class Worker extends PayrollBaseModel
 {
 
     protected $table = 'co_workers';
