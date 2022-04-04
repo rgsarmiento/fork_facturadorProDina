@@ -115,11 +115,11 @@ class DocumentPayrollAdjustNoteController extends Controller
                 }
     
                 // enviar nomina ajuste a la api
-                // $send_to_api = $helper->sendToApi($document, $inputs);
+                $send_to_api = $helper->sendToApi($document, $inputs);
     
-                // $document->update([
-                //     'response_api' => $send_to_api
-                // ]);
+                $document->update([
+                    'response_api' => $send_to_api
+                ]);
     
                 return $document;
             });

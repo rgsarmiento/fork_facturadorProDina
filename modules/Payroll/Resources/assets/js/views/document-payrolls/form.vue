@@ -195,6 +195,21 @@
                             <el-tab-pane label="Devengados" name="accrued">
                                 
                                 <div class="row"> 
+
+                                    <template v-if="isAdjustNote">
+                                        <div class="col-md-3">
+                                            <div class="form-group" :class="{'has-danger': errors['accrued.total_base_salary']}">
+                                                <label class="control-label">Salario base
+                                                    <span class="text-danger"> *</span>
+                                                    <el-tooltip class="item" effect="dark" content="Salario base del empleado (equivalente a 30 días), no se afecta por los días trabajados" placement="top-start">
+                                                        <i class="fa fa-info-circle"></i>
+                                                    </el-tooltip>
+                                                </label>
+                                                <el-input-number v-model="form.accrued.total_base_salary" controls-position="right" @change="changeTotalBaseSalary"></el-input-number>
+                                                <small class="form-control-feedback" v-if="errors['accrued.total_base_salary']" v-text="errors['accrued.total_base_salary'][0]"></small>
+                                            </div>
+                                        </div>
+                                    </template>
                                     
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['accrued.worked_days']}">
@@ -208,7 +223,6 @@
                                         <div class="form-group" :class="{'has-danger': errors['accrued.salary']}">
                                             <label class="control-label">Salario<span class="text-danger"> *</span></label>
                                             <el-input-number v-model="form.accrued.salary" :min="0" controls-position="right" disabled></el-input-number>
-                                            <!-- <el-input-number v-model="form.accrued.salary" :min="0" controls-position="right" @change="changeAccruedSalary"></el-input-number> -->
                                             <small class="form-control-feedback" v-if="errors['accrued.salary']" v-text="errors['accrued.salary'][0]"></small>
                                         </div>
                                     </div>
@@ -1635,6 +1649,7 @@
                 this.reloadDataWorkers(this.form.worker_id)
 
                 // devengados
+                this.form.accrued.total_base_salary = parseFloat(data.worker_total_base_salary) //asignar salario base 
 
                 this.form.accrued.worked_days = data.accrued.worked_days 
                 this.form.accrued.salary = data.accrued.salary 
@@ -1711,6 +1726,17 @@
 
                 // deducciones
 
+            },
+            async changeTotalBaseSalary(){
+
+                this.form.accrued.salary = this.form.accrued.total_base_salary
+                //recalcular campos que utilizan el salario base del empleado para calculos, estos se ven afectados por el mismo
+                await this.recalculateData()
+
+                // await this.calculateTotal()
+
+                await this.changeWorkedDays()
+                
             },
             getValueFromInputUndefined(value){
                 return value ? value : 0 //obtener el valor de un input que puede ser un campo undefined
@@ -2318,7 +2344,8 @@
 
                 return this.getValueFromInputUndefined(this.form.deduction.afc)
                         + this.getValueFromInputUndefined(this.form.deduction.refund)
-                        + this.getValueFromInputUndefined(this.form.deduction.debt)
+                        - this.getValueFromInputUndefined(this.form.deduction.debt) // resta a deducciones
+                        // + this.getValueFromInputUndefined(this.form.deduction.debt)
                         + this.getValueFromInputUndefined(this.form.deduction.education)
                         + this.getValueFromInputUndefined(this.form.deduction.voluntary_pension)
                         + this.getValueFromInputUndefined(this.form.deduction.withholding_at_source)
@@ -2339,33 +2366,45 @@
                 // let worker = await _.find(this.workers, {id : this.form.worker_id})
                 this.form.select_worker = await _.find(this.workers, {id : this.form.worker_id})
 
-                //autocompletar campos
-                await this.autocompleteDataFromWorker(this.form.select_worker)
-
-                //recalcular campos que utilizan el salario base del empleado para calculos, estos se ven afectados por el mismo
-                await this.recalculateData()
-
-                await this.calculateTotal()
+                if(!this.isAdjustNote)
+                {
+                    //autocompletar campos
+                    await this.autocompleteDataFromWorker(this.form.select_worker)
+    
+                    //recalcular campos que utilizan el salario base del empleado para calculos, estos se ven afectados por el mismo
+                    await this.recalculateData()
+    
+                    await this.calculateTotal()
+                }
 
             },
             recalculateLicense(){
                 this.$refs.componentDocumentPayrollLicenses.recalculateDataLicense()
             },
-            recalculateData(){
+            recalculateExtraHours(){
+                this.$refs.componentDocumentPayrollExtraHours.recalculateDataExtraHours()
+            },
+            async recalculateData(){
 
                 // recalcular campos devengados
+                
+                await this.calculateTransportationAllowance()
+
+                //recalcular pagos(totales) de las horas extras, estas se calculan en base al salario base
+                await this.recalculateExtraHours()
+
                 // prima de servicio
-                this.recalculateServiceBonus()
+                await this.recalculateServiceBonus()
 
                 // incapacidades
-                this.recalculateWorkDisability()
+                await this.recalculateWorkDisability()
 
                 // licencias
-                this.recalculateLicense()
+                await this.recalculateLicense()
 
                 // recalcular campos deducciones
                 // sindicatos
-                this.recalculateLaborUnion()
+                await this.recalculateLaborUnion()
 
             },
             autocompleteDataFromWorker(worker){
@@ -2388,10 +2427,10 @@
                 this.form.accrued.worked_days = this.quantity_days_month
                 this.form.accrued.salary = parseFloat(worker_salary)
                 this.form.accrued.total_base_salary = parseFloat(worker_salary) //salario completo
-                this.calculateTransportationAllowance()
+                // this.calculateTransportationAllowance()
 
-                //recalcular pagos(totales) de las horas extras, estas se calculan en base al salario base
-                await this.$refs.componentDocumentPayrollExtraHours.recalculateDataExtraHours()
+                // //recalcular pagos(totales) de las horas extras, estas se calculan en base al salario base
+                // await this.$refs.componentDocumentPayrollExtraHours.recalculateDataExtraHours()
 
             },
             changePayrollPeriod(){
@@ -2457,23 +2496,12 @@
                 }
 
             },
-            // async changeAccruedSalary(){
-
-            //     await this.autocompleteDataSalary(this.form.accrued.salary)
-
-            //     //recalcular pagos(totales) de las horas extras, estas se calculan en base al salario base
-            //     await this.$refs.componentDocumentPayrollExtraHours.recalculateDataExtraHours()
-
-            //     //calcular total devengados
-            //     await this.calculateTotalAccrued()
-
-            // },
             autocompleteDataPayment(worker){
 
                 if(worker.payment){
 
                     this.form.payment = worker.payment
-                    this.form_disabled.payment = true
+                    this.form_disabled.payment = !this.isAdjustNote
 
                 }else{
 
@@ -2531,6 +2559,7 @@
                         this.resetForm()
                         this.recordId = response.data.data.id
                         this.showDialogDocumentPayrollOptions = true
+                        this.checkDocumentPayrollAdjustNote()
                     }
                     else {
                         this.$message.error(response.data.message)

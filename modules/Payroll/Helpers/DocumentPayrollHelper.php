@@ -188,7 +188,6 @@ class DocumentPayrollHelper
         // dd($url, $params);
         
         $send_request_to_api = $connection_api->sendRequestToApi($url, $params, 'POST');
-        $number_full = "{$params['prefix']}-{$params['consecutive']}";
 
         //error validacion form request api
         if(isset($send_request_to_api['errors']))
@@ -198,7 +197,7 @@ class DocumentPayrollHelper
         }
 
         // validacion respuesta api entorno Pruebas/Produccion
-        $this->validateResponseApi($send_request_to_api, $number_full, $connection_api, $document);
+        $this->validateResponseApi($send_request_to_api, $document->number_full, $connection_api, $document);
 
         return $send_request_to_api;
 
@@ -403,8 +402,6 @@ class DocumentPayrollHelper
         $affected_document_payroll = $adjust_note->affected_document_payroll;
         $type_note = $adjust_note->type_payroll_adjust_note_id;
 
-        // dd($type_note, $document, $inputs);
-
         $predecessor = [
             'predecessor_number'=> $affected_document_payroll->consecutive,
             'predecessor_cune'=> $affected_document_payroll->response_api->cune,
@@ -433,15 +430,27 @@ class DocumentPayrollHelper
         }
 
         // nóminas de ajuste
-        return [
+        $general_inputs = $this->getParamsForApi($document, $inputs);
 
+        $adjust_note_replace_inputs = [
+            'type_note'=> $type_note,
+            'predecessor'=> $predecessor,
+            'head_note' => $document->head_note,
+            'foot_note' => $document->foot_note,
+            'notes' => $document->notes,
         ];
+
+        // dd($general_inputs, $adjust_note_replace_inputs ,array_merge($adjust_note_replace_inputs, $general_inputs));
+
+        return array_merge($adjust_note_replace_inputs, $general_inputs);
 
     }
     
     /**
-     * Obtener array para enviar a la api (nómina inicial)
-     *
+     * 
+     * Obtener array para enviar a la api
+     * Usado para enviar nomina inicial y de ajuste (reemplazo)
+     * 
      * @param  mixed $document
      * @param  mixed $inputs
      * @return array
@@ -453,10 +462,12 @@ class DocumentPayrollHelper
         $worker = $document->worker;
         $accrued = $document->accrued;
         $deduction = $document->deduction;
+        $type_document_id = (int) $document->type_document->code; // se usa el id del tipo de documento (api), no de la resolucion (type_documents)
         // dd($inputs);
 
         return [
-            'type_document_id' => 9, //id tipo documento nomina
+            'type_document_id' => $type_document_id, //id tipo documento nomina
+            // 'type_document_id' => 9, //id tipo documento nomina
             'resolution_number' => $inputs['resolution_number'],
             // 'establishment_name' => $establishment->description,
             // 'establishment_address' => $establishment->address,

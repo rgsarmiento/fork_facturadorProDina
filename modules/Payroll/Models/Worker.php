@@ -53,7 +53,8 @@ class Worker extends PayrollBaseModel
     ];
 
 
-    public const ID_TYPE_WORKERS_SENA = [4, 6];
+    //se agrega servicio domestico
+    public const ID_TYPE_WORKERS_SENA = [2, 4, 6]; 
 
 
     public function type_worker()

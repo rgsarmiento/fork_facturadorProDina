@@ -69,6 +69,7 @@ class WorkerRequest extends FormRequest
                 'nullable',
                 'numeric',
                 'integer',
+                'digits_between:7,11',
             ], 
             'email' => [
                 'nullable',

@@ -445,6 +445,7 @@ class DocumentPayroll extends PayrollBaseModel
             'notes' => $this->notes,
             
             'worker_id' => $this->worker_id,
+            'worker_total_base_salary' => $this->worker->salary,
             'payment' => $this->payment,
             'payment_dates' => $this->payment_dates,
             'accrued' => $this->accrued->getRowResourceAdjustNote(),

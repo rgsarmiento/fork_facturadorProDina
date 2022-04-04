@@ -449,6 +449,7 @@ return [
         'accrued.refund' => 'reintegro',
 
         'resolution_id' => 'resolución',
+        'accrued.total_base_salary' => 'salario base',
 
 
     ],

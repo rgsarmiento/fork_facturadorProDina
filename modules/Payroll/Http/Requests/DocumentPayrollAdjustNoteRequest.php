@@ -53,9 +53,21 @@ class DocumentPayrollAdjustNoteRequest extends FormRequest
      */
     private function getValidationsPayrollReplace()
     {
-        return [ 
 
+        // se usan validaciones de nomina individual
+        $general_payroll_rules = (new DocumentPayrollRequest())->rules();
+
+        $adjust_note_rules = [
+            'type_payroll_adjust_note_id' => [
+                'required',
+            ],
+            'document_payroll_id' => [
+                'required',
+            ],
+            'accrued.total_base_salary' => 'required|numeric|gt:0',
         ];
+
+        return array_merge($adjust_note_rules, $general_payroll_rules);
     }
 
 }
