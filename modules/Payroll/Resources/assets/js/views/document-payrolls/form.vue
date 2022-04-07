@@ -2551,7 +2551,7 @@
                 const validateData = await this.validateData()
                 if(!validateData.success) return this.$message.error(validateData.message)
 
-                // this.loading_submit = true
+                this.loading_submit = true
 
                 await this.$http.post(`/${(this.isAdjustNote) ? this.resource_adjust_note : this.resource}`, this.form).then(response => {
                     // console.log(response)
