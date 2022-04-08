@@ -1236,7 +1236,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group" :class="{'has-danger': errors['deduction.pension_type_law_deductions_id']}">
                                             <label class="control-label">Pensión - Deducciones por ley<span class="text-danger"> *</span></label>
-                                            <el-select v-model="form.deduction.pension_type_law_deductions_id"   filterable @change="changePensionTypeLawDeduction" :disabled="form_disabled.inputs_type_worker_sena">
+                                            <el-select v-model="form.deduction.pension_type_law_deductions_id"   filterable @change="changePensionTypeLawDeduction" :disabled="form_disabled.inputs_type_worker_sena || form_disabled.inputs_not_discount_pension">
                                                 <el-option v-for="option in type_law_deductions" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="errors['deduction.pension_type_law_deductions_id']" v-text="errors['deduction.pension_type_law_deductions_id'][0]"></small>
@@ -1248,7 +1248,7 @@
                                                 <span v-if="getPercentagePensionTypeLawDeduction"> ({{ getPercentagePensionTypeLawDeduction.percentage }}%) </span>
                                                 <span class="text-danger"> *</span>
                                             </label>
-                                            <el-input-number v-model="form.deduction.pension_deduction" :min="0" controls-position="right" @change="changePensionDeduction" :disabled="form_disabled.inputs_type_worker_sena"></el-input-number>
+                                            <el-input-number v-model="form.deduction.pension_deduction" :min="0" controls-position="right" @change="changePensionDeduction" :disabled="form_disabled.inputs_type_worker_sena || form_disabled.inputs_not_discount_pension"></el-input-number>
                                             <small class="form-control-feedback" v-if="errors['deduction.pension_deduction']" v-text="errors['deduction.pension_deduction'][0]"></small>
                                         </div>
                                     </div>
@@ -1810,10 +1810,20 @@
                     this.form.deduction.fondossp_sub_type_law_deductions_id = undefined
                     this.form.deduction.fondosp_deduction_sub = undefined
                 }
+                // si es de subtipo dependiente pensionado, no aplica descuento de pension
+                else if(!this.form.select_worker.discount_pension)
+                {
+                    this.form.deduction.pension_type_law_deductions_id = 5
+                    this.form.deduction.pension_deduction = 0
+                    this.form_disabled.inputs_not_discount_pension = true
+                    this.form_disabled.inputs_type_worker_sena = false
+                    this.changeEpsTypeLawDeduction()
+                }
                 else
                 {
                     //calcular eps y pension
                     this.form_disabled.inputs_type_worker_sena = false
+                    this.form_disabled.inputs_not_discount_pension = false
                     this.changeEpsTypeLawDeduction()
                     this.changePensionTypeLawDeduction()
 
@@ -1957,6 +1967,7 @@
                     admision_date : false,
                     payment : false,
                     inputs_type_worker_sena : false,
+                    inputs_not_discount_pension: false,
                 }
 
                 this.setInitialDataPeriod()
@@ -2402,7 +2413,9 @@
                 // licencias
                 await this.recalculateLicense()
 
+
                 // recalcular campos deducciones
+
                 // sindicatos
                 await this.recalculateLaborUnion()
 

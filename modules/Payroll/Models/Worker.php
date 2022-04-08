@@ -56,6 +56,9 @@ class Worker extends PayrollBaseModel
     //se agrega servicio domestico
     public const ID_TYPE_WORKERS_SENA = [2, 4, 6]; 
 
+    public const ID_SUB_TYPE_WORKERS_NOT_PENSION = [2]; 
+
+
 
     public function type_worker()
     {
@@ -132,6 +135,15 @@ class Worker extends PayrollBaseModel
         return in_array($this->type_worker_id, self::ID_TYPE_WORKERS_SENA);
     }
 
+    /**
+     * Determinar si se descuenta pensión al trabajador
+     *
+     * @return bool
+     */
+    public function getDiscountPensionAttribute()
+    {
+        return !in_array($this->sub_type_worker_id, self::ID_SUB_TYPE_WORKERS_NOT_PENSION);
+    }
 
     public function getSearchRowResource()
     { 
@@ -144,6 +156,7 @@ class Worker extends PayrollBaseModel
             'payroll_period_id' => $this->payroll_period_id,
             'payment' => $this->payment,
             'is_type_worker_sena' => $this->is_type_worker_sena,
+            'discount_pension' => $this->discount_pension,
         ];
     }
  
