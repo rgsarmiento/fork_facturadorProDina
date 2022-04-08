@@ -843,7 +843,7 @@
 
                     <li class="nav-parent {{$path[0] === 'payroll' && 
                                             in_array($path[1], [
-                                                'workers', 'document-payrolls'
+                                                'workers', 'document-payrolls', 'document-payroll-adjust-notes'
                                             ]) 
                                             // && 
                                             // in_array($path[2], [
@@ -871,7 +871,7 @@
                                 </a>
                             </li> 
 
-                            <li class="{{(($path[0] === 'payroll') && ($path[1] == 'document-payrolls') && $path[2] == '') ? 'nav-active' : ''}}">
+                            <li class="{{(($path[0] === 'payroll') && (in_array($path[1], ['document-payrolls', 'document-payroll-adjust-notes'])) && ($path[2] !== 'create')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.payroll.document-payrolls.index')}}">
                                     Listado de nóminas
                                 </a>

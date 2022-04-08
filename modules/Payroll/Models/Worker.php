@@ -2,7 +2,6 @@
 
 namespace Modules\Payroll\Models;
 
-use App\Models\Tenant\ModelTenant;
 use Modules\Factcolombia1\Models\TenantService\{
     TypeWorker,
     SubTypeWorker,
@@ -13,7 +12,7 @@ use Modules\Factcolombia1\Models\TenantService\{
 };
 
 
-class Worker extends ModelTenant
+class Worker extends PayrollBaseModel
 {
 
     protected $table = 'co_workers';
@@ -54,7 +53,11 @@ class Worker extends ModelTenant
     ];
 
 
-    public const ID_TYPE_WORKERS_SENA = [4, 6];
+    //se agrega servicio domestico
+    public const ID_TYPE_WORKERS_SENA = [2, 4, 6]; 
+
+    public const ID_SUB_TYPE_WORKERS_NOT_PENSION = [2]; 
+
 
 
     public function type_worker()
@@ -132,6 +135,15 @@ class Worker extends ModelTenant
         return in_array($this->type_worker_id, self::ID_TYPE_WORKERS_SENA);
     }
 
+    /**
+     * Determinar si se descuenta pensión al trabajador
+     *
+     * @return bool
+     */
+    public function getDiscountPensionAttribute()
+    {
+        return !in_array($this->sub_type_worker_id, self::ID_SUB_TYPE_WORKERS_NOT_PENSION);
+    }
 
     public function getSearchRowResource()
     { 
@@ -144,6 +156,7 @@ class Worker extends ModelTenant
             'payroll_period_id' => $this->payroll_period_id,
             'payment' => $this->payment,
             'is_type_worker_sena' => $this->is_type_worker_sena,
+            'discount_pension' => $this->discount_pension,
         ];
     }
  

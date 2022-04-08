@@ -19,8 +19,10 @@
                         <th>#</th>
                         <th>Fecha</th>
                         <th>Empleado</th>
+                        <th class="text-left">Tipo nómina</th>
                         <th class="text-center">Nómina</th>
                         <th class="text-center">Estado</th>
+                        <th class="text-left">Nóminas relacionadas</th>
                         <th class="text-center">Salario</th>
                         <th class="text-center">T. Devengados</th>
                         <th class="text-center">T. Deducciones</th>
@@ -30,6 +32,7 @@
                         <td>{{ index }}</td>
                         <td>{{ row.date_of_issue }}</td>
                         <td>{{ row.worker_full_name }}</td>  
+                        <td class="text-left">{{ row.type_payroll_description }}</td>  
                         <td class="text-center">{{ row.number_full }}</td>  
                         <td class="text-center">
                             <template v-if="row.state_document_id">
@@ -38,10 +41,30 @@
                                 </span>
                             </template>
                         </td>  
+                        <td>
+                            <template v-for="(item, index) in row.affected_adjust_notes">
+                                <span class="ml-1" :key="index">
+                                    {{ item.number_full }} 
+                                    <template v-if="item.type_payroll_adjust_note_name">
+                                        ({{ item.type_payroll_adjust_note_name }})
+                                    </template>
+                                    <br>
+                                </span>
+                            </template>
+                        </td>  
                         <td class="text-center">{{ row.salary }}</td>  
                         <td class="text-center">{{ row.accrued_total }}</td>  
                         <td class="text-center">{{ row.deductions_total }}</td>  
                         <td class="text-right">
+
+                            <template v-if="row.btn_adjust_note_elimination">
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-warning" @click.prevent="clickEliminationPayroll(row.id, row.number_full)">N. Eliminación</button>
+                            </template>
+
+                            <template v-if="row.btn_adjust_note_replace">
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-primary" @click.prevent="clickReplacePayroll(row.id)">N. Reemplazo</button>
+                            </template>
+
 
                             <template v-if="row.btn_query">
                                 <el-tooltip class="item" effect="dark" content="Consultar ZIPKEY a la DIAN" placement="top-start">
@@ -62,6 +85,12 @@
                             :showDownload="true"
                             :showClose="true">
                             </document-payroll-options>
+
+            <document-payroll-elimination :showDialog.sync="showDialogDocumentPayrollElimination"     
+                            :recordId="recordId"
+                            :recordNumberFull="recordNumberFull"
+                            >
+                            </document-payroll-elimination>
         </div>
     </div>
 </template>
@@ -69,24 +98,35 @@
 
     // import WorkersForm from './form.vue'
     import DocumentPayrollOptions from './partials/options.vue' 
+    import DocumentPayrollElimination from './partials/elimination_payroll.vue' 
     import DataTable from '@components/DataTableResource.vue'
     import {deletable} from '@mixins/deletable'
 
     export default {
         mixins: [deletable],
-        components: { DataTable, DocumentPayrollOptions},
+        components: { DataTable, DocumentPayrollOptions, DocumentPayrollElimination},
         data() {
             return {
                 showDialog: false,
                 resource: 'payroll/document-payrolls',
                 recordId: null,
+                recordNumberFull: null,
                 showDialogDocumentPayrollOptions:false,
+                showDialogDocumentPayrollElimination:false,
                 loading: false,
             }
         },
         created() { 
         },
         methods: { 
+            clickReplacePayroll(recordId){
+                location.href = `document-payroll-adjust-notes/${recordId}`
+            },
+            clickEliminationPayroll(recordId, recordNumberFull){
+                this.recordId = recordId
+                this.recordNumberFull = recordNumberFull
+                this.showDialogDocumentPayrollElimination = true
+            },
             async clickQueryZipKey(recordId) {
 
                 this.loading = true

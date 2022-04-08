@@ -8,6 +8,7 @@ if($hostname) {
  
             Route::prefix('payroll')->group(function () {
  
+                // registro nómina
                 Route::prefix('document-payrolls')->group(function () {
                     Route::get('', 'DocumentPayrollController@index')->name('tenant.payroll.document-payrolls.index');
                     Route::get('create', 'DocumentPayrollController@create')->name('tenant.payroll.document-payrolls.create');
@@ -20,6 +21,17 @@ if($hostname) {
                     Route::get('downloadFile/{filename}', 'DocumentPayrollController@downloadFile');
                     Route::post('send-email', 'DocumentPayrollController@sendEmail');
                     Route::post('query-zipkey', 'DocumentPayrollController@queryZipkey');
+                });
+
+
+                // nómina eliminación y ajuste
+                Route::prefix('document-payroll-adjust-notes')->group(function () {
+
+                    Route::get('tables/{type_payroll_adjust_note_id}', 'DocumentPayrollAdjustNoteController@tables');
+                    Route::get('{id}', 'DocumentPayrollAdjustNoteController@create');
+                    Route::post('', 'DocumentPayrollAdjustNoteController@store');
+                    Route::get('record/{record}', 'DocumentPayrollAdjustNoteController@record');
+
                 });
 
 

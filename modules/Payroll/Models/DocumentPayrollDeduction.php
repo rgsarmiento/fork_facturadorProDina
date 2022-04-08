@@ -2,13 +2,12 @@
 
 namespace Modules\Payroll\Models;
 
-use App\Models\Tenant\ModelTenant; 
 use Modules\Factcolombia1\Models\TenantService\{
     TypeLawDeductions
 };
 
 
-class DocumentPayrollDeduction extends ModelTenant
+class DocumentPayrollDeduction extends PayrollBaseModel
 {
 
     protected $table = 'co_document_payroll_deductions';
@@ -52,7 +51,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function getLaborUnionAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setLaborUnionAttribute($value)
@@ -62,7 +61,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function getSanctionsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setSanctionsAttribute($value)
@@ -72,7 +71,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function getOrdersAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setOrdersAttribute($value)
@@ -82,7 +81,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function getThirdPartyPaymentsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setThirdPartyPaymentsAttribute($value)
@@ -92,7 +91,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function getAdvancesAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setAdvancesAttribute($value)
@@ -102,7 +101,7 @@ class DocumentPayrollDeduction extends ModelTenant
 
     public function getOtherDeductionsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return $this->getGeneralValueFromAttribute($value);
     }
 
     public function setOtherDeductionsAttribute($value)
@@ -110,17 +109,6 @@ class DocumentPayrollDeduction extends ModelTenant
         $this->attributes['other_deductions'] = $this->getArrayValueAndValidate($value);
     }
 
-    /**
-     * 
-     * Validar dato y retornar valor correspondiente para campos tipo json
-     *
-     * @param $value
-     * @return array|null
-     */
-    public function getArrayValueAndValidate($value)
-    {
-        return (is_null($value) || empty($value)) ? null : json_encode($value);
-    }
 
     public function eps_type_law_deduction() 
     {
@@ -182,6 +170,49 @@ class DocumentPayrollDeduction extends ModelTenant
             'fondossp_sub_type_law_deductions_id' => $this->fondossp_sub_type_law_deductions_id,
             'fondosp_deduction_sub' => $this->fondosp_deduction_sub,
 
+        ];
+
+    }
+
+    
+    /**
+     * 
+     * Retorna data de nómina afectada, usado cuando se genera nómina de reemplazo
+     *
+     * @return array
+     */
+    public function getRowResourceAdjustNote()
+    {
+        return [
+
+            'co_document_payroll_id' => $this->co_document_payroll_id,
+            'eps_type_law_deductions_id' => $this->eps_type_law_deductions_id,
+            'eps_deduction' => $this->eps_deduction,
+            'pension_type_law_deductions_id' => $this->pension_type_law_deductions_id,
+            'pension_deduction' => $this->pension_deduction,
+
+            'labor_union' => $this->checkValueFromArray($this->labor_union),
+            'sanctions' => $this->checkValueFromArray($this->sanctions),
+            'orders' => $this->checkValueFromArray($this->orders),
+            'third_party_payments' => $this->checkValueFromArray($this->third_party_payments),
+            'advances' => $this->checkValueFromArray($this->advances),
+            'other_deductions' => $this->checkValueFromArray($this->other_deductions),
+
+            'voluntary_pension' => $this->voluntary_pension,
+            'withholding_at_source' => $this->withholding_at_source,
+            'afc' => $this->afc,
+            'cooperative' => $this->cooperative,
+            'tax_liens' => $this->tax_liens,
+            'supplementary_plan' => $this->supplementary_plan,
+            'education' => $this->education,
+            'refund' => $this->refund,
+            'debt' => $this->debt,
+            'deductions_total' => $this->deductions_total,
+
+            'fondossp_type_law_deductions_id' => $this->fondossp_type_law_deductions_id,
+            'fondosp_deduction_SP' => $this->fondosp_deduction_SP,
+            'fondossp_sub_type_law_deductions_id' => $this->fondossp_sub_type_law_deductions_id,
+            'fondosp_deduction_sub' => $this->fondosp_deduction_sub,
         ];
 
     }
