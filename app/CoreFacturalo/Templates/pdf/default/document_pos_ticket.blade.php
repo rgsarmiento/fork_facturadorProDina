@@ -45,7 +45,7 @@
         <td> <h6>Email: {{ ($establishment->email !== '-')? $establishment->email : '' }}</h6> </td>
     </tr>
     <tr>
-        <td> <h6>Factura de Venta: {{ $tittle }}</h6> </td>
+        <td> <h6>Documento Equivalente POS #: {{ $tittle }}</h6> </td>
     </tr>
     <tr>
         <td> <h6>Vendedor:  {{ $document->user->name }} </h6></td>
