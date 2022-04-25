@@ -65,6 +65,8 @@ trait CompanyTrait
         $number = $request->identification_number;
         $dv = $request->dv;
         $ch = curl_init("{$base_url}ubl2.1/config/{$number}/{$dv}");
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
         $bodyContent = [
             'type_document_identification_id'=> $request->type_document_identification_id,
