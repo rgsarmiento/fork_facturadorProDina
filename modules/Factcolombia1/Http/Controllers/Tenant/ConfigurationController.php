@@ -135,7 +135,6 @@ class ConfigurationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function cities(Department $department) {
-        \Log::debug($department);
         return City::query()
             ->where('department_id', $department->id)
             ->get();
@@ -224,6 +223,8 @@ class ConfigurationController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS,($data_initial_number));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
@@ -295,6 +296,8 @@ class ConfigurationController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS,($data_logo));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
@@ -353,6 +356,8 @@ class ConfigurationController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS,($data_software));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
@@ -374,6 +379,8 @@ class ConfigurationController extends Controller
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch2, CURLOPT_POSTFIELDS,($data_certificate));
+        curl_setopt($ch2, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
@@ -402,6 +409,8 @@ class ConfigurationController extends Controller
         curl_setopt($ch3, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch3, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch3, CURLOPT_POSTFIELDS,($data_resolution));
+        curl_setopt($ch3, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch3, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch3, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
@@ -438,6 +447,8 @@ class ConfigurationController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS,($data_production));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
@@ -564,6 +575,8 @@ class ConfigurationController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS,($data_production));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
@@ -623,6 +636,8 @@ class ConfigurationController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS,($data_software));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
@@ -680,6 +695,8 @@ class ConfigurationController extends Controller
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch2, CURLOPT_POSTFIELDS,($data_certificate));
+        curl_setopt($ch2, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
@@ -741,6 +758,8 @@ class ConfigurationController extends Controller
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch2, CURLOPT_POSTFIELDS,($data_environment));
+        curl_setopt($ch2, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
@@ -807,6 +826,8 @@ class ConfigurationController extends Controller
             curl_setopt($ch3, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch3, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($ch3, CURLOPT_POSTFIELDS,($data_resolution));
+            curl_setopt($ch3, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch3, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch3, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
                 'Accept: application/json',
@@ -897,6 +918,8 @@ class ConfigurationController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS,($json_invoice));
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
                 'Accept: application/json',
@@ -937,6 +960,8 @@ class ConfigurationController extends Controller
             curl_setopt($ch5, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch5, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($ch5, CURLOPT_POSTFIELDS,($data_resolution));
+            curl_setopt($ch5, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch5, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch5, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
                 'Accept: application/json',
@@ -970,6 +995,8 @@ class ConfigurationController extends Controller
             curl_setopt($ch4, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch4, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($ch4, CURLOPT_POSTFIELDS,($data_resolution_de));
+            curl_setopt($ch4, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch4, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch4, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
                 'Accept: application/json',
