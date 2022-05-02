@@ -107,6 +107,22 @@
                 @endif
             </td>
         </tr>
+
+        <table class="full-width mt-10 mb-10">
+            <tbody>
+                <tr>
+                    <td class="text-left desc-9 align-top">
+                        {{ number_format($row->unit_price, 2)}}
+                    </td>
+                    <td class="text-left desc-9 align-top">
+                        {{ number_format($row->total_tax, 2)}}
+                    </td>
+                    <td class="text-left desc-9 align-top">
+                        {{ number_format($row->subtotal, 2)}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <tr>
             <td colspan="3" class="border-bottom"></td>
         </tr>
