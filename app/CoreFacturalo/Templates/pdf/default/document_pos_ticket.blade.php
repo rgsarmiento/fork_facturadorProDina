@@ -210,7 +210,14 @@
         </tr>
     @endif
     <tr>
-        <td>Vigencia: 24 Meses.</td>
+        <?php
+        \Log::debug($resolution->date_from);
+        \Log::debug($resolution->date_end);
+            $firstDate  = new \DateTime($resolution->date_from);
+            $secondDate = new \DateTime($resolution->date_end);
+            $intvl = $firstDate->diff($secondDate);
+        ?>
+        <td>Vigencia: {{($intvl->y * 12) + $intvl->m}} Meses.</td>
     </tr>
     <tr>
         @if($document->state_type_id == '11')
