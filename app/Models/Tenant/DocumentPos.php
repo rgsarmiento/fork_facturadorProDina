@@ -251,5 +251,23 @@ class DocumentPos extends ModelTenant
             'document_type_description' => $this->getDocumentTypeDescription(),
         ];
     }
+    
+
+    public function cash_document()
+    {
+        return $this->hasOne(CashDocument::class);
+    }
+
+    
+    /**
+     * 
+     * Obtener resolucion de la caja asociada al documento
+     *
+     * @return ConfigurationPos
+     */
+    public function getCashResolution()
+    {
+        return $this->cash_document->cash->resolution;
+    }
 
 }

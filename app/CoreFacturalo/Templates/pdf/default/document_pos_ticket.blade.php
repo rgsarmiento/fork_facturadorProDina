@@ -6,18 +6,18 @@
     $tittle = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
     $payments = $document->payments;
 
-    $config_pos = \App\Models\Tenant\ConfigurationPos::first();
-    $user = auth()->user();
+    // $config_pos = \App\Models\Tenant\ConfigurationPos::first();
+    // $user = auth()->user();
 
-    $cash = \App\Models\Tenant\Cash::where('state', 1)
-                        ->where('user_id', $user->id)
-                        ->first();
+    // $cash = \App\Models\Tenant\Cash::where('state', 1)
+    //                     ->where('user_id', $user->id)
+    //                     ->first();
 
-    $resolution = $cash->resolution;
+    // $resolution = $cash->resolution;
+    
+    $resolution = $document->getCashResolution();
 
     $sucursal = \App\Models\Tenant\Establishment::where('id', $document->establishment_id)->first();
-
-
 
 @endphp
 <html>

@@ -24,12 +24,14 @@ use DateTime;
 use Modules\Factcolombia1\Models\TenantService\{
     TypeEnvironment
 };
+use Illuminate\Database\Eloquent\Builder;
 
 
 class Document extends ModelTenant
 {
 
     use HasJsonRelationships;
+
 
     // protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'invoice', 'note', 'payments'];
 
@@ -542,5 +544,24 @@ class Document extends ModelTenant
     // {
     //     return $this->total;
     // }
-    
+        
+
+    /**
+     * 
+     * Filtrar facturas
+     * 
+     * Usado en:
+     * Modules\Report\Http\Controllers\ReportItemController
+     *
+     * @param  Builder $query
+     * @return Builder
+     */
+    public function scopeFilterInvoiceDocument($query)
+    {
+        return $query->whereHas('type_document', function($q){
+            $q->where('code', TypeDocument::INVOICE_CODE);
+        });
+    }
+
+
 }

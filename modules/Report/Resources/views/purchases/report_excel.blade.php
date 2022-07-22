@@ -44,15 +44,6 @@
         @if(!empty($records))
             <div class="">
                 <div class=" ">
-                    @php
-                        $acum_total_taxed=0;
-                        $acum_total_igv=0;
-                        $acum_total=0;
-                     
-                        $acum_total_taxed_usd=0;
-                        $acum_total_igv_usd=0;
-                        $acum_total_usd=0;
-                    @endphp
                     <table class="">
                         <thead>
                             <tr>
@@ -71,6 +62,10 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $sum_total = 0;
+                            @endphp
+        
                             @foreach($records as $key => $value)
                             <tr>
                                 <td class="celda">{{$loop->iteration}}</td>
@@ -92,61 +87,18 @@
                                     $value->total_igv = (in_array($value->document_type_id,['01','03']) && in_array($value->state_type_id,['09','11'])) ? 0 : $value->total_igv;
                                     $value->total = (in_array($value->document_type_id,['01','03']) && in_array($value->state_type_id,['09','11'])) ? 0 : $value->total;
                                     $state = $value->state_type_id;
+
+                                    $sum_total += $value->total;
                                 @endphp
                             </tr>
-{{--                             
-                            @php
-                                
-                                if($value->currency_type_id == 'PEN'){
-
-                                    if($state == '11'){
-
-                                        $acum_total += 0;
-                                        $acum_total_taxed += 0;
-                                        $acum_total_igv += 0;
-
-
-                                    }else{
-
-                                        $acum_total += $value->total;
-                                        $acum_total_taxed += $value->total_taxed;
-                                        $acum_total_igv += $value->total_igv; 
-                                    }
-
-                                }else if($value->currency_type_id == 'USD'){
-
-                                    if($state == '11'){
-
-                                        $acum_total_usd += 0;
-                                        $acum_total_taxed_usd += 0;
-                                        $acum_total_igv_usd += 0;
-
-                                    }else{
-
-                                        $acum_total_usd += $value->total;
-                                        $acum_total_taxed_usd += $value->total_taxed;
-                                        $acum_total_igv_usd += $value->total_igv;
-
-                                    }
-
-                                }
-                            @endphp --}}
-
                             @endforeach
-                            {{-- <tr>
-                                <td class="celda" colspan="13"></td>
-                                <td class="celda" >Totales PEN</td>
-                                <td class="celda">{{$acum_total_taxed}}</td>
-                                <td class="celda">{{$acum_total_igv}}</td>
-                                <td class="celda">{{$acum_total}}</td>
-                            </tr>
+                            
                             <tr>
-                                <td class="celda" colspan="13"></td>
-                                <td class="celda" >Totales USD</td>
-                                <td class="celda">{{$acum_total_taxed_usd}}</td>
-                                <td class="celda">{{$acum_total_igv_usd}}</td>
-                                <td class="celda">{{$acum_total_usd}}</td>
-                            </tr> --}}
+                                <td class="celda" colspan="9"></td>
+                                <td class="celda" >Total:</td>
+                                <td class="celda">{{ number_format($sum_total, 2, ".", "") }}</td>
+                            </tr>
+
                         </tbody>
                     </table>
                 </div>
