@@ -63,6 +63,11 @@
                             </tr>
                         </thead>
                         <tbody>
+                            
+                            @php
+                                $sum_total = 0;
+                            @endphp
+
                             @foreach($records as $key => $value)
                             @php
                                 $serie_affec = '';
@@ -82,6 +87,8 @@
                                         $serie_affec = $series.' - '.$number;
                                     }
 
+                                    $sum_total += $value->total;
+
                                 @endphp
                                 <td class="celda">{{$serie_affec }} </td>
 
@@ -99,6 +106,13 @@
                                 
                             </tr>
                             @endforeach
+                            
+                            <tr>
+                                <td class="celda" colspan="11"></td>
+                                <td class="celda" >Total:</td>
+                                <td class="celda">{{ number_format($sum_total, 2, ".", "") }}</td>
+                            </tr>
+
                         </tbody>
                     </table>
                 </div>
