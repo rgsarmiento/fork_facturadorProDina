@@ -94,7 +94,8 @@ class ReportItemController extends Controller
                         ->whereHas('document', function($query) use($date_start, $date_end){
                             $query
                             ->whereBetween('date_of_issue', [$date_start, $date_end])
-                            ->whereIn('type_document_id', [1])
+                            // ->whereIn('type_document_id', [1])
+                            ->filterInvoiceDocument()
                             ->whereIn('state_document_id', [1,2,3,4,5])
                             ->latest()
                             ->whereTypeUser();

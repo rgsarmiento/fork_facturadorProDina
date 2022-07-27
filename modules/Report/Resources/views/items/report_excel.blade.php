@@ -20,7 +20,8 @@
                             <p><b>Producto: </b></p>
                         </td>
                         <td align="center">
-                            <p><strong>{{($records[0]->item->internal_id) ? $records[0]->item->internal_id.' -':''}} {{$records[0]->item->description}}</strong></p>
+                            <p><strong>{{($records[0]->item->internal_id) ? $records[0]->item->internal_id.' -':''}} {{$records[0]->item->name}}</strong></p>
+                            {{-- <p><strong>{{($records[0]->item->internal_id) ? $records[0]->item->internal_id.' -':''}} {{$records[0]->item->description}}</strong></p> --}}
                         </td> 
                     </tr>
                 @endif
