@@ -267,7 +267,34 @@ class DocumentPos extends ModelTenant
      */
     public function getCashResolution()
     {
-        return $this->cash_document->cash->resolution;
+        $resolution = null;
+        
+        if($this->cash_document->cash->resolution ?? false)
+        {
+            // para documentos registrados
+            $resolution = $this->cash_document->cash->resolution;
+        }
+        else
+        {   
+            // para documentos en proceso de creacion
+            $resolution = $this->getResolutionFromCurrentCash();
+        }
+
+        return $resolution;
+    }
+
+    
+    /**
+     * 
+     * Buscar caja actual asociada al pos y retornar resolución
+     *
+     * @return ConfigurationPos
+     */
+    public function getResolutionFromCurrentCash()
+    {
+        $cash = Cash::getOpenCurrentCash()->first();
+
+        return $cash->resolution;
     }
 
 }

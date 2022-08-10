@@ -3,6 +3,8 @@
 namespace App\Models\Tenant;
 
 use Modules\Finance\Models\GlobalPayment;
+use Illuminate\Database\Query\Builder;
+
 
 class Cash extends ModelTenant
 {
@@ -68,6 +70,19 @@ class Cash extends ModelTenant
         return $this->cash_documents->sum(function($row){
             return $row->document_pos ? $row->document_pos->getTotalCash() : 0;
         });
+    }
+
+    
+    /**
+     * 
+     * Filtro para obtener caja abierta del usuario en sesion
+     *
+     * @param  Builder $query
+     * @return Builder
+     */
+    public function scopeGetOpenCurrentCash($query)
+    {
+        return $query->where('state', 1)->where('user_id', auth()->id());
     }
 
 }
