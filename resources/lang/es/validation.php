@@ -450,7 +450,7 @@ return [
 
         'resolution_id' => 'resolución',
         'accrued.total_base_salary' => 'salario base',
-
+        'postal_code' => 'código postal',
 
     ],
 ];

@@ -426,6 +426,7 @@
                             {{ ($path[0] === 'purchase-quotations')?'nav-active nav-expanded':'' }}
                             {{ ($path[0] === 'purchase-orders')?'nav-active nav-expanded':'' }}
                             {{ ($path[0] === 'fixed-asset')?'nav-active nav-expanded':'' }}
+                            {{ ($path[0] === 'support-documents')?'nav-active nav-expanded':'' }}
                             ">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-cart-plus" aria-hidden="true"></i>
@@ -479,6 +480,31 @@
                                         </li>
                                     </ul>
                                 </li>
+
+                                {{-- documento de soporte --}}
+                                
+                                <li class="nav-parent
+                                    {{ ($path[0] === 'support-documents')?'nav-active nav-expanded':'' }}
+                                    ">
+                                    <a class="nav-link" href="#">
+                                        Documentos de soporte (DSNOF)
+                                    </a>
+                                    <ul class="nav nav-children">
+
+                                        <li class="{{ ($path[0] === 'support-documents' && $path[1] === 'create')?'nav-active':'' }}">
+                                            <a class="nav-link" href="{{route('tenant.support-documents.create')}}">
+                                                Nuevo
+                                            </a>
+                                        </li>
+                                        <li class="{{ ($path[0] === 'support-documents' && $path[1] === '')?'nav-active':'' }}">
+                                            <a class="nav-link" href="{{route('tenant.support-documents.index')}}">
+                                                Listado
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                {{-- documento de soporte --}}
+
 
                                 {{-- <li class="nav-parent
                                     {{ ($path[0] === 'fixed-asset' )?'nav-active nav-expanded':'' }}

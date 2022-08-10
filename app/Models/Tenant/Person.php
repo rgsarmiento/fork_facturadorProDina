@@ -51,6 +51,7 @@ class Person extends ModelTenant
         'dv',
         'contact_name',
         'contact_phone',
+        'postal_code',
     ];
 
     // protected static function boot()
@@ -195,5 +196,24 @@ class Person extends ModelTenant
                     ->whereType('customers')
                     ->orderBy('name');
     }
+
+
+    /**
+     * 
+     * Filtros para busqueda de proveedores
+     * Usado en:
+     * PersonController
+     *
+     * @param $query
+     * @param $input
+     */
+    public function scopeWhereFilterSearchSupplier($query, $input)
+    {
+        return $query->where('number','like', "%{$input}%")
+                    ->orWhere('name','like', "%{$input}%")
+                    ->whereType('suppliers')
+                    ->orderBy('name');
+    }
+
 
 }

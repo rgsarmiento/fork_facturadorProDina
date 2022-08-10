@@ -7,6 +7,24 @@ if($current_hostname) {
         Route::middleware(['auth', 'locked.tenant'])->group(function () {
 
             // Route::redirect('/', '/dashboard');
+            
+            Route::prefix('support-documents')->group(function () {
+
+                Route::get('', 'SupportDocumentController@index')->name('tenant.support-documents.index');
+                Route::get('create', 'SupportDocumentController@create')->name('tenant.support-documents.create');
+                
+                Route::get('columns', 'SupportDocumentController@columns');
+                Route::get('records', 'SupportDocumentController@records');
+                Route::get('tables', 'SupportDocumentController@tables');
+
+                // Route::get('table/{table}', 'PurchaseQuotationController@table');
+                // Route::post('', 'PurchaseQuotationController@store');
+                // Route::get('record/{expense}', 'PurchaseQuotationController@record');
+                // Route::get('item/tables', 'PurchaseQuotationController@item_tables');
+                // Route::get('download/{external_id}/{format?}', 'PurchaseQuotationController@download');
+                // Route::get('print/{external_id}/{format?}', 'PurchaseQuotationController@toPrint');
+            });
+
 
             Route::prefix('purchase-quotations')->group(function () {
 

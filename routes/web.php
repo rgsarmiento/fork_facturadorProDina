@@ -157,6 +157,7 @@ if ($hostname) {
             Route::delete('persons/delete/all/{type}', 'Tenant\PersonController@deleteAll');
             Route::get('persons-search-customers', 'Tenant\PersonController@searchCustomers');
             Route::get('customer-by-id/{id}', 'Tenant\PersonController@searchCustomerById');
+            Route::get('persons-search-suppliers', 'Tenant\PersonController@searchSuppliers');
 
 
             //Documents
