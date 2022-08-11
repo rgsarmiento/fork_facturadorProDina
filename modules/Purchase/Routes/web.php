@@ -16,11 +16,11 @@ if($current_hostname) {
                 Route::get('columns', 'SupportDocumentController@columns');
                 Route::get('records', 'SupportDocumentController@records');
                 Route::get('tables', 'SupportDocumentController@tables');
+                Route::get('item/tables', 'SupportDocumentController@item_tables');
+                Route::post('', 'SupportDocumentController@store');
 
                 // Route::get('table/{table}', 'PurchaseQuotationController@table');
-                // Route::post('', 'PurchaseQuotationController@store');
                 // Route::get('record/{expense}', 'PurchaseQuotationController@record');
-                // Route::get('item/tables', 'PurchaseQuotationController@item_tables');
                 // Route::get('download/{external_id}/{format?}', 'PurchaseQuotationController@download');
                 // Route::get('print/{external_id}/{format?}', 'PurchaseQuotationController@toPrint');
             });

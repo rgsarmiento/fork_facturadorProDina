@@ -24,9 +24,6 @@ class TenantCreateCoSupportDocumentsTable extends Migration
             $table->unsignedInteger('supplier_id');
             $table->json('supplier');
             
-            $table->unsignedInteger('ambient_id');
-            $table->unsignedInteger('version_ubl_id');
-
             $table->unsignedBigInteger('type_environment_id');
             $table->unsignedInteger('state_document_id');
             $table->date('date_of_issue')->index();
@@ -63,8 +60,6 @@ class TenantCreateCoSupportDocumentsTable extends Migration
             $table->foreign('state_document_id')->references('id')->on('co_state_documents');
             $table->foreign('type_document_id')->references('id')->on('co_type_documents');
             $table->foreign('currency_id')->references('id')->on('co_currencies');
-            $table->foreign('version_ubl_id')->references('id')->on('co_version_ubls');
-            $table->foreign('ambient_id')->references('id')->on('co_ambients');
             $table->foreign('payment_form_id')->references('id')->on('co_payment_forms');
             $table->foreign('payment_method_id')->references('id')->on('co_payment_methods');
             $table->foreign('type_environment_id')->references('id')->on('co_service_type_environments');

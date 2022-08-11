@@ -170,7 +170,7 @@ class SupportDocument extends ModelTenant
     
     public function items()
     {
-        return $this->hasMany(SupportDocumentItem::class);
+        return $this->hasMany(SupportDocumentItem::class, 'co_support_document_id');
     }
 
     public function getRowResource()
@@ -179,27 +179,23 @@ class SupportDocument extends ModelTenant
             'user_id' => $this->user_id,
             'external_id' => $this->external_id,
             'establishment_id' => $this->establishment_id,
-
             'supplier_id' => $this->supplier_id,
             'supplier_full_name' => $this->supplier->name,
-            
             'type_environment_id' => $this->type_environment_id,
             'state_document_id' => $this->state_document_id,
-
-            'date_of_issue' => $this->date_of_issue,
+            'state_document_name' => $this->state_document->name,
+            'date_of_issue' => $this->date_of_issue->format('Y-m-d'),
             'time_of_issue' => $this->time_of_issue,
             'currency_id' => $this->currency_id,
+            'currency_name' => $this->currency->name,
             'type_document_id' => $this->type_document_id,
             'prefix' => $this->prefix,
             'number' => $this->number,
             'number_full' => $this->number_full,
-
             'payment_form_id' => $this->payment_form_id,
             'payment_method_id' => $this->payment_method_id,
             'time_days_credit' => $this->time_days_credit,
-
             'total' => $this->total,
-
         ];
     }
 

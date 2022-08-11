@@ -20,6 +20,9 @@ use Modules\Factcolombia1\Models\Tenant\{
 
 class Person extends ModelTenant
 {
+
+    public const RECORDS_ON_TABLE = 10;
+
     protected $table = 'persons';
     // protected $with = ['identity_document_type', 'country', 'department', 'province', 'district'];
 
@@ -175,7 +178,8 @@ class Person extends ModelTenant
             'type_regime_id' => $this->type_regime_id,
             'city_id' => $this->city_id,
             'type_obligation_id' => $this->type_obligation_id,
-            'dv' => $this->dv
+            'dv' => $this->dv,
+            'postal_code' => $this->postal_code,
         ];
     }
 

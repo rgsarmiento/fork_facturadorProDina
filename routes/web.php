@@ -158,6 +158,7 @@ if ($hostname) {
             Route::get('persons-search-customers', 'Tenant\PersonController@searchCustomers');
             Route::get('customer-by-id/{id}', 'Tenant\PersonController@searchCustomerById');
             Route::get('persons-search-suppliers', 'Tenant\PersonController@searchSuppliers');
+            Route::get('person-by-id/{id}', 'Tenant\PersonController@searchPersonById');
 
 
             //Documents

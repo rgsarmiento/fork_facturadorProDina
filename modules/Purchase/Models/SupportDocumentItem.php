@@ -9,7 +9,7 @@ use App\Models\Tenant\{
     Item,
 };
 
-class DocumentItem extends ModelTenant
+class SupportDocumentItem extends ModelTenant
 {
 
     protected $table = 'co_support_document_items';
@@ -30,6 +30,9 @@ class DocumentItem extends ModelTenant
         'subtotal',
         'discount',
         'total',
+        'type_generation_transmition_id',
+        'start_date',
+
     ];
 
     
@@ -48,6 +51,15 @@ class DocumentItem extends ModelTenant
         $this->attributes['item'] = (is_null($value))?null:json_encode($value);
     }
 
+    public function getTaxAttribute($value)
+    {
+        return (is_null($value))?null:(object) json_decode($value);
+    }
+
+    public function setTaxAttribute($value)
+    {
+        $this->attributes['tax'] = (is_null($value))?null:json_encode($value);
+    }
 
     public function model_item()
     {

@@ -327,7 +327,7 @@ class PersonController extends Controller
 
         if(!$request->has('input'))
         {
-            $customers = Person::take(10);
+            $customers = Person::whereType('customers')->take(10);
         }
         else
         {
@@ -355,13 +355,29 @@ class PersonController extends Controller
      */
     public function searchSuppliers(Request $request)
     {
-        $suppliers = (!$request->has('input')) ? Person::take(10) : Person::whereFilterSearchSupplier($request->input);
+        $suppliers = (!$request->has('input')) ? Person::whereType('suppliers')->take(Person::RECORDS_ON_TABLE) : Person::whereFilterSearchSupplier($request->input);
 
         return [
             'suppliers' => $suppliers->get()->transform(function($row){
                 return $row->getRowSearchResource();
             })
         ];
+    }
+
+
+    /**
+     * Busqueda de registro por id
+     *  
+     * @param  int $id
+     * @return array
+     */
+    public function searchPersonById($id)
+    {
+        return Person::where('id', $id)
+                    ->take(1)
+                    ->get()->transform(function($row){
+                        return $row->getRowSearchResource();
+                    });
     }
 
 }

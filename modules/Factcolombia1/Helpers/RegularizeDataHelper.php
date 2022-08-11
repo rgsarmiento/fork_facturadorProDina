@@ -55,6 +55,9 @@ class RegularizeDataHelper
             'co_type_payroll_adjust_notes' => [
                 'columns' => 'id, name, code, @created_at, @updated_at'
             ],
+            'co_type_generation_transmitions' => [
+                'columns' => 'id, name, code, @created_at, @updated_at'
+            ],
             // 'co_type_law_deductions' => [
             //     'columns' => 'id, name, code, percentage, @created_at, @updated_at'
             // ],

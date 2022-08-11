@@ -20,6 +20,8 @@ class TenantCreateCoSupportDocumentItemsTable extends Migration
             $table->unsignedInteger('item_id');
             $table->json('item');
             $table->unsignedInteger('unit_type_id');
+            $table->unsignedInteger('type_generation_transmition_id');
+            $table->date('start_date');
             $table->decimal('quantity', 12, 4);
             $table->unsignedInteger('tax_id');
             $table->json('tax');
@@ -33,6 +35,7 @@ class TenantCreateCoSupportDocumentItemsTable extends Migration
             $table->foreign('item_id')->references('id')->on('items');
             $table->foreign('unit_type_id')->references('id')->on('co_type_units');
             $table->foreign('tax_id')->references('id')->on('co_taxes');
+            $table->foreign('type_generation_transmition_id', 'fkspdi_type_generation_transmition_id')->references('id')->on('co_type_generation_transmitions');
 
         });
     }

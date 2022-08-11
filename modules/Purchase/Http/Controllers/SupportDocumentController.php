@@ -23,6 +23,11 @@ use Modules\Factcolombia1\Models\Tenant\{
     PaymentMethod,
     PaymentForm
 };
+use Modules\Factcolombia1\Models\TenantService\{
+    TypeGenerationTransmition
+};
+use Modules\Purchase\Http\Requests\SupportDocumentRequest;
+use Modules\Purchase\Helpers\SupportDocumentHelper;
 
 
 class SupportDocumentController extends Controller
@@ -57,7 +62,7 @@ class SupportDocumentController extends Controller
     public function tables()
     {
         $suppliers = $this->generalTable('suppliers');
-        $resolutions = TypeDocument::select('id','prefix', 'resolution_number')->where('code', TypeDocument::DSNOF_CODE)->get();
+        $resolutions = TypeDocument::select('id','prefix', 'resolution_number', 'code')->where('code', TypeDocument::DSNOF_CODE)->get();
         $payment_methods = PaymentMethod::get();
         $payment_forms = PaymentForm::get();
         $currencies = Currency::get();
@@ -67,57 +72,63 @@ class SupportDocumentController extends Controller
     }
 
     
-
     public function item_tables()
     {
+        $items = $this->generalTable('items');
+        $taxes = $this->generalTable('taxes');
+        $type_generation_transmitions = TypeGenerationTransmition::get();
 
-        $fixed_asset_items = $this->table('fixed_asset_items');
-        $affectation_igv_types = AffectationIgvType::whereActive()->get();
-        $system_isc_types = SystemIscType::whereActive()->get();
-        $price_types = PriceType::whereActive()->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
-        $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
-
-        return compact('fixed_asset_items', 'affectation_igv_types', 'system_isc_types', 'price_types',
-                        'discount_types', 'charge_types', 'attribute_types');
+        return compact('items', 'taxes', 'type_generation_transmitions');
     }
+
+
+    // public function record($id)
+    // {
+
+    //     $record = new FixedAssetPurchaseResource(FixedAssetPurchase::findOrFail($id));
+
+    //     return $record;
+    // }
 
     
-
-    public function record($id)
+    /**
+     * 
+     * Registrar documento de soporte
+     *
+     * @param  SupportDocumentRequest $request
+     * @return array
+     */
+    public function store(SupportDocumentRequest $request)
     {
 
-        $record = new FixedAssetPurchaseResource(FixedAssetPurchase::findOrFail($id));
+        $support_document = DB::connection('tenant')->transaction(function () use ($request) {
 
-        return $record;
-    }
+            $helper = new SupportDocumentHelper();
+            $inputs = $helper->getInputs($request);
 
-
-    public function store(FixedAssetPurchaseRequest $request)
-    {
- 
-        $data = self::convert($request);
-
-        $purchase = DB::connection('tenant')->transaction(function () use ($data, $request) {
-
-            $doc =  FixedAssetPurchase::updateOrCreate( ['id' => $request->input('id')], $data);
-            $doc->items()->delete();
+            $document =  SupportDocument::create($inputs);
             
-            foreach ($data['items'] as $row)
+            foreach ($inputs['items'] as $row)
             {
-                $doc->items()->create($row); 
+                $document->items()->create($row); 
             }
 
-            return $doc;
+            // enviar documento a la api
+            // $send_to_api = $helper->sendToApi($document, $inputs);
+
+            // $document->update([
+            //     'response_api' => $send_to_api
+            // ]);
+
+            return $document;
 
         });
 
         return [
             'success' => true,
             'data' => [
-                'id' => $purchase->id,
-                'number_full' => $purchase->number_full,
+                'id' => $support_document->id,
+                'number_full' => $support_document->number_full,
             ],
         ];
     }

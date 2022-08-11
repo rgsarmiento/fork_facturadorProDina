@@ -10,74 +10,37 @@
                                 <a v-if="typeUser != 'seller'" href="#" @click.prevent="showDialogNewItem = true">[+ Nuevo]</a>
                             </label>
 
-                            <template v-if="!search_item_by_barcode" id="select-append">
-                                <el-input id="custom-input">
-                                    <el-select :disabled="recordItem != null"
-                                            v-model="form.item_id"
-                                            @change="changeItem"
-                                            filterable
-                                            remote
-                                            placeholder="Buscar"
-                                            popper-class="el-select-items"
-                                            @visible-change="focusTotalItem"
-                                            slot="prepend"
-                                            id="select-width"
-                                            :remote-method="searchRemoteItems"
-                                            :loading="loading_search">
+                            <el-input id="custom-input">
+                                <el-select v-model="form.item_id"
+                                        @change="changeItem"
+                                        filterable
+                                        remote
+                                        placeholder="Buscar"
+                                        popper-class="el-select-items"
+                                        @visible-change="focusTotalItem"
+                                        slot="prepend"
+                                        id="select-width"
+                                        :remote-method="searchRemoteItems"
+                                        :loading="loading_search">
 
-                                        <el-tooltip v-for="option in items"  :key="option.id" placement="top">
+                                    <el-tooltip v-for="option in items"  :key="option.id" placement="top">
 
-                                            <div slot="content">
-                                                Marca: {{option.brand}} <br>
-                                                Categoria: {{option.category}} <br>
-                                                Stock: {{option.stock}} <br>
-                                                Precio: {{option.currency_type_symbol}} {{option.sale_unit_price}} <br>
-                                            </div>
+                                        <div slot="content">
+                                            Marca: {{option.brand}} <br>
+                                            Categoria: {{option.category}} <br>
+                                            Stock: {{option.stock}} <br>
+                                            Precio: {{option.currency_type_symbol}} {{option.sale_unit_price}} <br>
+                                        </div>
 
-                                            <el-option  :value="option.id" :label="option.full_description"></el-option>
+                                        <el-option  :value="option.id" :label="option.full_description"></el-option>
 
-                                        </el-tooltip>
-
-                                    </el-select>
-                                    <el-tooltip slot="append" class="item" effect="dark" content="Ver Stock del Producto" placement="bottom" :disabled="recordItem != null">
-                                        <el-button :disabled="isEditItemNote"  @click.prevent="clickWarehouseDetail()"><i class="fa fa-search"></i></el-button>
                                     </el-tooltip>
-                                </el-input>
-                            </template>
-                            <template v-else>
-                                <el-input id="custom-input">
-                                    <el-select :disabled="recordItem != null" v-model="form.item_id"
-                                            @change="changeItem"
-                                            filterable
-                                            placeholder="Buscar"
-                                            popper-class="el-select-items"
-                                            dusk="item_id"
-                                            @visible-change="focusTotalItem"
-                                            slot="prepend"
-                                            id="select-width"
-                                            remote
-                                            :remote-method="searchRemoteItems"
-                                            :loading="loading_search">
 
-                                          <el-tooltip v-for="option in items"  :key="option.id" placement="top">
-                                            <div slot="content">
-                                                Marca: {{option.brand}} <br>
-                                                Categoria: {{option.category}} <br>
-                                                Stock: {{option.stock}} <br>
-                                                Precio: {{option.currency_type_symbol}} {{option.sale_unit_price}} <br>
-                                            </div>
-                                            <el-option  :value="option.id" :label="option.full_description"></el-option>
-                                        </el-tooltip>
-                                    </el-select>
-                                    <el-tooltip slot="append" class="item" effect="dark" content="Ver Stock del Producto" placement="bottom" :disabled="recordItem != null">
-                                        <el-button :disabled="isEditItemNote"  @click.prevent="clickWarehouseDetail()"><i class="fa fa-search"></i></el-button>
-                                    </el-tooltip>
-                                </el-input>
-                            </template>
-
-                            <template v-if="!is_client">
-                                <el-checkbox  v-model="search_item_by_barcode" :disabled="recordItem != null" >Buscar por código de barras</el-checkbox><br>
-                            </template>
+                                </el-select>
+                                <!-- <el-tooltip slot="append" class="item" effect="dark" content="Ver Stock del Producto" placement="bottom" :disabled="recordItem != null">
+                                    <el-button :disabled="isEditItemNote"  @click.prevent="clickWarehouseDetail()"><i class="fa fa-search"></i></el-button>
+                                </el-tooltip> -->
+                            </el-input>
                             <small class="form-control-feedback" v-if="errors.item_id" v-text="errors.item_id[0]"></small>
                         </div>
                     </div>
@@ -85,7 +48,7 @@
                     <div class="col-md-5">
                         <div class="form-group" :class="{'has-danger': errors.tax_id}">
                             <label class="control-label">Impuesto</label>
-                            <el-select v-model="form.tax_id"  filterable>
+                            <el-select v-model="form.tax_id"  :disabled="true">
                                 <el-option v-for="option in itemTaxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <!-- <el-checkbox :disabled="recordItem != null" v-model="change_tax_id">Editar</el-checkbox> -->
@@ -109,14 +72,13 @@
                         </div>
                     </div>
 
-                    <div style="padding-top: 1%;" class="col-md-2 col-sm-2" v-if="form.item_id && form.item.lots_enabled && form.lots_group.length > 0">
+                    <!-- <div style="padding-top: 1%;" class="col-md-2 col-sm-2" v-if="form.item_id && form.item.lots_enabled && form.lots_group.length > 0">
                         <a href="#"  class="text-center font-weight-bold text-info" @click.prevent="clickLotGroup">[&#10004; Seleccionar lote]</a>
                     </div>
 
                     <div style="padding-top: 1%;" class="col-md-3 col-sm-3" v-if="form.item_id && form.item.series_enabled">
-                        <!-- <el-button type="primary" native-type="submit" icon="el-icon-check">Elegir serie</el-button> -->
                         <a href="#"  class="text-center font-weight-bold text-info" @click.prevent="clickSelectLots">[&#10004; Seleccionar series]</a>
-                    </div>
+                    </div> -->
 
 
                     <div class="col-md-3 col-sm-6" v-show="form.item.calculate_quantity">
@@ -139,55 +101,28 @@
                             <small class="form-control-feedback" v-if="errors.discount" v-text="errors.discount[0]"></small>
                         </div>
                     </div>
-
-                    <template v-if="!is_client">
-
-                        <div class="col-md-12"  v-if="form.item_unit_types.length > 0">
-                            <div style="margin:3px" class="table-responsive">
-                                <h5 class="separator-title">
-                                    Lista de Precios
-                                    <el-tooltip class="item" effect="dark" content="Aplica para realizar venta en presentacion de diferentes precios y/o cantidades" placement="top">
-                                        <i class="fa fa-info-circle"></i>
-                                    </el-tooltip>
-                                </h5>
-                                <table class="table">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">Unidad</th>
-                                    <th class="text-center">Descripción</th>
-                                    <th class="text-center">Factor</th>
-                                    <th class="text-center">Precio 1</th>
-                                    <th class="text-center">Precio 2</th>
-                                    <th class="text-center">Precio 3</th>
-                                    <th class="text-center">Precio Default</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr v-for="(row, index) in form.item_unit_types" :key="index">
-
-                                        <td class="text-center">{{row.unit_type.name}}</td>
-                                        <td class="text-center">{{row.description}}</td>
-                                        <td class="text-center">{{row.quantity_unit}}</td>
-                                        <td class="text-center">{{row.price1}}</td>
-                                        <td class="text-center">{{row.price2}}</td>
-                                        <td class="text-center">{{row.price3}}</td>
-                                        <td class="text-center">Precio {{row.price_default}}</td>
-                                        <td class="series-table-actions text-right">
-                                        <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="selectedPrice(row)">
-                                                <i class="el-icon-check"></i>
-                                            </button>
-                                        </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            </div>
+ 
+                    <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.type_generation_transmition_id}">
+                            <label class="control-label">Tipo de envío</label>
+                            <el-select v-model="form.type_generation_transmition_id">
+                                <el-option v-for="option in type_generation_transmitions" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.type_generation_transmition_id" v-text="errors.type_generation_transmition_id[0]"></small>
                         </div>
+                    </div>
 
-                    </template>
+                    <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.start_date}">
+                            <label class="control-label">Fecha de inicio</label>
+                            <el-date-picker :disabled="form.type_generation_transmition_id === 1" v-model="form.start_date" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeStartDate"></el-date-picker>
+                            <small class="form-control-feedback" v-if="errors.start_date" v-text="errors.start_date[0]"></small>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <div class="form-actions text-right pt-2">
+            <div class="form-actions text-right mt-2">
                 <el-button @click.prevent="close()">Cerrar</el-button>
                 <el-button class="add" type="primary" native-type="submit" v-if="form.item_id">{{titleAction}}</el-button>
             </div>
@@ -198,6 +133,7 @@
 
     </el-dialog>
 </template>
+
 <style>
 .el-select-dropdown {
     max-width: 80% !important;
@@ -209,9 +145,8 @@
 
     import ItemForm from '@views/items/form.vue'
 
-
     export default {
-        props: ['recordItem','showDialog', 'operationTypeId', 'currencyTypeIdActive', 'currencyTypeSymbolActive', 'exchangeRateSale', 'typeUser', 'isEditItemNote', 'configuration'],
+        props: ['recordItem','showDialog', 'currencyTypeIdActive', 'currencyTypeSymbolActive', 'typeUser', 'isEditItemNote', 'configuration', 'dateOfIssue'],
         components: {ItemForm},
         data() {
             return {
@@ -219,81 +154,73 @@
                 titleAction: '',
                 is_client:false,
                 titleDialog: '',
-                resource: 'co-documents',
+                resource: 'support-documents',
                 showDialogNewItem: false,
-                has_list_prices: false,
                 errors: {},
                 form: {},
                 all_items: [],
                 items: [],
-                operation_types: [],
-                all_affectation_igv_types: [],
-                affectation_igv_types: [],
-                system_isc_types: [],
-                discount_types: [],
-                charge_types: [],
-                attribute_types: [],
-                use_price: 1,
-                change_affectation_igv_type_id: false,
-                activePanel: 0,
                 total_item: 0,
-                item_unit_types: [],
-                showWarehousesDetail: false,
                 warehousesDetail:[],
                 showListStock:false,
-                search_item_by_barcode:false,
-                isUpdateWarehouseId:null,
-                showDialogLots: false,
-                showDialogSelectLots: false,
-                lots:[],
-                all_taxes:[],
                 taxes:[],
-                items_aiu: []
-
+                type_generation_transmitions:[],
             }
         },
         computed: {
             itemTaxes() {
                 return this.taxes.filter(tax => !tax.is_retention);
             },
-            retentiontaxes() {
-                return this.taxes.filter(tax => tax.is_retention);
-            },
-            retentionSelected() {
-            if (this.retention.retention_id == null) return { rate: 0 };
-
-                return this.taxes.find(row => row.id == this.retention.retention_id);
-            },
-            showTotalAndSave() {
-                return (
-                this.document.hasOwnProperty("items") && this.document.items.length > 0
-            );
-            },
-            typeNoteDocuments() {
-                return this.typeDocuments.filter(row => row.id != 1);
-            }
         },
         created() {
+            this.events()
             this.initForm()
-            this.$http.get(`/${this.resource}/item/tables`).then(response => {
-               // console.log('tablas new edit')
-                this.taxes = response.data.taxes;
-                this.all_items = response.data.items
-                this.items_aiu = response.data.items_aiu
-                this.filterItems()
-
-            })
-
-            this.$eventHub.$on('reloadDataItems', (item_id) => {
-                this.reloadDataItems(item_id)
-            })
-
-            this.$eventHub.$on('selectWarehouseId', (warehouse_id) => {
-                // console.log(warehouse_id)
-                this.form.warehouse_id = warehouse_id
-            })
+            this.getTables()
         },
         methods: {
+            changeStartDate()
+            {
+                if(this.form.type_generation_transmition_id == 1)
+                {
+                    this.setDefaultStartDate()
+                }
+                else
+                {
+                    if(moment(this.form.start_date).isAfter(this.dateOfIssue))
+                    {
+                        this.setDefaultStartDate()
+                        this.$message.error('Fecha de inicio no puede ser mayor a la fecha del documento')
+                    }
+
+                    const min_date = moment(this.dateOfIssue).subtract(6, 'days')
+
+                    if(moment(this.form.start_date) < min_date)
+                    {
+                        this.setDefaultStartDate()
+                        this.$message.error('Fecha de inicio no puede ser menor a 6 días de la fecha del documento')
+                    }
+                }
+
+            },
+            setDefaultStartDate()
+            {
+                this.form.start_date = this.dateOfIssue
+            },
+            getTables()
+            {
+                this.$http.get(`/${this.resource}/item/tables`).then(response => {
+                    this.taxes = response.data.taxes
+                    this.type_generation_transmitions = response.data.type_generation_transmitions
+                    this.all_items = response.data.items
+                    this.filterItems()
+                })
+            },
+            events()
+            {
+                this.$eventHub.$on('reloadDataItems', (item_id) => {
+                    this.reloadDataItems(item_id)
+                })
+            },
             async searchRemoteItems(input) {
 
                 if (input.length > 2) {
@@ -307,8 +234,7 @@
                                 // console.log(response)
                                 this.items = response.data.items
                                 this.loading_search = false
-
-                                this.enabledSearchItemsBarcode()
+ 
 
                                 if(this.items.length == 0){
                                     this.filterItems()
@@ -321,28 +247,7 @@
             },
             filterItems() {
                 this.items = this.all_items
-            },
-            enabledSearchItemsBarcode(){
-
-                if(this.search_item_by_barcode){
-
-                    if (this.items.length == 1){
-
-                        this.form.item_id = this.items[0].id
-                        this.changeItem()
-                    }
-                }
-            },
-            filterMethod(query){
-
-                let item = _.find(this.items, {'internal_id': query});
-
-                if(item){
-                    this.form.item_id = item.id
-                    this.changeItem()
-                }
-                // console.log(item)
-            },
+            }, 
             clickWarehouseDetail(){
 
                 if(!this.form.item_id){
@@ -354,11 +259,8 @@
                 this.warehousesDetail = item.warehouses
                 this.showWarehousesDetail = true
             },
-            // filterItems(){
-            //     this.items = this.items.filter(item => item.warehouses.length >0)
-            // },
             initForm() {
-                this.errors = {};
+                this.errors = {}
 
                 this.form = {
                     id: null,
@@ -368,6 +270,7 @@
                     discount: 0,
                     name: null,
                     price: null,
+                    unit_price: 0,
                     quantity: null,
                     subtotal: null,
                     tax: {},
@@ -376,146 +279,43 @@
                     total_tax: 0,
                     type_unit: {},
                     unit_type_id: null,
-                    item_unit_types: [],
-                    IdLoteSelected: null,
-                };
+                    type_generation_transmition_id: 1,
+                    start_date: null
+                }
 
-                this.activePanel = 0;
-                this.total_item = 0;
-                this.item_unit_type = {};
-                this.has_list_prices = false;
+                this.total_item = 0
+                this.item_unit_type = {}
             },
             async create() {
 
-                this.titleDialog = (this.recordItem) ? ' Editar Producto o Servicio' : ' Agregar Producto o Servicio';
-                this.titleAction = (this.recordItem) ? ' Editar' : ' Agregar';
-                // let operation_type = await _.find(this.operation_types, {id: this.operationTypeId})
-                // this.affectation_igv_types = await _.filter(this.all_affectation_igv_types, {exportation: operation_type.exportation})
-
-                if (this.recordItem) {
-
-                    console.log(this.recordItem)
-
-                    this.form.item_id = await this.recordItem.item_id
-                    await this.changeItem()
-
-                    this.form.tax_id = this.recordItem.tax_id
-                    this.form.quantity = this.recordItem.quantity
-                    this.form.price = this.recordItem.price
-                    this.form.discount = this.recordItem.discount
-
-                    this.form.warehouse_id = this.recordItem.warehouse_id
-                    this.isUpdateWarehouseId = this.recordItem.warehouse_id
-
-                    if(this.isEditItemNote){
-                        this.form.item.currency_type_id = this.currencyTypeIdActive
-                        // this.form.item.currency_type_symbol = (this.currencyTypeIdActive == 'PEN') ? 'S/':'$'
-                        this.form.item.currency_type_symbol = this.currencyTypeSymbolActive
-                    }
-                    this.calculateQuantity()
-
-                }else{
-                    this.isUpdateWarehouseId = null
-                }
+                this.titleDialog = (this.recordItem) ? ' Editar Producto o Servicio' : ' Agregar Producto o Servicio'
+                this.titleAction = (this.recordItem) ? ' Editar' : ' Agregar'
 
             },
             close() {
                 this.initForm()
                 this.$emit('update:showDialog', false)
             },
-            async changeItem() {
-
-
+            async changeItem() 
+            {
                 this.form.item = _.find(this.items, {'id': this.form.item_id});
-                this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
                 this.form.id = this.form.item_id
                 this.form.unit_type_id = this.form.item.unit_type_id
 
-                this.lots = this.form.item.lots
+                if(this.form.type_generation_transmition_id == 1) this.setDefaultStartDate()
 
-                this.form.tax_id = (this.taxes.length > 0) ? this.form.item.tax.id: null
+                // this.lots = this.form.item.lots
+
+                // this.form.tax_id = (this.taxes.length > 0) ? this.form.item.tax.id: null
+                this.form.tax_id = 8 // se asigna excento por defecto
 
                 this.form.price = this.form.item.sale_unit_price;
-
-                // this.form.has_igv = this.form.item.has_igv;
-                // this.form.affectation_igv_type_id = this.form.item.sale_affectation_igv_type_id;
 
                 this.form.quantity = 1;
                 this.cleanTotalItem();
                 this.showListStock = true
                 this.form.lots_group = this.form.item.lots_group
 
-            },
-            getItemsAiu(detailAiu)
-            {
-                const context = this
-
-                let items_a = this.items_aiu.filter( row => row.internal_id == 'aiu00001' || row.internal_id == 'aiu00002' || row.internal_id == 'aiu00003' )
-
-                let data = items_a.map(row => {
-
-                    let formaiu = context.getFormAiu()
-                    const price = context.getPriceAiu(row.internal_id, detailAiu)
-
-                    formaiu.item_id = row.id
-                    formaiu.item = row
-
-                    formaiu.unit_type_id = formaiu.item.unit_type_id
-                    formaiu.item.sale_unit_price = price
-                    formaiu.item_unit_types = _.find(context.items_aiu, {'id': formaiu.item_id}).item_unit_types
-                    formaiu.id = formaiu.item_id
-                    formaiu.tax_id = (context.taxes.length > 0) ? formaiu.item.tax.id: null
-                    formaiu.price = price
-                    formaiu.quantity = 1
-                    formaiu.item.presentation = {};
-
-                    formaiu.tax = _.find(context.taxes, {'id': formaiu.tax_id})
-
-                    return formaiu
-
-                })
-
-                return data
-            },
-            getPriceAiu(internal_id, detailAiu)
-            {
-                const context = this
-                let price = 0
-
-                switch(internal_id)
-                {
-                    case 'aiu00001':
-                        price = detailAiu.value_administartion
-                    break;
-                    case 'aiu00002':
-                        price = detailAiu.value_sudden
-                    break;
-                    case 'aiu00003':
-                        price = detailAiu.value_utility
-                    break;
-                }
-                return price
-            },
-            getFormAiu()
-            {
-                return {
-                    id: null,
-                    item_id: null,
-                    item: {},
-                    code: null,
-                    discount: 0,
-                    name: null,
-                    price: null,
-                    quantity: null,
-                    subtotal: null,
-                    tax: {},
-                    tax_id: null,
-                    total: 0,
-                    total_tax: 0,
-                    type_unit: {},
-                    unit_type_id: null,
-                    item_unit_types: [],
-                };
             },
             focusTotalItem(change) {
                 if(!change && this.form.item.calculate_quantity) {
@@ -562,6 +362,7 @@
                 }
 
                 this.form.IdLoteSelected = IdLoteSelected
+                this.form.unit_price = this.form.price
 
                 this.$emit('add', this.form);
 
@@ -593,23 +394,11 @@
             },
             reloadDataItems(item_id) {
 
-                if(!item_id){
-
-                    this.$http.get(`/${this.resource}/table/items`).then((response) => {
-                        this.items = response.data
-                        this.form.item_id = item_id
-                    })
-
-                }else{
-
-                    this.$http.get(`/${this.resource}/search/item/${item_id}`).then((response) => {
-
-                        this.items = response.data.items
-                        this.form.item_id = item_id
-                        this.changeItem()
-
-                    })
-                }
+                this.$http.get(`/main-items/search-by-id/${item_id}`).then((response) => {
+                    this.items = response.data.items
+                    this.form.item_id = item_id
+                    this.changeItem()
+                })
 
             },
             selectedPrice(row)
