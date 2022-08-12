@@ -54,5 +54,20 @@ class Controller extends BaseController
         return [];
     }
 
+        
+    /**
+     *
+     * @param  bool $success
+     * @param  string $message
+     * @return array
+     */
+    public function getGeneralResponse($success, $message)
+    {
+        return [
+            'success' => $success,
+            'message' => $message,
+        ];
+    }
+
 
 }

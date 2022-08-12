@@ -1010,7 +1010,8 @@
                     
                     <li class="nav-parent {{in_array($path[0], ['co-radian-events']) ? 'nav-active nav-expanded' : ''}}">
                         <a class="nav-link" href="#">
-                            <i class="fas fa-cogs" aria-hidden="true"></i>
+                            <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                            {{-- <i class="fas fa-calendar-check"></i> --}}
                             <span>Eventos RADIAN</span>
                         </a>
                         <ul class="nav nav-children">
@@ -1018,6 +1019,12 @@
                             <li class="{{($path[0] === 'co-radian-events' && $path[1] == 'reception') ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.co-radian-events-reception.index')}}">
                                     Recepción de documentos
+                                </a>
+                            </li>
+
+                            <li class="{{($path[0] === 'co-radian-events' && $path[1] == 'manage') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.co-radian-events-manage.index')}}">
+                                    Gestionar eventos
                                 </a>
                             </li>
 

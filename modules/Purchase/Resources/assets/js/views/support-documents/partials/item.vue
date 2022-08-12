@@ -299,7 +299,6 @@
             async changeItem() 
             {
                 this.form.item = _.find(this.items, {'id': this.form.item_id});
-                this.form.id = this.form.item_id
                 this.form.unit_type_id = this.form.item.unit_type_id
 
                 if(this.form.type_generation_transmition_id == 1) this.setDefaultStartDate()

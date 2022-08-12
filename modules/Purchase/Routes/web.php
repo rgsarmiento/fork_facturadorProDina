@@ -18,11 +18,9 @@ if($current_hostname) {
                 Route::get('tables', 'SupportDocumentController@tables');
                 Route::get('item/tables', 'SupportDocumentController@item_tables');
                 Route::post('', 'SupportDocumentController@store');
+                Route::get('record/{id}', 'SupportDocumentController@record');
+                Route::get('downloadFile/{filename}', 'SupportDocumentController@downloadFile');
 
-                // Route::get('table/{table}', 'PurchaseQuotationController@table');
-                // Route::get('record/{expense}', 'PurchaseQuotationController@record');
-                // Route::get('download/{external_id}/{format?}', 'PurchaseQuotationController@download');
-                // Route::get('print/{external_id}/{format?}', 'PurchaseQuotationController@toPrint');
             });
 
 

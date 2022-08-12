@@ -175,7 +175,22 @@ class SupportDocument extends ModelTenant
 
     public function getRowResource()
     {
+        
+        $filename_xml = null;
+        $filename_pdf = null;
+        $response_api_message = null;
+        
+        if($this->response_api)
+        {
+            $response = $this->response_api;
+            $response_dian_message = $response->ResponseDian->Envelope->Body->SendBillSyncResponse->SendBillSyncResult->StatusMessage ?? '';
+            $response_api_message = isset($response->message) ? $response->message : null;
+            $filename_xml = $response->urlinvoicexml ?? null;
+            $filename_pdf =  $response->urlinvoicepdf ?? null;
+        }
+
         return [
+            'id' => $this->id,
             'user_id' => $this->user_id,
             'external_id' => $this->external_id,
             'establishment_id' => $this->establishment_id,
@@ -196,6 +211,13 @@ class SupportDocument extends ModelTenant
             'payment_method_id' => $this->payment_method_id,
             'time_days_credit' => $this->time_days_credit,
             'total' => $this->total,
+
+            'response_dian_message' => $response_dian_message,
+            'response_api_message' => $response_api_message,
+            'filename_xml' => $filename_xml,
+            'filename_pdf' => $filename_pdf,
+
+
         ];
     }
 

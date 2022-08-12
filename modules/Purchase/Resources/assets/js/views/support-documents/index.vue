@@ -47,27 +47,19 @@
                     </tr>
                 </data-table>
             </div>
- 
 
-            <!-- <document-payroll-options :showDialog.sync="showDialogDocumentPayrollOptions"     
-                            :recordId="recordId"
-                            :showDownload="true"
-                            :showClose="true">
-                            </document-payroll-options>
+            <support-document-options 
+                :showDialog.sync="showDialogOptions"     
+                :recordId="recordId"
+                :showClose="true">
+            </support-document-options>
 
-            <document-payroll-elimination :showDialog.sync="showDialogDocumentPayrollElimination"     
-                            :recordId="recordId"
-                            :recordNumberFull="recordNumberFull"
-                            >
-                            </document-payroll-elimination> -->
         </div>
     </div>
 </template>
 <script>
 
-    // import WorkersForm from './form.vue'
-    // import DocumentPayrollOptions from './partials/options.vue' 
-    // import DocumentPayrollElimination from './partials/elimination_payroll.vue' 
+    import SupportDocumentOptions from './partials/options.vue' 
     import DataTable from '@components/DataTableResource.vue'
     import {deletable} from '@mixins/deletable'
 
@@ -75,8 +67,7 @@
         mixins: [deletable],
         components: { 
             DataTable, 
-            // DocumentPayrollOptions, 
-            // DocumentPayrollElimination
+            SupportDocumentOptions, 
         },
         data() {
             return {
@@ -84,58 +75,17 @@
                 resource: 'support-documents',
                 recordId: null,
                 recordNumberFull: null,
-                showDialogDocumentPayrollOptions:false,
-                showDialogDocumentPayrollElimination:false,
+                showDialogOptions:false,
                 loading: false,
             }
         },
         created() { 
         },
         methods: { 
-            // clickReplacePayroll(recordId){
-            //     location.href = `document-payroll-adjust-notes/${recordId}`
-            // },
-            // clickEliminationPayroll(recordId, recordNumberFull){
-            //     this.recordId = recordId
-            //     this.recordNumberFull = recordNumberFull
-            //     this.showDialogDocumentPayrollElimination = true
-            // },
-            // async clickQueryZipKey(recordId) {
-
-            //     this.loading = true
-                
-            //     await this.$http.post(`/${this.resource}/query-zipkey`, {
-            //         id : recordId
-            //     }).then(response => {
-            //         // console.log(response)
-
-            //         if (response.data.success) {
-            //             this.$message.success(response.data.message)
-            //         }
-            //         else {
-            //             this.$message.error(response.data.message)
-            //         }
-
-            //         this.$eventHub.$emit('reloadData')
-
-            //     }).catch(error => {
-
-            //         if (error.response.status === 422) {
-            //             this.errors = error.response.data
-            //         }
-            //         else {
-            //             this.$message.error(error.response.data.message)
-            //         }
-
-
-            //     }).then(() => {
-            //         this.loading = false
-            //     })
-            // },  
-            // clickOptions(recordId = null) {
-            //     this.recordId = recordId
-            //     this.showDialogDocumentPayrollOptions = true
-            // },  
+            clickOptions(recordId) {
+                this.recordId = recordId
+                this.showDialogOptions = true
+            },  
         }
     }
 </script>

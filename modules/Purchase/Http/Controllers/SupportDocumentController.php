@@ -15,7 +15,8 @@ use Modules\Purchase\Models\{
     SupportDocument   
 };
 use Modules\Purchase\Http\Resources\{
-    SupportDocumentCollection
+    SupportDocumentCollection,
+    SupportDocumentResource
 };
 use Modules\Factcolombia1\Models\Tenant\{
     TypeDocument,
@@ -28,10 +29,14 @@ use Modules\Factcolombia1\Models\TenantService\{
 };
 use Modules\Purchase\Http\Requests\SupportDocumentRequest;
 use Modules\Purchase\Helpers\SupportDocumentHelper;
+use Modules\Factcolombia1\Http\Controllers\Tenant\DocumentController;
+use Modules\Payroll\Traits\UtilityTrait; 
 
 
 class SupportDocumentController extends Controller
 {
+
+    use UtilityTrait;
 
     public function index()
     {
@@ -42,7 +47,13 @@ class SupportDocumentController extends Controller
     {
         return view('purchase::support_documents.form');
     }
-
+    
+    /**
+     * 
+     * Campos para filtros
+     *
+     * @return array
+     */
     public function columns()
     {
         return [
@@ -50,7 +61,14 @@ class SupportDocumentController extends Controller
             'date_of_issue' => 'Fecha de emisión',
         ];
     }
-
+    
+    
+    /**
+     * Listado
+     *
+     * @param  mixed $request
+     * @return SupportDocumentCollection
+     */
     public function records(Request $request)
     {
         $records = SupportDocument::where($request->column, 'like', "%{$request->value}%");
@@ -58,7 +76,11 @@ class SupportDocumentController extends Controller
         return new SupportDocumentCollection($records->paginate(config('tenant.items_per_page')));
     }
 
-
+    
+    /**
+     *
+     * @return array
+     */
     public function tables()
     {
         $suppliers = $this->generalTable('suppliers');
@@ -72,6 +94,10 @@ class SupportDocumentController extends Controller
     }
 
     
+    /**
+     *
+     * @return array
+     */
     public function item_tables()
     {
         $items = $this->generalTable('items');
@@ -81,14 +107,26 @@ class SupportDocumentController extends Controller
         return compact('items', 'taxes', 'type_generation_transmitions');
     }
 
+        
+    /**
+     * Descarga de xml/pdf
+     *
+     * @param string $filename
+     */
+    public function downloadFile($filename)
+    {
+        return app(DocumentController::class)->downloadFile($filename);
+    }
 
-    // public function record($id)
-    // {
-
-    //     $record = new FixedAssetPurchaseResource(FixedAssetPurchase::findOrFail($id));
-
-    //     return $record;
-    // }
+    
+    /**
+     * @param  int $id
+     * @return SupportDocumentResource
+     */
+    public function record($id)
+    {
+        return new SupportDocumentResource(SupportDocument::findOrFail($id));
+    }
 
     
     /**
@@ -100,58 +138,46 @@ class SupportDocumentController extends Controller
      */
     public function store(SupportDocumentRequest $request)
     {
+        try 
+        {
+            $support_document = DB::connection('tenant')->transaction(function () use ($request) {
 
-        $support_document = DB::connection('tenant')->transaction(function () use ($request) {
+                $helper = new SupportDocumentHelper();
+                $inputs = $helper->getInputs($request);
 
-            $helper = new SupportDocumentHelper();
-            $inputs = $helper->getInputs($request);
+                $document =  SupportDocument::create($inputs);
+                
+                foreach ($inputs['items'] as $row)
+                {
+                    $document->items()->create($row); 
+                }
 
-            $document =  SupportDocument::create($inputs);
+                // enviar documento a la api
+                $send_to_api = $helper->sendToApi($document, $inputs);
+
+                $document->update([
+                    'response_api' => $send_to_api
+                ]);
+
+                return $document;
+
+            });
+
+            return [
+                'success' => true,
+                'message' => 'Documento de soporte registrado con éxito',
+                'data' => [
+                    'id' => $support_document->id,
+                    'number_full' => $support_document->number_full,
+                ],
+            ];
             
-            foreach ($inputs['items'] as $row)
-            {
-                $document->items()->create($row); 
-            }
+        } catch (Exception $e)
+        {
+            return $this->getErrorFromException($e->getMessage(), $e);
+        }
 
-            // enviar documento a la api
-            // $send_to_api = $helper->sendToApi($document, $inputs);
-
-            // $document->update([
-            //     'response_api' => $send_to_api
-            // ]);
-
-            return $document;
-
-        });
-
-        return [
-            'success' => true,
-            'data' => [
-                'id' => $support_document->id,
-                'number_full' => $support_document->number_full,
-            ],
-        ];
     }
 
- 
-
-    public static function convert($inputs)
-    {
-        $company = Company::active();
-        $values = [
-            'user_id' => auth()->id(),
-            'external_id' => Str::uuid()->toString(),
-            'supplier' => PersonInput::set($inputs['supplier_id']),
-            'soap_type_id' => $company->soap_type_id,
-            'group_id' => ($inputs->document_type_id === '01') ? '01':'02',
-            'state_type_id' => '01'
-        ];
-
-        $inputs->merge($values);
-
-        return $inputs->all();
-    }
-
- 
 
 }

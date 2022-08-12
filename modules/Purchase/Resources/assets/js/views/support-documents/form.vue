@@ -213,10 +213,9 @@
                        :external="true"
                        :type_document_id = form.type_document_id></person-form>
 
-        <!-- <support-document-options :showDialog.sync="showDialogOptions"
-                            :recordId="documentNewId"
-                            :showDownload="true"
-                            :showClose="false"></support-document-options> -->
+        <support-document-options :showDialog.sync="showDialogOptions"
+                            :recordId="recordNewId"
+                            :showClose="false"></support-document-options>
 
 
         </div>
@@ -250,7 +249,6 @@
                 recordItem: null,
                 resource: 'support-documents',
                 showDialogAddItem: false,
-                // showDialogAddRetention: false,
                 showDialogNewPerson: false,
                 showDialogOptions: false,
                 loading_submit: false,
@@ -557,45 +555,23 @@
                 }
 
                 this.form.data_api = await this.createDataApi()
-                console.log(this.form.data_api)
-                // return
 
-                // this.loading_submit = true
+                this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
-                    if (response.data.success) {
-                        // this.resetForm()
-                        console.log(response)
-                        // this.documentNewId = response.data.data.id
+
+                    if (response.data.success) 
+                    {
+                        this.resetForm()
+                        // console.log(response)
+                        this.recordNewId = response.data.data.id
                         // this.$message.success(response.data.message)
                         this.showDialogOptions = true
                     }
-                    else {
-
-
-                        if(response.data.errors){
-                            const mhtl = this.parseMesaageError(response.data.errors)
-                            this.$message({
-                                duration: 6000,
-                                type: 'error',
-                                dangerouslyUseHTMLString: true,
-                                message: mhtl
-                            })
-                        }
-                        else if(response.data.error){
-                            const ht = `<strong>${response.data.message}</strong> <br> <strong>${response.data.error.string} </strong> `
-                            this.$message({
-                                duration: 6000,
-                                type: 'error',
-                                dangerouslyUseHTMLString: true,
-                                message: ht
-                            })
-                        }
-                        else{
-                            this.$message.error(response.data.message)
-                        }
-
-
+                    else 
+                    {
+                        this.$message.error(response.data.message)
                     }
+
                 }).catch(error => {
 
                     if (error.response.status === 422) {
@@ -605,22 +581,9 @@
                         this.$message.error(error.response.data.message)
                     }
 
-
                 }).then(() => {
                     this.loading_submit = false
                 })
-            },
-            parseMesaageError(errors)
-            {
-                let ht = `Validación de datos <br><br> <ul>`
-                for(var key in errors) 
-                {
-                    ht += `<li>${key}: ${errors[key][0]}</li>`
-                }
-
-                ht += `</ul>`
-
-                return ht
             },
         }
 

@@ -317,7 +317,8 @@ Vue.component('tenant-support-documents-index', require('@viewsModulePurchase/su
 Vue.component('tenant-support-documents-form', require('@viewsModulePurchase/support-documents/form.vue'));
 
 // evento radian
-Vue.component('tenant-co-radian-event-index', require('@viewsModuleRadianEvent/radian_events/index.vue'));
+Vue.component('tenant-co-radian-event-reception-index', require('@viewsModuleRadianEvent/reception/index.vue'));
+Vue.component('tenant-co-radian-event-manage-index', require('@viewsModuleRadianEvent/manage/index.vue'));
 
 
 // advanced-configuration

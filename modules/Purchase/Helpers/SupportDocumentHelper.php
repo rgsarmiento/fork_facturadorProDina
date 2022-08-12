@@ -12,6 +12,9 @@ use App\Models\Tenant\{
     Person
 };
 use Exception;
+use Modules\Purchase\Models\{
+    SupportDocument   
+};
 
 class SupportDocumentHelper
 {
@@ -53,16 +56,23 @@ class SupportDocumentHelper
         return $inputs->merge($values)->all();
     }
 
-    
+        
+    /**
+     * Enviar documento a api
+     *
+     * @param  SupportDocument $support_document
+     * @param  array $inputs
+     * @return array
+     */
     public function sendToApi($support_document, $inputs)
     {
         $connection_api = new HttpConnectionApi($this->company->api_token);
         
         $params = $this->getParamsForApi($support_document, $inputs);
         $url = "ubl2.1/support-document";
-        // dd($url, $params);
         
         $send_request_to_api = $connection_api->sendRequestToApi($url, $params, 'POST');
+        // dd($send_request_to_api);
 
         //error validacion form request api
         if(isset($send_request_to_api['errors']))
@@ -71,24 +81,34 @@ class SupportDocumentHelper
             $this->throwException($message);
         }
 
-        // dd($send_request_to_api);
-
-        // validacion respuesta api entorno Pruebas/Produccion
+        // validacion respuesta api
         $this->validateResponseApi($send_request_to_api, $support_document->number_full, $connection_api, $support_document);
 
         return $send_request_to_api;
-
     }
 
-    
-    private function validateResponseApi($send_request_to_api, $number_full, HttpConnectionApi $connection_api, $support_document)
+        
+    /**
+     * 
+     * Validar response de la dian
+     *
+     * @param  array $send_request_to_api
+     * @param  string $number_full
+     * @param  HttpConnectionApi $connection_api
+     * @param  SupportDocument $support_document
+     * @return void
+     */
+    private function validateResponseApi($send_request_to_api, $number_full, HttpConnectionApi $connection_api, SupportDocument $support_document)
     {
-        //TODO parsear respuesta y verificar
-        $send_bill_sync_result = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendBillSyncResponse']['SendBillSyncResult'];
+        //parsear respuesta y verificar
+        $send_bill_sync_result = $send_request_to_api['ResponseDian']['Envelope']['Body']['SendBillSyncResponse']['SendBillSyncResult'] ?? null;
 
+        if(!$send_bill_sync_result) $this->throwException('Error inesperado: No se pudo parsear respuesta de la DIAN');
+
+        
         if($send_bill_sync_result['IsValid'] == 'true')
         {
-            //estado aceptado en produccion, deberia actualizar un campo en bd para mostrar el mensaje directo de la dian
+            //estado aceptado en produccion
             $this->updateStateDocument(self::ACCEPTED, $support_document);
         }
         else
@@ -97,29 +117,47 @@ class SupportDocumentHelper
             $extract_error_response = $send_bill_sync_result['ErrorMessage']['string'] ?? $send_bill_sync_result['StatusDescription'];
             $error_message_response = is_array($extract_error_response) ?  implode(",", $extract_error_response) : $extract_error_response;
             $this->throwException("Error al Validar Documento de soporte Nro: {$number_full} Errores: {$error_message_response}");
-
         }
     }
     
-
-    public function updateStateDocument($state_document_id, $support_document)
+    
+    /**
+     * Actualizar estado del documento soporte
+     *
+     * @param  int $state_document_id
+     * @param  SupportDocument $support_document
+     * @return void
+     */
+    public function updateStateDocument($state_document_id, SupportDocument $support_document)
     {
         $support_document->update([
             'state_document_id' => $state_document_id
         ]);
     }
 
-    
+        
+    /**
+     * 
+     * Parametros para la api
+     *
+     * @param  SupportDocument $support_document
+     * @param  array $inputs
+     * @return array
+     */
     public function getParamsForApi($support_document, $inputs)
     {
         $form_api = $inputs['data_api'];
         $form_api['number'] = $support_document->number;
-        // dd($form_api, $support_document, $inputs);
 
         return $form_api;
     }
 
-    
+        
+    /**
+     *
+     * @param  string $message
+     * @return void
+     */
     public function throwException($message)
     {
         throw new Exception($message);
