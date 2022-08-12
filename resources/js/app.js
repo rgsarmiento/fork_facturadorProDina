@@ -316,6 +316,9 @@ Vue.component('tenant-document-payrolls-form', require('@viewsModulePayroll/docu
 Vue.component('tenant-support-documents-index', require('@viewsModulePurchase/support-documents/index.vue'));
 Vue.component('tenant-support-documents-form', require('@viewsModulePurchase/support-documents/form.vue'));
 
+// evento radian
+Vue.component('tenant-co-radian-event-index', require('@viewsModuleRadianEvent/radian_events/index.vue'));
+
 
 // advanced-configuration
 Vue.component('tenant-advanced-configuration-index', require('@viewsModuleProColombia/tenant/advanced-configuration/index.vue'));

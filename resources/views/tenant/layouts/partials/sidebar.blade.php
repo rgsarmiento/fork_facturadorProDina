@@ -1007,6 +1007,30 @@
                     </li>
                     @endif
 
+                    
+                    <li class="nav-parent {{in_array($path[0], ['co-radian-events']) ? 'nav-active nav-expanded' : ''}}">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-cogs" aria-hidden="true"></i>
+                            <span>Eventos RADIAN</span>
+                        </a>
+                        <ul class="nav nav-children">
+
+                            <li class="{{($path[0] === 'co-radian-events' && $path[1] == 'reception') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.co-radian-events-reception.index')}}">
+                                    Recepción de documentos
+                                </a>
+                            </li>
+
+                            {{-- <li class="{{($path[0] === 'co-advanced-configuration') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.co-advanced-configuration.index')}}">
+                                    Avanzado
+                                </a>
+                            </li> --}}
+
+                        </ul>
+                    </li>
+
+
                     {{-- @if(in_array('cuenta', $vc_modules))
                     <li class=" nav-parent
                         {{ ($path[0] === 'cuenta')?'nav-active nav-expanded':'' }}">
