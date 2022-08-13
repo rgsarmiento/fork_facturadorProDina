@@ -20,6 +20,13 @@ class AdvancedConfiguration extends Model
     protected $fillable = [
         'minimum_salary',
         'transportation_allowance',
+
+        'radian_imap_encryption',
+        'radian_imap_host',
+        'radian_imap_port',
+        'radian_imap_password',
+        'radian_imap_user',
+
     ];
 
         
@@ -34,8 +41,26 @@ class AdvancedConfiguration extends Model
             'id' => $this->id,
             'minimum_salary' => $this->minimum_salary,
             'transportation_allowance' => $this->transportation_allowance,
+            
+            'radian_imap_encryption' => $this->radian_imap_encryption,
+            'radian_imap_host' => $this->radian_imap_host,
+            'radian_imap_port' => $this->radian_imap_port,
+            'radian_imap_password' => $this->radian_imap_password,
+            'radian_imap_user' => $this->radian_imap_user,
         ];
 
+    }
+    
+    
+    public function scopeSelectImapColumns($query)
+    {
+        return $query->select([
+            'radian_imap_encryption',
+            'radian_imap_host',
+            'radian_imap_port',
+            'radian_imap_password',
+            'radian_imap_user',
+        ]);
     }
 
 }

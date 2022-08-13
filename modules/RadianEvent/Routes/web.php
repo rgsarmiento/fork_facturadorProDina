@@ -18,8 +18,11 @@ if($current_hostname) {
                 Route::get('records', 'RadianEventController@records');
 
                 Route::post('run-event', 'RadianEventController@runEvent');
-
                 Route::get('download/{filename}', 'RadianEventController@download');
+
+                // filtrar correos
+                Route::get('search-imap-emails', 'SearchEmailController@searchImapEmails');
+
 
             });
 
