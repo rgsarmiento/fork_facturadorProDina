@@ -24,7 +24,16 @@ if($current_hostname) {
                 Route::get('search-imap-emails', 'SearchEmailController@searchImapEmails');
 
 
+
             });
+
+            Route::prefix('co-email-reading')->group(function () {
+                Route::get('process-emails', 'EmailReadingController@index')->name('tenant.co-email-reading-process-emails.index');
+                Route::get('columns', 'EmailReadingController@columns');
+                Route::get('records', 'EmailReadingController@records');
+                Route::get('details/{id}', 'EmailReadingController@details');
+            });
+
 
         });
     });

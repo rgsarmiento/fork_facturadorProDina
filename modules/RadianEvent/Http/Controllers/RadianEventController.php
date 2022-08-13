@@ -33,6 +33,7 @@ class RadianEventController extends Controller
         return view('radianevent::manage.index');
     }
     
+    
     public function columns()
     {
         return [

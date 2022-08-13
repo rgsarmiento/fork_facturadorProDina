@@ -19,10 +19,6 @@
                         <th>#</th>
                         <th>Estado Actual</th>
 
-                        <th>Acuse Recibo</th>
-                        <th>Recepcion Bienes</th>
-                        <th>Aceptacion Expresa</th>
-                        <th>Rechazo</th>
 
                         <th>Tipo Documento</th>
                         <th>Fecha</th>
@@ -34,6 +30,12 @@
                         <th>Vr. Documento</th>
                         <th>Attached Document</th>
                         <th>PDF</th>
+                        
+                        <th>Acuse Recibo</th>
+                        <th>Recepcion Bienes</th>
+                        <th>Aceptacion Expresa</th>
+                        <th>Rechazo</th>
+
                     <tr>
                     <tr slot-scope="{ index, row }">
                         <td>{{ index }}</td>
@@ -63,6 +65,26 @@
                             </template>
                         </td>
 
+                        <td>{{ row.type_document_name }}</td>
+
+                        <td>{{ row.date_issue }}</td>
+                        <td>{{ row.identification_number }}</td>
+                        <td>{{ row.name_seller }}</td>
+                        <td>{{ row.prefix }}</td>
+                        <td>{{ row.number }}</td>
+                        <td>{{ row.total_tax }}</td>
+                        <td>{{ row.total }}</td>
+                        <td>
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickDownload(row.xml)">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDownload(row.pdf)">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </td>
+                        
                         <td> 
                             <!-- Acuse Recibo -->
 
@@ -111,25 +133,6 @@
                             <!-- Rechazo -->
                         </td>
 
-                        <td>{{ row.type_document_name }}</td>
-
-                        <td>{{ row.date_issue }}</td>
-                        <td>{{ row.identification_number }}</td>
-                        <td>{{ row.name_seller }}</td>
-                        <td>{{ row.prefix }}</td>
-                        <td>{{ row.number }}</td>
-                        <td>{{ row.total_tax }}</td>
-                        <td>{{ row.total }}</td>
-                        <td>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickDownload(row.xml)">
-                                <i class="fas fa-download"></i>
-                            </button>
-                        </td>
-                        <td>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDownload(row.pdf)">
-                                <i class="fas fa-download"></i>
-                            </button>
-                        </td>
                     </tr>
                 </data-table>
 

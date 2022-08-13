@@ -1008,13 +1008,19 @@
                     @endif
 
                     
-                    <li class="nav-parent {{in_array($path[0], ['co-radian-events']) ? 'nav-active nav-expanded' : ''}}">
+                    <li class="nav-parent {{in_array($path[0], ['co-radian-events', 'co-email-reading']) ? 'nav-active nav-expanded' : ''}}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-calendar-check" aria-hidden="true"></i>
                             {{-- <i class="fas fa-calendar-check"></i> --}}
                             <span>Eventos RADIAN</span>
                         </a>
                         <ul class="nav nav-children">
+
+                            <li class="{{($path[0] === 'co-email-reading' && $path[1] == 'process-emails') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.co-email-reading-process-emails.index')}}">
+                                    Procesar correos
+                                </a>
+                            </li>
 
                             <li class="{{($path[0] === 'co-radian-events' && $path[1] == 'reception') ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.co-radian-events-reception.index')}}">

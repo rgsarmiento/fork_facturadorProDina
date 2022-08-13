@@ -41,6 +41,7 @@ class ReceivedDocument extends ModelTenant
         'aceptacion',
         'rechazo',
         'response_api',
+        'co_email_reading_detail_id',
          
     ];
 
@@ -48,6 +49,11 @@ class ReceivedDocument extends ModelTenant
     public function type_document()
     {
         return $this->belongsTo(TypeDocument::class, 'type_document_id');
+    }
+
+    public function email_reading_detail()
+    {
+        return $this->belongsTo(EmailReadingDetail::class, 'co_email_reading_detail_id');
     }
 
     public function getResponseApiAttribute($value)
