@@ -426,6 +426,7 @@
                             {{ ($path[0] === 'purchase-quotations')?'nav-active nav-expanded':'' }}
                             {{ ($path[0] === 'purchase-orders')?'nav-active nav-expanded':'' }}
                             {{ ($path[0] === 'fixed-asset')?'nav-active nav-expanded':'' }}
+                            {{ ($path[0] === 'support-documents')?'nav-active nav-expanded':'' }}
                             ">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-cart-plus" aria-hidden="true"></i>
@@ -479,6 +480,31 @@
                                         </li>
                                     </ul>
                                 </li>
+
+                                {{-- documento de soporte --}}
+                                
+                                <li class="nav-parent
+                                    {{ ($path[0] === 'support-documents')?'nav-active nav-expanded':'' }}
+                                    ">
+                                    <a class="nav-link" href="#">
+                                        Documentos de soporte (DSNOF)
+                                    </a>
+                                    <ul class="nav nav-children">
+
+                                        <li class="{{ ($path[0] === 'support-documents' && $path[1] === 'create')?'nav-active':'' }}">
+                                            <a class="nav-link" href="{{route('tenant.support-documents.create')}}">
+                                                Nuevo
+                                            </a>
+                                        </li>
+                                        <li class="{{ ($path[0] === 'support-documents' && $path[1] === '')?'nav-active':'' }}">
+                                            <a class="nav-link" href="{{route('tenant.support-documents.index')}}">
+                                                Listado
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                {{-- documento de soporte --}}
+
 
                                 {{-- <li class="nav-parent
                                     {{ ($path[0] === 'fixed-asset' )?'nav-active nav-expanded':'' }}
@@ -980,6 +1006,43 @@
                         </ul>
                     </li>
                     @endif
+
+                    
+                    <li class="nav-parent {{in_array($path[0], ['co-radian-events', 'co-email-reading']) ? 'nav-active nav-expanded' : ''}}">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                            {{-- <i class="fas fa-calendar-check"></i> --}}
+                            <span>Eventos RADIAN</span>
+                        </a>
+                        <ul class="nav nav-children">
+
+                            <li class="{{($path[0] === 'co-email-reading' && $path[1] == 'process-emails') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.co-email-reading-process-emails.index')}}">
+                                    Procesar correos
+                                </a>
+                            </li>
+
+                            <li class="{{($path[0] === 'co-radian-events' && $path[1] == 'reception') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.co-radian-events-reception.index')}}">
+                                    Recepción de documentos
+                                </a>
+                            </li>
+
+                            <li class="{{($path[0] === 'co-radian-events' && $path[1] == 'manage') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.co-radian-events-manage.index')}}">
+                                    Gestionar eventos
+                                </a>
+                            </li>
+
+                            {{-- <li class="{{($path[0] === 'co-advanced-configuration') ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.co-advanced-configuration.index')}}">
+                                    Avanzado
+                                </a>
+                            </li> --}}
+
+                        </ul>
+                    </li>
+
 
                     {{-- @if(in_array('cuenta', $vc_modules))
                     <li class=" nav-parent

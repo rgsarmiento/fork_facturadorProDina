@@ -312,6 +312,15 @@ Vue.component('tenant-document-payrolls-form', require('@viewsModulePayroll/docu
 // Vue.component('tenant-type-workers-index', require('@viewsModulePayroll/type-workers/index.vue'));
 // Vue.component('tenant-sub-type-workers-index', require('@viewsModulePayroll/sub-type-workers/index.vue'));
 
+// documento soporte
+Vue.component('tenant-support-documents-index', require('@viewsModulePurchase/support-documents/index.vue'));
+Vue.component('tenant-support-documents-form', require('@viewsModulePurchase/support-documents/form.vue'));
+
+// evento radian
+Vue.component('tenant-co-radian-event-reception-index', require('@viewsModuleRadianEvent/reception/index.vue'));
+Vue.component('tenant-co-radian-event-manage-index', require('@viewsModuleRadianEvent/manage/index.vue'));
+Vue.component('tenant-co-radian-event-process-emails-index', require('@viewsModuleRadianEvent/process-emails/index.vue'));
+
 
 // advanced-configuration
 Vue.component('tenant-advanced-configuration-index', require('@viewsModuleProColombia/tenant/advanced-configuration/index.vue'));

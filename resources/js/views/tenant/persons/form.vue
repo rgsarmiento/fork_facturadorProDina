@@ -216,6 +216,16 @@
 
 
                 <div class="row mt-2" v-if="type === 'suppliers'">
+                    
+
+                    <div class="col-md-6">
+                        <div class="form-group" :class="{'has-danger': errors.postal_code}">
+                            <label class="control-label">Código postal  </label>
+                            <el-input v-model="form.postal_code" maxlength="8"></el-input>
+                            <small class="form-control-feedback" v-if="errors.postal_code" v-text="errors.postal_code[0]"></small>
+                        </div>
+                    </div>
+
                     <div class="col-md-6 center-el-checkbox">
                         <div class="form-group" :class="{'has-danger': errors.perception_agent}">
                             <el-checkbox v-model="form.perception_agent">¿Es agente de percepción?</el-checkbox><br>
@@ -459,6 +469,7 @@
                     dv: null,
                     contact_phone: null,
                     contact_name: null,
+                    postal_code: null,
                 }
 
                 this.departmentss();

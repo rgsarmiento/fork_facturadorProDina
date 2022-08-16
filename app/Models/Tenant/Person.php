@@ -20,6 +20,9 @@ use Modules\Factcolombia1\Models\Tenant\{
 
 class Person extends ModelTenant
 {
+
+    public const RECORDS_ON_TABLE = 10;
+
     protected $table = 'persons';
     // protected $with = ['identity_document_type', 'country', 'department', 'province', 'district'];
 
@@ -51,6 +54,7 @@ class Person extends ModelTenant
         'dv',
         'contact_name',
         'contact_phone',
+        'postal_code',
     ];
 
     // protected static function boot()
@@ -174,7 +178,8 @@ class Person extends ModelTenant
             'type_regime_id' => $this->type_regime_id,
             'city_id' => $this->city_id,
             'type_obligation_id' => $this->type_obligation_id,
-            'dv' => $this->dv
+            'dv' => $this->dv,
+            'postal_code' => $this->postal_code,
         ];
     }
 
@@ -195,5 +200,24 @@ class Person extends ModelTenant
                     ->whereType('customers')
                     ->orderBy('name');
     }
+
+
+    /**
+     * 
+     * Filtros para busqueda de proveedores
+     * Usado en:
+     * PersonController
+     *
+     * @param $query
+     * @param $input
+     */
+    public function scopeWhereFilterSearchSupplier($query, $input)
+    {
+        return $query->where('number','like', "%{$input}%")
+                    ->orWhere('name','like', "%{$input}%")
+                    ->whereType('suppliers')
+                    ->orderBy('name');
+    }
+
 
 }

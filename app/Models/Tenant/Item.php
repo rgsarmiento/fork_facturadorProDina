@@ -329,11 +329,10 @@ class Item extends ModelTenant
         return $query->where('internal_id','!=', null);
     }
 
-    public function getRowSearchResource()
+    public function getRowSearchResource($warehouse = null)
     {
-
         $detail = $this->getFullDescription();
-        $warehouse = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();
+        $warehouse = $warehouse ?? Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();
 
         return [
             'id' => $this->id,
@@ -348,6 +347,7 @@ class Item extends ModelTenant
             'sale_unit_price' => round($this->sale_unit_price, 2),
             'purchase_unit_price' => $this->purchase_unit_price,
             'unit_type_id' => $this->unit_type_id,
+            'calculate_quantity' => (bool) $this->calculate_quantity,
             'item_unit_types' => collect($this->item_unit_types)->transform(function($row) {
                 return [
                     'id' => $row->id,

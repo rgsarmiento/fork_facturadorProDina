@@ -76,6 +76,10 @@ class PersonRequest extends FormRequest
             ],
             // 'code' => 'required|unique:tenant.persons,code|alpha_dash|max:11',
             'dv' => 'required|max:1',
+            'postal_code' => [
+                'nullable',
+                'numeric',
+            ],
         ];
     }
 }

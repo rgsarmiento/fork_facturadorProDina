@@ -611,6 +611,7 @@ class ItemController extends Controller
     */
     public function searchItems(Request $request)
     {
+        $warehouse = WarehouseModule::where('establishment_id', auth()->user()->establishment_id)->first();
 
         if(!$request->has('input'))
         {
@@ -624,8 +625,8 @@ class ItemController extends Controller
         }
 
         return [
-            'items' => $items->get()->transform(function($row){
-                return $row->getRowSearchResource();
+            'items' => $items->get()->transform(function($row) use($warehouse){
+                return $row->getRowSearchResource($warehouse);
             })
         ];
 

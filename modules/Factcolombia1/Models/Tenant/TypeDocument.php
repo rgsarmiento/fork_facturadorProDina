@@ -13,6 +13,7 @@ class TypeDocument extends Model
     protected $table = 'co_type_documents';
 
     public const INVOICE_CODE = '1';
+    public const DSNOF_CODE = '11';
 
     /**
      * The attributes that should be cast to native types.

@@ -327,7 +327,7 @@ class PersonController extends Controller
 
         if(!$request->has('input'))
         {
-            $customers = Person::take(10);
+            $customers = Person::whereType('customers')->take(10);
         }
         else
         {
@@ -340,6 +340,44 @@ class PersonController extends Controller
             })
         ];
 
+    }
+
+    
+    /**
+     * Busqueda de proveedores
+     * Si no ingresan datos para búsqueda, retorna los 10 primeros (usar en método tables)
+     *
+     * Usado en:
+     * RemissionController
+     *  
+     * @param  Request $request
+     * @return array
+     */
+    public function searchSuppliers(Request $request)
+    {
+        $suppliers = (!$request->has('input')) ? Person::whereType('suppliers')->take(Person::RECORDS_ON_TABLE) : Person::whereFilterSearchSupplier($request->input);
+
+        return [
+            'suppliers' => $suppliers->get()->transform(function($row){
+                return $row->getRowSearchResource();
+            })
+        ];
+    }
+
+
+    /**
+     * Busqueda de registro por id
+     *  
+     * @param  int $id
+     * @return array
+     */
+    public function searchPersonById($id)
+    {
+        return Person::where('id', $id)
+                    ->take(1)
+                    ->get()->transform(function($row){
+                        return $row->getRowSearchResource();
+                    });
     }
 
 }
