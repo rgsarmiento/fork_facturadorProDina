@@ -339,7 +339,6 @@ class DocumentController extends Controller
             if(file_exists(storage_path('sendmail.api')))
                 $service_invoice['sendmail'] = true;
             $service_invoice['ivaresponsable'] = $datoscompany->type_regime->name;
-            \Log::debug($datoscompany->type_identity_document->name);
             $service_invoice['nombretipodocid'] = $datoscompany->type_identity_document->name;
             $service_invoice['tarifaica'] = $datoscompany->ica_rate;
             $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;
@@ -366,9 +365,9 @@ class DocumentController extends Controller
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
 
             $data_document = json_encode($service_invoice);
-\Log::debug("{$base_url}ubl2.1/invoice");
-\Log::debug($company->api_token);
-\Log::debug($data_document);
+//\Log::debug("{$base_url}ubl2.1/invoice");
+//\Log::debug($company->api_token);
+//\Log::debug($data_document);
 //            return $data_document;
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -381,7 +380,7 @@ class DocumentController extends Controller
             ));
             $response = curl_exec($ch);
             curl_close($ch);
-\Log::debug($response);
+//\Log::debug($response);
             $response_model = json_decode($response);
             // dd($response_model);
            // return json_encode( $response_model)    ;
