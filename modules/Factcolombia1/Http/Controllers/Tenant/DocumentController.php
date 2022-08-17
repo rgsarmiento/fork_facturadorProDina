@@ -339,6 +339,7 @@ class DocumentController extends Controller
             if(file_exists(storage_path('sendmail.api')))
                 $service_invoice['sendmail'] = true;
             $service_invoice['ivaresponsable'] = $datoscompany->type_regime->name;
+            \Log::debug($datoscompany->type_identity_document->name);
             $service_invoice['nombretipodocid'] = $datoscompany->type_identity_document->name;
             $service_invoice['tarifaica'] = $datoscompany->ica_rate;
             $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;

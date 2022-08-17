@@ -92,6 +92,15 @@
                             <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
                         </div>
                     </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group" :class="{'has-danger': errors.notes}">
+                            <label class="control-label">Notas</label>
+                            <el-input v-model="form.notes"></el-input>
+                            <small class="form-control-feedback" v-if="errors.notes" v-text="errors.notes[0]"></small>
+                        </div>
+                    </div>
+
                     <div class="col-md-3 col-sm-3">
                         <div class="form-group" :class="{'has-danger': errors.quantity}">
                             <label class="control-label">Cantidad</label>
@@ -394,6 +403,7 @@
                     name: null,
                     price: null,
                     quantity: null,
+                    notes: null,
                     subtotal: null,
                     tax: {},
                     tax_id: null,
@@ -426,6 +436,7 @@
 
                     this.form.tax_id = this.recordItem.tax_id
                     this.form.quantity = this.recordItem.quantity
+                    this.form.notes = this.recordItem.notes
                     this.form.price = this.recordItem.price
                     this.form.discount = this.recordItem.discount
 
@@ -532,6 +543,7 @@
                     name: null,
                     price: null,
                     quantity: null,
+                    notes: null,
                     subtotal: null,
                     tax: {},
                     tax_id: null,
