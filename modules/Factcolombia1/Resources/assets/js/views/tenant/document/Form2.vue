@@ -277,7 +277,7 @@
 
         <document-order-reference :showDialog.sync="showDialogOrderReference"
                             :order_reference="form.order_reference"
-                            @addOrderReference="addOrderReference" 
+                            @addOrderReference="addOrderReference"
                             ></document-order-reference>
 
         </div>
@@ -455,7 +455,6 @@
                 row.indexi = index
                 this.recordItem = row
                 this.showDialogAddItem = true
-
             },
             searchRemoteCustomers(input) {
 
@@ -992,6 +991,7 @@
                         unit_measure_id: x.item.unit_type.code, //codigo api dian de unidad
                         invoiced_quantity: x.quantity,
                         line_extension_amount: this.cadenaDecimales((Number(x.price) * Number(x.quantity)) - x.discount),
+                        notes: x.notes,
                         free_of_charge_indicator: false,
                                 allowance_charges: [
                             {
