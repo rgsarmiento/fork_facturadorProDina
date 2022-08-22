@@ -1,6 +1,6 @@
 <template>
     <el-dialog width="70%" :title="titleDialog" :visible="showDialog" @close="close" @open="create">
-        <form autocomplete="off" @submit.prevent="submit">
+        <form autocomplete="off" @submit.prevent="submit" v-loading="loading">
             <div class="form-body">
                 <div class="row">
                     <div class="col-md-12">
@@ -49,7 +49,7 @@
         props: ['showDialog', 'recordId'],
         data() {
             return {
-                loading_submit: false,
+                loading: false,
                 titleDialog: null,
                 resource: 'co-email-reading',
                 records: [],
@@ -59,12 +59,16 @@
             this.records = []
         },
         methods: { 
-            create() {
+            async create() {
                 this.titleDialog = `Detalle del proceso de correos`
 
-                this.$http.get(`/${this.resource}/details/${this.recordId}`)
+                this.loading = true
+
+                await this.$http.get(`/${this.resource}/details/${this.recordId}`)
                     .then(response => {
                         this.records = response.data
+                    }).then(() => {
+                        this.loading = false
                     })
             },
             close() {

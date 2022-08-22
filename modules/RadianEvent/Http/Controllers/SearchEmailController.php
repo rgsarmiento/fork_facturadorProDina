@@ -24,6 +24,7 @@ use Modules\RadianEvent\Http\Resources\{
 use Modules\RadianEvent\Helpers\ZipHelper;
 use Illuminate\Support\Facades\DB;
 use Modules\Payroll\Traits\UtilityTrait; 
+use Carbon\Carbon;
 
 
 class SearchEmailController extends Controller
@@ -31,46 +32,20 @@ class SearchEmailController extends Controller
     
     use UtilityTrait;
 
-    // public function reception()
-    // {
-    //     return view('radianevent::reception.index');
-    // }
-
-    private function getEmails()
-    {
-        $advanced_configuration = AdvancedConfiguration::selectImapColumns()->firstOrFail();
-
-        $imap_server = '{'.$advanced_configuration->radian_imap_host.':'.$advanced_configuration->radian_imap_port.'/imap/'.$advanced_configuration->radian_imap_encryption.'}INBOX';
         
-        $mailbox = new \PhpImap\Mailbox($imap_server, $advanced_configuration->radian_imap_user, $advanced_configuration->radian_imap_password);
-        
-        try 
-        {
-            // $all_emails_id = $mailbox->searchMailbox('FROM alexander_obando@hotmail.com');
-            $all_emails_id = $mailbox->searchMailbox('ALL');
-
-            if(!$all_emails_id) return $this->getGeneralResponse(false, 'No se encontraron correos.');
-
-            return [
-                'success' => true,
-                'imap_server' => $imap_server,
-                'radian_imap_user' => $advanced_configuration->radian_imap_user,
-                'emails' => $all_emails_id,
-                'mailbox' => $mailbox,
-            ];
-
-        }
-        catch(PhpImap\Exceptions\ConnectionException $ex) 
-        {
-            return $this->getGeneralResponse(false, 'Conexión IMAP fallida: ' . implode(",", $ex->getErrors('all')));
-        }
-
-    }
-    
-    public function searchImapEmails()
+    /**
+     * 
+     * Eventos Radian
+     * Buscar correos del servidor imap, validarlos, cargar archivos, registrar en documentos recibidos
+     *
+     * @param  Request $request
+     * @return array
+     */
+    public function searchImapEmails(Request $request)
     {
-
-        $emails = $this->getEmails();
+        $init_time = Carbon::now();
+        
+        $emails = $this->getEmails($request);
 
         if(!$emails['success']) return $emails;
 
@@ -79,18 +54,19 @@ class SearchEmailController extends Controller
             'start_date' => date('Y-m-d'),
             'start_time' => date('H:i:s'),
             'imap_server' => $emails['imap_server'],
+
+            'search_start_date' => $request->search_start_date,
+            'search_end_date' => $request->search_end_date,
         ]);
         
         try 
         {
-            $data = DB::connection('tenant')->transaction(function() use($emails, $email_reading) {
+            $data = DB::connection('tenant')->transaction(function() use($emails, $email_reading, $init_time) {
             
                 $all_emails_id = $emails['emails'];
                 $mailbox = $emails['mailbox'];
                 
                 $selected_emails = [];
-                $xxxx = [];
-                
         
                 foreach ($all_emails_id as $key => $email_id) 
                 {
@@ -148,11 +124,6 @@ class SearchEmailController extends Controller
                                         $this->uploadFile($pdf_filename, $pdf_content);
                                         $this->uploadFile($xml_filename, $xml_content);
 
-                
-                                        // $data_upload = [
-                                        //     'success' => true,
-                                        //     'response_api' => $data
-                                        // ];
                                     }
                                     else
                                     {
@@ -161,33 +132,10 @@ class SearchEmailController extends Controller
                                             'response_api' => $send_request_to_api
                                         ]);
 
-                                        // $data_upload = [
-                                        //     'success' => false,
-                                        //     'response_api' => $send_request_to_api
-                                        // ];
                                     }
                                 }
                             }
                         }
-        
-                        // dd($extract_zip);
-                        // $selected_emails [] = [
-                        //     'subject' => $mail->subject,
-                        //     'from_host' => $mail->fromHost,
-                        //     'from_name' => $mail->fromName,
-                        //     'from_address' => $mail->fromAddress,
-                        //     'sender_host' => $mail->senderHost,
-                        //     'sender_name' => $mail->senderName,
-                        //     'sender_address' => $mail->senderAddress,
-                        //     'data_upload' => $data_upload,
-                        //     // 'attachment' => $attachment,
-                        //     // 'attachment_content' => $attachment_content,
-                        //     'mail' => $mail,
-                        // ];
-        
-                        // $xxxx [] = [
-                        //     'data_upload' => $data_upload,
-                        // ];
                     }
                 }
 
@@ -197,11 +145,18 @@ class SearchEmailController extends Controller
                     'success'=> true,
                 ]);
 
-                return $this->getGeneralResponse(true, "Proceso realizado correctamente: {$email_reading->details()->count()} correos fueron registrados.");
-        
-                // dd($xxxx, $selected_emails);
+                // return $this->getGeneralResponse(true, "Proceso realizado correctamente: {$email_reading->details()->count()} correos fueron registrados.");
+
+                $end_time = Carbon::now();
+                $diff_in_seconds = $end_time->diffInSeconds($init_time);
                 
-                // return $document;
+                return [
+                    'success' => true,
+                    'message' => "Proceso realizado correctamente: {$email_reading->details()->count()} correos fueron registrados.",
+                    'data' => [
+                        'diff_in_seconds' => $diff_in_seconds,
+                    ],
+                ];
 
             });
 
@@ -215,14 +170,105 @@ class SearchEmailController extends Controller
 
     }
 
+    
+    /**
+     * 
+     * Conectarse con servidor imap y obtener correos, aplicar criterios de busqueda
+     *
+     * @param  Request $request
+     * @return array
+     */
+    private function getEmails(Request $request)
+    { 
 
+        $advanced_configuration = AdvancedConfiguration::selectImapColumns()->firstOrFail();
+
+        $imap_server = '{'.$advanced_configuration->radian_imap_host.':'.$advanced_configuration->radian_imap_port.'/imap/'.$advanced_configuration->radian_imap_encryption.'}INBOX';
+        
+        $mailbox = new \PhpImap\Mailbox($imap_server, $advanced_configuration->radian_imap_user, $advanced_configuration->radian_imap_password);
+        
+        try 
+        {
+            $criteria = $this->getSearchCriteria($request);
+
+            $all_emails_id = $mailbox->searchMailbox($criteria);
+
+            if(!$all_emails_id) return $this->getGeneralResponse(false, 'No se encontraron correos.');
+
+            return [
+                'success' => true,
+                'imap_server' => $imap_server,
+                'radian_imap_user' => $advanced_configuration->radian_imap_user,
+                'emails' => $all_emails_id,
+                'mailbox' => $mailbox,
+                'criteria' => $criteria,
+                'quantity_all_emails_id' => count($all_emails_id),
+            ];
+
+        }
+        catch(PhpImap\Exceptions\ConnectionException $ex) 
+        {
+            return $this->getGeneralResponse(false, 'Conexión IMAP fallida: ' . implode(",", $ex->getErrors('all')));
+        }
+
+    }
+
+    
+    /**
+     * 
+     * Aplicar criterios de busqueda por rangos de fecha
+     *
+     * @param  Request $request
+     * @return string
+     */
+    private function getSearchCriteria(Request $request)
+    {
+        $search_start_date = $request->search_start_date;
+        $search_end_date = $request->search_end_date;
+
+        if(!$search_start_date || !$search_end_date) return $this->getGeneralResponse(false, 'Los campos fecha inicio y término son obligatorios');
+
+        //si se busca por dia
+        if($search_start_date === $search_end_date)
+        {
+            $criteria = 'ON "'.$search_start_date.'"';
+        }
+        // si se busca por rango
+        else
+        {
+            $parse_search_start_date = Carbon::parse($search_start_date)->format('j F Y');
+            $parse_search_end_date = Carbon::parse($search_end_date)->addDay(1)->format('j F Y');
+
+            $criteria = 'SINCE "'.$parse_search_start_date.'" BEFORE "'.$parse_search_end_date.'"';
+        }
+
+        return $criteria;
+    }
+
+        
+    /**
+     * 
+     * Actualizar detalle con respuesta de validaciones de la Api
+     *
+     * @param  EmailReadingDetail $email_reading_detail
+     * @param  array $data
+     * @return void
+     */
     private function updateEmailReadingDetail(&$email_reading_detail, $data)
     {
         $email_reading_detail->api_validation_response = $data;
         $email_reading_detail->save();
     }
 
-
+    
+    /**
+     * 
+     * Registrar detalle del email
+     *
+     * @param  EmailReading $email_reading
+     * @param   $mail
+     * @return void
+     */
     private function saveEmailReadingDetail($email_reading, $mail)
     {
         return $email_reading->details()->create([
@@ -236,13 +282,28 @@ class SearchEmailController extends Controller
         ]);
     }
 
-
+    
+    /**
+     *
+     * @param  string $filename
+     * @param  string $content
+     * @param  string $folder
+     * @return void
+     */
     private function uploadFile($filename, $content, $folder = 'radian_reception_documents')
     {
         Storage::disk('tenant')->put($folder.DIRECTORY_SEPARATOR.$filename, $content);
     }
 
-
+    
+    /**
+     * 
+     * Enviar xml a la api para validar datos 
+     * Obtener datos parseados para el registro en documentos recibidos
+     *
+     * @param  string $xml_content
+     * @return array
+     */
     private function sendXmlToApi($xml_content)
     {
         $company = ServiceCompany::select('identification_number', 'api_token')->firstOrFail();
@@ -256,7 +317,15 @@ class SearchEmailController extends Controller
         return $connection_api->sendRequestToApi('process-seller-document-reception', $params, 'POST');
     }
 
-
+    
+    /**
+     * 
+     * Validar si email cumple con las condiciones para procesarlo
+     *
+     * @param  $mail
+     * @param  EmailReading $email_reading
+     * @return bool
+     */
     public function isValidEmail($mail, $email_reading)
     {
         $subject = $mail->subject;
