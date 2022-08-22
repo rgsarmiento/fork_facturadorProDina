@@ -33,6 +33,12 @@ Linux - Ubuntu 18 - Docker - SSL opcional<br>
 [SSL con Docker](https://docs.google.com/document/d/1fxeZ_sA88R7KVYPgRw1UJXYtyEB4bN07i2Ol0A7OXro/edit?usp=sharing "Clic")
 
 
+### Configurar e instalar dependencias para proceso automatico de correos - Recepción de documentos (RADIAN)
+
+[Guía](https://docs.google.com/document/d/1qhaT5vuxkW1GuNqGk_LDp3MTVPc_Qna8pjYadam2LtU/edit?usp=sharing "Clic")<br>
+
+
+
 ### Manuales de Usuario
 
 [Manual de usuario](https://docs.google.com/document/d/1i7yKGy3rIvv9TrnwRWZifTuZMMnZ8dbWpqcjPZ3ClmE/edit "Clic")<br>
