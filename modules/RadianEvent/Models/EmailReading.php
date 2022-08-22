@@ -25,6 +25,10 @@ class EmailReading extends ModelTenant
         'success',
         'errors',
         'imap_server',
+
+        'search_end_date',
+        'search_start_date',
+
     ];
 
 
@@ -48,6 +52,10 @@ class EmailReading extends ModelTenant
             'success' => $this->success,
             'errors' => $this->errors,
             'imap_server' => $this->imap_server,
+
+            'search_start_date' => $this->search_start_date,
+            'search_end_date' => $this->search_end_date,
+
         ];
     }
 
