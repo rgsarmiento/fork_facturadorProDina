@@ -13,12 +13,11 @@ use App\Models\Tenant\{
 };
 use Exception;
 use Modules\Purchase\Models\{
-    SupportDocument   
+    SupportDocument
 };
 
 class SupportDocumentHelper
 {
-
     const REGISTERED = 1;
     const ACCEPTED = 5;
     const REJECTED = 6;
@@ -29,7 +28,7 @@ class SupportDocumentHelper
     {
         $this->company = ServiceCompany::select('api_token', 'type_environment_id')->firstOrFail();
     }
-    
+
     /**
      * Retorna arreglo con data lista para insertar en payroll
      *
@@ -52,11 +51,11 @@ class SupportDocumentHelper
             'state_document_id' => self::REGISTERED, //estado inicial
             'type_environment_id' => $this->company->type_environment_id,
         ];
- 
+
         return $inputs->merge($values)->all();
     }
 
-        
+
     /**
      * Enviar documento a api
      *
@@ -67,10 +66,10 @@ class SupportDocumentHelper
     public function sendToApi($support_document, $inputs)
     {
         $connection_api = new HttpConnectionApi($this->company->api_token);
-        
+
         $params = $this->getParamsForApi($support_document, $inputs);
         $url = "ubl2.1/support-document";
-        
+
         $send_request_to_api = $connection_api->sendRequestToApi($url, $params, 'POST');
         // dd($send_request_to_api);
 
@@ -87,9 +86,9 @@ class SupportDocumentHelper
         return $send_request_to_api;
     }
 
-        
+
     /**
-     * 
+     *
      * Validar response de la dian
      *
      * @param  array $send_request_to_api
@@ -105,7 +104,7 @@ class SupportDocumentHelper
 
         if(!$send_bill_sync_result) $this->throwException('Error inesperado: No se pudo parsear respuesta de la DIAN');
 
-        
+
         if($send_bill_sync_result['IsValid'] == 'true')
         {
             //estado aceptado en produccion
@@ -119,8 +118,8 @@ class SupportDocumentHelper
             $this->throwException("Error al Validar Documento de soporte Nro: {$number_full} Errores: {$error_message_response}");
         }
     }
-    
-    
+
+
     /**
      * Actualizar estado del documento soporte
      *
@@ -135,9 +134,9 @@ class SupportDocumentHelper
         ]);
     }
 
-        
+
     /**
-     * 
+     *
      * Parametros para la api
      *
      * @param  SupportDocument $support_document
@@ -148,11 +147,12 @@ class SupportDocumentHelper
     {
         $form_api = $inputs['data_api'];
         $form_api['number'] = $support_document->number;
+        $form_api['seller']['dv'] = $this->validarDigVerifDIAN($form_api['seller']['identification_number']);
 
         return $form_api;
     }
 
-        
+
     /**
      *
      * @param  string $message
@@ -163,7 +163,7 @@ class SupportDocumentHelper
         throw new Exception($message);
     }
 
-    
+
     /**
      * Obtener correlativo desde el api
      *
@@ -186,4 +186,31 @@ class SupportDocumentHelper
         return null;
     }
 
+    protected function validarDigVerifDIAN($nit)
+    {
+        if(is_numeric(trim($nit))){
+            $secuencia = array(3, 7, 13, 17, 19, 23, 29, 37, 41, 43, 47, 53, 59, 67, 71);
+            $d = str_split(trim($nit));
+            krsort($d);
+            $cont = 0;
+            unset($val);
+            foreach ($d as $key => $value) {
+                $val[$cont] = $value * $secuencia[$cont];
+                $cont++;
+            }
+            $suma = array_sum($val);
+            $div = intval($suma / 11);
+            $num = $div * 11;
+            $resta = $suma - $num;
+            if ($resta == 1)
+                return $resta;
+            else
+                if($resta != 0)
+                    return 11 - $resta;
+                else
+                    return $resta;
+        } else {
+            return FALSE;
+        }
+    }
 }
