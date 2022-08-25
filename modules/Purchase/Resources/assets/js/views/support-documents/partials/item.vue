@@ -229,7 +229,7 @@
                     let parameters = `input=${input}`
 
 
-                    await this.$http.get(`/${this.resource}/search-items/?${parameters}`)
+                    await this.$http.get(`/main-items/search/?${parameters}`)
                             .then(response => {
                                 // console.log(response)
                                 this.items = response.data.items
