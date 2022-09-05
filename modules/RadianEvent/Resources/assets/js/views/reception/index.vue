@@ -30,7 +30,7 @@
                             </el-upload>
                         </div>
                     </div>
-                    
+
                     <div class="form-actions text-right mt-4">
                         <el-button type="primary" native-type="submit">Procesar</el-button>
                     </div>
@@ -56,7 +56,7 @@
                 await this.$refs.upload.submit()
             },
             successUpload(response, file, fileList) {
-
+                console.log(response)
                 if (response.success) {
                     this.$message.success(response.message)
                     this.$refs.upload.clearFiles()
