@@ -35,7 +35,15 @@ class SupportDocumentItem extends ModelTenant
 
     ];
 
-    
+    protected $casts = [
+        'quantity' => 'float',
+        'unit_price' => 'float',
+        'total_tax' => 'float',
+        'subtotal' => 'float',
+        'discount' => 'float',
+        'total' => 'float',
+    ];
+
     public function unit_type()
     {
         return $this->belongsTo(TypeUnit::class, 'unit_type_id');

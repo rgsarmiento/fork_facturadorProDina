@@ -41,6 +41,8 @@
                         <td class="text-center">{{ row.total }}</td> 
                         <td class="text-right">
 
+                            <a class="btn waves-effect waves-light btn-xs btn-primary" :href="`/support-document-adjust-notes/create/${row.id}`">Nota de ajuste</a>
+
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickOptions(row.id)">Opciones</button>
 
                         </td>

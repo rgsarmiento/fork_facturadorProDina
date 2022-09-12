@@ -173,6 +173,28 @@ class SupportDocument extends ModelTenant
         return $this->hasMany(SupportDocumentItem::class, 'co_support_document_id');
     }
 
+    public static function getDataAdjustNote($id)
+    {
+        $data = self::with(['items'])->findOrFail($id);
+
+        $data->items = $data->items->transform(function($row){
+
+            $new_row = $row;
+            $new_row['id'] = null;
+            $new_row['type_generation_transmition_id'] = null;
+            $new_row['start_date'] = null;
+            $new_row['price'] = $new_row['unit_price'];
+            $new_row['code'] = null;
+            $new_row['name'] = null;
+
+            unset($new_row['co_support_document_id']);
+
+            return $new_row;
+        });
+
+        return $data;
+    }
+
     public function getRowResource()
     {
         

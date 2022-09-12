@@ -7,7 +7,7 @@
                         <div class="form-group" id="custom-select" :class="{'has-danger': errors.item_id}">
                             <label class="control-label">
                                 Producto/Servicio
-                                <a v-if="typeUser != 'seller'" href="#" @click.prevent="showDialogNewItem = true">[+ Nuevo]</a>
+                                <a href="#" @click.prevent="showDialogNewItem = true">[+ Nuevo]</a>
                             </label>
 
                             <el-input id="custom-input">
@@ -37,9 +37,6 @@
                                     </el-tooltip>
 
                                 </el-select>
-                                <!-- <el-tooltip slot="append" class="item" effect="dark" content="Ver Stock del Producto" placement="bottom" :disabled="recordItem != null">
-                                    <el-button :disabled="isEditItemNote"  @click.prevent="clickWarehouseDetail()"><i class="fa fa-search"></i></el-button>
-                                </el-tooltip> -->
                             </el-input>
                             <small class="form-control-feedback" v-if="errors.item_id" v-text="errors.item_id[0]"></small>
                         </div>
@@ -51,7 +48,6 @@
                             <el-select v-model="form.tax_id"  :disabled="true">
                                 <el-option v-for="option in itemTaxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
-                            <!-- <el-checkbox :disabled="recordItem != null" v-model="change_tax_id">Editar</el-checkbox> -->
                             <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
                         </div>
                     </div>
@@ -65,7 +61,7 @@
                     <div class="col-md-3 col-sm-3">
                         <div class="form-group" :class="{'has-danger': errors.price}">
                             <label class="control-label">Precio Unitario</label>
-                            <el-input v-model="form.price" @input="calculateQuantity" :readonly="typeUser === ''">
+                            <el-input v-model="form.price" @input="calculateQuantity" >
                                 <template slot="prepend" v-if="currencyTypeSymbolActive">{{ currencyTypeSymbolActive }}</template>
                             </el-input>
                             <small class="form-control-feedback" v-if="errors.price" v-text="errors.unit_price[0]"></small>
@@ -146,7 +142,7 @@
     import ItemForm from '@views/items/form.vue'
 
     export default {
-        props: ['recordItem','showDialog', 'currencyTypeIdActive', 'currencyTypeSymbolActive', 'typeUser', 'isEditItemNote', 'configuration', 'dateOfIssue'],
+        props: ['showDialog', 'currencyTypeSymbolActive', 'dateOfIssue'],
         components: {ItemForm},
         data() {
             return {
@@ -288,8 +284,8 @@
             },
             async create() {
 
-                this.titleDialog = (this.recordItem) ? ' Editar Producto o Servicio' : ' Agregar Producto o Servicio'
-                this.titleAction = (this.recordItem) ? ' Editar' : ' Agregar'
+                this.titleDialog = 'Agregar Producto o Servicio'
+                this.titleAction = 'Agregar'
 
             },
             close() {
@@ -345,11 +341,6 @@
                 // console.log(this.form)
                 this.form.item.presentation = this.item_unit_type;
 
-
-                if (this.recordItem){
-                    this.form.indexi = this.recordItem.indexi
-                }
-
                 let IdLoteSelected = this.form.IdLoteSelected
 
                 let select_lots = await _.filter(this.form.item.lots, {'has_sale':true})
@@ -365,20 +356,8 @@
 
                 this.$emit('add', this.form);
 
-
-                if (this.recordItem){
-                    this.close()
-                }
-
                 this.initForm();
 
-                // let unit_price = (this.form.has_igv)?this.form.unit_price_value:this.form.unit_price_value*1.18;
-                // this.form.input_unit_price_value = this.form.unit_price_value;
-                // this.form.unit_price = unit_price;
-                // this.form.item.unit_price = unit_price;
-                // this.row = calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale);
-               // this.row.edit = false;
-                //this.initializeFields()
             },
             validateTotalItem(){
 
