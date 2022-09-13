@@ -8,24 +8,21 @@
                         </div>
                         <div class="row mt-4">
 
+
                             <div class="col-lg-6 pb-2">
-                                <div class="form-group" :class="{'has-danger': errors.supplier_id}">
-                                    <label class="control-label font-weight-bold text-info">
-                                        Proveedor
-                                    </label>
-                                    <el-select v-model="form.supplier_id" filterable remote class="border-left rounded-left border-info" popper-class="el-select-customers"
-                                        disabled>
-                                        <el-option v-for="option in suppliers" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                <div class="form-group" :class="{'has-danger': errors.note_concept_id}">
+                                    <label class="control-label">Concepto</label>
+                                    <el-select v-model="form.note_concept_id"  popper-class="el-select-document_type" class="border-left rounded-left border-info" filterable>
+                                        <el-option v-for="option in credit_note_concepts" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                     </el-select>
-                                    <small class="form-control-feedback" v-if="errors.supplier_id" v-text="errors.supplier_id[0]"></small>
+                                    <small class="form-control-feedback" v-if="errors.note_concept_id" v-text="errors.note_concept_id[0]"></small>
                                 </div>
                             </div>
-
 
                             <div class="col-lg-3 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.type_document_id}">
                                     <label class="control-label">Resolución</label>
-                                    <el-select @change="changeResolution" v-model="form.type_document_id"  popper-class="el-select-document_type" class="border-left rounded-left border-info">
+                                    <el-select @change="changeResolution" v-model="form.type_document_id" filterable  popper-class="el-select-document_type" class="border-left rounded-left border-info">
                                         <el-option v-for="option in resolutions" :key="option.id" :value="option.id" :label="`${option.prefix} / ${option.resolution_number}`"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.type_document_id" v-text="errors.type_document_id[0]"></small>
@@ -40,7 +37,28 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-2">
+                            <div class="col-lg-12 pb-2">
+                                <div class="form-group" :class="{'has-danger': errors.discrepancy_response_description}">
+                                    <label class="control-label">Descripción de la corrección</label>
+                                    <el-input v-model="form.discrepancy_response_description"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.discrepancy_response_description" v-text="errors.discrepancy_response_description[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 pb-2">
+                                <div class="form-group" :class="{'has-danger': errors.supplier_id}">
+                                    <label class="control-label">
+                                        Proveedor
+                                    </label>
+                                    <el-select v-model="form.supplier_id" filterable remote class="border-left rounded-left border-info" popper-class="el-select-customers"
+                                        disabled>
+                                        <el-option v-for="option in suppliers" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.supplier_id" v-text="errors.supplier_id[0]"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-md-3">
                                 <div class="form-group" :class="{'has-danger': errors.currency_id}">
                                     <label class="control-label">Moneda</label>
                                     <el-select v-model="form.currency_id" @change="changeCurrencyType" disabled>
@@ -164,10 +182,12 @@
         <support-document-form-item :showDialog.sync="showDialogAddItem"
                            :currency-type-symbol-active="ratePrefix()"
                            :dateOfIssue="form.date_of_issue"
+                           :isFromAdjustNote="true"
                            @add="addRow"></support-document-form-item>
 
         <support-document-options :showDialog.sync="showDialogOptions"
                             :recordId="recordNewId"
+                            :isAdjustNote="true"
                             :showClose="false"></support-document-options>
 
         </div>
@@ -237,6 +257,8 @@
                 this.form.taxes = data.taxes
                 this.form.total = data.total
                 this.form.sale = data.sale
+                this.form.affected_support_document_id = this.supportDocumentId
+                
 
                 this.reloadDataSuppliers(data.supplier_id)
             },
@@ -315,6 +337,11 @@
                 this.calculateTotal()
             },
             changeCurrencyType() {
+            },
+            clickRemoveItem(index)
+            {
+                this.form.items.splice(index, 1)
+                this.calculateTotal()
             },
             calculateTotal() {
 
@@ -466,7 +493,8 @@
                     return this.$message.error('Debe seleccionar un proveedor')
                 }
 
-                this.form.data_api = await this.createDataApi()
+                this.form.data_api = await this.createDataApiForAdjustNote()
+                // console.log(this.form.data_api)
 
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
@@ -474,9 +502,7 @@
                     if (response.data.success) 
                     {
                         this.resetForm()
-                        // console.log(response)
                         this.recordNewId = response.data.data.id
-                        // this.$message.success(response.data.message)
                         this.showDialogOptions = true
                     }
                     else 

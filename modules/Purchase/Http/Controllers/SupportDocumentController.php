@@ -71,7 +71,7 @@ class SupportDocumentController extends Controller
      */
     public function records(Request $request)
     {
-        $records = SupportDocument::where($request->column, 'like', "%{$request->value}%");
+        $records = SupportDocument::with(['type_document'])->where($request->column, 'like', "%{$request->value}%");
 
         return new SupportDocumentCollection($records->latest()->paginate(config('tenant.items_per_page')));
     }

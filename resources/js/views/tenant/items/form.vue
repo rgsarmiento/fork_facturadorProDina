@@ -129,8 +129,28 @@
                         </div>
                     </div>
 
+                    <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.model}">
+                            <label class="control-label">Modelo
+                            </label>
+                            <el-input v-model="form.model"></el-input>
+                            <small class="form-control-feedback" v-if="errors.model" v-text="errors.model[0]"></small>
+                        </div>
+                    </div>
 
 
+                    <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.internal_id}">
+                            <label class="control-label">Código Interno
+                                <el-tooltip class="item" effect="dark" content="Código interno de la empresa para el control de sus productos" placement="top-start">
+                                    <i class="fa fa-info-circle"></i>
+                                </el-tooltip>
+                            </label>
+                            <el-input v-model="form.internal_id" dusk="internal_id"></el-input>
+                            <small class="form-control-feedback" v-if="errors.internal_id" v-text="errors.internal_id[0]"></small>
+                        </div>
+                    </div>
+                    
                     <div v-show="form.unit_type_id !=1" class="col-md-3 center-el-checkbox">
                         <div class="form-group" :class="{'has-danger': errors.calculate_quantity}">
                             <el-checkbox v-model="form.calculate_quantity">Calcular cantidad por precio</el-checkbox><br>
@@ -144,17 +164,6 @@
                         </div>
                     </div> -->
 
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.internal_id}">
-                            <label class="control-label">Código Interno
-                                <el-tooltip class="item" effect="dark" content="Código interno de la empresa para el control de sus productos" placement="top-start">
-                                    <i class="fa fa-info-circle"></i>
-                                </el-tooltip>
-                            </label>
-                            <el-input v-model="form.internal_id" dusk="internal_id"></el-input>
-                            <small class="form-control-feedback" v-if="errors.internal_id" v-text="errors.internal_id[0]"></small>
-                        </div>
-                    </div>
                     <!-- <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.item_code}">
                             <label class="control-label">Código Sunat
@@ -746,6 +755,7 @@
                     tax_id: 1,
                     purchase_tax_id: 1,
                     currency_type_id: 170,
+                    model: null,
                 }
                 this.show_has_igv = true
                 this.enabled_percentage_of_profit = false

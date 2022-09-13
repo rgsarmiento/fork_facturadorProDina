@@ -28,9 +28,7 @@ if($current_hostname) {
                 Route::get('create/{support_document_id}', 'SupportDocumentAdjustNoteController@create');
                 Route::get('tables', 'SupportDocumentAdjustNoteController@tables');
                 Route::get('record/{id}', 'SupportDocumentAdjustNoteController@record');
-
-                // Route::post('', 'SupportDocumentController@store');
-                // Route::get('downloadFile/{filename}', 'SupportDocumentController@downloadFile');
+                Route::post('', 'SupportDocumentAdjustNoteController@store');
 
             });
 

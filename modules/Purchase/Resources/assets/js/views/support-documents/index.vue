@@ -19,8 +19,10 @@
                         <th>#</th>
                         <th>Fecha</th>
                         <th>Proveedor</th>
+                        <th>Tipo</th>
                         <th class="text-center">Documento</th>
                         <th class="text-center">Estado</th>
+                        <th>Documentos relacionados</th>
                         <th class="text-center">Moneda</th>
                         <th class="text-center">Total</th>
                         <th class="text-right">Acciones</th>
@@ -29,6 +31,7 @@
                         <td>{{ index }}</td>
                         <td>{{ row.date_of_issue }}</td>
                         <td>{{ row.supplier_full_name }}</td>  
+                        <td>{{ row.type_document_name }}</td>  
                         <td class="text-center">{{ row.number_full }}</td>  
                         <td class="text-center">
                             <template v-if="row.state_document_id">
@@ -37,11 +40,21 @@
                                 </span>
                             </template>
                         </td>  
+                        <td>
+                            <template v-for="(item, index) in row.support_document_relateds">
+                                <span class="ml-1" :key="index">
+                                    {{ item.number_full }} 
+                                    <br>
+                                </span>
+                            </template>
+                        </td>  
                         <td class="text-center">{{ row.currency_name }}</td> 
                         <td class="text-center">{{ row.total }}</td> 
                         <td class="text-right">
 
-                            <a class="btn waves-effect waves-light btn-xs btn-primary" :href="`/support-document-adjust-notes/create/${row.id}`">Nota de ajuste</a>
+                            <template v-if="!row.is_adjust_note">
+                                <a class="btn waves-effect waves-light btn-xs btn-warning" :href="`/support-document-adjust-notes/create/${row.id}`">Nota de ajuste</a>
+                            </template>
 
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickOptions(row.id)">Opciones</button>
 

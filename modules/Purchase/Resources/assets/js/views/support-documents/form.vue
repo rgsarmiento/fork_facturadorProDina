@@ -287,6 +287,11 @@
             this.events()
         },
         methods: {
+            clickRemoveItem(index)
+            {
+                this.form.items.splice(index, 1)
+                this.calculateTotal()
+            },
             events()
             {
                 this.$eventHub.$on('reloadDataPersons', (customer_id) => {

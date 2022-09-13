@@ -168,16 +168,53 @@ class SupportDocument extends ModelTenant
         return $this->belongsTo(Person::class, 'supplier_id');
     }
     
+    public function support_document_adjust_note() 
+    {
+        return $this->hasOne(SupportDocumentAdjustNote::class, 'co_support_document_id');
+    }
+    
     public function items()
     {
         return $this->hasMany(SupportDocumentItem::class, 'co_support_document_id');
     }
+    
+    public function adjust_notes()
+    {
+        return $this->hasMany(SupportDocumentAdjustNote::class, 'affected_support_document_id');
+    }
+    
+    /**
+     *
+     * @return string
+     */
+    public function getCuds()
+    {
+        return $this->response_api->cuds;
+    }
 
+
+    /**
+     *
+     * @return bool
+     */
+    public function isAdjustNote()
+    {
+        return $this->type_document->code === '13';
+    }
+
+    
+    /**
+     * 
+     * Datos de documento de soporte para crear nota de ajuste
+     *
+     * @param  int $id
+     * @return array
+     */
     public static function getDataAdjustNote($id)
     {
         $data = self::with(['items'])->findOrFail($id);
 
-        $data->items = $data->items->transform(function($row){
+        $data->items->transform(function($row){
 
             $new_row = $row;
             $new_row['id'] = null;
@@ -186,10 +223,9 @@ class SupportDocument extends ModelTenant
             $new_row['price'] = $new_row['unit_price'];
             $new_row['code'] = null;
             $new_row['name'] = null;
-
             unset($new_row['co_support_document_id']);
-
             return $new_row;
+
         });
 
         return $data;
@@ -211,6 +247,8 @@ class SupportDocument extends ModelTenant
             $filename_pdf =  $response->urlinvoicepdf ?? null;
         }
 
+        $support_document_relateds = $this->getSupportDocumentRelated();
+
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
@@ -226,6 +264,7 @@ class SupportDocument extends ModelTenant
             'currency_id' => $this->currency_id,
             'currency_name' => $this->currency->name,
             'type_document_id' => $this->type_document_id,
+            'type_document_name' => $this->type_document->name,
             'prefix' => $this->prefix,
             'number' => $this->number,
             'number_full' => $this->number_full,
@@ -233,14 +272,42 @@ class SupportDocument extends ModelTenant
             'payment_method_id' => $this->payment_method_id,
             'time_days_credit' => $this->time_days_credit,
             'total' => $this->total,
+            'is_adjust_note' => $this->isAdjustNote(),
 
             'response_dian_message' => $response_dian_message,
             'response_api_message' => $response_api_message,
             'filename_xml' => $filename_xml,
             'filename_pdf' => $filename_pdf,
-
+            'support_document_relateds' => $support_document_relateds,
 
         ];
+    }
+
+    
+    /**
+     * 
+     * Obtener documentos de soporte relacionados
+     *
+     * @return array
+     */
+    public function getSupportDocumentRelated()
+    {
+        $adjust_notes = collect();
+
+        if($this->isAdjustNote())
+        {
+            $adjust_notes->push([
+                'number_full' => $this->support_document_adjust_note->affected_support_document->number_full,
+            ]);
+        }
+        else
+        {
+            $adjust_notes = $this->adjust_notes->transform(function($row){
+                return $row->getSupportDocumentAdjustNote();
+            });
+        }
+
+        return $adjust_notes;
     }
 
 }

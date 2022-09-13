@@ -52,7 +52,7 @@
             </template>
             <template v-else>
                 <el-button class="list" @click="clickFinalize">Ir al listado</el-button>
-                <el-button type="primary" @click="clickNewDocument">Nuevo documento</el-button>
+                <el-button type="primary" @click="clickNewDocument" v-if="!getIsAdjustNote">Nuevo documento</el-button>
             </template>
         </span>
     </el-dialog>
@@ -60,7 +60,7 @@
 
 <script>
     export default {
-        props: ['showDialog', 'recordId', 'showClose'],
+        props: ['showDialog', 'recordId', 'showClose', 'isAdjustNote'],
         data() {
             return {
                 titleDialog: null,
@@ -72,6 +72,15 @@
         },
         created() {
             this.initForm()
+        },
+        computed:
+        {
+            getIsAdjustNote()
+            {
+                if(this.isAdjustNote != undefined) return this.isAdjustNote
+
+                return false
+            }
         },
         methods: {
             clickDownload(filename) {

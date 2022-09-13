@@ -9,19 +9,13 @@ use Carbon\Carbon;
 use Modules\Purchase\Models\{
     SupportDocument  
 };
-use Modules\Purchase\Http\Resources\{
-    SupportDocumentCollection,
-    SupportDocumentResource
-};
 use Modules\Factcolombia1\Models\Tenant\{
     TypeDocument,
     NoteConcept,
 };
-use Modules\Purchase\Http\Requests\SupportDocumentRequest;
+use Modules\Purchase\Http\Requests\SupportDocumentAdjustNoteRequest;
 use Modules\Purchase\Helpers\SupportDocumentHelper;
-use Modules\Factcolombia1\Http\Controllers\Tenant\DocumentController;
 use Modules\Payroll\Traits\UtilityTrait; 
-use Modules\Factcolombia1\Http\Controllers\Tenant\ConfigurationController;
 
 
 class SupportDocumentAdjustNoteController extends Controller
@@ -62,12 +56,12 @@ class SupportDocumentAdjustNoteController extends Controller
     
     /**
      * 
-     * Registrar documento de soporte
+     * Registrar nota de ajuste del documento de soporte
      *
-     * @param  SupportDocumentRequest $request
+     * @param  SupportDocumentAdjustNoteRequest $request
      * @return array
      */
-    public function store(SupportDocumentRequest $request)
+    public function store(SupportDocumentAdjustNoteRequest $request)
     {
         try 
         {
@@ -77,6 +71,8 @@ class SupportDocumentAdjustNoteController extends Controller
                 $inputs = $helper->getInputs($request);
 
                 $document =  SupportDocument::create($inputs);
+
+                $document->support_document_adjust_note()->create($inputs['adjust_note']);
                 
                 foreach ($inputs['items'] as $row)
                 {
@@ -96,7 +92,7 @@ class SupportDocumentAdjustNoteController extends Controller
 
             return [
                 'success' => true,
-                'message' => 'Documento de soporte registrado con éxito',
+                'message' => 'La nota de ajuste del documento de soporte fue registrada con éxito',
                 'data' => [
                     'id' => $support_document->id,
                     'number_full' => $support_document->number_full,

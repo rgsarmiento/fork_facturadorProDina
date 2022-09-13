@@ -70,6 +70,7 @@ class Item extends ModelTenant
         'series_enabled',
         'tax_id',
         'purchase_tax_id',
+        'model',
         // 'warehouse_id'
     ];
 
@@ -340,6 +341,8 @@ class Item extends ModelTenant
             'full_description' => $detail['full_description'],
             'brand' => $detail['brand'],
             'category' => $detail['category'],
+            'brand_id' => $this->brand_id,
+            'model' => $this->model,
             'internal_id' => $this->internal_id,
             'description' => $this->description,
             'currency_type_id' => $this->currency_type_id,

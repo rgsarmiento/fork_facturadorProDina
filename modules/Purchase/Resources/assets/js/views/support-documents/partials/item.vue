@@ -97,24 +97,26 @@
                             <small class="form-control-feedback" v-if="errors.discount" v-text="errors.discount[0]"></small>
                         </div>
                     </div>
- 
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.type_generation_transmition_id}">
-                            <label class="control-label">Tipo de envío</label>
-                            <el-select v-model="form.type_generation_transmition_id">
-                                <el-option v-for="option in type_generation_transmitions" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.type_generation_transmition_id" v-text="errors.type_generation_transmition_id[0]"></small>
-                        </div>
-                    </div>
 
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.start_date}">
-                            <label class="control-label">Fecha de inicio</label>
-                            <el-date-picker :disabled="form.type_generation_transmition_id === 1" v-model="form.start_date" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeStartDate"></el-date-picker>
-                            <small class="form-control-feedback" v-if="errors.start_date" v-text="errors.start_date[0]"></small>
+                    <template v-if="!isFromAdjustNote">
+                        <div class="col-md-3">
+                            <div class="form-group" :class="{'has-danger': errors.type_generation_transmition_id}">
+                                <label class="control-label">Tipo de envío</label>
+                                <el-select v-model="form.type_generation_transmition_id">
+                                    <el-option v-for="option in type_generation_transmitions" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                </el-select>
+                                <small class="form-control-feedback" v-if="errors.type_generation_transmition_id" v-text="errors.type_generation_transmition_id[0]"></small>
+                            </div>
                         </div>
-                    </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group" :class="{'has-danger': errors.start_date}">
+                                <label class="control-label">Fecha de inicio</label>
+                                <el-date-picker :disabled="form.type_generation_transmition_id === 1" v-model="form.start_date" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeStartDate"></el-date-picker>
+                                <small class="form-control-feedback" v-if="errors.start_date" v-text="errors.start_date[0]"></small>
+                            </div>
+                        </div>
+                    </template>
 
                 </div>
             </div>
@@ -142,7 +144,17 @@
     import ItemForm from '@views/items/form.vue'
 
     export default {
-        props: ['showDialog', 'currencyTypeSymbolActive', 'dateOfIssue'],
+        // props: ['showDialog', 'currencyTypeSymbolActive', 'dateOfIssue'],
+        props: {
+            showDialog: Boolean, 
+            currencyTypeSymbolActive: String, 
+            dateOfIssue: String,
+            isFromAdjustNote: {
+                type: Boolean,
+                default: false,
+                required: false
+            }
+        },
         components: {ItemForm},
         data() {
             return {
@@ -275,12 +287,13 @@
                     total_tax: 0,
                     type_unit: {},
                     unit_type_id: null,
-                    type_generation_transmition_id: 1,
+                    type_generation_transmition_id: this.isFromAdjustNote ? null : 1,
                     start_date: null
                 }
 
                 this.total_item = 0
                 this.item_unit_type = {}
+
             },
             async create() {
 
@@ -297,7 +310,10 @@
                 this.form.item = _.find(this.items, {'id': this.form.item_id});
                 this.form.unit_type_id = this.form.item.unit_type_id
 
-                if(this.form.type_generation_transmition_id == 1) this.setDefaultStartDate()
+                if(!this.isFromAdjustNote)
+                {
+                    if(this.form.type_generation_transmition_id == 1) this.setDefaultStartDate()
+                }
 
                 // this.lots = this.form.item.lots
 

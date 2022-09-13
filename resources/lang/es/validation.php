@@ -451,6 +451,8 @@ return [
         'resolution_id' => 'resolución',
         'accrued.total_base_salary' => 'salario base',
         'postal_code' => 'código postal',
+        'note_concept_id' => 'concepto',
+        'discrepancy_response_description' => 'descripción de la corrección',
 
     ],
 ];
