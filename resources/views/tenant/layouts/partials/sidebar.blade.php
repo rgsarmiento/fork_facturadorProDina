@@ -427,6 +427,7 @@
                             {{ ($path[0] === 'purchase-orders')?'nav-active nav-expanded':'' }}
                             {{ ($path[0] === 'fixed-asset')?'nav-active nav-expanded':'' }}
                             {{ ($path[0] === 'support-documents')?'nav-active nav-expanded':'' }}
+                            {{ ($path[0] === 'support-document-adjust-notes')?'nav-active nav-expanded':'' }}
                             ">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-cart-plus" aria-hidden="true"></i>
@@ -485,6 +486,7 @@
                                 
                                 <li class="nav-parent
                                     {{ ($path[0] === 'support-documents')?'nav-active nav-expanded':'' }}
+                                    {{ ($path[0] === 'support-document-adjust-notes')?'nav-active nav-expanded':'' }}
                                     ">
                                     <a class="nav-link" href="#">
                                         Documentos de soporte (DSNOF)
@@ -496,7 +498,7 @@
                                                 Nuevo
                                             </a>
                                         </li>
-                                        <li class="{{ ($path[0] === 'support-documents' && $path[1] === '')?'nav-active':'' }}">
+                                        <li class="{{ (in_array($path[0], ['support-documents', 'support-document-adjust-notes']) && $path[1] === '')?'nav-active':'' }}">
                                             <a class="nav-link" href="{{route('tenant.support-documents.index')}}">
                                                 Listado
                                             </a>

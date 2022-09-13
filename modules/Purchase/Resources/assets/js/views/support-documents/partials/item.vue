@@ -7,7 +7,7 @@
                         <div class="form-group" id="custom-select" :class="{'has-danger': errors.item_id}">
                             <label class="control-label">
                                 Producto/Servicio
-                                <a v-if="typeUser != 'seller'" href="#" @click.prevent="showDialogNewItem = true">[+ Nuevo]</a>
+                                <a href="#" @click.prevent="showDialogNewItem = true">[+ Nuevo]</a>
                             </label>
 
                             <el-input id="custom-input">
@@ -37,9 +37,6 @@
                                     </el-tooltip>
 
                                 </el-select>
-                                <!-- <el-tooltip slot="append" class="item" effect="dark" content="Ver Stock del Producto" placement="bottom" :disabled="recordItem != null">
-                                    <el-button :disabled="isEditItemNote"  @click.prevent="clickWarehouseDetail()"><i class="fa fa-search"></i></el-button>
-                                </el-tooltip> -->
                             </el-input>
                             <small class="form-control-feedback" v-if="errors.item_id" v-text="errors.item_id[0]"></small>
                         </div>
@@ -51,7 +48,6 @@
                             <el-select v-model="form.tax_id"  :disabled="true">
                                 <el-option v-for="option in itemTaxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
-                            <!-- <el-checkbox :disabled="recordItem != null" v-model="change_tax_id">Editar</el-checkbox> -->
                             <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
                         </div>
                     </div>
@@ -65,7 +61,7 @@
                     <div class="col-md-3 col-sm-3">
                         <div class="form-group" :class="{'has-danger': errors.price}">
                             <label class="control-label">Precio Unitario</label>
-                            <el-input v-model="form.price" @input="calculateQuantity" :readonly="typeUser === ''">
+                            <el-input v-model="form.price" @input="calculateQuantity" >
                                 <template slot="prepend" v-if="currencyTypeSymbolActive">{{ currencyTypeSymbolActive }}</template>
                             </el-input>
                             <small class="form-control-feedback" v-if="errors.price" v-text="errors.unit_price[0]"></small>
@@ -101,24 +97,26 @@
                             <small class="form-control-feedback" v-if="errors.discount" v-text="errors.discount[0]"></small>
                         </div>
                     </div>
- 
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.type_generation_transmition_id}">
-                            <label class="control-label">Tipo de envío</label>
-                            <el-select v-model="form.type_generation_transmition_id">
-                                <el-option v-for="option in type_generation_transmitions" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                            </el-select>
-                            <small class="form-control-feedback" v-if="errors.type_generation_transmition_id" v-text="errors.type_generation_transmition_id[0]"></small>
-                        </div>
-                    </div>
 
-                    <div class="col-md-3">
-                        <div class="form-group" :class="{'has-danger': errors.start_date}">
-                            <label class="control-label">Fecha de inicio</label>
-                            <el-date-picker :disabled="form.type_generation_transmition_id === 1" v-model="form.start_date" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeStartDate"></el-date-picker>
-                            <small class="form-control-feedback" v-if="errors.start_date" v-text="errors.start_date[0]"></small>
+                    <template v-if="!isFromAdjustNote">
+                        <div class="col-md-3">
+                            <div class="form-group" :class="{'has-danger': errors.type_generation_transmition_id}">
+                                <label class="control-label">Tipo de envío</label>
+                                <el-select v-model="form.type_generation_transmition_id">
+                                    <el-option v-for="option in type_generation_transmitions" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                </el-select>
+                                <small class="form-control-feedback" v-if="errors.type_generation_transmition_id" v-text="errors.type_generation_transmition_id[0]"></small>
+                            </div>
                         </div>
-                    </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group" :class="{'has-danger': errors.start_date}">
+                                <label class="control-label">Fecha de inicio</label>
+                                <el-date-picker :disabled="form.type_generation_transmition_id === 1" v-model="form.start_date" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeStartDate"></el-date-picker>
+                                <small class="form-control-feedback" v-if="errors.start_date" v-text="errors.start_date[0]"></small>
+                            </div>
+                        </div>
+                    </template>
 
                 </div>
             </div>
@@ -146,7 +144,17 @@
     import ItemForm from '@views/items/form.vue'
 
     export default {
-        props: ['recordItem','showDialog', 'currencyTypeIdActive', 'currencyTypeSymbolActive', 'typeUser', 'isEditItemNote', 'configuration', 'dateOfIssue'],
+        // props: ['showDialog', 'currencyTypeSymbolActive', 'dateOfIssue'],
+        props: {
+            showDialog: Boolean, 
+            currencyTypeSymbolActive: String, 
+            dateOfIssue: String,
+            isFromAdjustNote: {
+                type: Boolean,
+                default: false,
+                required: false
+            }
+        },
         components: {ItemForm},
         data() {
             return {
@@ -279,17 +287,18 @@
                     total_tax: 0,
                     type_unit: {},
                     unit_type_id: null,
-                    type_generation_transmition_id: 1,
+                    type_generation_transmition_id: this.isFromAdjustNote ? null : 1,
                     start_date: null
                 }
 
                 this.total_item = 0
                 this.item_unit_type = {}
+
             },
             async create() {
 
-                this.titleDialog = (this.recordItem) ? ' Editar Producto o Servicio' : ' Agregar Producto o Servicio'
-                this.titleAction = (this.recordItem) ? ' Editar' : ' Agregar'
+                this.titleDialog = 'Agregar Producto o Servicio'
+                this.titleAction = 'Agregar'
 
             },
             close() {
@@ -301,7 +310,10 @@
                 this.form.item = _.find(this.items, {'id': this.form.item_id});
                 this.form.unit_type_id = this.form.item.unit_type_id
 
-                if(this.form.type_generation_transmition_id == 1) this.setDefaultStartDate()
+                if(!this.isFromAdjustNote)
+                {
+                    if(this.form.type_generation_transmition_id == 1) this.setDefaultStartDate()
+                }
 
                 // this.lots = this.form.item.lots
 
@@ -345,11 +357,6 @@
                 // console.log(this.form)
                 this.form.item.presentation = this.item_unit_type;
 
-
-                if (this.recordItem){
-                    this.form.indexi = this.recordItem.indexi
-                }
-
                 let IdLoteSelected = this.form.IdLoteSelected
 
                 let select_lots = await _.filter(this.form.item.lots, {'has_sale':true})
@@ -365,20 +372,8 @@
 
                 this.$emit('add', this.form);
 
-
-                if (this.recordItem){
-                    this.close()
-                }
-
                 this.initForm();
 
-                // let unit_price = (this.form.has_igv)?this.form.unit_price_value:this.form.unit_price_value*1.18;
-                // this.form.input_unit_price_value = this.form.unit_price_value;
-                // this.form.unit_price = unit_price;
-                // this.form.item.unit_price = unit_price;
-                // this.row = calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale);
-               // this.row.edit = false;
-                //this.initializeFields()
             },
             validateTotalItem(){
 

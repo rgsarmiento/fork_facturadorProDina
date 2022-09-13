@@ -12,6 +12,7 @@ use App\Http\Controllers\Tenant\{
 };
 use Modules\Factcolombia1\Models\Tenant\{
     Tax,
+    Currency,
 };
 use Illuminate\Http\Request;
 
@@ -49,6 +50,11 @@ class Controller extends BaseController
         {
             $items = app(ItemController::class)->searchItems(new Request());
             return $items['items'];
+        }
+
+        if ($table === 'currencies') 
+        {
+            return Currency::get();
         }
 
         return [];

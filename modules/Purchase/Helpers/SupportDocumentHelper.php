@@ -50,9 +50,31 @@ class SupportDocumentHelper
             'supplier' => Person::with('typePerson', 'typeRegime', 'identity_document_type', 'country', 'department', 'city')->findOrFail($inputs->supplier_id),
             'state_document_id' => self::REGISTERED, //estado inicial
             'type_environment_id' => $this->company->type_environment_id,
+            'adjust_note' => $this->getDataAdjustNote($inputs),
         ];
 
         return $inputs->merge($values)->all();
+    }
+    
+
+    /**
+     * Datos adicionales para nota de ajuste
+     *
+     * @param  array $inputs
+     * @return array
+     */
+    public function getDataAdjustNote($inputs)
+    {
+        if($inputs->resolution_code === '13')
+        {
+            return [
+                'affected_support_document_id' => $inputs->affected_support_document_id,
+                'note_concept_id' => $inputs->note_concept_id,
+                'discrepancy_response_description' => $inputs->discrepancy_response_description,
+            ];
+        }
+
+        return null;
     }
 
 
@@ -68,7 +90,7 @@ class SupportDocumentHelper
         $connection_api = new HttpConnectionApi($this->company->api_token);
 
         $params = $this->getParamsForApi($support_document, $inputs);
-        $url = "ubl2.1/support-document";
+        $url = $support_document->isAdjustNote() ? 'ubl2.1/sd-credit-note' : "ubl2.1/support-document";
 
         $send_request_to_api = $connection_api->sendRequestToApi($url, $params, 'POST');
         // dd($send_request_to_api);
@@ -148,6 +170,17 @@ class SupportDocumentHelper
         $form_api = $inputs['data_api'];
         $form_api['number'] = $support_document->number;
         $form_api['seller']['dv'] = $this->validarDigVerifDIAN($form_api['seller']['identification_number']);
+
+        if($support_document->isAdjustNote())
+        {
+            $affected_document = $support_document->support_document_adjust_note->affected_support_document;
+
+            $form_api['billing_reference'] = [
+                'number' => $affected_document->prefix.$affected_document->number,
+                'uuid' => $affected_document->getCuds(),
+                'issue_date' => $affected_document->date_of_issue->format('Y-m-d')
+            ];
+        }
 
         return $form_api;
     }

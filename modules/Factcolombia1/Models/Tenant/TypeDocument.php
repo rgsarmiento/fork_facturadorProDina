@@ -14,6 +14,7 @@ class TypeDocument extends Model
 
     public const INVOICE_CODE = '1';
     public const DSNOF_CODE = '11';
+    public const DSNOF_ADJUST_NOTE_CODE = '13';
 
     /**
      * The attributes that should be cast to native types.
@@ -39,4 +40,18 @@ class TypeDocument extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
+
+    
+    /**
+     * 
+     * Obtener resoluciones
+     *
+     * @param  string $code
+     * @return array
+     */
+    public static function getResolutionsByCode($code)
+    {
+        return self::select('id','prefix', 'resolution_number', 'code')->where('code', $code)->get();
+    }
+
 }

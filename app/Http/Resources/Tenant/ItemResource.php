@@ -75,6 +75,7 @@ class ItemResource extends JsonResource
 
             'tax_id' => $this->tax_id,
             'purchase_tax_id' => $this->purchase_tax_id,
+            'model' => $this->model,
         
         ];
     }

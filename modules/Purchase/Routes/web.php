@@ -23,6 +23,14 @@ if($current_hostname) {
 
             });
 
+            Route::prefix('support-document-adjust-notes')->group(function () {
+
+                Route::get('create/{support_document_id}', 'SupportDocumentAdjustNoteController@create');
+                Route::get('tables', 'SupportDocumentAdjustNoteController@tables');
+                Route::get('record/{id}', 'SupportDocumentAdjustNoteController@record');
+                Route::post('', 'SupportDocumentAdjustNoteController@store');
+
+            });
 
             Route::prefix('purchase-quotations')->group(function () {
 
