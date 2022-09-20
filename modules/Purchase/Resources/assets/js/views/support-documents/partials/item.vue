@@ -45,7 +45,7 @@
                     <div class="col-md-5">
                         <div class="form-group" :class="{'has-danger': errors.tax_id}">
                             <label class="control-label">Impuesto</label>
-                            <el-select v-model="form.tax_id"  :disabled="true">
+                            <el-select v-model="form.tax_id"  :disabled="false">
                                 <el-option v-for="option in itemTaxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
@@ -146,8 +146,8 @@
     export default {
         // props: ['showDialog', 'currencyTypeSymbolActive', 'dateOfIssue'],
         props: {
-            showDialog: Boolean, 
-            currencyTypeSymbolActive: String, 
+            showDialog: Boolean,
+            currencyTypeSymbolActive: String,
             dateOfIssue: String,
             isFromAdjustNote: {
                 type: Boolean,
@@ -242,7 +242,7 @@
                                 // console.log(response)
                                 this.items = response.data.items
                                 this.loading_search = false
- 
+
 
                                 if(this.items.length == 0){
                                     this.filterItems()
@@ -255,7 +255,7 @@
             },
             filterItems() {
                 this.items = this.all_items
-            }, 
+            },
             clickWarehouseDetail(){
 
                 if(!this.form.item_id){
@@ -305,7 +305,7 @@
                 this.initForm()
                 this.$emit('update:showDialog', false)
             },
-            async changeItem() 
+            async changeItem()
             {
                 this.form.item = _.find(this.items, {'id': this.form.item_id});
                 this.form.unit_type_id = this.form.item.unit_type_id
