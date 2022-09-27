@@ -1022,18 +1022,17 @@
             },
 
             getWithHolding() {
-
+                let total_iva = this.form.total_tax
                 let total = this.form.sale
                 let list = this.form.taxes.filter(function(x) {
                     return x.is_retention && x.apply;
                 });
-
                 return list.map(x => {
                     return {
                         tax_id: x.type_tax_id,
                         tax_amount: this.cadenaDecimales(x.retention),
                         percent: this.cadenaDecimales(this.roundNumber(x.rate / (x.conversion / 100), 6)),
-                        taxable_amount: this.cadenaDecimales(total),
+                        taxable_amount: x.in_base ? this.cadenaDecimales(total) : this.cadenaDecimales(total_iva),
                     };
                 });
 

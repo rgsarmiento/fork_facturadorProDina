@@ -367,7 +367,7 @@ class DocumentController extends Controller
             $data_document = json_encode($service_invoice);
 //\Log::debug("{$base_url}ubl2.1/invoice");
 //\Log::debug($company->api_token);
-//\Log::debug($data_document);
+\Log::debug($data_document);
 //            return $data_document;
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
