@@ -121,6 +121,7 @@
                 errors: {},
                 headers: headers_token,
                 form: {},
+                form_clone: {},
                 configuration: {},
                 unit_types: [],
                 taxes: [],
@@ -215,8 +216,12 @@
                 }
             },*/
             async submit() {
-
                 this.loading_submit = true
+                this.form_clone = this.form
+                this.form_clone.date_from = this.form.resolution_date
+                this.form_clone.date_to = this.form.resolution_date_end
+                this.form_clone.resolution = this.form.resolution_number
+                this.form_clone.type_document_id = this.form.code
                 await this.$http.post(`/${this.resource}/type_document/${this.form.id}`, this.form)
                     .then(response => {
                         if (response.data.success) {
@@ -237,11 +242,34 @@
                     .then(() => {
                         this.loading_submit = false
                     })
+
+                await this.$http.post(`/client/configuration/storeServiceCompanieResolution`, this.form_clone)
+                    .then(response => {
+                        if (response.data.success) {
+                            this.$message.success(response.data.message)
+                            this.getRecords()
+                        } else {
+                            this.$message.error(response.data.message)
+                        }
+                    })
+                    .catch(error => {
+                        if (error.response.status === 422) {
+                            this.errors = error.response.data
+                        } else {
+                            console.log(error)
+                        }
+                    })
+                    .then(() => {
+                        this.loadingResolution = false
+                        this.initForm()
+                    })
             },
+
             close() {
                 this.$emit('update:showDialog', false)
                 this.resetForm()
             },
+
             changeHasIsc() {
                 this.form.system_isc_type_id = null
                 this.form.percentage_isc = 0

@@ -303,6 +303,7 @@
                         this.initForm()
                     })
             },
+
             selection(row)
             {
                 const type_doc = this.typeDocuments.find(x=> x.code == row.code)
