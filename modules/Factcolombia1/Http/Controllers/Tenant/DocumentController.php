@@ -297,6 +297,11 @@ class DocumentController extends Controller
             $response =  null;
             $response_status =  null;
             // $correlative_api = $this->getCorrelativeInvoice(1, $request->prefix);
+            $this->company = Company::query()
+                ->with('country', 'version_ubl', 'type_identity_document')
+                ->firstOrFail();
+            if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents))
+                throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
 
             $company = ServiceTenantCompany::firstOrFail();
 
@@ -367,7 +372,7 @@ class DocumentController extends Controller
             $data_document = json_encode($service_invoice);
 //\Log::debug("{$base_url}ubl2.1/invoice");
 //\Log::debug($company->api_token);
-\Log::debug($data_document);
+//\Log::debug($data_document);
 //            return $data_document;
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -545,7 +550,13 @@ class DocumentController extends Controller
                 $url_name_note = 'debit-note';
             }
 
-            // $correlative_api = $this->getCorrelativeInvoice($type_document_service);
+            $this->company = Company::query()
+                ->with('country', 'version_ubl', 'type_identity_document')
+                ->firstOrFail();
+            if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents))
+                throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
+
+                // $correlative_api = $this->getCorrelativeInvoice($type_document_service);
             $company = ServiceTenantCompany::firstOrFail();
 
             //si la empresa esta en habilitacion, envio el parametro ignore_state_document_id en true

@@ -833,7 +833,7 @@ class ConfigurationController extends Controller
             ));
 
             $response_resolution = curl_exec($ch3);
-            \Log::debug($response_resolution);
+//            \Log::debug($response_resolution);
             $err = curl_error($ch3);
             curl_close($ch3);
             $respuesta = json_decode($response_resolution);
