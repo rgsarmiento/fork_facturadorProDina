@@ -300,8 +300,9 @@ class DocumentController extends Controller
             $this->company = Company::query()
                 ->with('country', 'version_ubl', 'type_identity_document')
                 ->firstOrFail();
+
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents))
-                throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
+                throw new \Exception("Has excedido el límite de documentos de tu cuenta. {$over}");
 
             $company = ServiceTenantCompany::firstOrFail();
 
@@ -523,9 +524,17 @@ class DocumentController extends Controller
 
         DB::connection('tenant')->commit();
 
+        $this->company = Company::query()
+             ->with('country', 'version_ubl', 'type_identity_document')
+             ->firstOrFail();
+        if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents - 10))
+            $over = ", ADVERTENCIA, ha consumido ".Document::count()." documentos de su cantidad contratada de: ".$this->company->limit_documents;
+        else
+            $over = "";
+
         return [
             'success' => true,
-            'message' => "Se registro con éxito el documento #{$this->document->prefix}{$nextConsecutive->number}.",
+            'message' => "Se registro con éxito el documento #{$this->document->prefix}{$nextConsecutive->number}. {$over}",
             'data' => [
                 'id' => $this->document->id
             ]
@@ -553,6 +562,7 @@ class DocumentController extends Controller
             $this->company = Company::query()
                 ->with('country', 'version_ubl', 'type_identity_document')
                 ->firstOrFail();
+
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents))
                 throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
 
@@ -749,9 +759,17 @@ class DocumentController extends Controller
 
         DB::connection('tenant')->commit();
 
+        $this->company = Company::query()
+             ->with('country', 'version_ubl', 'type_identity_document')
+             ->firstOrFail();
+        if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents - 10))
+            $over = ", ADVERTENCIA, ha consumido ".Document::count()." documentos de su cantidad contratada de: ".$this->company->limit_documents;
+        else
+            $over = "";
+
         return [
             'success' => true,
-            'message' => "Se registro con éxito el documento #{$this->document->prefix}{$this->document->number}.",
+            'message' => "Se registro con éxito el documento #{$this->document->prefix}{$this->document->number}. {$over}",
             'data' => [
                 'id' => $this->document->id
             ]
