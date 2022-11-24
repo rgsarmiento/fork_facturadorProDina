@@ -327,7 +327,7 @@ class DocumentController extends Controller
             $service_invoice['prefix'] = $request->prefix;
             $service_invoice['resolution_number'] = $request->resolution_number;
             $service_invoice['web_site'] = env('APP_NAME', 'FACTURALATAM');
-
+            $service_invoice['foot_note'] = "Modo de operación: Software Propio - by ".env('APP_NAME', 'FACTURALATAM');
 
             if ($request->order_reference)
             {
@@ -595,7 +595,6 @@ class DocumentController extends Controller
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
             // $company = ServiceTenantCompany::firstOrFail();
 
-
             $note_concept_id = NoteConcept::query()->where('id', $request->note_concept_id)->get();
             $note_service['discrepancyresponsecode'] = $note_concept_id[0]->code;
             $note_service['ivaresponsable'] = $datoscompany->type_regime->name;
@@ -607,6 +606,7 @@ class DocumentController extends Controller
                 $note_service['sendmail'] = true;
             }
             $note_service['customer']['dv'] = $this->validarDigVerifDIAN($note_service['customer']['identification_number']);
+            $note_service['foot_note'] = "Modo de operación: Software Propio - by ".env('APP_NAME', 'FACTURALATAM');
 
             $id_test = $company->test_id;
             $base_url = config('tenant.service_fact');
