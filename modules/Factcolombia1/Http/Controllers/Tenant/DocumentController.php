@@ -302,7 +302,10 @@ class DocumentController extends Controller
                 ->firstOrFail();
 
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents))
-                throw new \Exception("Has excedido el límite de documentos de tu cuenta. {$over}");
+                return [
+                    'success' => false,
+                    'message' => '"Has excedido el límite de documentos de tu cuenta."'
+                ];
 
             $company = ServiceTenantCompany::firstOrFail();
 
@@ -564,7 +567,10 @@ class DocumentController extends Controller
                 ->firstOrFail();
 
             if (($this->company->limit_documents != 0) && (Document::count() >= $this->company->limit_documents))
-                throw new \Exception("Has excedido el límite de documentos de tu cuenta.");
+                return [
+                        'success' => false,
+                        'message' => '"Has excedido el límite de documentos de tu cuenta."'
+                ];
 
                 // $correlative_api = $this->getCorrelativeInvoice($type_document_service);
             $company = ServiceTenantCompany::firstOrFail();
