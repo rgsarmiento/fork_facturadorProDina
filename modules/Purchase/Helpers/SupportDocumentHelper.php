@@ -55,7 +55,7 @@ class SupportDocumentHelper
 
         return $inputs->merge($values)->all();
     }
-    
+
 
     /**
      * Datos adicionales para nota de ajuste
@@ -91,7 +91,14 @@ class SupportDocumentHelper
 
         $params = $this->getParamsForApi($support_document, $inputs);
         $url = $support_document->isAdjustNote() ? 'ubl2.1/sd-credit-note' : "ubl2.1/support-document";
-
+        $invoice_lines = $params['invoice_lines'];
+        $new_invoice_lines = array();
+        foreach($invoice_lines as $invoice_line){
+                $tax = [['tax_id' => 1, 'tax_amount' => '0.00', 'percent' => '0', 'taxable_amount' => $invoice_line['line_extension_amount']]];
+                $invoice_line['tax_totals'] = $tax;
+                array_push($new_invoice_lines, $invoice_line);
+        }
+        $params['invoice_lines'] = $new_invoice_lines;
         $send_request_to_api = $connection_api->sendRequestToApi($url, $params, 'POST');
         // dd($send_request_to_api);
 
