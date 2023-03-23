@@ -1589,7 +1589,7 @@ class DocumentController extends Controller
             //si la empresa esta en habilitacion, envio el parametro ignore_state_document_id en true
             //  para buscar el correlativo en api sin filtrar por el campo state_document_id=1
             $ignore_state_document_id = ($company->type_environment_id === 2);
-            $correlative_api = $this->getCorrelativeInvoice(1, null, $ignore_state_document_id);
+            $correlative_api = $this->getCorrelativeInvoice(1, $request->prefix, $ignore_state_document_id);
             // $correlative_api = $this->getCorrelativeInvoice(1);
 
             // dd($correlative_api);

@@ -89,6 +89,9 @@
                                 <el-option v-for="option in itemTaxes" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                             <!-- <el-checkbox :disabled="recordItem != null" v-model="change_tax_id">Editar</el-checkbox> -->
+                            <template v-if="!is_client">
+                                <el-checkbox v-model="tax_included_in_price" @change="change_price_tax_included">Impuesto incluido en el precio.</el-checkbox><br>
+                            </template>
                             <small class="form-control-feedback" v-if="errors.tax_id" v-text="errors.tax_id[0]"></small>
                         </div>
                     </div>
@@ -276,6 +279,7 @@
                 warehousesDetail:[],
                 showListStock:false,
                 search_item_by_barcode:false,
+                tax_included_in_price: false,
                 isUpdateWarehouseId:null,
                 showDialogLots: false,
                 showDialogSelectLots: false,
@@ -355,6 +359,12 @@
             },
             filterItems() {
                 this.items = this.all_items
+            },
+            RateSelectedTax(tax_id) {
+                if(tax_id != null)
+                    return this.taxes.find(row => row.id == tax_id).rate;
+                else
+                    return 0
             },
             enabledSearchItemsBarcode(){
 
@@ -648,6 +658,24 @@
                     })
                 }
 
+            },
+            change_price_tax_included()
+            {
+                if(parseFloat(this.form.price) == 0){
+                    if(this.tax_included_in_price)
+                        this.form.price = this.form.item.sale_unit_price * (1 + (this.RateSelectedTax(this.form.tax_id) / 100))
+                    else
+                        this.form.price = this.form.item.sale_unit_price
+                }
+                else{
+                    if(parseFloat(this.form.price) > 0){
+
+                        if(this.tax_included_in_price)
+                            this.form.price = this.form.price * (1 + (this.RateSelectedTax(this.form.tax_id) / 100))
+                        else
+                            this.form.price = this.form.price / (1 + (this.RateSelectedTax(this.form.tax_id) / 100))
+                    }
+                }
             },
             selectedPrice(row)
             {

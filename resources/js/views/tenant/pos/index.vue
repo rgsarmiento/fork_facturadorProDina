@@ -151,7 +151,7 @@
                             </div>
 
                             <!-- <div v-if="configuration.options_pos" class=" card-footer  bg-primary btn-group flex-wrap" style="width:100% !important; padding:0 !important; ">
-                                
+
                                 <el-tooltip class="item" effect="dark" content="Visualizar stock" placement="bottom-end">
                                     <button type="button" style="width:25% !important;" class="btn btn-xs btn-primary-pos" @click="clickWarehouseDetail(item)">
                                         <i class="fa fa-search"></i>
@@ -226,7 +226,7 @@
                     </div>
                 </div>
                 <div class="row py-1 border-bottom m-0 p-0">
-                    <div class="col-12">
+                    <div class="col-6">
                         <table class="table table-sm table-borderless mb-0">
                             <template v-for="(item,index) in form.items">
                                 <tr :key="index">
@@ -921,7 +921,7 @@ export default {
                 // });
 
                 let exist_item = null
-                
+
                 if(!presentation) {
 
                     exist_item = _.find(this.form.items, {
@@ -938,7 +938,7 @@ export default {
                     })
                 }
 
-                
+
                 let pos = this.form.items.indexOf(exist_item);
                 let response = null;
 
