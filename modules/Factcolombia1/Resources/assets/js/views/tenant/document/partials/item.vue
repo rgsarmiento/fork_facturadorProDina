@@ -429,6 +429,7 @@
                 this.total_item = 0;
                 this.item_unit_type = {};
                 this.has_list_prices = false;
+                this.tax_included_in_price = true;
             },
             async create() {
 
