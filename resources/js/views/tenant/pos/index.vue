@@ -226,7 +226,7 @@
                     </div>
                 </div>
                 <div class="row py-1 border-bottom m-0 p-0">
-                    <div class="col-6">
+                    <div class="col-12">
                         <table class="table table-sm table-borderless mb-0">
                             <template v-for="(item,index) in form.items">
                                 <tr :key="index">
@@ -242,6 +242,12 @@
                                     </td>
                                     <td>
                                         <p class="font-weight-semibold m-0 text-center">{{currency.symbol}}</p>
+                                    </td>
+                                    <td width="20%">
+                                        <p class="font-weight-semibold m-0 text-center">
+                                            <el-input v-model="item.sale_unit_price_with_tax" class @input="clickAddItem(item,index,true)" @blur="blurCalculateQuantity(index)" :readonly="item.item.calculate_quantity">
+                                            </el-input>
+                                        </p>
                                     </td>
                                     <td width="30%">
                                         <p class="font-weight-semibold m-0 text-center">
@@ -305,7 +311,7 @@
                             <template v-for="(tax, index) in form.taxes">
                                 <tr v-if="((tax.total > 0) && (!tax.is_retention))" :key="index" class="font-weight-semibold  m-0">
                                     <td class="font-weight-semibold">
-                                        {{tax.name}}(+)
+                                        {{tax.name}}[+]
                                     </td>
                                     <td class="font-weight-semibold">:</td>
                                     <td class="text-right text-blue">{{currency.symbol}} {{Number(tax.total).toFixed(2)}}</td>
@@ -821,9 +827,7 @@ export default {
             }
         },
         initFormItem() {
-
             this.form_item = {
-
                 id: null,
                 item_id: null,
                 item: {},
@@ -839,12 +843,12 @@ export default {
                 tax_id: null,
                 total: 0,
                 total_tax: 0,
+                edited_price: false,
                 type_unit: {},
                 unit_type_id: null,
                 item_unit_types: [],
                 IdLoteSelected: null,
                 refund: false
-
             };
 
             //this.items_refund = []
@@ -912,7 +916,6 @@ export default {
                 //item.aux_quantity = 1;
 
             } else {
-
                 this.loading = true;
 
                 // let exchangeRateSale = this.form.exchange_rate_sale;
@@ -943,9 +946,8 @@ export default {
                 let response = null;
 
                 if (exist_item) {
-
+                    item.edited_price = input
                     if (input) {
-
                         response = await this.getStatusStock(item.item_id, exist_item.item.aux_quantity);
 
                         if (!response.success) {
@@ -955,9 +957,7 @@ export default {
                         }
 
                         exist_item.quantity = exist_item.item.aux_quantity;
-
                     } else {
-
                         response = await this.getStatusStock(item.item_id, parseFloat(exist_item.item.aux_quantity) + 1);
 
                         if (!response.success) {
@@ -967,7 +967,6 @@ export default {
 
                         exist_item.quantity++;
                         exist_item.item.aux_quantity++;
-
                     }
 
                     let search_item_bd = await _.find(this.items, {
@@ -1034,12 +1033,13 @@ export default {
 
                 }
 
-                this.$notify({
-                    title: "",
-                    message: "Producto añadido!",
-                    type: "success",
-                    duration: 700
-                });
+                if(!input)
+    	                this.$notify({
+                        title: "",
+                        message: "Producto añadido!",
+                        type: "success",
+                        duration: 700
+                    });
 
             }
 
@@ -1097,39 +1097,52 @@ export default {
                     this.$set(item, "discount", 0);
                 }
 
-                item.total_tax = 0;
-
                 if (item.tax != null) {
 
                     let tax = val.taxes.find(tax => tax.id == item.tax.id);
+                    tax.total = 0
 
-                    if (item.tax.is_fixed_value) {
+                    if (item.tax.is_fixed_value)
                         item.total_tax = (
                             item.tax.rate * item.quantity -
                             (item.discount < item.unit_price * item.quantity ? item.discount : 0)
                         ).toFixed(2);
-                    }
 
+                    console.log(item)
                     if (item.tax.is_percentage) {
-                        item.total_tax = (
-                            (item.unit_price * item.quantity -
-                                (item.discount < item.unit_price * item.quantity ?
-                                    item.discount :
-                                    0)) *
-                            (item.tax.rate / item.tax.conversion)
-                        ).toFixed(2);
+                        if(!item.edited_price)
+                            item.total_tax = (
+                                (item.unit_price * item.quantity -
+                                    (item.discount < item.unit_price * item.quantity ?
+                                        item.discount :
+                                        0)) *
+                                (item.tax.rate / item.tax.conversion)
+                            ).toFixed(2);
+                        else
+                            item.total_tax = (
+                                (item.sale_unit_price_with_tax * item.quantity -
+                                    (item.discount < item.sale_unit_price_with_tax * item.quantity ?
+                                        item.discount :
+                                        0)) *
+                                (item.tax.rate / item.tax.conversion)
+                            ).toFixed(2);
                     }
 
                     if (!tax.hasOwnProperty("total")) {
                         tax.total = Number(0).toFixed(2);
                     }
-
                     tax.total = (Number(tax.total) + Number(item.total_tax)).toFixed(2);
                 }
-
-                item.subtotal = (
-                    Number(item.unit_price * item.quantity) + Number(item.total_tax)
-                ).toFixed(2);
+                if(!item.edited_price){
+                    item.subtotal = (
+                        Number(item.unit_price * item.quantity) + Number(item.total_tax)
+                    ).toFixed(2);
+                }
+                else{
+                    item.subtotal = (
+                        Number(item.sale_unit_price_with_tax * item.quantity)
+                    ).toFixed(2);
+                }
 
                 this.$set(
                     item,
@@ -1137,6 +1150,13 @@ export default {
                     (Number(item.subtotal) - Number(item.discount)).toFixed(2)
                 );
 
+                if(!item.edited_price){
+                    this.$set(
+                        item,
+                        "sale_unit_price_with_tax",
+                        (Number(item.subtotal) / Number(item.quantity)).toFixed(2)
+                    );
+                }
             });
 
             this.items_refund.forEach(item => {
@@ -1180,14 +1200,12 @@ export default {
                 );
 
             })
-
             const subtotal = val.items.reduce((p, c) => Number(p) + (Number(c.subtotal) - Number(c.discount)), 0);
             const subtotal_refund = this.items_refund.reduce((p, c) => Number(p) + (Number(c.subtotal) - Number(c.discount)), 0);
 
             val.subtotal = (subtotal - subtotal_refund).toFixed(2)
-
-            const sale = val.items.reduce((p, c) => Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount), 0);
-            const sale_refund = this.items_refund.reduce((p, c) => Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount), 0);
+            const sale = !val.items.edited_price ? val.items.reduce((p, c) => Number(p) + Number((c.sale_unit_price_with_tax - c.total_tax)* c.quantity) - Number(c.discount), 0) : val.items.reduce((p, c) => Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount), 0);
+            const sale_refund = !val.items.edited_price ? this.items_refund.reduce((p, c) => Number(p) + Number((c.sale_unit_price_with_tax - c.total_tax) * c.quantity) - Number(c.discount), 0) : this.items_refund.reduce((p, c) => Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount), 0);
 
             val.sale = (sale - sale_refund).toFixed(2)
 

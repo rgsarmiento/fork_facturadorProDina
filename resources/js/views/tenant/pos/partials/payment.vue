@@ -169,7 +169,7 @@
 
                         <div class="card-body text-center">
                             <p class="my-0"><small>Monto a cobrar</small></p>
-                            <h1 class="mb-2 mt-0">{{currencyTypeActive.symbol}} {{ Number(form.total).toFixed(3) }}</h1>
+                            <h1 class="mb-2 mt-0">{{currencyTypeActive.symbol}} {{ Number(form.total).toFixed(2) }}</h1>
                         </div>
                     </div>
                 </div>
@@ -195,7 +195,7 @@
                                     <!-- <el-input v-model="difference" :disabled="true">
                                         <template slot="prepend">{{currencyTypeActive.symbol}}</template>
                                     </el-input> -->
-                                    <h4 class="control-label font-weight-semibold m-0 text-center m-b-0">{{currencyTypeActive.symbol}} {{ Number(difference).toFixed(3)}}</h4>
+                                    <h4 class="control-label font-weight-semibold m-0 text-center m-b-0">{{currencyTypeActive.symbol}} {{ Number(difference).toFixed(2)}}</h4>
                                 </div>
                             </div>
                             </div>
