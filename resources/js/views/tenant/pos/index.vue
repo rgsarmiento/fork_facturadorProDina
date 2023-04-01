@@ -1310,7 +1310,7 @@ export default {
             })
         },
         searchItems() {
-            if (this.input_item.length > 0) {
+            if (this.input_item.length > 3) {
                 this.loading = true;
                 let parameters = `input_item=${this.input_item}`;
 
