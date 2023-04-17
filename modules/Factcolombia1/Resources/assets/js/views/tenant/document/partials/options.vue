@@ -97,10 +97,10 @@
         methods: {
             clickDownload(download) {
                 this.$http.get(`/${this.resource}/downloadFile/${this.downloadFilename(download)}`).then((response) => {
-                    
+
                     let res_data = response.data
-                    if(!res_data.success) return this.$message.error(res_data.message)
-                    
+                    if(!res_data.success) return                     this.$message.error(res_data.message)
+
                     var byteCharacters = atob(response.data.filebase64);
                     var byteNumbers = new Array(byteCharacters.length);
                     for (var i = 0; i < byteCharacters.length; i++) {

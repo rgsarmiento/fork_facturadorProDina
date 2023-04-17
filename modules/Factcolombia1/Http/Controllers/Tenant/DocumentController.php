@@ -826,11 +826,17 @@ class DocumentController extends Controller
     {
         $company = ServiceTenantCompany::firstOrFail();
 
-        $send= (object)['number'=> $request->number, 'email'=> $request->email, 'number_full'=> $request->number_full];
+//        $send= (object)['number'=> $request->number, 'email'=> $request->email, 'number_full'=> $request->number_full];
+        $prefix = substr($request->number_full, 0, strpos($request->number_full, '-'));
+        $number = substr($request->number_full, strpos($request->number_full, '-') + 1);
+//        \Log::debug($prefix);
+//        \Log::debug($number);
+        $send= (object)['prefix' => $prefix, 'number' => $number, 'alternate_email'=> $request->email];
+        \Log::debug(json_encode($send));
         $data_send = json_encode($send);
 
         $base_url = config('tenant.service_fact');
-        $ch2 = curl_init("{$base_url}ubl2.1/send_mail");
+        $ch2 = curl_init("{$base_url}ubl2.1/send-email");
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch2, CURLOPT_POSTFIELDS,($data_send));
@@ -841,7 +847,7 @@ class DocumentController extends Controller
         ));
 
         $response = curl_exec($ch2);
-//        return ($response);
+        \Log::debug($response);
         $respuesta = json_decode($response);
         curl_close($ch2);
 
