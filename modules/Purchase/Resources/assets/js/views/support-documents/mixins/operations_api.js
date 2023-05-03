@@ -7,7 +7,7 @@ export const operations_api = {
     },
     methods: {
         // funciones para crear json para api
-        async createDataApi() 
+        async createDataApi()
         {
             let form_api = {
                 number: null,
@@ -22,6 +22,7 @@ export const operations_api = {
                 legal_monetary_totals: {},
                 allowance_charges: {},
                 invoice_lines: {},
+                with_holding_tax_total: {},
             }
 
             form_api.seller =  await this.getSeller()
@@ -29,10 +30,11 @@ export const operations_api = {
             form_api.legal_monetary_totals = await this.getLegacyMonetaryTotal()
             form_api.allowance_charges = await this.getAllowanceCharge(form_api.legal_monetary_totals.allowance_total_amount, form_api.legal_monetary_totals.line_extension_amount)
             form_api.invoice_lines = await this.getInvoiceLines()
+            form_api.with_holding_tax_total = await this.getWithHolding();
 
             return form_api
         },
-        async createDataApiForAdjustNote() 
+        async createDataApiForAdjustNote()
         {
             let form_api = {
                 number: null,
@@ -98,7 +100,7 @@ export const operations_api = {
                 duration_measure: this.form.time_days_credit
             }
         },
-        getSeller() 
+        getSeller()
         {
             const supplier = _.find(this.suppliers, {id : this.form.supplier_id})
 
@@ -116,21 +118,21 @@ export const operations_api = {
                 postal_zone_code: supplier.postal_code
             }
 
-            if (supplier.type_person_id == 1) 
+            if (supplier.type_person_id == 1)
             {
                 seller.dv = supplier.dv
             }
 
             return seller
         },
-        getLegacyMonetaryTotal() 
+        getLegacyMonetaryTotal()
         {
             let line_ext_am = 0
             let tax_incl_am = 0
             let allowance_total_amount = 0
-            
+
             this.form.items.forEach(element => {
-                line_ext_am += (Number(element.price) * Number(element.quantity)) - Number(element.discount) 
+                line_ext_am += (Number(element.price) * Number(element.quantity)) - Number(element.discount)
                 allowance_total_amount += Number(element.discount)
             })
 
@@ -150,7 +152,7 @@ export const operations_api = {
                 payable_amount: this.stringDecimals(tax_incl_am - allowance_total_amount)
             }
         },
-        getInvoiceLines() 
+        getInvoiceLines()
         {
             return this.form.items.map(x => {
                 return {
@@ -178,7 +180,7 @@ export const operations_api = {
             })
 
         },
-        getCreditNoteLines() 
+        getCreditNoteLines()
         {
             return this.form.items.map(x => {
                 return {
@@ -214,7 +216,22 @@ export const operations_api = {
             })
 
         },
-        roundNumber(num, decimales = 2) 
+        getWithHolding() {
+            let total_iva = this.form.total_tax
+            let total = this.form.sale
+            let list = this.form.taxes.filter(function(x) {
+                return x.is_retention && x.apply;
+            });
+            return list.map(x => {
+                return {
+                    tax_id: x.type_tax_id,
+                    tax_amount: this.cadenaDecimales(x.retention),
+                    percent: this.cadenaDecimales(this.roundNumber(x.rate / (x.conversion / 100), 6)),
+                    taxable_amount: x.in_base ? this.cadenaDecimales(total) : this.cadenaDecimales(total_iva),
+                };
+            });
+        },
+        roundNumber(num, decimales = 2)
         {
             var signo = (num >= 0 ? 1 : -1)
             num = num * signo
@@ -227,7 +244,7 @@ export const operations_api = {
             num = num.toString().split('e')
             return signo * (num[0] + 'e' + (num[1] ? (+num[1] - decimales) : -decimales))
         },
-        getAllowanceCharge(amount, base) 
+        getAllowanceCharge(amount, base)
         {
             return [
                 {
@@ -246,7 +263,12 @@ export const operations_api = {
             else
                 return amount.toString()+".00"
         },
-    }
+        cadenaDecimales(amount){
+            if(amount.toString().indexOf(".") != -1)
+                return amount.toString();
+            else
+                return amount.toString()+".00";
+            },
+        }
     // funciones para crear json para api
-
 }
