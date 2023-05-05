@@ -20,6 +20,6 @@ class TypeLiability extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'code',
+        'id', 'name', 'code',
     ];
 }

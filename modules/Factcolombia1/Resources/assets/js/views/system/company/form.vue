@@ -69,6 +69,17 @@
                             <small class="form-control-feedback" v-if="errors.password_confirmation" v-text="errors.password_confirmation[0]"></small>
                         </div>
                     </div>
+                    
+                    <div class="col-md-6">
+                        <div  class="form-group" :class="{'has-danger': errors.type_liability_id}">
+                            <label class="control-label">Tipo de responsabilidad</label>
+                            <el-select filterable  v-model="form.type_liability_id">
+                                <el-option v-for="option in type_liabilities" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.type_liability_id" v-text="errors.type_liability_id[0]"></small>
+                        </div>
+                    </div>
+
                 </div>
 
 
@@ -240,7 +251,7 @@
                 modules: [],
                 type_regimes: [],
                 toggle: false,
-
+                type_liabilities: [],
             }
         },
         async created() {
@@ -254,6 +265,7 @@
                     this.type_organizations = response.data.type_organizations
                     this.type_regimes = response.data.type_regimes
                     this.url_base = response.data.url_base
+                    this.type_liabilities = response.data.type_liabilities
                 })
 
             await this.initForm()
