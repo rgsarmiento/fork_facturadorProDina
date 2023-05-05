@@ -37,8 +37,6 @@ class HttpConnectionApi
 
             $response = curl_exec($ch);
             $curl_error = curl_error($ch);
-\Log::debug(json_encode($params));
-\Log::debug($response);
             if($curl_error) return $this->responseMessage(false, 'Error en la petición a la Api');
 
             // dd($response);

@@ -268,9 +268,9 @@ class DocumentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(DocumentRequest $request) {
+//        \Log::debug($request);
 
         DB::connection('tenant')->beginTransaction();
-
         try {
             if(!$request->customer_id)
             {
