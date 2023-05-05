@@ -428,10 +428,15 @@
                 var f2 = moment(this.form.date_expiration)
                 this.form.time_days_credit = f2.diff(f1, 'days')
                 if(this.form.time_days_credit < 0) {
-                  this.$message.error('No puede seleccionar una fecha de vencimiento, menor a la fecha de emision ... ');
-                  this.form.date_expiration = this.form.date_issue
-                  this.form.time_days_credit = 0
+                    this.$message.error('No puede seleccionar una fecha de vencimiento, menor a la fecha de emision ... ');
+                    this.form.date_expiration = this.form.date_issue
+                    this.form.time_days_credit = 0
                 }
+                else
+                    if(this.form.time_days_credit == 0)
+                        this.form.payment_form_id = 1
+                    else
+                        this.form.payment_form_id = 2
             },
 
             addOrderReference(order_reference) {

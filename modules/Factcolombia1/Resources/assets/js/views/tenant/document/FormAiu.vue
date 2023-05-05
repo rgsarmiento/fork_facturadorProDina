@@ -52,7 +52,7 @@
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.date_issue}">
                                     <label class="control-label">Fec. Emisión</label>
-                                    <el-date-picker v-model="form.date_issue" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="changeDateOfIssue" :picker-options="datEmision"></el-date-picker>
+                                    <el-date-picker v-model="form.date_issue" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="calculate_time_days_credit" :picker-options="datEmision"></el-date-picker>
                                     <small class="form-control-feedback" v-if="errors.date_issue" v-text="errors.date_issue[0]"></small>
                                 </div>
                             </div>
@@ -60,16 +60,15 @@
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.date_expiration}">
                                     <label class="control-label">Fec. Vencimiento</label>
-                                    <el-date-picker v-model="form.date_expiration" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
+                                    <el-date-picker v-model="form.date_expiration" type="date" value-format="yyyy-MM-dd" :clearable="false" @change="calculate_time_days_credit"></el-date-picker>
                                     <small class="form-control-feedback" v-if="errors.date_expiration" v-text="errors.date_expiration[0]"></small>
                                 </div>
                             </div>
 
-
-                            <div class="col-lg-2" v-show="form.payment_form_id == 2">
+                            <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.time_days_credit}">
-                                    <label class="control-label">Plazo Credito</label>
-                                    <el-input v-model="form.time_days_credit"></el-input>
+                                    <label class="control-label">Plazo Dias</label>
+                                    <el-input v-model="form.time_days_credit" :disabled="true"></el-input>
                                     <small class="form-control-feedback" v-if="errors.time_days_credit" v-text="errors.time_days_credit[0]"></small>
                                 </div>
                             </div>
@@ -271,7 +270,7 @@
 
         <document-order-reference :showDialog.sync="showDialogOrderReference"
                             :order_reference="form.order_reference"
-                            @addOrderReference="addOrderReference" 
+                            @addOrderReference="addOrderReference"
                             ></document-order-reference>
 
         </div>
@@ -413,6 +412,22 @@
             }
         },
         methods: {
+            calculate_time_days_credit() {
+                var f1 = moment(this.form.date_issue)
+                var f2 = moment(this.form.date_expiration)
+                this.form.time_days_credit = f2.diff(f1, 'days')
+                if(this.form.time_days_credit < 0) {
+                  this.$message.error('No puede seleccionar una fecha de vencimiento, menor a la fecha de emision ... ');
+                  this.form.date_expiration = this.form.date_issue
+                  this.form.time_days_credit = 0
+                }
+                else
+                    if(this.form.time_days_credit == 0)
+                        this.form.payment_form_id = 1
+                    else
+                        this.form.payment_form_id = 2
+            },
+
             addOrderReference(order_reference) {
                 this.form.order_reference = order_reference
             },
