@@ -263,6 +263,7 @@ class CompanyController extends Controller
                     'merchant_registration' => $request->merchant_registration,
                     'address' => $request->address,
                     'phone' => $request->phone,
+                    'type_liability_id' => $request->type_liability_id,
                 ]
             );
 
@@ -296,6 +297,7 @@ class CompanyController extends Controller
                     'merchant_registration' => $request->merchant_registration,
                     'address' => $request->address,
                     'phone' => $request->phone,
+                    'type_liability_id' => $request->type_liability_id,
                 ]
             );
 
@@ -403,7 +405,7 @@ class CompanyController extends Controller
             // 'modules' => Module::whereIn('id', [1,2,4,5,6,7,8,10,12])->orderBy('description')->get(),
             'modules' => Module::whereIn('id', auth()->user()->getAllowedModulesForSystem())->orderBy('description')->get(),
             'url_base' => '.'.config('tenant.app_url_base'),
-        //  'type_liability' => ServiceTypeLiability::all()
+            'type_liabilities' => ServiceTypeLiability::all()
 
         ];
     }
