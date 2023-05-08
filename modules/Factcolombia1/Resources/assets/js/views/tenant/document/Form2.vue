@@ -402,6 +402,7 @@
                 this.initInputPerson()
             })
 //            console.log(this.customers)
+            // await this.generatedFromExternalDocument()
         },
         watch: {
             typeDocuments: {
@@ -422,7 +423,58 @@
                 // deep: true
             }
         },
-        methods: {
+        computed: {
+            generatedFromPos()
+            {
+                const form_exceed_uvt = this.$getStorage('form_exceed_uvt')
+
+                if(form_exceed_uvt != undefined && form_exceed_uvt) return true
+                
+                return false
+            }
+        },
+        methods: 
+        {
+            generatedFromExternalDocument()
+            {
+                if(this.generatedFromPos)
+                {
+                    const form_exceed_uvt = this.$getStorage('form_exceed_uvt')
+
+                    this.form.customer_id = form_exceed_uvt.customer_id
+                    this.form.currency_id = form_exceed_uvt.currency_id
+                    this.form.type_invoice_id = form_exceed_uvt.type_invoice_id
+                    this.form.total_discount = form_exceed_uvt.total_discount
+                    this.form.total_tax = form_exceed_uvt.total_tax
+                    this.form.subtotal = form_exceed_uvt.subtotal
+                    this.form.total = form_exceed_uvt.total
+                    this.form.sale = form_exceed_uvt.sale
+                    this.form.taxes = form_exceed_uvt.taxes
+
+                    this.form.items = this.prepareItems(form_exceed_uvt.items)
+                    
+                    console.log("exterr")
+                }
+
+            },
+            prepareItems(items)
+            {
+                return items.map(row => {
+
+                    row.item = this.prepareIndividualItem(row)
+
+                    return row
+                });
+            },
+            prepareIndividualItem(row) 
+            {
+                const new_item = row.item
+
+                new_item.price = row.unit_price
+                new_item.presentation = (row.presentation && !_.isEmpty(row.presentation)) ? row.presentation : {}
+
+                return new_item
+            },
             calculate_time_days_credit() {
                 var f1 = moment(this.form.date_issue)
                 var f2 = moment(this.form.date_expiration)
@@ -843,7 +895,7 @@
                 this.form.service_invoice = await this.createInvoiceService();
                 // return
 
-                this.loading_submit = true
+                // this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                     if (response.data.success) {
                         this.resetForm();

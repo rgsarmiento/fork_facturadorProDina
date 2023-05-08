@@ -12,8 +12,31 @@
                 <template>
                     <form autocomplete="off">
                         <el-tabs v-model="activeName">
+                            
                             <el-tab-pane class="mb-3"
-                                         name="first">
+                                         name="general">
+                                <span slot="label">General</span>
+                                <div class="row">
+                                    
+                                    <div class="col-md-4 mt-4" :class="{'has-danger': errors.uvt}">
+                                        <div class="form-group">
+                                            <label class="control-label">Valor UVT
+                                                <el-tooltip class="item" effect="dark" content="Límite UVT = 5 x Valor UVT" placement="top-start">
+                                                    <i class="fa fa-info-circle"></i>
+                                                </el-tooltip>
+                                            </label>
+                                            <el-input-number v-model="form.uvt" :min="0" controls-position="right"
+                                                             @change="submit"></el-input-number>
+
+                                            <small class="form-control-feedback" v-if="errors.uvt" v-text="errors.uvt[0]"></small>
+                                        </div>
+                                    </div>
+
+                                </div> 
+                            </el-tab-pane> 
+
+                            <el-tab-pane class="mb-3"
+                                         name="payroll">
                                 <span slot="label">Nómina</span>
                                 <div class="row">
                                     
@@ -38,7 +61,7 @@
                             </el-tab-pane> 
 
                             
-                            <el-tab-pane class="mb-3" name="second">
+                            <el-tab-pane class="mb-3" name="radian">
                                 <span slot="label">Recepción documentos (RADIAN)</span>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -108,7 +131,7 @@ export default {
             errors: {},
             form: {},
             loading_submit: false,
-            activeName: 'first'
+            activeName: 'general'
         }
     },
     created() {
@@ -131,6 +154,7 @@ export default {
                 radian_imap_port: null,
                 radian_imap_password: null,
                 radian_imap_user: null,
+                uvt: 0,
             }
         },
         clickSaveEmailRadian()
@@ -157,7 +181,7 @@ export default {
 
             }).catch(error => {
                 if (error.response.status === 422) {
-                    this.errors = error.response.data.errors
+                    this.errors = error.response.data
                 } else {
                     console.log(error)
                 }

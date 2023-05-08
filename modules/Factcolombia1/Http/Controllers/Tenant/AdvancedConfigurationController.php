@@ -7,6 +7,7 @@ use Modules\Factcolombia1\Http\Resources\Tenant\AdvancedConfigurationResource;
 use App\Models\Tenant\Item;
 use App\Http\Controllers\Controller;
 use Modules\Factcolombia1\Models\TenantService\AdvancedConfiguration;
+use Modules\Factcolombia1\Http\Requests\Tenant\AdvancedConfigurationRequest;
 
 
 class AdvancedConfigurationController extends Controller
@@ -23,7 +24,7 @@ class AdvancedConfigurationController extends Controller
         return  $record;
     }
 
-    public function store(Request $request) {
+    public function store(AdvancedConfigurationRequest $request) {
 
         $id = $request->input('id');
 

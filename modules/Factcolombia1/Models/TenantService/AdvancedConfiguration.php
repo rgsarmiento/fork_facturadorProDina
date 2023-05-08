@@ -12,6 +12,8 @@ class AdvancedConfiguration extends Model
 
     protected $table = 'co_advanced_configuration';
 
+    public const QUANTITY_UVT_LIMIT = 5;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -26,10 +28,16 @@ class AdvancedConfiguration extends Model
         'radian_imap_port',
         'radian_imap_password',
         'radian_imap_user',
+        'uvt',
 
     ];
 
-        
+      
+    protected $casts = [
+        'uvt' => 'float',
+    ];
+  
+    
     /**
      * Use in resource and collection
      *
@@ -47,6 +55,7 @@ class AdvancedConfiguration extends Model
             'radian_imap_port' => $this->radian_imap_port,
             'radian_imap_password' => $this->radian_imap_password,
             'radian_imap_user' => $this->radian_imap_user,
+            'uvt' => $this->uvt,
         ];
 
     }
@@ -61,6 +70,35 @@ class AdvancedConfiguration extends Model
             'radian_imap_password',
             'radian_imap_user',
         ]);
+    }
+
+    
+    /**
+     * 
+     * Configuracion para forms
+     *
+     * @param  array $columns
+     * @return AdvancedConfiguration
+     */
+    public static function getPublicConfiguration($columns = [])
+    {
+        $query = self::query();
+
+        if(!empty($columns)) $query->select($columns);
+
+        return $query->firstOrFail();
+    }
+
+    
+    /**
+     * 
+     * Limite de la uvt para validar registro de documento en pos
+     *
+     * @return float
+     */
+    public function getLimitUvt()
+    {
+        return $this->uvt * self::QUANTITY_UVT_LIMIT;
     }
 
 }
