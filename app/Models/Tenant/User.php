@@ -183,4 +183,26 @@ class User extends Authenticatable
         return [1,2,4,5,6,7,8,10,12,13];
     }
 
+
+    public function scopeFilterWithOutRelations($query)
+    {
+        return $query->withOut(['establishment']);
+    }
+
+        
+    /**
+     * 
+     * Data para componente filtros
+     *
+     * @return array
+     */
+    public static function getDataForFilters()
+    {
+        return self::filterWithOutRelations()
+                    ->select(['id', 'name'])
+                    ->whereIn('type', ['admin', 'seller'])
+                    ->get();
+    }
+
+
 }

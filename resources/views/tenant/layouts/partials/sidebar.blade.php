@@ -627,7 +627,7 @@
                     <li class="nav-parent {{  ($path[0] === 'reports' && in_array($path[1], ['report-taxes','purchases', 'search','sales','customers','items',
                                         'general-items','consistency-documents', 'quotations', 'sale-notes','cash','commissions','document-hotels',
                                         'validate-documents', 'document-detractions','commercial-analysis', 'order-notes-consolidated', 'document-pos',
-                                        'order-notes-general', 'sales-consolidated', 'user-commissions', 'co-remissions'])) ? 'nav-active nav-expanded' : ''}}">
+                                        'order-notes-general', 'sales-consolidated', 'user-commissions', 'co-remissions', 'co-items-sold'])) ? 'nav-active nav-expanded' : ''}}">
 
                         <a class="nav-link" href="#">
                             <i class="fas fa-chart-area" aria-hidden="true"></i>
@@ -781,6 +781,12 @@
                             <li class="{{(($path[0] === 'reports') && ($path[1] === 'report-taxes')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.reports.taxes')}}">
                                     Impuestos
+                                </a>
+                            </li>
+                            
+                            <li class="{{(($path[0] === 'reports') && ($path[1] === 'co-items-sold')) ? 'nav-active' : ''}}">
+                                <a class="nav-link" href="{{route('tenant.co-items-sold.index')}}">
+                                    Artículos vendidos
                                 </a>
                             </li>
                         </ul>

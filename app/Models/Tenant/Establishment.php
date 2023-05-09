@@ -71,5 +71,11 @@ class Establishment extends ModelTenant
         $address = ($this->address != '-')? $this->address.' ,' : '';
         return "{$address} {$this->country->name} - {$this->department->name} - {$this->city->name}";
     }
+
+
+    public function scopeFilterWithOutRelations($query)
+    {
+        return $query->withOut(['country', 'department', 'city']);
+    }
     
 }

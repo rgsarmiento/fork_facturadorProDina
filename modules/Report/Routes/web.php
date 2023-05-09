@@ -139,6 +139,15 @@ if($current_hostname) {
                     Route::get('records', 'ReportRemissionController@records');
                 });
 
+                
+                Route::prefix('co-items-sold')->group(function () {
+                    Route::get('', 'ReportItemSoldController@index')->name('tenant.co-items-sold.index');
+                    Route::get('/export/{type}', 'ReportItemSoldController@pdf');
+                });
+
+                // colombia
+
+
             });
 
             Route::get('cash/report/income-summary/{cash}', 'ReportIncomeSummaryController@pdf')->name('tenant.reports.income_summary.pdf');

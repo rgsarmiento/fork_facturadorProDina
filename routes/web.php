@@ -107,6 +107,7 @@ if ($hostname) {
             Route::post('users', 'Tenant\UserController@store');
             Route::get('users/records', 'Tenant\UserController@records');
             Route::delete('users/{user}', 'Tenant\UserController@destroy');
+            Route::get('users/search', 'Tenant\UserController@searchData');
 
             //ChargeDiscounts
             Route::get('charge_discounts', 'Tenant\ChargeDiscountController@index')->name('tenant.charge_discounts.index');
