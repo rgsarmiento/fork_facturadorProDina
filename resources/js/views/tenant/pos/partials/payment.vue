@@ -356,6 +356,7 @@
                 payment_methods: [],
                 payment_forms: [],
                 errors: {},
+                limit_uvt: 0,
             }
         },
         async created() {
@@ -598,29 +599,48 @@
             sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             },
-            async clickPayment(){
-
-                /*if (this.form.document_type_id === "80") {
-
-                    if(!this.form.series_id){
-                        return this.$message.warning('El establecimiento no tiene series disponibles para el comprobante');
+            validateLimitUvt()
+            {
+                if(this.limit_uvt > 0)
+                {
+                    if(parseFloat(this.form.sale) >= this.limit_uvt)
+                    {
+                        return {
+                            success: false,
+                            message: `El valor del documento (${this.currencyTypeActive.symbol} ${this.form.sale}) ha superado el límite configurado para la UVT (${this.currencyTypeActive.symbol} ${this.limit_uvt}), debe generar factura.`
+                        }
                     }
+                }
 
-                    this.form.prefix = "NV";
-                    this.form.paid = 1;
-                    this.resource_documents = "sale-notes";
-                    this.resource_payments = "sale_note_payments";
-                    this.resource_options = this.resource_documents;
+                return {
+                    success: true
+                }
+            },
+            async redirectCreateDocument()
+            {
+                this.loading_submit = true
+                await this.sleep(2000)
+                this.loading_submit = false
+                window.open('/co-documents/create', '_blank')
+            },
+            async clickPayment()
+            {
+                const validate_limit_uvt = this.validateLimitUvt()
 
-                } else {
+                if(!validate_limit_uvt.success)
+                {
+                    this.$setStorage('form_exceed_uvt', this.form)
 
-                    this.form.service_invoice = await this.createInvoiceService();
+                    this.$message.error({
+                        showClose: true,
+                        message: validate_limit_uvt.message,
+                        type: 'error',
+                        duration: 6000
+                    })
 
-                    this.form.prefix = null;
-                    this.resource_documents = "co-documents";
-                    this.resource_payments = "document_payments";
-                    this.resource_options = this.resource_documents;
-                }*/
+                    this.redirectCreateDocument()
+                    return
+                } 
 
                     //this.form.prefix = "NV";
                 this.form.paid = 1;
@@ -718,6 +738,7 @@
                         this.type_documents = response.data.type_documents
                         this.payment_methods = response.data.payment_methods
                         this.payment_forms = response.data.payment_forms
+                        this.limit_uvt = response.data.limit_uvt
                         this.filterSeries()
                     })
 

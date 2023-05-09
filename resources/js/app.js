@@ -24,6 +24,19 @@ Vue.use(ElementUI, {size: 'small'})
 Vue.prototype.$eventHub = new Vue()
 Vue.prototype.$http = Axios
 
+
+Vue.prototype.$setStorage =   function(name, obj){
+    localStorage.setItem(name, JSON.stringify(obj))
+}
+
+Vue.prototype.$getStorage = function(name){
+    return JSON.parse(localStorage.getItem(name))
+}
+
+Vue.prototype.$removeStorage = function(name){
+    localStorage.removeItem(name)
+}
+
 // Vuetify es
 // Vue.use(Vuetify, {
 //     lang: {

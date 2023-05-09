@@ -34,7 +34,7 @@ use Modules\Factcolombia1\Models\Tenant\{
 use Carbon\Carbon;
 use App\Models\Tenant\ConfigurationPos;
 use App\Http\Requests\Tenant\ConfigurationPosRequest;
-
+use Modules\Factcolombia1\Models\TenantService\AdvancedConfiguration;
 
 
 class PosController extends Controller
@@ -223,8 +223,10 @@ class PosController extends Controller
                         ->where([['establishment_id', auth()->user()->establishment_id],['contingency',false]])
                         ->get();
 
+        $limit_uvt = AdvancedConfiguration::getPublicConfiguration(['uvt'])->getLimitUvt();
+
         return compact('payment_method_types','cards_brand', 'payment_destinations', 'series',
-                    'type_invoices', 'type_documents', 'payment_methods', 'payment_forms');
+                    'type_invoices', 'type_documents', 'payment_methods', 'payment_forms', 'limit_uvt');
 
     }
 
