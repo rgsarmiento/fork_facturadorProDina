@@ -82,7 +82,7 @@
             },
             setDataFromResponse(response)
             {
-                this.records = response.data
+                this.records = response.data.customers
                 this.loading_search = false
                 if(this.records.length == 0) this.filterRecords()
             },

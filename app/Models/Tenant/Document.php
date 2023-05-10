@@ -564,4 +564,72 @@ class Document extends ModelTenant
     }
 
 
+    /**
+     * 
+     * Filtrar por cliente
+     * 
+     * @param  Builder $query
+     * @param  int $customer_id
+     * @return Builder
+     */
+    public function scopeFilterByCustomer($query, $customer_id)
+    {
+        if($customer_id) $query->where('customer_id', $customer_id);
+
+        return $query;
+    }
+
+    
+    /**
+     * 
+     * Filtrar por usuario
+     * 
+     * @param  Builder $query
+     * @param  int $user_id
+     * @return Builder
+     */
+    public function scopeFilterByUser($query, $user_id)
+    {
+        if($user_id) $query->where('user_id', $user_id);
+
+        return $query;
+    }
+
+    
+    /**
+     * 
+     * Filtrar por rango de tiempo
+     * 
+     * @param  Builder $query
+     * @param  string $start_time
+     * @param  string $end_time
+     * @return Builder
+     */
+    public function scopeFilterByRangeTimeOfIssue($query, $start_time, $end_time)
+    {
+        $first_second = '00';
+        $last_second = '59';
+        
+        if($start_time) $query->where('time_of_issue', '>=', "{$start_time}:{$first_second}");
+
+        if($end_time) $query->where('time_of_issue', '<=', "{$end_time}:{$last_second}");
+
+        return $query;
+    }
+
+    
+    /**
+     * 
+     * Filtrar por rango de fecha
+     * 
+     * @param  Builder $query
+     * @param  string $start_date
+     * @param  string $end_date
+     * @return Builder
+     */
+    public function scopeFilterByRangeDateOfIssue($query, $start_date, $end_date)
+    {
+        return $query->whereBetween('date_of_issue', [$start_date, $end_date]);
+    }
+
 }

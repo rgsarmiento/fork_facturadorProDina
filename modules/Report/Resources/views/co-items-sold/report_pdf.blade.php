@@ -5,78 +5,60 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="Content-Type" content="application/pdf; charset=utf-8" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Document</title>
-        <style>
-            html {
-                font-family: sans-serif;
-                font-size: 12px;
-            }
-            
-            table {
-                width: 100%;
-                border-spacing: 0;
-                border: 1px solid black;
-            }
-            
-            .celda {
-                text-align: center;
-                padding: 5px;
-                border: 0.1px solid black;
-            }
-            
-            th {
-                padding: 5px;
-                text-align: center;
-                border-color: #0088cc;
-                border: 0.1px solid black;
-            }
-            
-            .title {
-                font-weight: bold;
-                padding: 5px;
-                font-size: 20px !important;
-                text-decoration: underline;
-            }
-            
-            p>strong {
-                margin-left: 5px;
-                font-size: 13px;
-            }
-            
-            thead {
-                font-weight: bold;
-                background: #0088cc;
-                color: white;
-                text-align: center;
-            }
-        </style>
+        <title>Artículos Vendidos</title>
+        
+        @include('report::commons.styles')
     </head>
     <body>
-        @if(!empty($records))
+        @include('report::commons.header')
+        
+        <div>
+            <p align="left" class="title"><strong>Artículos Vendidos</strong></p>
+        </div>
+
+        @include('report::co-items-sold.partials.filters')
+
+        @if($records->count() > 0)
             <div class="">
-                <div class=" ">
+                <div class="">
                     <table class="">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Tipo Doc</th>
-                                <th>Número</th>
-                                <th>Fecha emisión</th>
+                                <th>Tipo</th>
+                                <th>Código</th>
+                                <th>Artículo</th>
+                                <th>Cantidad</th>
+                                <th>Costo</th>
+                                <th>Neto</th>
+                                <th>Utilidad</th>
+                                <th>Impuesto</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($records as $key => $value)
+                            @foreach($records as $value)
+                                @php
+                                    $row = $value->getDataReportSoldItems();
+                                @endphp
                                 <tr>
-                                    <td class="celda">{{$loop->iteration}}</td>
-                                    <td class="celda">{{$value->document_type->id}}</td>
+                                    <td class="celda">{{ $row['type_name'] }}</td>
+                                    <td class="celda">{{ $row['internal_id'] }}</td>
+                                    <td class="celda">{{ $row['name'] }}</td>
+                                    <td class="celda">{{ $row['quantity'] }}</td>
+                                    <td class="celda">{{ $row['cost'] }}</td>
+                                    <td class="celda">{{ $row['net_value'] }}</td>
+                                    <td class="celda">{{ $row['utility'] }}</td>
+                                    <td class="celda">{{ $row['total_tax'] }}</td>
+                                    <td class="celda">{{ $row['total'] }}</td>
                                 </tr>
+                            @endforEach
                         </tbody>
                     </table>
                 </div>
             </div>
         @else
             <div class="callout callout-info">
-                <p>No se encontraron registros.</p>
+                <p><strong>No se encontraron registros.</strong></p>
             </div>
         @endif
     </body>

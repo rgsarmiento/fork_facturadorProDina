@@ -450,4 +450,23 @@ class Item extends ModelTenant
                         ->whereNotItemsAiu();
     }
 
+    
+    /**
+     * 
+     * Filtros opcionales para componente de busqueda
+     *
+     * @param  Builder $query
+     * @param  bool $filter_warehouse
+     * @return Builder
+     */
+    public function scopeOptionalFiltersSearchData($query, $filter_warehouse)
+    {
+        if($filter_warehouse) $query->whereWarehouse();
+
+        return $query->whereNotIsSet()
+                        ->whereIsActive()
+                        ->whereNotItemsAiu();
+    }
+
+
 }

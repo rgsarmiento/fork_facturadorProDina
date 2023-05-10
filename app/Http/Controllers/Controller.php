@@ -21,7 +21,10 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-        
+    public const TAKE_FOR_SEARCH_ID = 1;
+    public const MIN_ITEMS_IN_SELECT = 10;
+    public const MAX_ITEMS_IN_SELECT = 100;
+    
     /**
      * 
      * Obtener datos generales
@@ -75,5 +78,43 @@ class Controller extends BaseController
         ];
     }
 
+    
+    /**
+     * 
+     * Busqueda de registros por coincidencia o id, data inicial,  para componente
+     * Los modelos deben implementar los scopes/funciones requeridas
+     *
+     * @param  string $model
+     * @param  Request $request
+     * @return array
+     */
+    public function generalSearchData($model, Request $request)
+    {
+        $id = $request->id ?? null;
+        $input = $request->input ?? null;
+        
+        $records = $model::query();
+
+        if($id)
+        {
+            $records->where('id', $id)->take(self::TAKE_FOR_SEARCH_ID);
+        }
+        else if($input)
+        {
+            $records->whereFilterSearchData($request)
+                    ->optionalFiltersSearchData()
+                    ->take(self::MAX_ITEMS_IN_SELECT);
+        }
+        else
+        {
+            $records->optionalFiltersSearchData()
+                    ->take(self::MIN_ITEMS_IN_SELECT);
+        }
+
+        return $records->get()
+                        ->transform(function($row) {
+                            return $row->getSearchDataResource();
+                        });
+    }
 
 }

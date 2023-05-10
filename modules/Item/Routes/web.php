@@ -20,6 +20,7 @@ if($hostname) {
             Route::post('brands', 'BrandController@store');
             Route::get('brands/columns', 'BrandController@columns');
             Route::delete('brands/{brand}', 'BrandController@destroy');
+            Route::get('brands/search-data', 'BrandController@searchData');
 
             Route::get('incentives', 'IncentiveController@index')->name('tenant.incentives.index')->middleware('redirect.level');
             Route::get('incentives/records', 'IncentiveController@records');
