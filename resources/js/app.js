@@ -251,6 +251,7 @@ Vue.component('tenant-report-tax-index', require('../../modules/Report/Resources
 
 Vue.component('tenant-report-co-remissions-index', require('../../modules/Report/Resources/assets/js/views/co-remissions/index.vue'));
 Vue.component('tenant-report-co-items-sold-index', require('@viewsModuleReport/co-items-sold/index.vue'));
+Vue.component('tenant-report-co-sales-book-index', require('@viewsModuleReport/co-sales-book/index.vue'));
 
 
 Vue.component('tenant-categories-index', require('../../modules/Item/Resources/assets/js/views/categories/index.vue'));

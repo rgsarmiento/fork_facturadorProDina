@@ -145,6 +145,12 @@ if($current_hostname) {
                     Route::get('/export/{type}', 'ReportItemSoldController@pdf');
                 });
 
+                
+                Route::prefix('co-sales-book')->group(function () {
+                    Route::get('', 'ReportSalesBookController@index')->name('tenant.co-sales-book.index');
+                    Route::get('/export/{type}', 'ReportSalesBookController@pdf');
+                });
+
                 // colombia
 
 
