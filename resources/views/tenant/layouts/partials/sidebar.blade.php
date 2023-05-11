@@ -790,11 +790,11 @@
                                 </a>
                             </li>
                             
-                            <li class="{{(($path[0] === 'reports') && ($path[1] === 'co-sales-book')) ? 'nav-active' : ''}}">
+                            {{-- <li class="{{(($path[0] === 'reports') && ($path[1] === 'co-sales-book')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.co-sales-book.index')}}">
                                     Libro de ventas
                                 </a>
-                            </li>
+                            </li> --}}
                             
                         </ul>
                     </li>
