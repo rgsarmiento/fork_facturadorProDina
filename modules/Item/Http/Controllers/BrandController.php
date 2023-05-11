@@ -4,7 +4,7 @@ namespace Modules\Item\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Modules\Item\Models\Brand;
 use Modules\Item\Http\Resources\BrandCollection;
 use Modules\Item\Http\Resources\BrandResource;
@@ -79,6 +79,17 @@ class BrandController extends Controller
     }
 
 
+    /**
+     * 
+     * Busqueda de registros por coincidencia o id, data inicial,  para componente
+     *
+     * @param  Request $request
+     * @return array
+     */
+    public function searchData(Request $request)
+    {
+        return $this->generalSearchData(Brand::class, $request);
+    }
 
 
 }

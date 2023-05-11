@@ -107,6 +107,7 @@ if ($hostname) {
             Route::post('users', 'Tenant\UserController@store');
             Route::get('users/records', 'Tenant\UserController@records');
             Route::delete('users/{user}', 'Tenant\UserController@destroy');
+            Route::get('users/search', 'Tenant\UserController@searchData');
 
             //ChargeDiscounts
             Route::get('charge_discounts', 'Tenant\ChargeDiscountController@index')->name('tenant.charge_discounts.index');
@@ -141,6 +142,7 @@ if ($hostname) {
             Route::delete('items/delete/all', 'Tenant\ItemController@deleteAll');
             Route::get('main-items/search', 'Tenant\ItemController@searchItems');
             Route::get('main-items/search-by-id/{id}', 'Tenant\ItemController@searchItemById');
+            Route::get('items/search-data', 'Tenant\ItemController@searchData');
 
             //Persons
             Route::get('persons/columns', 'Tenant\PersonController@columns');

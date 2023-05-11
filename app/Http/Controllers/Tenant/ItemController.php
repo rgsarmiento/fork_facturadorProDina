@@ -632,4 +632,45 @@ class ItemController extends Controller
 
     }
 
+
+    /**
+     * 
+     * Busqueda de registros por coincidencia o id, data inicial,  para componente
+     *
+     * @param  Request $request
+     * @return array
+     */
+    public function searchData(Request $request)
+    {
+        $id = $request->id ?? null;
+        $input = $request->input ?? null;
+        $input = $request->input ?? null;
+        $filter_warehouse = $request->has('filter_warehouse') && (bool) $request->filter_warehouse;
+
+        $warehouse = WarehouseModule::where('establishment_id', auth()->user()->establishment_id)->first();
+        
+        $records = Item::query();
+
+        if($id)
+        {
+            $records->where('id', $id)->take(self::TAKE_FOR_SEARCH_ID);
+        }
+        else if($input)
+        {
+            $records->whereFilterSearchItem($request->input)
+                    ->optionalFiltersSearchData($filter_warehouse)
+                    ->take(self::MAX_ITEMS_IN_SELECT);
+        }
+        else
+        {
+            $records->optionalFiltersSearchData($filter_warehouse)
+                    ->take(self::MIN_ITEMS_IN_SELECT);
+        }
+
+        return $records->get()
+                        ->transform(function($row) use($warehouse) {
+                            return $row->getRowSearchResource($warehouse);
+                        });
+    }
+
 }

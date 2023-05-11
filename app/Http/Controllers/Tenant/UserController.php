@@ -114,4 +114,17 @@ class UserController extends Controller
             'message' => 'Usuario eliminado con éxito'
         ];
     }
+
+
+    /**
+     * 
+     * Data para componente filtros
+     *
+     * @return array
+     */
+    public function searchData()
+    {
+        return User::getDataForFilters();
+    }
+
 }

@@ -25,4 +25,53 @@ class ModelTenant extends Model
         return ($user->type == 'seller') ? $query->where('user_id', $user->id) : null;
     }
 
+
+    /**
+     * 
+     * Aplicar formato
+     *
+     * @param  $value
+     * @param  int $decimals
+     * @return string
+     */
+    public function generalApplyNumberFormat($value, $decimals = 2)
+    {
+        return number_format($value, $decimals, ".", "");
+    }
+    
+
+    /**
+    * 
+    * Filtros where like general para buscar campos en listados
+    *
+    * @param  Builder $query
+    * @param  string $column
+    * @param  string $value
+    * @return Builder
+    */
+   public function scopeGeneralWhereLikeColumn($query, $column, $value)
+   {
+       if(empty($value)) return $query;
+       
+       return $query->where($column, 'like', "%{$value}%");
+   }
+
+
+   /**
+    * 
+    * Filtros OR where like general para buscar campos en listados
+    *
+    * @param  Builder $query
+    * @param  string $column
+    * @param  string $value
+    * @return Builder
+    */
+   public function scopeGeneralOrWhereLikeColumn($query, $column, $value)
+   {
+       if(empty($value)) return $query;
+       
+       return $query->orWhere($column, 'like', "%{$value}%");
+   }
+
+
 }
