@@ -7,7 +7,7 @@
             <div class="card-body">
                 <div class="row mt-2">
                 
-                    <div class="col-md-2 pb-1">
+                    <div class="col-md-3 pb-1">
                         <div class="form-group">
                             <label class="control-label">Fecha Desde</label>
                             <el-date-picker v-model="form.start_date" type="date"
@@ -15,7 +15,7 @@
                                             value-format="yyyy-MM-dd" format="yyyy-MM-dd" :clearable="false"></el-date-picker>
                         </div>
                     </div>
-                    <div class="col-md-2 pb-1">
+                    <div class="col-md-3 pb-1">
                         <div class="form-group">
                             <label class="control-label">Fecha Hasta</label>
                             <el-date-picker v-model="form.end_date" type="date"
@@ -24,16 +24,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 pb-1">
-                        <document-pos-types
-                            @changeDocumentType="changeDocumentType"
-                            ref="document_pos_types"
-                            :isClearable="false"
-                        >
-                        </document-pos-types>
-                    </div>
-
-                    <div class="col-md-4 pb-1">
+                    <div class="col-md-6 pb-1">
                         <search-customers
                             @changeCustomer="changeCustomer"
                             ref="search_customers"
@@ -43,7 +34,22 @@
                     </div>
 
 
-                    <div class="col-lg-12 col-md-12 col-md-12 col-sm-12" style="margin-top:29px">
+                    <div class="col-md-3 pb-1">
+                        <document-pos-types
+                            @changeDocumentType="changeDocumentType"
+                            ref="document_pos_types"
+                            :isClearable="false"
+                        >
+                        </document-pos-types>
+                    </div>
+
+                    <div class="col-md-3 pb-1 center-el-checkbox">
+                        <div class="form-group">
+                            <el-checkbox v-model="form.summary_sales_book" class="mt-1">Libro de ventas resumido</el-checkbox>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-md-12 col-sm-12 mt-3">
                         <el-button class="submit" type="danger"  icon="el-icon-tickets" @click.prevent="clickDownload('pdf')" >Exportar PDF</el-button>
                     </div>
                 </div> 
@@ -121,6 +127,7 @@
                     end_date: moment().endOf('month').format('YYYY-MM-DD'),
                     start_time: null,
                     end_time: null,
+                    summary_sales_book: false,
                 }
             }, 
             

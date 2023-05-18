@@ -632,4 +632,23 @@ class Document extends ModelTenant
         return $query->whereBetween('date_of_issue', [$start_date, $end_date]);
     }
 
+    
+    /**
+     * 
+     * Reporte libro ventas
+     *
+     * @return array
+     */
+    public function getDataReportSalesBook()
+    {
+        return [
+            'date_of_issue' => $this->date_of_issue->format('d/m/Y'),
+            'number_full' => $this->number_full,
+            'type_document_name' => $this->type_document->name,
+            'customer_name' => $this->customer->name,
+            'sale' => $this->generalApplyNumberFormat($this->sale),
+            'total' => $this->generalApplyNumberFormat($this->total),
+        ];
+    }
+    
 }
