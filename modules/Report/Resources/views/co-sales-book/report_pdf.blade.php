@@ -18,6 +18,7 @@
                 font-family: sans-serif;
                 font-size: 12px;
             }
+            
         </style>
     </head>
     <body>
@@ -27,39 +28,31 @@
             <p align="left" class="title"><strong>Libro Ventas</strong></p>
         </div>
 
-        {{-- @include('report::co-items-sold.partials.filters') --}}
+        @include('report::co-sales-book.partials.filters')
 
-        @php
-            // dd($records, $taxes);
-        @endphp
         @if($records->count() > 0)
             <div class="">
                 <div class="">
                     <table class="">
                         <thead>
                             <tr>
-                                <th colspan="8"></th>
+                                <th colspan="7"></th>
                                 
                                 @foreach($taxes as $tax)
-                                    @php
-                                        // dd($tax);
-                                    @endphp
                                     <th colspan="2">
                                         IMPUESTO #{{ $loop->iteration }}
                                         <br>
                                         {{ $tax->name }} - ({{ $tax->rate }}%)
                                     </th>
-
                                 @endforeach
                             </tr>
                             <tr>
                                 <th>F. Emisión</th>
                                 <th>Nro/Doc</th>
                                 <th>Nombre</th>
-                                <th>Recargos</th>
+                                <th>Moneda</th>
                                 <th>Total/Neto</th>
-                                <th>Total + Impuesto</th>
-                                <th>Total/Retenido</th>
+                                <th>Total <br>+<br> Impuesto</th>
                                 <th>Total/Excento</th>
                                 
                                 @foreach($taxes as $tax)
@@ -79,35 +72,21 @@
                                     <td class="celda">{{ $row['date_of_issue'] }}</td>
                                     <td class="celda">{{$row['type_document_name']}} <br/> {{ $row['number_full'] }}</td>
                                     <td class="celda">{{ $row['customer_name'] }}</td>
-
-                                    <td class="celda"></td>
-                                    <td class="celda">{{ $row['sale'] }}</td>
-                                    <td class="celda">{{ $row['total'] }}</td>
-                                    <td class="celda"></td>
-                                    <td class="celda"></td>
+                                    <td class="celda">{{ $row['currency_code'] }}</td>
+                                    <td class="celda text-right-td">{{ $row['net_total'] }}</td>
+                                    <td class="celda text-right-td">{{ $row['total'] }}</td>
+                                    <td class="celda text-right-td"> {{ $row['total_exempt'] }} </td>
                                     
                                     @foreach($taxes as $tax)
 
                                         @php
-                                            $filter_items = $value->items->where('tax_id', $tax->id);
-                                            $tax_amount = $filter_items->sum('total_tax');
-                                            $taxable_amount = $filter_items->sum('total') - $tax_amount;
+                                            $item_values = $value->getItemValuesByTax($tax->id);
                                         @endphp
                                         
-                                        @if ($filter_items->count() > 0)
-
-                                            <td class="celda">{{ $taxable_amount }}</td>
-                                            <td class="celda">{{ $tax_amount }}</td>
-                                            
-                                        @else
-
-                                            <td class="celda">0.00</td>
-                                            <td class="celda">0.00</td>
-
-                                        @endif
+                                        <td class="celda text-right-td">{{ $item_values['taxable_amount'] }}</td>
+                                        <td class="celda text-right-td">{{ $item_values['tax_amount'] }}</td>
 
                                     @endforeach
-
                                 </tr>
                             @endforeach
                         </tbody>

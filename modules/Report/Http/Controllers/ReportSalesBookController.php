@@ -33,75 +33,25 @@ class ReportSalesBookController extends Controller
     public function getQueryRecords($request)
     {
         $document_type_id = $request->document_type_id ?? null;
+        $filter_summary_sales_book = $request->has('filter_summary_sales_book') && (bool) $request->filter_summary_sales_book;
         $records = [];
 
-        $documents = Document::filterInvoiceDocument()
-        ->filterByRangeDateOfIssue($request->start_date, $request->end_date)
-        ->with([
-            'items' => function($items){
-                return $items->select([
-                    'id',
-                    'document_id',
-                    'item_id',
-                    'quantity',
-                    'unit_price',
-                    'total',
-                    'tax_id',
-                    'tax',
-                    'total_tax',
-                    'subtotal',
-                    'discount',
-                ]);
-            },
-            'type_document' => function($type_document){
-                return $type_document->select([
-                    'id',
-                    'name',
-                ]);
-            },
-        ])
-        ->select([
-            'id',
-            'type_document_id',
-            'prefix',
-            'number',
-            'date_of_issue',
-            'customer_id',
-            'customer',
-            'total_discount',
-            'total',
-            'state_document_id',
-            'currency_id',
-            'sale',
-            // 'taxes',
-            'total_tax',
-            'subtotal',
-        ])
-        ->latest()
-        ->get();
-
-
-        return $documents;
-
-        dd($documents);
-
-        // switch ($document_type_id)
-        // {
-        //     case 'documents':
-        //         $records = DocumentItem::filterReportSoldItems($request)->get();
-        //         break;
+        switch ($document_type_id)
+        {
+            case 'documents':
+                $records = Document::filterReportSalesBook($request)->get();
+                break;
             
-        //     case 'documents_pos':
-        //         $records = DocumentPosItem::filterReportSoldItems($request)->get();
-        //         break;
+            case 'documents_pos':
+                $records = DocumentPos::filterReportSalesBook($request)->get();
+                break;
 
-        //     default:
-        //         $document_items = DocumentItem::filterReportSoldItems($request)->get();
-        //         $document_items_pos = DocumentPosItem::filterReportSoldItems($request)->get();
-        //         $records = $document_items->concat($document_items_pos);
-
-        //         break;
-        // }
+            default:
+                $documents = Document::filterReportSalesBook($request)->get();
+                $documents_pos = DocumentPos::filterReportSalesBook($request)->get();
+                $records = $documents->concat($documents_pos);
+                break;
+        }
 
         return $records;
     }
