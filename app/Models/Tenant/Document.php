@@ -732,6 +732,23 @@ class Document extends ModelTenant
     
     /**
      * 
+     * Reporte libro ventas resumido
+     *
+     * @return array
+     */
+    public function getDataReportSummarySalesBook()
+    {
+        return [
+            'net_total' => $this->sale,
+            'total' => $this->total,
+            'total_exempt' => $this->getTotalExempt(),
+        ];
+    }
+
+
+    
+    /**
+     * 
      * Totales por impuestos
      *
      * @param  int $tax_id

@@ -30,33 +30,70 @@ class ReportSalesBookController extends Controller
      * @param  Request $request
      * @return Collection
      */
-    public function getQueryRecords($request)
+    public function getData($request)
     {
         $document_type_id = $request->document_type_id ?? null;
-        $filter_summary_sales_book = $request->has('filter_summary_sales_book') && (bool) $request->filter_summary_sales_book;
-        $records = [];
+
+        $data = [
+            'documents' => [],
+            'documents_pos' => [],
+            'records' => [],
+        ];
 
         switch ($document_type_id)
         {
             case 'documents':
-                $records = Document::filterReportSalesBook($request)->get();
+                $documents = $this->getDocuments($request);
+                $data['records'] = $documents;
+                $data['documents'] = $documents; 
                 break;
             
             case 'documents_pos':
-                $records = DocumentPos::filterReportSalesBook($request)->get();
+                $documents_pos = $this->getDocumentPos($request);
+                $data['records'] = $documents_pos;
+                $data['documents_pos'] = $documents_pos; 
                 break;
 
             default:
-                $documents = Document::filterReportSalesBook($request)->get();
-                $documents_pos = DocumentPos::filterReportSalesBook($request)->get();
-                $records = $documents->concat($documents_pos);
+                $documents = $this->getDocuments($request);
+                $documents_pos = $this->getDocumentPos($request);
+                $data['records'] = $documents->concat($documents_pos);
+                $data['documents'] = $documents;
+                $data['documents_pos'] = $documents_pos;
                 break;
         }
 
-        return $records;
+        return $data;
+    }
+
+    
+    /**
+     *
+     * @param  Request $request
+     * @return Collection
+     */
+    private function getDocuments($request)
+    {
+        return Document::filterReportSalesBook($request)->get();
     }
 
 
+    /**
+     *
+     * @param  Request $request
+     * @return Collection
+     */
+    private function getDocumentPos($request)
+    {
+        return DocumentPos::filterReportSalesBook($request)->get();
+    }
+
+    
+    /**
+     *
+     * @param  Collection $documents
+     * @return Collection
+     */
     public function getTaxesDocuments($documents)
     {
         $all_taxes_id = collect();
@@ -70,15 +107,11 @@ class ReportSalesBookController extends Controller
             $q += count($document_taxes);
         }
         
-        $taxes = Tax::whereIn('id', $all_taxes_id->unique())
+        return Tax::whereIn('id', $all_taxes_id->unique())
                     ->withOut(['type_tax'])
                     ->select(['id', 'name', 'code', 'rate', 'conversion', 'is_percentage', 'is_fixed_value', 'is_retention', 'in_base', 'in_tax', 'type_tax_id'])
                     ->orderBy('id')
                     ->get();
-
-        // dd($all_taxes_id, $q, $all_taxes_id->unique(), $taxes);
-
-        return $taxes;
     }
 
         
@@ -89,20 +122,69 @@ class ReportSalesBookController extends Controller
      */
     public function export(Request $request) 
     {
-        $records = $this->getQueryRecords($request);
-
-        $taxes = $this->getTaxesDocuments($records);
-        // dd($documents, $taxes);
-        $filters = $request;
+        $request['summary_sales_book'] = $request->summary_sales_book === 'true';
 
         $company = Company::first();
         $establishment = auth()->user()->establishment;
+        $filters = $request;
+        $data = $this->getData($request);
+        $records = $data['records'];
+        $taxes = $this->getTaxesDocuments($records);
+        $summary_records = $request->summary_sales_book ? $this->getSummaryRecords($data, $request) : [];
+        $report_data = compact('records', 'company', 'establishment', 'filters', 'taxes', 'summary_records');
 
-        $pdf = PDF::loadView('report::co-sales-book.report_pdf', compact('records', 'company', 'establishment', 'filters', 'taxes'))->setPaper('a4', 'landscape');
+        // dd($summary_records);
+
+        $pdf = PDF::loadView('report::co-sales-book.report_pdf', $report_data)->setPaper('a4', 'landscape');
 
         $filename = 'Reporte_Libro_Ventas_'.date('YmdHis');
 
         return $pdf->stream($filename.'.pdf');
+    }
+
+
+    public function getSummaryRecords($data, $request)
+    {
+        // dd($data);
+        $document_type_id = $request->document_type_id ?? null;
+
+        $group_prefix = $data['documents']->groupBy('prefix');
+        $summary_records = collect();
+
+        foreach ($group_prefix as $prefix => $documents) 
+        {
+            $ordered_documents = $documents->sortBy(function ($row) {
+                return (int) $row->number;
+            });
+
+            $summary_records->push([
+                'prefix' => $prefix,
+                'ordered_documents' => $ordered_documents,
+                'first_document' => $ordered_documents->first(),
+                'last_document' => $ordered_documents->last(),
+            ]);
+        }
+
+        // dd($summary_records);
+
+        // switch ($document_type_id)
+        // {
+        //     case 'documents':
+        //         $records = $this->getDocuments($request);
+        //         break;
+            
+        //     case 'documents_pos':
+        //         $records = $this->getDocumentPos($request);
+        //         break;
+
+        //     default:
+        //         $documents = $this->getDocuments($request);
+        //         $documents_pos = $this->getDocumentPos($request);
+        //         $records = $documents->concat($documents_pos);
+        //         break;
+        // }
+
+        return $summary_records;
     }
 
 }

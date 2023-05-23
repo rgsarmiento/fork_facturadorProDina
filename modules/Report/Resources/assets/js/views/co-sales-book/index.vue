@@ -43,11 +43,11 @@
                         </document-pos-types>
                     </div>
 
-                    <!-- <div class="col-md-3 pb-1 center-el-checkbox">
+                    <div class="col-md-3 pb-1 center-el-checkbox">
                         <div class="form-group">
                             <el-checkbox v-model="form.summary_sales_book" class="mt-1">Libro de ventas resumido</el-checkbox>
                         </div>
-                    </div> -->
+                    </div>
 
                     <div class="col-lg-12 col-md-12 col-md-12 col-sm-12 mt-3">
                         <el-button class="submit" type="danger"  icon="el-icon-tickets" @click.prevent="clickDownload('pdf')" >Exportar PDF</el-button>
@@ -103,8 +103,6 @@
             },
             getQueryParameters() 
             {
-                this.form.filter_summary_sales_book = this.form.summary_sales_book ? 1 : 0
-
                 return queryString.stringify({
                     ...this.form
                 })
@@ -128,7 +126,6 @@
                     start_date: moment().startOf('month').format('YYYY-MM-DD'),
                     end_date: moment().endOf('month').format('YYYY-MM-DD'),
                     summary_sales_book: false,
-                    filter_summary_sales_book: 0,
                 }
             }, 
             
