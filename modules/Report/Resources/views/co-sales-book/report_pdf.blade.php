@@ -39,9 +39,9 @@
             <div class="">
                 <div class="">
                     @if($filters->summary_sales_book)
-                        @include('report::co-sales-book.partials.summary_table')
+                        @include('report::co-sales-book.partials.summary')
                     @else
-                        @include('report::co-sales-book.partials.general_table')
+                        @include('report::co-sales-book.partials.general')
                     @endif
                 </div>
             </div>

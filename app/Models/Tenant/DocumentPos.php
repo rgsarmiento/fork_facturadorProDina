@@ -401,6 +401,7 @@ class DocumentPos extends ModelTenant
                     ->select([
                         'id',
                         'series',
+                        'prefix',
                         'number',
                         'date_of_issue',
                         'customer_id',
@@ -463,6 +464,22 @@ class DocumentPos extends ModelTenant
             'net_total' => $this->generalApplyNumberFormat($this->net_total),
             'total' => $this->generalApplyNumberFormat($this->total),
             'total_exempt' => $this->generalApplyNumberFormat($this->getTotalExempt()),
+        ];
+    }
+
+
+    /**
+     * 
+     * Reporte libro ventas resumido
+     *
+     * @return array
+     */
+    public function getDataReportSummarySalesBook()
+    {
+        return [
+            'net_total' => $this->net_total,
+            'total' => $this->total,
+            'total_exempt' => $this->getTotalExempt(),
         ];
     }
 

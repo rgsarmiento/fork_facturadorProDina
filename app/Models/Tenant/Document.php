@@ -746,7 +746,6 @@ class Document extends ModelTenant
     }
 
 
-    
     /**
      * 
      * Totales por impuestos

@@ -298,4 +298,18 @@ class DocumentHelper
         throw new Exception($message);
     }
 
+
+    /**
+     * 
+     * Aplicar formato
+     *
+     * @param  $value
+     * @param  int $decimals
+     * @return string
+     */
+    public static function applyNumberFormat($value, $decimals = 2)
+    {
+        return number_format($value, $decimals, ".", "");
+    }
+    
 }
