@@ -133,7 +133,7 @@
                             <div class="col-lg-12 col-md-6 d-flex align-items-end">
                                 <div class="form-group">
                                     <button type="button" class="btn waves-effect waves-light btn-primary" @click.prevent="clickAddItemInvoice">+ Agregar Producto</button>
-                                    <!-- <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddRetention">+ Agregar Retención</button> -->
+                                    <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddRetention">+ Agregar Retención</button>
                                 </div>
                             </div>
 
@@ -213,6 +213,9 @@
                        :external="true"
                        :type_document_id = form.type_document_id></person-form>
 
+        <support-document-form-retention :showDialog.sync="showDialogAddRetention"
+                           @add="addRowRetention"></support-document-form-retention>
+
         <support-document-options :showDialog.sync="showDialogOptions"
                             :recordId="recordNewId"
                             :showClose="false"></support-document-options>
@@ -224,7 +227,7 @@
 
 <script>
     import SupportDocumentFormItem from './partials/item.vue'
-    // import SupportDocumentFormRetention from './partials/retention.vue'
+    import SupportDocumentFormRetention from './partials/retention.vue'
     import PersonForm from '@views/persons/form.vue'
     import SupportDocumentOptions from './partials/options.vue'
     import {operations_api} from './mixins/operations_api'
@@ -235,7 +238,7 @@
         components: {
             PersonForm,
             SupportDocumentFormItem,
-            // SupportDocumentFormRetention,
+            SupportDocumentFormRetention,
             SupportDocumentOptions
         },
         data() {
@@ -249,6 +252,7 @@
                 recordItem: null,
                 resource: 'support-documents',
                 showDialogAddItem: false,
+                showDialogAddRetention: false,
                 showDialogNewPerson: false,
                 showDialogOptions: false,
                 loading_submit: false,
@@ -396,6 +400,17 @@
             },
             changeDateOfIssue() {
             },
+            async addRowRetention(row){
+
+                await this.taxes.forEach(tax => {
+                    if(tax.id == row.tax_id){
+                        tax.apply = true
+                    }
+                });
+
+                await this.calculateTotal()
+
+            },
             addRow(row) {
                 if(this.recordItem)
                 {
@@ -406,6 +421,23 @@
                     this.form.items.push(JSON.parse(JSON.stringify(row)));
                 }
                 this.calculateTotal();
+            },
+            cleanTaxesRetention(tax_id){
+                this.taxes.forEach(tax => {
+                    if(tax.id == tax_id){
+                        tax.apply = false
+                        tax.retention = 0
+                    }
+                })
+
+            },
+            async clickRemoveRetention(index){
+                // console.log(index, "w")
+                this.form.taxes[index].apply = false
+                this.form.taxes[index].retention = 0
+                await this.cleanTaxesRetention(this.form.taxes[index].id)
+                await this.calculateTotal()
+
             },
             changeCurrencyType() {
             },
@@ -560,6 +592,7 @@
                 }
 
                 this.form.data_api = await this.createDataApi()
+
 
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
