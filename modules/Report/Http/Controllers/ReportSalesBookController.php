@@ -8,72 +8,45 @@ use Illuminate\Http\Request;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Company;
 use Carbon\Carbon;
-use App\Models\Tenant\{
-    DocumentItem,
-    DocumentPosItem
-};
-use DB;
+use Modules\Report\Traits\ReportSalesBookTrait;
 
 
 class ReportSalesBookController extends Controller
 {
+
+    use ReportSalesBookTrait;
+    
 
     public function index()
     {
         return view('report::co-sales-book.index');
     }
 
-    
+        
     /**
      *
+     * @param  string $type
      * @param  Request $request
-     * @return Collection
+     * @return mixed
      */
-    // public function getQueryRecords($request)
-    // {
-    //     $document_type_id = $request->document_type_id ?? null;
-    //     $records = [];
+    public function export($type, Request $request) 
+    {
+        $request['summary_sales_book'] = $request->summary_sales_book === 'true';
 
-    //     switch ($document_type_id)
-    //     {
-    //         case 'documents':
-    //             $records = DocumentItem::filterReportSoldItems($request)->get();
-    //             break;
-            
-    //         case 'documents_pos':
-    //             $records = DocumentPosItem::filterReportSoldItems($request)->get();
-    //             break;
+        $company = Company::first();
+        $establishment = auth()->user()->establishment;
+        $filters = $request;
+        $data = $this->getData($request);
+        $records = $data['records'];
+        $taxes = $this->getTaxesDocuments($records);
+        $summary_records = $request->summary_sales_book ? $this->getSummaryRecords($data, $request) : [];
+        $report_data = compact('records', 'company', 'establishment', 'filters', 'taxes', 'summary_records');
 
-    //         default:
-    //             $document_items = DocumentItem::filterReportSoldItems($request)->get();
-    //             $document_items_pos = DocumentPosItem::filterReportSoldItems($request)->get();
-    //             $records = $document_items->concat($document_items_pos);
+        $pdf = PDF::loadView('report::co-sales-book.report_pdf', $report_data)->setPaper('a4', 'landscape');
 
-    //             break;
-    //     }
+        $filename = 'Reporte_Libro_Ventas_'.date('YmdHis');
 
-    //     return $records;
-    // }
-
-        
-    // /**
-    //  *
-    //  * @param  Request $request
-    //  * @return mixed
-    //  */
-    // public function pdf(Request $request) 
-    // {
-    //     $records = $this->getQueryRecords($request);
-    //     $filters = $request;
-
-    //     $company = Company::first();
-    //     $establishment = auth()->user()->establishment;
-
-    //     $pdf = PDF::loadView('report::co-items-sold.report_pdf', compact('records', 'company', 'establishment', 'filters'));
-
-    //     $filename = 'Reporte_Articulos_Vendidos_'.date('YmdHis');
-
-    //     return $pdf->stream($filename.'.pdf');
-    // }
+        return $pdf->stream($filename.'.pdf');
+    }
 
 }
