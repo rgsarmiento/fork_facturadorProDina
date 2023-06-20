@@ -11,6 +11,7 @@ class ModelTenant extends Model
 {
     use UsesTenantConnection;
     
+    public const EXEMPT_TAX_CODE = '07';
     
     /**
      * 

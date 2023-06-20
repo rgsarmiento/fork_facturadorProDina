@@ -632,4 +632,174 @@ class Document extends ModelTenant
         return $query->whereBetween('date_of_issue', [$start_date, $end_date]);
     }
 
+
+    /**
+     * 
+     * Campos base para calculos
+     *
+     * @param  Builder $query
+     * @return Builder
+     */
+    public function scopeSelectColumnsForCalculate($query)
+    {
+        return $query->with([
+                        'items' => function($items){
+                            return $items->select([
+                                'id',
+                                'document_id',
+                                'item_id',
+                                'quantity',
+                                'unit_price',
+                                'tax_id',
+                                'tax',
+                                'total_tax',
+                                'subtotal',
+                                'total'
+                            ]);
+                        },
+                        'type_document' => function($type_document){
+                            return $type_document->select([
+                                'id',
+                                'name',
+                            ]);
+                        },
+                        'currency' => function($currency){
+                            return $currency->select([
+                                'id',
+                                'code',
+                            ]);
+                        },
+                    ])
+                    ->select([
+                        'id',
+                        'type_document_id',
+                        'prefix',
+                        'number',
+                        'date_of_issue',
+                        'customer_id',
+                        'customer',
+                        'total',
+                        'currency_id',
+                        'sale',
+                        'total_tax',
+                        'subtotal'
+                    ]);
+    }
+
+
+    /**
+     * 
+     * Filtros para reporte libro ventas
+     *
+     * @param  Builder $query
+     * @param  Request $request
+     * @return Builder
+     */
+    public function scopeFilterReportSalesBook($query, $request)
+    {
+        $customer_id = $request->customer_id ?? null;
+        $start_date = $request->start_date ?? null;
+        $end_date = $request->end_date ?? null;
+
+        return $query->filterInvoiceDocument()
+                        ->filterByRangeDateOfIssue($start_date, $end_date)
+                        ->filterByCustomer($customer_id)
+                        ->selectColumnsForCalculate()
+                        ->latest();
+    }
+    
+
+    /**
+     * 
+     * Reporte libro ventas
+     *
+     * @return array
+     */
+    public function getDataReportSalesBook()
+    {
+        return [
+            'date_of_issue' => $this->date_of_issue->format('d/m/Y'),
+            'number_full' => $this->number_full,
+            'type_document_name' => $this->type_document->name,
+            'currency_code' => $this->currency->code,
+            'customer_name' => $this->customer->name,
+            'net_total' => $this->generalApplyNumberFormat($this->sale),
+            'total' => $this->generalApplyNumberFormat($this->total),
+            'total_exempt' => $this->generalApplyNumberFormat($this->getTotalExempt()),
+        ];
+    }
+
+    
+    /**
+     * 
+     * Reporte libro ventas resumido
+     *
+     * @return array
+     */
+    public function getDataReportSummarySalesBook()
+    {
+        return [
+            'net_total' => $this->sale,
+            'total' => $this->total,
+            'total_exempt' => $this->getTotalExempt(),
+        ];
+    }
+
+
+    /**
+     * 
+     * Totales por impuestos
+     *
+     * @param  int $tax_id
+     * @return array
+     */
+    public function getItemValuesByTax($tax_id)
+    {
+        $items_by_tax = $this->getItemsByTaxId($tax_id);
+
+        $tax_amount = 0;
+        $taxable_amount = 0;
+
+        if($items_by_tax->count() > 0)
+        {
+            $tax_amount = $items_by_tax->sum('total_tax');
+            $taxable_amount = $items_by_tax->sum('total') - $tax_amount;
+        }
+
+        return [
+            'tax_amount' => $this->generalApplyNumberFormat($tax_amount),
+            'taxable_amount' => $this->generalApplyNumberFormat($taxable_amount),
+        ];
+    }
+
+    
+    /**
+     * Filtrar items por impuesto
+     *
+     * @param  int $tax_id
+     * @return array
+     */
+    public function getItemsByTaxId($tax_id)
+    {
+        return $this->items->where('tax_id', $tax_id);
+    }
+
+    
+    /**
+     * 
+     * Obtener total exento del documento
+     *
+     * @return float
+     */
+    public function getTotalExempt()
+    {
+        return $this->items
+                    ->filter(function($row){
+                        $tax_code = $row->tax->code ?? null;
+                        return $tax_code === self::EXEMPT_TAX_CODE;
+                    })
+                    ->sum('total');
+    }
+    
+
 }

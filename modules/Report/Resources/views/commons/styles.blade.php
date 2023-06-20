@@ -50,4 +50,10 @@
         color: white;
         text-align: center;
     }
+    
+    .text-right-td{
+        text-align: right !important;
+        padding-right: 7px !important;
+    }
+
 </style>
