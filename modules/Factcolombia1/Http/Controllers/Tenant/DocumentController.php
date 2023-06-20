@@ -345,9 +345,15 @@ class DocumentController extends Controller
                 $service_invoice['template_token'] = password_hash($company->identification_number, PASSWORD_DEFAULT);
             }
 
+            $sucursal = \App\Models\Tenant\Establishment::where('id', auth()->user()->establishment_id)->first();
+
             if(file_exists(storage_path('sendmail.api')))
                 $service_invoice['sendmail'] = true;
             $service_invoice['ivaresponsable'] = $datoscompany->type_regime->name;
+            $service_invoice['establishment_name'] = $sucursal->description;
+            $service_invoice['establishment_address'] = $sucursal->address;
+            $service_invoice['establishment_phone'] = $sucursal->telephone;
+            $service_invoice['establishment_email'] = $sucursal->email;
             $service_invoice['nombretipodocid'] = $datoscompany->type_identity_document->name;
             $service_invoice['tarifaica'] = $datoscompany->ica_rate;
             $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;
@@ -374,9 +380,9 @@ class DocumentController extends Controller
                 $ch = curl_init("{$base_url}ubl2.1/invoice");
 
             $data_document = json_encode($service_invoice);
-//\Log::debug("{$base_url}ubl2.1/invoice");
-//\Log::debug($company->api_token);
-//\Log::debug($data_document);
+\Log::debug("{$base_url}ubl2.1/invoice");
+\Log::debug($company->api_token);
+\Log::debug($data_document);
 //            return $data_document;
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
