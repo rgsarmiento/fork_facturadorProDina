@@ -20,6 +20,7 @@ class Company extends ModelTenant
         'soap_url',
         'certificate',
         'logo',
+        'jpg_firma_facturas',
         'detraction_account',
         'operation_amazonia',
     ];

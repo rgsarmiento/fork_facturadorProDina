@@ -35,6 +35,7 @@ class CompanyResource extends JsonResource
             'detraction_account' => $this->detraction_account,
             'logo_store' => $this->logo_store,
             'logo_login' => $company_t->logo_login,
+            'jpg_firma_facturas' => $company_t->jpg_firma_facturas,
             'operation_amazonia' => (bool) $this->operation_amazonia,
             'config_system_env' => (bool)$configuration->config_system_env
 

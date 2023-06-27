@@ -31,14 +31,14 @@
                             </div>
                         </div>-->
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group" :class="{'has-danger': errors.trade_name}">
                                     <label class="control-label">Nombre comercial <span class="text-danger">*</span></label>
                                     <el-input :disabled="true" v-model="form.name"></el-input>
                                     <small class="form-control-feedback" v-if="errors.trade_name" v-text="errors.trade_name[0]"></small>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">Logo</label>
                                     <el-input v-model="form.logo" :readonly="true">
@@ -54,7 +54,7 @@
                                     <div class="sub-title text-danger"><small>Se recomienda resoluciones 700x300</small></div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">Logo login</label>
                                     <el-input v-model="form.logo_login" :readonly="true">
@@ -68,6 +68,22 @@
                                         </el-upload>
                                     </el-input>
                                     <div class="sub-title text-danger"><small>Se recomienda resoluciones 1024x768</small></div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">JPG firma facturas</label>
+                                    <el-input v-model="form.jpg_firma_facturas" :readonly="true">
+                                        <el-upload slot="append"
+                                                   :headers="headers"
+                                                   :data="{'type': 'jpg_firma_facturas'}"
+                                                   action="/companies/uploads"
+                                                   :show-file-list="false"
+                                                   :on-success="successUpload">
+                                            <el-button type="primary" icon="el-icon-upload"></el-button>
+                                        </el-upload>
+                                    </el-input>
+                                    <div class="sub-title text-danger"><small>Debe ser un archivo JPG</small></div>
                                 </div>
                             </div>
                             <!-- <div class="col-md-6">
@@ -220,13 +236,14 @@
                     certificate: null,
                     logo: null,
                     logo_store: null,
+                    jpg_firma_facturas: null,
                     detraction_account: null,
                     operation_amazonia: false,
                     toggle: false,
                     config_system_env: false
-
                 }
             },
+
             submit() {
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form)
@@ -248,6 +265,7 @@
                         this.loading_submit = false
                     })
             },
+
             successUpload(response, file, fileList) {
                 // console.log(response)
                 if (response.success) {

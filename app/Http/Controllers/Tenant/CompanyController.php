@@ -26,8 +26,6 @@ class CompanyController extends Controller
     {
         $soap_sends = config('tables.system.soap_sends');
         $soap_types = SoapType::all();
-
-
         return compact('soap_types', 'soap_sends');
     }
 
@@ -35,7 +33,6 @@ class CompanyController extends Controller
     {
         $company = CoCompany::active();
         $record = new CompanyResource($company);
-
         return $record;
     }
 
@@ -67,14 +64,14 @@ class CompanyController extends Controller
             $validator = Validator::make($request->all(), [
                 'file' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048'
             ]);
-    
-            if ($validator->fails()) { 
+
+            if ($validator->fails()) {
                 return [
                     'success' => false,
                     'message' =>  'Tipo de archivo no permitido',
                 ];
             }
-            
+
             // if (($type === 'logo')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 
             $file->storeAs(($type === 'logo') ? 'public/uploads/logos' : 'certificates', $name);
@@ -85,20 +82,19 @@ class CompanyController extends Controller
 
             // if (($type === 'logo_login')) request()->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 
+            $file->storeAs(($type === 'jpg_firma_facturas') ? 'public/uploads/logos' : 'certificates', $name);
+
             if($type === 'logo_login')
             {
                 $file->storeAs(($type === 'logo_login') ? 'public/uploads/logos' : 'certificates', $name);
-
                 $company_t = Company::active();
                 $company_t->$type = $name;
                 $company_t->save();
-
             }
             else
             {
                 $company->$type = $name;
                 $company->save();
-
                 $company_t = Company::active();
                 $company_t->$type = $name;
                 $company_t->save();
@@ -123,7 +119,6 @@ class CompanyController extends Controller
                 ));
                 $response = curl_exec($ch);
                 curl_close($ch);
-
             }
 
             return [
