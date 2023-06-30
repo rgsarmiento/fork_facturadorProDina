@@ -161,11 +161,11 @@ class PosController extends Controller
         return compact('items');
 
     }
-    
-    
+
+
     /**
      * Retorna el precio de venta mas impuesto asignado al producto
-     * 
+     *
      * @param  Item $item
      * @param  $decimal_quantity
      * @return double
@@ -224,10 +224,7 @@ class PosController extends Controller
                         ->get();
 
         $limit_uvt = AdvancedConfiguration::getPublicConfiguration(['uvt'])->getLimitUvt();
-
-        return compact('payment_method_types','cards_brand', 'payment_destinations', 'series',
-                    'type_invoices', 'type_documents', 'payment_methods', 'payment_forms', 'limit_uvt');
-
+        return compact('payment_method_types','cards_brand', 'payment_destinations', 'series', 'type_invoices', 'type_documents', 'payment_methods', 'payment_forms', 'limit_uvt');
     }
 
     public function table($table)

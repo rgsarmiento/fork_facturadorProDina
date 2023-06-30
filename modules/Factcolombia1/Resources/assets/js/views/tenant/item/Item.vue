@@ -180,7 +180,7 @@
         },
         mounted() {
             this.cleanForm();
-            
+
             this.refreshData();
         },
         methods: {
@@ -193,10 +193,10 @@
             },
             refreshData() {
                 this.loadDataTable = true;
-                
+
                 axios.post(`${this.route}All`).then(response => {
                     this.$setLaravelMessage(response.data);
-                    
+
                     this.typeUnits = response.data.typeUnits;
                     this.taxes = response.data.taxes;
                     this.items = response.data.items;
@@ -209,22 +209,22 @@
             },
             close() {
                 this.dialog = false;
-                
+
                 this.cleanForm();
             },
             validate(scope) {
                 this.$validator.validateAll(scope).then(valid => {
                     if (valid) {
                         this.loading = true;
-                        
+
                         axios({method: this.urlData.method, url: this.urlData.url, data: this.item}).then(response => {
                             this.$setLaravelMessage(response.data);
-                            
+
                             if (response.data.success) {
                                 this.refreshData();
-                                
+
                                 this.dialog = false;
-                                
+
                                 this.cleanForm();
                             }
                         }).catch(error => {
@@ -248,7 +248,7 @@
             deleteItem(item) {
                 axios.delete(`${this.route}/${item.id}`).then(response => {
                     this.$setLaravelMessage(response.data);
-                    
+
                     this.items.splice(this.items.findIndex(row => row.id == item.id), 1);
                 }).catch(error => {
                     this.$setLaravelValidationErrorsFromResponse(error.response.data);

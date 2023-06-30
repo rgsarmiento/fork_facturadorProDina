@@ -640,7 +640,7 @@
 
                     this.redirectCreateDocument()
                     return
-                } 
+                }
 
                     //this.form.prefix = "NV";
                 this.form.paid = 1;
@@ -741,7 +741,6 @@
                         this.limit_uvt = response.data.limit_uvt
                         this.filterSeries()
                     })
-
             },
 
             async createInvoiceService() {

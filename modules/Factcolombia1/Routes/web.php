@@ -16,6 +16,7 @@ if($current_hostname) {
                 Route::get('', 'Tenant\DocumentController@index')->name('tenant.co-documents.index');
                 Route::get('records', 'Tenant\DocumentController@records');
                 Route::get('note/{id}', 'Tenant\DocumentController@note');
+                Route::get('duplicate-invoice/{id}', 'Tenant\DocumentController@duplicate');
                 Route::get('record/{id}', 'Tenant\DocumentController@record');
                 Route::get('columns', 'Tenant\DocumentController@columns');
                 Route::get('create', 'Tenant\DocumentController@create')->name('tenant.co-documents.create');
@@ -99,7 +100,7 @@ if($current_hostname) {
             Route::post('/co-configuration/production/queryTechnicalKey', 'Tenant\ConfigurationController@queryTechnicalKey');
 
             Route::post('/company', 'Tenant\ConfigurationController@company');
-            
+
             Route::prefix('co-advanced-configuration')->group(function () {
                 Route::get('', 'Tenant\AdvancedConfigurationController@index')->name('tenant.co-advanced-configuration.index');
                 Route::get('record', 'Tenant\AdvancedConfigurationController@record');

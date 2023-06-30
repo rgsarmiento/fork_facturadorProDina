@@ -100,10 +100,10 @@
 
         <div class="col-lg-12">
           <div class="form-group" :class="{'has-danger': errors.type_document_id}">
-            <label class="control-label">Tipo comprobante</label>
-            <el-select v-model="document.type_document_id" @change="changeDocumentType" :disabled="true" class="border-left rounded-left border-info">
-                <el-option v-for="option in type_documents" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                <el-option key="nv" value="nv" label="NOTA DE VENTA"></el-option>
+            <label class="control-label">Seleccione resolucion electronica a utilizar</label>
+            <el-select v-model="document.type_document_id" @change="changeDocumentType" class="border-left rounded-left border-info">
+                <el-option v-for="option in filtered_resolutions" :key="option.id" :value="option.id" :label="`${option.prefix} / ${option.resolution_number} / ${option.from} / ${option.to}`"></el-option>
+<!--                <el-option key="nv" value="nv" label="NOTA DE VENTA"></el-option>  -->
             </el-select>
             <small
               class="form-control-feedback"
@@ -230,6 +230,13 @@ export default {
       type_documents: []
     };
   },
+
+  computed: {
+    filtered_resolutions() {
+      return this.type_documents.filter(item => item.code == 1 && item.name != 'Factura Electronica de venta');
+    }
+  },
+
   created() {
     this.initForm();
     this.initDocument();
@@ -293,7 +300,7 @@ export default {
       this.document = {
 
         customer_id: null,
-        type_document_id: 1,
+        type_document_id: null,
         currency_id: null,
         date_issue: moment().format('YYYY-MM-DD'),
         date_expiration: null,
@@ -329,10 +336,11 @@ export default {
         this.document.prefix = "NV";
         this.resource_documents = "sale-notes";
       } else {
-        this.document.prefix = null;
+        this.document.prefix = this.document.service_invoice.prefix;
+        this.document.resolution_number = this.document.service_invoice.resolution_number
         this.resource_documents = "co-documents";
       }
-
+      console.log(this.document)
       this.$http
         .post(`/${this.resource_documents}`, this.document)
         .then(response => {
@@ -349,7 +357,6 @@ export default {
               this.showDialogDocumentOptions = true;
             }
 
-
             this.$eventHub.$emit("reloadData");
             this.resetDocument();
             this.getRecord()
@@ -360,7 +367,6 @@ export default {
             //this.$message.error(response.data.message);
 
             if(response.data.errors){
-
                 const mhtl = this.parseMesaageError(response.data.errors)
                 this.$message({
                     duration: 6000,
@@ -369,7 +375,6 @@ export default {
                     message: mhtl
                 });
             }
-
           }
         })
         .catch(error => {
@@ -523,21 +528,24 @@ export default {
         });
     },
 
+    resolution_data(type_document_id){
+      return this.type_documents.filter(item => item.id == type_document_id);
+    },
+
     async createInvoiceService() {
-        // let resol = this.resolution.resolution; //TODO
+        let resol = this.resolution_data(this.document.type_document_id)
         const invoice = {
             number: 0,
-            type_document_id: 1
+            type_document_id: 1,
+            prefix: resol[0].prefix,
+            resolution_number: resol[0].resolution_number
         };
-
         invoice.customer = await this.getCustomer();
         invoice.tax_totals = await this.getTaxTotal();
         invoice.legal_monetary_totals = await this.getLegacyMonetaryTotal();
         invoice.allowance_charges = await this.createAllowanceCharge(invoice.legal_monetary_totals.allowance_total_amount, invoice.legal_monetary_totals.line_extension_amount );
-
         invoice.invoice_lines = await this.getInvoiceLines();
         invoice.with_holding_tax_total = await this.getWithHolding();
-
         return invoice;
     },
     getCustomer() {

@@ -53,7 +53,7 @@
                                 <div class="form-group" :class="{'has-danger': errors.type_invoice_id}">
                                     <label class="control-label">Resolución</label>
                                     <el-select @change="changeResolution" v-model="form.resolution_id"  popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info">
-                                        <el-option v-for="option in resolutions" :key="option.id" :value="option.id" :label="`${option.prefix} / ${option.resolution_number}`"></el-option>
+                                        <el-option v-for="option in resolutions" :key="option.id" :value="option.id" :label="`${option.prefix} / ${option.resolution_number} / ${option.from} / ${option.to}`"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.type_invoice_id" v-text="errors.type_invoice_id[0]"></small>
                                 </div>
@@ -189,7 +189,7 @@
                                 <div class="form-group">
                                     <button type="button" class="btn waves-effect waves-light btn-primary" @click.prevent="clickAddItemInvoice">+ Agregar Producto</button>
                                     <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddRetention">+ Agregar Retención</button>
-                                    <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddOrderReference">+ Agregar orden de pago</button>
+                                    <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddOrderReference">+ Order Reference</button>
                                 </div>
                             </div>
 
@@ -323,7 +323,7 @@
     import DocumentOrderReference from './partials/order_reference.vue'
 
     export default {
-        props: ['typeUser', 'configuration'],
+        props: ['typeUser', 'configuration', 'invoice'],
         components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions, DocumentOrderReference},
         mixins: [functions, exchangeRate],
         data() {
@@ -365,7 +365,7 @@
             }
         },
         async created() {
-//            console.log(this.resource)
+//            console.log(this.invoice)
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
@@ -382,16 +382,14 @@
                     //his.form.payment_form_id = (this.payment_forms.length > 0)?this.payment_forms[0].id:null;
                     this.form.payment_method_id = 10;//(this.payment_methods.length > 0)?this.payment_methods[0].id:null;
                     this.resolutions = response.data.resolutions
-
                     this.form.payment_form_id = 1
-
                     // this.selectDocumentType()
                     this.filterCustomers();
-
                     // this.changeEstablishment()
                     // this.changeDateOfIssue()
                     // this.changeDocumentType()
                     // this.changeCurrencyType()
+                    this.load_duplicate_invoice();
                 })
 
             this.loading_form = true
@@ -429,11 +427,11 @@
                 const form_exceed_uvt = this.$getStorage('form_exceed_uvt')
 
                 if(form_exceed_uvt != undefined && form_exceed_uvt) return true
-                
+
                 return false
             }
         },
-        methods: 
+        methods:
         {
             generatedFromExternalDocument()
             {
@@ -468,7 +466,7 @@
                     return row
                 })
             },
-            prepareIndividualItem(row) 
+            prepareIndividualItem(row)
             {
                 const new_item = row.item
 
@@ -497,6 +495,10 @@
             },
             changeResolution()
             {
+                if (typeof this.invoice !== 'undefined') {
+                    this.form.type_document_id = this.invoice.type_document_id;
+                    this.form.resolution_id = this.invoice.type_document_id;
+                }
                 const resol = this.resolutions.find( x =>  x.id == this.form.resolution_id )
                 if(resol)
                 {
@@ -557,39 +559,68 @@
                 }
 
             },
-            initForm() {
 
+            load_duplicate_invoice(){
+                if (typeof this.invoice !== 'undefined') {
+                    this.form.type_document_id = this.invoice.type_document_id;
+                    this.form.resolution_id = this.invoice.type_document_id;
+                    this.form.currency_id = this.invoice ? this.invoice.currency_id : null;
+                    this.form.date_issue = this.invoice ? moment(this.invoice.date_of_issue, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+                    this.form.date_expiration = this.invoice ? moment(this.invoice.date_expiration, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD') : null;
+                    this.form.type_invoice_id = this.invoice ? this.invoice.type_invoice_id : 1;
+                    this.form.total_discount = this.invoice ? this.invoice.total_discount : 0;
+                    this.form.total_tax = this.invoice ? this.invoice.total_tax : 0;
+                    this.form.customer_id = this.invoice ? this.invoice.customer_id : null,
+                    this.form.subtotal = this.invoice ? this.invoice.subtotal : 0;
+                    this.form.items = this.invoice ? this.prepareItems(this.invoice.items) : [];
+                    this.form.taxes = this.invoice ? this.invoice.taxes : [];
+                    this.form.total = this.invoice ? this.invoice.total : 0;
+                    this.form.sale = this.invoice ? this.invoice.sale : 0;
+                    this.form.observation = this.invoice ? this.invoice.observation : null;
+                    this.form.time_days_credit = this.invoice ? this.invoice.time_days_credit : 0;
+                    this.form.service_invoice = {};
+                    this.form.payment_form_id = this.invoice ? this.invoice.payment_form_id : null;
+                    this.form.payment_method_id = this.invoice ? this.invoice.payment_method_id : null;
+                    this.form.resolution_id = null;
+                    this.form.prefix = this.invoice ? this.invoice.prefix : null;
+                    this.form.resolution_number = null;
+                    this.form.order_reference = {};
+                    this.changeResolution();
+                }
+            },
+
+            initForm() {
                 this.form = {
                     type_document_id: null,
-                    currency_id: null,
-                    date_issue: moment().format('YYYY-MM-DD'),
-                    date_expiration: null,
-                    type_invoice_id: 1,
-                    total_discount: 0,
-                    total_tax: 0,
-                    watch: false,
-                    subtotal: 0,
-                    items: [],
-                    taxes: [],
-                    total: 0,
-                    sale: 0,
-                    observation: null,
-                    time_days_credit: 0,
-                    service_invoice: {},
-                    payment_form_id: null,
-                    payment_method_id: null,
                     resolution_id: null,
-                    prefix: null,
+                    currency_id: this.invoice ? this.invoice.currency_id : null,
+                    date_issue: this.invoice ? moment(this.invoice.date_of_issue, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD'),
+                    date_expiration: this.invoice ? moment(this.invoice.date_expiration, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD') : null,
+                    type_invoice_id: this.invoice ? this.invoice.type_invoice_id : 1,
+                    total_discount: this.invoice ? this.invoice.total_discount : 0,
+                    total_tax: this.invoice ? this.invoice.total_tax : 0,
+                    customer_id: this.invoice ? this.invoice.customer_id : null,
+                    watch: false,
+                    subtotal: this.invoice ? this.invoice.subtotal : 0,
+                    items: this.invoice ? this.prepareItems(this.invoice.items) : [],
+                    taxes: this.invoice ? this.invoice.taxes : [],
+                    total: this.invoice ? this.invoice.total : 0,
+                    sale: this.invoice ? this.invoice.sale : 0,
+                    observation: this.invoice ? this.invoice.observation : null,
+                    time_days_credit: this.invoice ? this.invoice.time_days_credit : 0,
+                    service_invoice: {},
+                    payment_form_id: this.invoice ? this.invoice.payment_form_id : null,
+                    payment_method_id: this.invoice ? this.invoice.payment_method_id : null,
+                    resolution_id: null,
+                    prefix: this.invoice ? this.invoice.prefix : null,
                     resolution_number: null,
                     order_reference: {}
                 }
-
                 this.errors = {}
                 this.$eventHub.$emit('eventInitForm')
-
                 this.initInputPerson()
-
             },
+
             initInputPerson(){
                 this.input_person = {
                     number:null,

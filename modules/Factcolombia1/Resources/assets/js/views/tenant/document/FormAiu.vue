@@ -43,7 +43,7 @@
                                 <div class="form-group" :class="{'has-danger': errors.type_invoice_id}">
                                     <label class="control-label">Resolución</label>
                                     <el-select @change="changeResolution" v-model="form.resolution_id"  popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info">
-                                        <el-option v-for="option in resolutions" :key="option.id" :value="option.id" :label="`${option.prefix} / ${option.resolution_number}`"></el-option>
+                                        <el-option v-for="option in resolutions" :key="option.id" :value="option.id" :label="`${option.prefix} / ${option.resolution_number} / ${option.from} / ${option.to}`"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.type_invoice_id" v-text="errors.type_invoice_id[0]"></small>
                                 </div>
@@ -171,7 +171,7 @@
                                     <button type="button" class="btn waves-effect waves-light btn-primary" @click.prevent="clickAddItemInvoice">+ Agregar Producto</button>
                                     <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddRetention">+ Agregar Retención</button>
                                     <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickOpenDeatailAiu">+ Agregar Detalle AIU</button>
-                                    <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddOrderReference">+ Agregar orden de pago</button>
+                                    <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddOrderReference">+ Order Reference</button>
 
                                 </div>
                             </div>

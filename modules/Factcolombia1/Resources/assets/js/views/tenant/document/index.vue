@@ -3,11 +3,10 @@
         <div class="page-header pr-0">
             <h2><a href="/dashboard"><i class="fas fa-tachometer-alt"></i></a></h2>
             <ol class="breadcrumbs">
-                <li class="active"><span>Listado de documentos</span> </li>
+                <li class="active"><span></span> </li>
                 <!-- <li><span class="text-muted">Facturas - Notas <small>(crédito y débito)</small> - Boletas - Anulaciones</span></li> -->
             </ol>
             <div class="right-wrapper pull-right" >
-
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
             </div>
         </div>
@@ -54,7 +53,7 @@
                         <td class="text-center">
                             <span class="badge bg-secondary text-white" :class="{'bg-secondary': (row.state_document_id === 1), 'bg-success': (row.state_document_id === 5), 'bg-dark': (row.state_document_id === 6)}">
                                 {{ row.state_document_name }}
-                            </span>    
+                            </span>
                         </td>
                         <!-- <td class="text-center">{{ row.acknowledgment_received }}</td> -->
                         <td class="text-center">{{ row.currency_name }}</td>
@@ -79,19 +78,22 @@
 
                         </td>
                         <td class="text-right" >
-
                             <template v-if="row.btn_query">
                                 <el-tooltip class="item" effect="dark" content="Consultar ZIPKEY a la DIAN" placement="top-start">
                                     <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickQueryZipKey(row.id)">Consultar</button>
                                 </el-tooltip>
                             </template>
 
-                            <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2"
-                               >Nota</a>
+                            <template v-if="row.type_document_name=='Factura de Venta Nacional' || row.type_document_name=='Factura de Exportación' || row.type_document_name=='Factura de Contingencia' || row.type_document_name=='Factura electrónica de Venta - tipo 04'">
+                                <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2">Nota</a>
+                            </template>
 
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickOptions(row.id)">Opciones</button>
 
+                            <template v-if="row.type_document_name=='Factura de Venta Nacional' || row.type_document_name=='Factura de Exportación' || row.type_document_name=='Factura de Contingencia' || row.type_document_name=='Factura electrónica de Venta - tipo 04'">
+                                <a :href="`/${resource}/duplicate-invoice/${row.id}`" class="btn waves-effect waves-light btn-xs btn-info m-1__2">Duplicar</a>
+                            </template>
                         </td>
                     </tr>
                 </data-table>
@@ -136,7 +138,7 @@
             async clickQueryZipKey(recordId) {
 
                 this.loading = true
-                
+
                 await this.$http.post(`/${this.resource}/query-zipkey`, {
                     id : recordId
                 }).then(response => {
@@ -164,7 +166,7 @@
                 }).then(() => {
                     this.loading = false
                 })
-            },  
+            },
             clickPayment(recordId) {
                 this.recordId = recordId;
                 this.showDialogPayments = true;

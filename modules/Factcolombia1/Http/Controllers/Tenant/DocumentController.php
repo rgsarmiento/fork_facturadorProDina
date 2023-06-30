@@ -107,11 +107,13 @@ class DocumentController extends Controller
 
 
     public function note($id) {
-
         $note = Document::with(['items'])->findOrFail($id);
-
         return view('factcolombia1::document.tenant.note', compact('note'));
+    }
 
+    public function duplicate($id){
+        $invoice = Document::with(['items'])->findOrFail($id);
+        return view('factcolombia1::document.tenant.duplicate', compact('invoice'));
     }
 
 
@@ -268,8 +270,6 @@ class DocumentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(DocumentRequest $request) {
-//        \Log::debug($request);
-
         DB::connection('tenant')->beginTransaction();
         try {
             if(!$request->customer_id)
@@ -328,6 +328,11 @@ class DocumentController extends Controller
             $service_invoice['resolution_number'] = $request->resolution_number;
             $service_invoice['web_site'] = env('APP_NAME', 'FACTURALATAM');
             $service_invoice['foot_note'] = "Modo de operación: Software Propio - by ".env('APP_NAME', 'FACTURALATAM');
+            if(!is_null($this->company['jpg_firma_facturas']))
+              if(file_exists(public_path('storage/uploads/logos/'.$this->company['jpg_firma_facturas']))){
+                  $firma_facturacion = base64_encode(file_get_contents(public_path('storage/uploads/logos/'.$this->company['jpg_firma_facturas'])));
+                  $service_invoice['firma_facturacion'] = $firma_facturacion;
+              }
 
             if ($request->order_reference)
             {
@@ -337,8 +342,6 @@ class DocumentController extends Controller
                     $service_invoice['order_reference']['issue_date_order'] = $request['order_reference']['issue_date_order'];
                 }
             }
-
-
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
             if(file_exists(storage_path('template.api'))){
                 $service_invoice['invoice_template'] = "one";
@@ -386,7 +389,7 @@ class DocumentController extends Controller
 //\Log::debug($company->api_token);
 //\Log::debug($data_document);
 //            return $data_document;
-
+//return "";
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS,($data_document));
@@ -396,11 +399,10 @@ class DocumentController extends Controller
                 "Authorization: Bearer {$company->api_token}"
             ));
             $response = curl_exec($ch);
-            curl_close($ch);
 //\Log::debug($response);
+            curl_close($ch);
             $response_model = json_decode($response);
             // dd($response_model);
-           // return json_encode( $response_model)    ;
             $zip_key = null;
             $invoice_status_api = null;
 
@@ -1066,7 +1068,7 @@ class DocumentController extends Controller
 
         $taxes = $this->table('taxes');
 
-        $resolutions = TypeDocument::select('id','prefix', 'resolution_number')->whereNotNull('resolution_number')->whereIn('code', [1,2,3])->get();
+        $resolutions = TypeDocument::select('id','prefix', 'resolution_number', 'from', 'to')->whereNotNull('resolution_number')->whereIn('code', [1,2,3])->get();
 
         return compact('customers','payment_methods','payment_forms','type_invoices','currencies'
                         , 'taxes', 'type_documents', 'resolutions');
