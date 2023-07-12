@@ -20,11 +20,13 @@ if($current_hostname) {
                 Route::get('record/{id}', 'Tenant\DocumentController@record');
                 Route::get('columns', 'Tenant\DocumentController@columns');
                 Route::get('create', 'Tenant\DocumentController@create')->name('tenant.co-documents.create');
+                Route::get('create-health', 'Tenant\DocumentController@create_health')->name('tenant.co-documents.create_health');
                 Route::get('search/customers', 'Tenant\DocumentController@searchCustomers');
                 Route::get('search/customer/{id}', 'Tenant\DocumentController@searchCustomerById');
                 Route::get('tables', 'Tenant\DocumentController@tables');
                 Route::post('', 'Tenant\DocumentController@store');
                 Route::get('item/tables', 'Tenant\DocumentController@item_tables');
+                Route::get('health/tables', 'Tenant\DocumentController@health_tables');
                 Route::get('table/{table}', 'Tenant\DocumentController@table');
                 Route::get('search-items', 'Tenant\DocumentController@searchItems');
                 Route::get('search/item/{item}', 'Tenant\DocumentController@searchItemById');

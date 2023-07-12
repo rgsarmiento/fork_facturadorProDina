@@ -64,7 +64,7 @@
                         ">
                         <a class="nav-link" href="#">
                             <i class="fas fa-file-invoice" aria-hidden="true"></i>
-                            <span>VENTAS</span>
+                            <span>Ventas</span>
                         </a>
                         <ul class="nav nav-children" style="">
                             @if(auth()->user()->type != 'integrator' && $vc_company->soap_type_id != '03')
@@ -75,13 +75,19 @@
 
                                         <li class="{{ ($path[0] === 'co-documents'  && $path[1] === 'create')?'nav-active':'' }}">
                                             <a class="nav-link" href="{{route('tenant.co-documents.create')}}">
-                                                Nuevo comprobante electrónico
+                                                Nueva Factura Electronica
+                                            </a>
+                                        </li>
+
+                                        <li class="{{ ($path[0] === 'co-documents'  && $path[1] === 'create')?'nav-active':'' }}">
+                                            <a class="nav-link" href="{{route('tenant.co-documents.create_health')}}">
+                                                Nueva F.E. Sector Salud
                                             </a>
                                         </li>
 
                                         <li class="{{ ($path[0] === 'co-documents-aiu'  && $path[1] === 'create')?'nav-active':'' }}">
                                             <a class="nav-link" href="{{route('tenant.co-documents-aiu.create')}}">
-                                                Nuevo comprobante AIU
+                                                Nuevo Factura Electronica AIU
                                             </a>
                                         </li>
 
@@ -239,7 +245,7 @@
                                     </li>
                                 @endif
 
-                                
+
                                 <li class="{{ ($path[0] === 'co-remissions')?'nav-active':'' }}">
                                     <a class="nav-link" href="{{route('tenant.co-remissions.index')}}">
                                         Remisiones
@@ -283,11 +289,11 @@
                                     </li>
                                 @endif --}}
 
-                                <li class="{{ ($path[0] === 'technical-services')?'nav-active':'' }}">
+                              {{--  <li class="{{ ($path[0] === 'technical-services')?'nav-active':'' }}">
                                     <a class="nav-link" href="{{route('tenant.technical_services.index')}}">
                                         Servicio de soporte técnico
                                     </a>
-                                </li>
+                                </li> --}}
 
                                 @if(in_array('incentives', $vc_module_levels))
 
@@ -334,7 +340,7 @@
                             <a class="nav-link" href="#">
                                 <span class="float-right badge badge-red badge-danger mr-3">Nuevo</span>
                                 <i class="fas fa-cash-register" aria-hidden="true"></i>
-                                <span>POS</span>
+                                <span>Punto de Venta P.O.S.</span>
                             </a>
                             <ul class="nav nav-children">
                                 <li class="{{ ($path[0] === 'pos'  )?'nav-active':'' }}">
@@ -483,7 +489,7 @@
                                 </li>
 
                                 {{-- documento de soporte --}}
-                                
+
                                 <li class="nav-parent
                                     {{ ($path[0] === 'support-documents')?'nav-active nav-expanded':'' }}
                                     {{ ($path[0] === 'support-document-adjust-notes')?'nav-active nav-expanded':'' }}
@@ -660,7 +666,7 @@
                                             Clientes
                                         </a>
                                     </li>
-                                    
+
                                     <li class="{{(($path[0] === 'reports') && ($path[1] === 'document-pos')) ? 'nav-active' : ''}}">
                                         <a class="nav-link" href="{{route('tenant.reports.document_pos.index')}}">
                                             Documentos POS
@@ -783,19 +789,19 @@
                                     Impuestos
                                 </a>
                             </li>
-                            
+
                             <li class="{{(($path[0] === 'reports') && ($path[1] === 'co-items-sold')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.co-items-sold.index')}}">
                                     Artículos vendidos
                                 </a>
                             </li>
-                            
+
                             <li class="{{(($path[0] === 'reports') && ($path[1] === 'co-sales-book')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.co-sales-book.index')}}">
                                     Libro de ventas
                                 </a>
                             </li>
-                            
+
                         </ul>
                     </li>
                     @endif
@@ -879,14 +885,14 @@
                     @endif
 
 
-                    
+
                     @if(in_array('payroll', $vc_modules))
 
-                    <li class="nav-parent {{$path[0] === 'payroll' && 
+                    <li class="nav-parent {{$path[0] === 'payroll' &&
                                             in_array($path[1], [
                                                 'workers', 'document-payrolls', 'document-payroll-adjust-notes'
-                                            ]) 
-                                            // && 
+                                            ])
+                                            // &&
                                             // in_array($path[2], [
                                             //     'create'
                                             // ])
@@ -897,35 +903,35 @@
                             <i class="fas fa-clipboard-list" aria-hidden="true"></i>
                             <span>Nóminas</span>
                         </a>
-                        
+
                         <ul class="nav nav-children" style="">
 
                             <li class="{{(($path[0] === 'payroll') && ($path[1] == 'workers')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.payroll.workers.index')}}">
                                     Empleados
                                 </a>
-                            </li> 
-                            
+                            </li>
+
                             <li class="{{(($path[0] === 'payroll') && ($path[1] == 'document-payrolls') && $path[2] == 'create') ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.payroll.document-payrolls.create')}}">
                                     Nueva nómina
                                 </a>
-                            </li> 
+                            </li>
 
                             <li class="{{(($path[0] === 'payroll') && (in_array($path[1], ['document-payrolls', 'document-payroll-adjust-notes'])) && ($path[2] !== 'create')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.payroll.document-payrolls.index')}}">
                                     Listado de nóminas
                                 </a>
-                            </li> 
+                            </li>
 
-                        </ul> 
+                        </ul>
 
                         {{-- <ul class="nav nav-children" style="">
                             <li class="{{(($path[0] === 'payroll') && ($path[1] == 'type-workers')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('tenant.payroll.type-workers.index')}}">
                                     Tipos de empleados
                                 </a>
-                            </li> 
+                            </li>
                         </ul> --}}
                     </li>
                     @endif
@@ -933,7 +939,7 @@
 
                     @if(in_array('configuration', $vc_modules))
                     <li class="nav-parent {{in_array($path[0], [
-                        'co-configuration-change-ambient', 'co-configuration', 'co-configuration-documents', 
+                        'co-configuration-change-ambient', 'co-configuration', 'co-configuration-documents',
                         'companies', 'catalogs', 'advanced', 'tasks', 'inventories','company_accounts','bussiness_turns',
                         'offline-configurations','series-configurations','configurations','co-advanced-configuration'
                     ]) ? 'nav-active nav-expanded' : ''}}">
@@ -1022,7 +1028,7 @@
                     </li>
                     @endif
 
-                    
+
                     <li class="nav-parent {{in_array($path[0], ['co-radian-events', 'co-email-reading']) ? 'nav-active nav-expanded' : ''}}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-calendar-check" aria-hidden="true"></i>

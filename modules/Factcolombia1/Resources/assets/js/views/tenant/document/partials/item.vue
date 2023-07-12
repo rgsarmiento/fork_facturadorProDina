@@ -431,17 +431,14 @@
                 this.has_list_prices = false;
                 this.tax_included_in_price = true;
             },
-            async create() {
 
+            async create() {
                 this.titleDialog = (this.recordItem) ? ' Editar Producto o Servicio' : ' Agregar Producto o Servicio';
                 this.titleAction = (this.recordItem) ? ' Editar' : ' Agregar';
                 // let operation_type = await _.find(this.operation_types, {id: this.operationTypeId})
                 // this.affectation_igv_types = await _.filter(this.all_affectation_igv_types, {exportation: operation_type.exportation})
 
                 if (this.recordItem) {
-
-                    console.log(this.recordItem)
-
                     this.form.item_id = await this.recordItem.item_id
                     await this.changeItem()
 
@@ -456,16 +453,14 @@
 
                     if(this.isEditItemNote){
                         this.form.item.currency_type_id = this.currencyTypeIdActive
-                        // this.form.item.currency_type_symbol = (this.currencyTypeIdActive == 'PEN') ? 'S/':'$'
                         this.form.item.currency_type_symbol = this.currencyTypeSymbolActive
                     }
                     this.calculateQuantity()
-
                 }else{
                     this.isUpdateWarehouseId = null
                 }
-
             },
+
             close() {
                 this.initForm()
                 this.$emit('update:showDialog', false)

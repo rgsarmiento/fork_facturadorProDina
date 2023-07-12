@@ -61,20 +61,17 @@ class DocumentHelper
             'total' => $request->total,
             'version_ubl_id' => $company->version_ubl_id,
             'ambient_id' => $company->ambient_id,
-
             'payment_form_id' =>$request->payment_form_id,
             'payment_method_id' =>$request->payment_method_id,
             'time_days_credit' => $request->time_days_credit,
-
             'response_api' => $response,
             'response_api_status' => $response_status,
             'correlative_api' => $correlative_api,
             'sale_note_id' => $request->sale_note_id,
             'quotation_id' => $request->quotation_id,
             'order_reference' => self::getOrderReference($request),
-
+            'health_fields' => self::getHealthfields($request),
         ]);
-
 
         foreach ($request->items as $item) {
 
@@ -176,10 +173,8 @@ class DocumentHelper
         }
     }
 
-    
     public static function getOrderReference($request)
     {
-
         $order_reference = null;
 
         if ($request->order_reference)
@@ -192,16 +187,32 @@ class DocumentHelper
                 ];
             }
         }
-
         return $order_reference;
-
     }
 
-    
+    public static function getHealthFields($request)
+    {
+        $health_fields = null;
+
+        if ($request->health_fields)
+        {
+            if (isset($request['health_fields']['invoice_period_start_date']) && isset($request['health_fields']['invoice_period_end_date']))
+            {
+                $health_fields = [
+                    'invoice_period_start_date' => $request['health_fields']['invoice_period_start_date'],
+                    'invoice_period_end_date' => $request['health_fields']['invoice_period_end_date'],
+                    'health_type_operation_id' => 1,
+                    'users_info' => $request['health_users'],
+                ];
+            }
+        }
+        return $health_fields;
+    }
+
     /**
      * Genera un arreglo con la data necesaria para insertar en el detalle del documento
-     * 
-     * Usado en: 
+     *
+     * Usado en:
      * RemissionController
      *
      * @param  array $inputs
@@ -248,9 +259,9 @@ class DocumentHelper
         return $items;
     }
 
-    
+
     /**
-     * 
+     *
      * Actualizar mensaje de respuesta al consultar zipkey
      *
      * @param  string $response_message_query_zipkey
@@ -265,7 +276,7 @@ class DocumentHelper
     }
 
     /**
-     * 
+     *
      * Actualizar estado dependiendo de la validación al enviar a la dian
      *
      * @param  int $state_document_id
@@ -278,7 +289,7 @@ class DocumentHelper
             'state_document_id' => $state_document_id
         ]);
     }
-    
+
     /**
      *
      * @param  bool $success
@@ -300,7 +311,7 @@ class DocumentHelper
 
 
     /**
-     * 
+     *
      * Aplicar formato
      *
      * @param  $value
@@ -311,5 +322,5 @@ class DocumentHelper
     {
         return number_format($value, $decimals, ".", "");
     }
-    
+
 }

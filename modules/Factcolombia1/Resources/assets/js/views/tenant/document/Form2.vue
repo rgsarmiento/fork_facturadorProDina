@@ -122,7 +122,6 @@
                         </div>
 
                         <div class="row mt-2">
-
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="control-label">Observaciones</label>
@@ -134,11 +133,65 @@
                                     </el-input>
                                 </div>
                             </div>
-
                         </div>
 
                         <div class="row mt-4">
                             <div class="col-md-12">
+
+
+                                <template v-if="health_sector">
+                                    <div>
+                                        <p class="text-center"><strong>INFORMACION DE USUARIOS DEL SECTOR SALUD</strong></p>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th class="text-center"><strong>Cod Provee.</strong></th>
+                                                    <th class="text-center"><strong>Usuario Id.</strong></th>
+                                                    <th class="text-center"><strong>Nombre</strong></th>
+                                                    <th class="text-center"><strong>Nro Auth.</strong></th>
+                                                    <th class="text-center"><strong>Mipres</strong></th>
+                                                    <th class="text-center"><strong>Contrato Poliza</strong></th>
+                                                    <th class="text-center"><strong>Copago</strong></th>
+                                                    <th class="text-center"><strong>Cuota Mod.</strong></th>
+                                                    <th class="text-center"><strong>Cuota Rec.</strong></th>
+                                                    <th class="text-center"><strong>Pago Comp.</strong></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody v-if="form.health_users.length > 0">
+                                                <tr v-for="(row, index) in form.health_users" :key="index">
+                                                    <td>{{index + 1}}</td>
+                                                    <td>{{row.provider_code}}</td>
+                                                    <td class="text-right">{{row.identification_number}}</td>
+                                                    <td>{{row.first_name}} {{row.middle_name}} {{row.surname}} {{row.second_surname}}</td>
+                                                    <td class="text-right">{{row.autorization_numbers}}</td>
+                                                    <td class="text-right">{{row.mipres}}
+                                                        <br/>
+                                                        <small>Nro Entrega: {{row.mipres_delivery}}</small>
+                                                    </td>
+                                                    <td class="text-right">{{row.contract_number}}
+                                                        <br/>
+                                                        <small>Poliza: {{row.policy_number}}</small>
+                                                    </td>
+                                                    <td class="text-right">{{ratePrefix()}} {{row.co_payment}}</td>
+                                                    <td class="text-right">{{ratePrefix()}} {{row.moderating_fee}}</td>
+                                                    <td class="text-right">{{ratePrefix()}} {{row.recovery_fee}}</td>
+                                                    <td class="text-right">{{ratePrefix()}} {{row.shared_payment}}</td>
+                                                    <td class="text-right">
+                                                        <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickRemoveUser(index)">x</button>
+                                                        <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click="clickEditUser(row, index)"><span style='font-size:10px;'>&#9998;</span> </button>
+                                                    </td>
+                                                </tr>
+                                                <tr><td colspan="9"></td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </template>
+
+
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
@@ -176,8 +229,7 @@
                                                 <td class="text-right">{{ratePrefix()}} {{row.total}}</td>
                                                 <td class="text-right">
                                                     <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickRemoveItem(index)">x</button>
-                                                    <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click="ediItem(row, index)" ><span style='font-size:10px;'>&#9998;</span> </button>
-
+                                                    <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click="clickEditItem(row, index)" ><span style='font-size:10px;'>&#9998;</span> </button>
                                                 </td>
                                             </tr>
                                             <tr><td colspan="9"></td></tr>
@@ -190,6 +242,10 @@
                                     <button type="button" class="btn waves-effect waves-light btn-primary" @click.prevent="clickAddItemInvoice">+ Agregar Producto</button>
                                     <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddRetention">+ Agregar Retención</button>
                                     <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddOrderReference">+ Order Reference</button>
+                                    <template v-if="health_sector">
+                                        <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddHealthData">+ Datos Salud</button>
+                                        <button type="button" class="ml-3 btn waves-effect waves-light btn-primary" @click.prevent="clickAddHealthUser">+ Usuarios Salud</button>
+                                    </template>
                                 </div>
                             </div>
 
@@ -288,6 +344,14 @@
                             @addOrderReference="addOrderReference"
                             ></document-order-reference>
 
+        <document-health-data :showDialog.sync="showDialogHealthData"
+                            :health_fields="form.health_fields"
+                            @addHealthData="addHealthData"
+                            ></document-health-data>
+
+        <document-health-user :showDialog.sync="showDialogAddHealthUser"
+                            :recordItemHealthUser="recordItemHealthUser"
+                            @add="addRowHealthUser"></document-health-user>
         </div>
     </div>
 </template>
@@ -321,14 +385,18 @@
     // import {calculateRowItem} from '../../../helpers/functions'
     import DocumentOptions from './partials/options.vue'
     import DocumentOrderReference from './partials/order_reference.vue'
+    import DocumentHealthData from './partials/health_fields.vue'
+    import DocumentHealthUser from './partials/health_users.vue'
 
     export default {
-        props: ['typeUser', 'configuration', 'invoice'],
-        components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions, DocumentOrderReference},
+        props: ['typeUser', 'configuration', 'invoice', 'is_health'],
+        components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions, DocumentOrderReference, DocumentHealthData, DocumentHealthUser},
         mixins: [functions, exchangeRate],
         data() {
             return {
                 showDialogOrderReference: false,
+                showDialogHealthData: false,
+                showDialogAddHealthUser: false,
                 datEmision: {
                   disabledDate(time) {
                     return time.getTime() > moment();
@@ -336,10 +404,13 @@
                 },
                 input_person:{},
                 company:{},
-                is_client:false,
+                health_sector: false,
+                is_client: false,
                 recordItem: null,
+                recordItemHealthUser: null,
                 resource: 'co-documents',
                 showDialogAddItem: false,
+                showDialogAddHealthUser: false,
                 showDialogAddRetention: false,
                 showDialogNewPerson: false,
                 showDialogOptions: false,
@@ -361,7 +432,9 @@
                 total_global_discount:0,
                 loading_search:false,
                 taxes:  [],
-                resolutions:[]
+                resolutions:[],
+                duplicated_health_fields: {},
+                duplicated_health_users: [],
             }
         },
         async created() {
@@ -449,9 +522,7 @@
                     this.form.total = form_exceed_uvt.total
                     this.form.sale = form_exceed_uvt.sale
                     this.form.taxes = form_exceed_uvt.taxes
-
                     this.form.items = this.prepareItems(form_exceed_uvt.items)
-
                     this.$removeStorage('form_exceed_uvt')
                 }
             },
@@ -490,16 +561,15 @@
                         this.form.payment_form_id = 2
             },
 
-            addOrderReference(order_reference) {
-                this.form.order_reference = order_reference
-            },
             changeResolution()
             {
                 if (typeof this.invoice !== 'undefined') {
                     this.form.type_document_id = this.invoice.type_document_id;
                     this.form.resolution_id = this.invoice.type_document_id;
                 }
-                const resol = this.resolutions.find( x =>  x.id == this.form.resolution_id )
+                const resol = this.resolutions.find(x => x.id == this.form.resolution_id)
+                console.log(this.form.resolution_id)
+                console.log(resol)
                 if(resol)
                 {
                     this.form.resolution_number = resol.resolution_number
@@ -507,6 +577,7 @@
                     this.form.type_document_id = resol.id
                 }
             },
+
             ratePrefix(tax = null) {
                 if ((tax != null) && (!tax.is_fixed_value)) return null;
 
@@ -525,20 +596,36 @@
             clickAddOrderReference(){
                 this.showDialogOrderReference = true
             },
+
+            clickAddHealthData() {
+                this.showDialogHealthData = true
+            },
+
+            clickAddHealthUser(){
+                this.recordItemHealthUser = null
+                this.showDialogAddHealthUser = true
+            },
+
             getFormatUnitPriceRow(unit_price){
                 return _.round(unit_price, 6)
                 // return unit_price.toFixed(6)
             },
-            ediItem(row, index)
+            clickEditItem(row, index)
             {
                 row.indexi = index
                 this.recordItem = row
                 this.showDialogAddItem = true
             },
+
+            clickEditUser(row, index)
+            {
+                row.indexi = index
+                this.recordItemHealthUser = row
+                this.showDialogAddHealthUser = true
+            },
+
             searchRemoteCustomers(input) {
-
                 if (input.length > 0) {
-
                     this.loading_search = true
                     let parameters = `input=${input}`
 
@@ -557,11 +644,17 @@
                     this.filterCustomers()
                     this.input_person.number = null
                 }
-
             },
 
             load_duplicate_invoice(){
                 if (typeof this.invoice !== 'undefined') {
+                    if(this.invoice.health_fields){
+                        this.health_sector = true
+                        this.duplicated_health_fields = JSON.parse(this.invoice.health_fields)
+                        this.duplicated_health_users = this.duplicated_health_fields.users_info
+                        delete this.duplicated_health_fields.users_info
+                        delete this.duplicated_health_fields.health_type_operation_id
+                    }
                     this.form.type_document_id = this.invoice.type_document_id;
                     this.form.resolution_id = this.invoice.type_document_id;
                     this.form.currency_id = this.invoice ? this.invoice.currency_id : null;
@@ -573,6 +666,7 @@
                     this.form.customer_id = this.invoice ? this.invoice.customer_id : null,
                     this.form.subtotal = this.invoice ? this.invoice.subtotal : 0;
                     this.form.items = this.invoice ? this.prepareItems(this.invoice.items) : [];
+                    this.form.users_info = this.invoice ? this.invoice.users_info : []
                     this.form.taxes = this.invoice ? this.invoice.taxes : [];
                     this.form.total = this.invoice ? this.invoice.total : 0;
                     this.form.sale = this.invoice ? this.invoice.sale : 0;
@@ -581,15 +675,20 @@
                     this.form.service_invoice = {};
                     this.form.payment_form_id = this.invoice ? this.invoice.payment_form_id : null;
                     this.form.payment_method_id = this.invoice ? this.invoice.payment_method_id : null;
-                    this.form.resolution_id = null;
                     this.form.prefix = this.invoice ? this.invoice.prefix : null;
                     this.form.resolution_number = null;
-                    this.form.order_reference = {};
+                    this.form.order_reference = this.invoice ? this.invoice.order_reference : {};
+                    this.form.health_fields = this.health_sector ? this.duplicated_health_fields : {};
+                    this.form.health_users = this.health_sector ? this.duplicated_health_users: [];
                     this.changeResolution();
                 }
             },
 
             initForm() {
+                if (this.is_health)
+                    this.health_sector = true
+                else
+                    this.health_sector = false
                 this.form = {
                     type_document_id: null,
                     resolution_id: null,
@@ -603,6 +702,7 @@
                     watch: false,
                     subtotal: this.invoice ? this.invoice.subtotal : 0,
                     items: this.invoice ? this.prepareItems(this.invoice.items) : [],
+                    users_info: this.invoice ? this.invoice.users_info : [],
                     taxes: this.invoice ? this.invoice.taxes : [],
                     total: this.invoice ? this.invoice.total : 0,
                     sale: this.invoice ? this.invoice.sale : 0,
@@ -614,7 +714,9 @@
                     resolution_id: null,
                     prefix: this.invoice ? this.invoice.prefix : null,
                     resolution_number: null,
-                    order_reference: {}
+                    order_reference: {},
+                    health_fields: {},
+                    health_users: []
                 }
                 this.errors = {}
                 this.$eventHub.$emit('eventInitForm')
@@ -711,6 +813,23 @@
                 // console.log(this.form)
                 this.calculateTotal();
             },
+
+            addHealthData(health_fields) {
+                this.form.health_fields = health_fields
+            },
+
+            addOrderReference(order_reference) {
+                this.form.order_reference = order_reference
+            },
+
+            addRowHealthUser(row) {
+                if(this.recordItemHealthUser)
+                    this.form.health_users[this.recordItemHealthUser.indexi] = row
+                else
+                    this.form.health_users.push(JSON.parse(JSON.stringify(row)));
+                this.recordItemHealthUser = null
+            },
+
             async addRowRetention(row){
 
                 await this.taxes.forEach(tax => {
@@ -744,6 +863,11 @@
                 this.form.items.splice(index, 1)
                 this.calculateTotal()
             },
+
+            clickRemoveUser(index) {
+                this.form.health_users.splice(index, 1)
+            },
+
             changeCurrencyType() {
                 // this.currency_type = _.find(this.currencies, {'id': this.form.currency_id})
                 // let items = []
@@ -913,8 +1037,6 @@
             },
 
             async submit() {
-
-
                 if(!this.form.resolution_number || !this.form.prefix)
                 {
                     return this.$message.error('Debe seleccionar una Resolución')
@@ -924,10 +1046,18 @@
                     return this.$message.error('Debe seleccionar un cliente')
                 }
 
+                if(this.health_sector){
+                    if(this.form.health_users.length == 0)
+                        return this.$message.error('Para facturas del sector salud se debe incluir los datos de al menos un usuario del servicio')
+                    if(!this.form.health_fields.invoice_period_start_date || !this.form.health_fields.invoice_period_end_date)
+                        return this.$message.error('Para facturas del sector salud debe incluir los datos del periodo de facturacion')
+                }
+
                 this.form.service_invoice = await this.createInvoiceService();
                 // return
 
                 this.loading_submit = true
+                console.log(this.form)
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                     if (response.data.success) {
                         this.resetForm();
@@ -937,8 +1067,6 @@
                         this.showDialogOptions = true;
                     }
                     else {
-
-
                         if(response.data.errors){
                             const mhtl = this.parseMesaageError(response.data.errors)
                             this.$message({
@@ -960,23 +1088,19 @@
                         else{
                             this.$message.error(response.data.message);
                         }
-
-
                     }
                 }).catch(error => {
-
                     if (error.response.status === 422) {
                         this.errors = error.response.data;
                     }
                     else {
                         this.$message.error(error.response.data.message);
                     }
-
-
                 }).then(() => {
                     this.loading_submit = false;
                 });
             },
+
             parseMesaageError(errors)
             {
                 let ht = `Validación de datos <br><br> <ul>`

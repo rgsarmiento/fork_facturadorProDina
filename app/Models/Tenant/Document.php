@@ -132,7 +132,7 @@ class Document extends ModelTenant
         'type_environment_id',
         'shipping_two_steps',
         'response_message_query_zipkey',
-
+        'health_fields'
     ];
 
     protected $casts = [
@@ -299,7 +299,7 @@ class Document extends ModelTenant
     {
         return $this->prefix.'-'.$this->number;
     }
-    
+
     /**
      * Retorna el codigo del tipo de documento para enviar a la api
      */
@@ -367,6 +367,11 @@ class Document extends ModelTenant
     public function setOrderReferenceAttribute($value)
     {
         $this->attributes['order_reference'] = (is_null($value))?null:json_encode($value);
+    }
+
+    public function setHealthFieldsAttribute($value)
+    {
+        $this->attributes['health_fields'] = (is_null($value))?null:json_encode($value);
     }
 
     public function user()
@@ -470,7 +475,7 @@ class Document extends ModelTenant
         $legend = collect($legends)->where('code', '1000')->first();
         return $legend->value;
     }
-    
+
     // public function getResponseApiAttribute($value)
     // {
     //     return (is_null($value))?null:(object) json_decode($value);
@@ -530,11 +535,11 @@ class Document extends ModelTenant
     {
         return $query->where('currency_id', $currency_id);
     }
-        
+
     /**
-     * 
+     *
      * Obtener el total del documento
-     * 
+     *
      * Usado en:
      * Cash - Cierre de caja chica
      *
@@ -544,12 +549,12 @@ class Document extends ModelTenant
     // {
     //     return $this->total;
     // }
-        
+
 
     /**
-     * 
+     *
      * Filtrar facturas
-     * 
+     *
      * Usado en:
      * Modules\Report\Http\Controllers\ReportItemController
      *
@@ -565,9 +570,9 @@ class Document extends ModelTenant
 
 
     /**
-     * 
+     *
      * Filtrar por cliente
-     * 
+     *
      * @param  Builder $query
      * @param  int $customer_id
      * @return Builder
@@ -579,11 +584,11 @@ class Document extends ModelTenant
         return $query;
     }
 
-    
+
     /**
-     * 
+     *
      * Filtrar por usuario
-     * 
+     *
      * @param  Builder $query
      * @param  int $user_id
      * @return Builder
@@ -595,11 +600,11 @@ class Document extends ModelTenant
         return $query;
     }
 
-    
+
     /**
-     * 
+     *
      * Filtrar por rango de tiempo
-     * 
+     *
      * @param  Builder $query
      * @param  string $start_time
      * @param  string $end_time
@@ -609,7 +614,7 @@ class Document extends ModelTenant
     {
         $first_second = '00';
         $last_second = '59';
-        
+
         if($start_time) $query->where('time_of_issue', '>=', "{$start_time}:{$first_second}");
 
         if($end_time) $query->where('time_of_issue', '<=', "{$end_time}:{$last_second}");
@@ -617,11 +622,11 @@ class Document extends ModelTenant
         return $query;
     }
 
-    
+
     /**
-     * 
+     *
      * Filtrar por rango de fecha
-     * 
+     *
      * @param  Builder $query
      * @param  string $start_date
      * @param  string $end_date
@@ -634,7 +639,7 @@ class Document extends ModelTenant
 
 
     /**
-     * 
+     *
      * Campos base para calculos
      *
      * @param  Builder $query
@@ -688,7 +693,7 @@ class Document extends ModelTenant
 
 
     /**
-     * 
+     *
      * Filtros para reporte libro ventas
      *
      * @param  Builder $query
@@ -707,10 +712,10 @@ class Document extends ModelTenant
                         ->selectColumnsForCalculate()
                         ->latest();
     }
-    
+
 
     /**
-     * 
+     *
      * Reporte libro ventas
      *
      * @return array
@@ -729,9 +734,9 @@ class Document extends ModelTenant
         ];
     }
 
-    
+
     /**
-     * 
+     *
      * Reporte libro ventas resumido
      *
      * @return array
@@ -747,7 +752,7 @@ class Document extends ModelTenant
 
 
     /**
-     * 
+     *
      * Totales por impuestos
      *
      * @param  int $tax_id
@@ -772,7 +777,7 @@ class Document extends ModelTenant
         ];
     }
 
-    
+
     /**
      * Filtrar items por impuesto
      *
@@ -784,9 +789,9 @@ class Document extends ModelTenant
         return $this->items->where('tax_id', $tax_id);
     }
 
-    
+
     /**
-     * 
+     *
      * Obtener total exento del documento
      *
      * @return float
@@ -800,6 +805,6 @@ class Document extends ModelTenant
                     })
                     ->sum('total');
     }
-    
+
 
 }

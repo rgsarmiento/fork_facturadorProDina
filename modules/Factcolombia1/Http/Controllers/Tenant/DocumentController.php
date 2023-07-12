@@ -31,6 +31,8 @@ use Modules\Factcolombia1\Models\TenantService\{
 use Modules\Factcolombia1\Models\TenantService\{
     Company as TenantServiceCompany
 };
+
+use Modules\Factcolombia1\Models\TenantService\HealthTypeDocumentIdentification;
 use Modules\Factcolombia1\Mail\Tenant\SendGraphicRepresentation;
 use Illuminate\Support\Facades\Mail;
 use DateTime;
@@ -96,6 +98,10 @@ class DocumentController extends Controller
         return json_encode($company);   */
 
         return view('factcolombia1::document.tenant.create');
+    }
+
+    public function create_health() {
+        return view('factcolombia1::document.tenant.create_health');
     }
 
     public function create_aiu() {
@@ -340,6 +346,16 @@ class DocumentController extends Controller
                 {
                     $service_invoice['order_reference']['id_order'] = $request['order_reference']['id_order'];
                     $service_invoice['order_reference']['issue_date_order'] = $request['order_reference']['issue_date_order'];
+                }
+            }
+            if ($request->health_fields)
+            {
+                if (isset($request['health_fields']['invoice_period_start_date']) && isset($request['health_fields']['invoice_period_end_date']))
+                {
+                    $service_invoice['health_fields']['invoice_period_start_date'] = $request['health_fields']['invoice_period_start_date'];
+                    $service_invoice['health_fields']['invoice_period_end_date'] = $request['health_fields']['invoice_period_end_date'];
+                    $service_invoice['health_fields']['health_type_operation_id'] = 1;
+                    $service_invoice['health_fields']['users_info'] = $request->health_users;
                 }
             }
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
@@ -865,7 +881,7 @@ class DocumentController extends Controller
         ));
 
         $response = curl_exec($ch2);
-        \Log::debug($response);
+//        \Log::debug($response);
         $respuesta = json_decode($response);
         curl_close($ch2);
 
@@ -1088,6 +1104,34 @@ class DocumentController extends Controller
 
         return compact('items', 'taxes', 'items_aiu');
     }
+
+    private function api_conection($endpoint, $method, $payload = ""){
+        $company = ServiceTenantCompany::firstOrFail();
+        $base_url = config('tenant.service_fact');
+        $ch = curl_init("{$base_url}{$endpoint}");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            "Authorization: Bearer {$company->api_token}"
+        ));
+        $response = curl_exec($ch);
+        $response_model = json_decode($response);
+        return $response_model;
+    }
+
+    public function health_tables()
+    {
+        $health_type_document_identifications = $this->api_conection("table/health_type_document_identifications", "GET")->health_type_document_identifications;
+        $health_type_users = $this->api_conection("table/health_type_users", "GET")->health_type_users;
+        $health_contracting_payment_methods = $this->api_conection("table/health_contracting_payment_methods", "GET")->health_contracting_payment_methods;
+        $health_coverages = $this->api_conection("table/health_coverages", "GET")->health_coverages;
+
+        return compact('health_type_document_identifications', 'health_type_users', 'health_contracting_payment_methods', 'health_coverages');
+    }
+
 
     public function table($table)
     {

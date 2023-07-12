@@ -6,7 +6,7 @@ use DB;
 
 class RegularizeDataHelper
 {
-    
+
     /**
      * Regularizar data de las tablas con errores
      * Verifica si tiene registros (seeders con errores)
@@ -61,9 +61,9 @@ class RegularizeDataHelper
             'co_service_type_documents' => [
                 'columns' => 'id, name, code, cufe_algorithm, prefix, @created_at, @updated_at'
             ],
-            // 'co_type_law_deductions' => [
-            //     'columns' => 'id, name, code, percentage, @created_at, @updated_at'
-            // ],
+            'co_health_type_document_identifications' => [
+               'columns' => 'id, name, code, @created_at, @updated_at'
+            ],
         ];
 
         $prefix = 'csv';
@@ -73,7 +73,6 @@ class RegularizeDataHelper
         DB::connection()
             ->getpdo()
             ->exec("LOAD DATA LOCAL INFILE '".str_replace(DIRECTORY_SEPARATOR, '/', public_path($prefix.DIRECTORY_SEPARATOR."{$key}.{$prefix}"))."' INTO TABLE $key({$table['columns']}) SET created_at = NOW(), updated_at = NOW()");
-    
     }
 
 

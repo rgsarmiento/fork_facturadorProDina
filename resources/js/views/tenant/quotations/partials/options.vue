@@ -340,7 +340,6 @@ export default {
         this.document.resolution_number = this.document.service_invoice.resolution_number
         this.resource_documents = "co-documents";
       }
-      console.log(this.document)
       this.$http
         .post(`/${this.resource_documents}`, this.document)
         .then(response => {
