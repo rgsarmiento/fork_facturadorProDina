@@ -14,22 +14,6 @@
             <div class="card-body">
                 <form autocomplete="off" @submit.prevent="submit">
                     <div class="form-body">
-                        <!--<div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group" :class="{'has-danger': errors.number}">
-                                    <label class="control-label">Número</label>
-                                    <el-input v-model="form.number" :maxlength="11" :disabled="true"></el-input>
-                                    <small class="form-control-feedback" v-if="errors.number" v-text="errors.number[0]"></small>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group" :class="{'has-danger': errors.name}">
-                                    <label class="control-label">Nombre <span class="text-danger">*</span></label>
-                                    <el-input v-model="form.name"></el-input>
-                                    <small class="form-control-feedback" v-if="errors.name" v-text="errors.name[0]"></small>
-                                </div>
-                            </div>
-                        </div>-->
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group" :class="{'has-danger': errors.trade_name}">

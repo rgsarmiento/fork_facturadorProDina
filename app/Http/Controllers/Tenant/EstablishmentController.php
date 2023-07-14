@@ -44,7 +44,6 @@ class EstablishmentController extends Controller
     public function record($id)
     {
         $record = new EstablishmentResource(Establishment::findOrFail($id));
-
         return $record;
     }
 

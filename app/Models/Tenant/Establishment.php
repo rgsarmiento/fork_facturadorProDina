@@ -20,16 +20,15 @@ class Establishment extends ModelTenant
 
     protected $fillable = [
         'description',
-
         'country_id',
         'department_id',
         'city_id',
-
         'address',
         'email',
         'telephone',
         'code',
         'trade_address',
+        'establishment_logo',
         'web_address',
         'aditional_information',
     ];
@@ -37,11 +36,11 @@ class Establishment extends ModelTenant
     public function country() {
         return $this->belongsTo(Country::class);
     }
-    
+
     public function department() {
         return $this->belongsTo(Department::class);
     }
-    
+
     public function city() {
         return $this->belongsTo(City::class);
     }
@@ -77,5 +76,5 @@ class Establishment extends ModelTenant
     {
         return $query->withOut(['country', 'department', 'city']);
     }
-    
+
 }

@@ -52,15 +52,13 @@ class CompanyController extends Controller
     public function uploadFile(Request $request)
     {
         if ($request->hasFile('file')) {
-
             $company = CoCompany::active();
 
             $type = $request->input('type');
-
+            $establishment_id = $request->input('establishment_id');
             $file = $request->file('file');
             $ext = $file->getClientOriginalExtension();
             $name = $type.'_'.$company->identification_number.'.'.$ext;
-
             $validator = Validator::make($request->all(), [
                 'file' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048'
             ]);
@@ -84,21 +82,29 @@ class CompanyController extends Controller
 
             $file->storeAs(($type === 'jpg_firma_facturas') ? 'public/uploads/logos' : 'certificates', $name);
 
-            if($type === 'logo_login')
-            {
-                $file->storeAs(($type === 'logo_login') ? 'public/uploads/logos' : 'certificates', $name);
-                $company_t = Company::active();
-                $company_t->$type = $name;
-                $company_t->save();
+            $file->storeAs(($type === 'establishment_logo') ? 'public/uploads/logos' : 'certificates', $establishment_id."_".$name);
+
+            $sucursal = \App\Models\Tenant\Establishment::where('id', $establishment_id)->first();
+            if($type === 'establishment_logo'){
+                $sucursal->establishment_logo = $establishment_id.'_'.$name;
+                $sucursal->save();
             }
             else
-            {
-                $company->$type = $name;
-                $company->save();
-                $company_t = Company::active();
-                $company_t->$type = $name;
-                $company_t->save();
-            }
+                if($type === 'logo_login')
+                {
+                    $file->storeAs(($type === 'logo_login') ? 'public/uploads/logos' : 'certificates', $name);
+                    $company_t = Company::active();
+                    $company_t->$type = $name;
+                    $company_t->save();
+                }
+                else
+                {
+                    $company->$type = $name;
+                    $company->save();
+                    $company_t = Company::active();
+                    $company_t->$type = $name;
+                    $company_t->save();
+                }
 
             if($type == 'logo')
             {

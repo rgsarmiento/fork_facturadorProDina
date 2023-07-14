@@ -35,8 +35,7 @@
                             <td class="text-right">
                                 <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
                                 <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" v-if="typeUser != 'integrator'" @click.prevent="clickDelete(row.id)">Eliminar</button>
-                                <button type="button" class="btn waves-effect waves-light btn-xs btn-warning"
-                                @click.prevent="clickSeries(row.id)">Series</button>
+<!--                                <button type="button" class="btn waves-effect waves-light btn-xs btn-warning" @click.prevent="clickSeries(row.id)">Series</button>  -->
                             </td>
                         </tr>
                         </tbody>

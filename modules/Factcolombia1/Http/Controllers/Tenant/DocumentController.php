@@ -374,7 +374,13 @@ class DocumentController extends Controller
                 $service_invoice['establishment_address'] = $sucursal->address;
             if($sucursal->telephone != '-')
                 $service_invoice['establishment_phone'] = $sucursal->telephone;
-            $service_invoice['establishment_email'] = $sucursal->email;
+            if(!is_null($sucursal->establishment_logo))
+                if(file_exists(public_path('storage/uploads/logos/'.$sucursal->id."_".$sucursal->establishment_logo))){
+                    $establishment_logo = base64_encode(file_get_contents(public_path('storage/uploads/logos/'.$sucursal->id."_".$sucursal->establishment_logo)));
+                    $service_invoice['establishment_logo'] = $establishment_logo;
+                }
+            if(!is_null($sucursal->email))
+                $service_invoice['establishment_email'] = $sucursal->email;
             $service_invoice['nombretipodocid'] = $datoscompany->type_identity_document->name;
             $service_invoice['tarifaica'] = $datoscompany->ica_rate;
             $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;
@@ -403,7 +409,7 @@ class DocumentController extends Controller
             $data_document = json_encode($service_invoice);
 //\Log::debug("{$base_url}ubl2.1/invoice");
 //\Log::debug($company->api_token);
-//\Log::debug($data_document);
+\Log::debug($data_document);
 //            return $data_document;
 //return "";
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

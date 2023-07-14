@@ -79,9 +79,9 @@
                             <el-input v-model="form.trade_address"></el-input>
                             <small class="form-control-feedback" v-if="errors.trade_address" v-text="errors.trade_address[0]"></small>
                         </div>
-                    </div> 
+                    </div>
                 </div>
-                 <div class="row">  
+                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.email}">
                             <label class="control-label">Correo de contacto</label>
@@ -97,12 +97,31 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">   
+                <div class="row">
                     <div class="col-md-12">
                         <div class="form-group" :class="{'has-danger': errors.aditional_information}">
                             <label class="control-label">Información adicional</label>
                             <el-input v-model="form.aditional_information"></el-input>
                             <small class="form-control-feedback" v-if="errors.aditional_information" v-text="errors.aditional_information[0]"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Logo JPG Establecimiento</label>
+                            <el-input v-model="form.establishment_logo" :readonly="true">
+                                <el-upload slot="append"
+                                    :headers="headers"
+                                    :data="{'type': 'establishment_logo', 'establishment_id': form.id}"
+                                    action="/companies/uploads"
+                                    :show-file-list="false"
+                                    :on-success="successUpload">
+                                    <el-button type="primary" icon="el-icon-upload"></el-button>
+                                </el-upload>
+                            </el-input>
+                            <div class="sub-title text-danger"><small>Debe ser un archivo JPG</small></div>
                         </div>
                     </div>
                 </div>
@@ -117,13 +136,13 @@
 </template>
 
 <script>
-
     export default {
         props: ['showDialog', 'recordId'],
         data() {
             return {
                 loading_submit: false,
                 titleDialog: null,
+                headers: headers_token,
                 resource: 'establishments',
                 errors: {},
                 form: {},
@@ -136,6 +155,7 @@
                 districts: [],
             }
         },
+
         async created() {
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables`)
@@ -181,8 +201,9 @@
                     trade_address: null,
                     web_address: null,
                     aditional_information: null,
+                    establishment_logo: null,
                 }
-                
+
                 this.departmentss();
                 this.citiess();
             },
@@ -214,12 +235,13 @@
                                 this.form = response.data.data
                                 // this.filterProvinces()
                                 // this.filterDistricts()
-                                
+
                                 this.departmentss(true);
                                 this.citiess(true);
                             }
                         })
                 }
+//                console.log(this.form)
             },
             submit() {
                 this.loading_submit = true
@@ -263,10 +285,23 @@
                     return f.province_id === this.form.province_id
                 })
             },
+
             close() {
                 this.$emit('update:showDialog', false)
                 this.initForm()
             },
+
+            successUpload(response, file, fileList) {
+//                console.log(response)
+                if (response.success) {
+                    this.$message.success(response.message)
+                    this.form[response.type] = response.name
+                } else {
+                    // this.$message({message:'Error al subir el archivo', type: 'error'})
+                    this.$message({message: response.message, type: 'error'})
+                }
+            },
+
         }
     }
 </script>
