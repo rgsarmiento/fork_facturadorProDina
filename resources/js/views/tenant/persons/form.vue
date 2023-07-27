@@ -216,7 +216,7 @@
 
 
                 <div class="row mt-2" v-if="type === 'suppliers'">
-                    
+
 
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.postal_code}">

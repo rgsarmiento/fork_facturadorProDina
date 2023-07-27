@@ -8,6 +8,7 @@
             </ol>
             <div class="right-wrapper pull-right" >
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
+                <el-button class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickImport()"><i class="fa fa-arrows-alt" ></i> Carga Masiva</el-button>
             </div>
         </div>
         <div class="card mb-0">
@@ -51,7 +52,7 @@
                             <small v-text="row.type_document_name"></small><br/>
                         </td>
                         <td class="text-center">
-                            <span class="badge bg-secondary text-white" :class="{'bg-secondary': (row.state_document_id === 1), 'bg-success': (row.state_document_id === 5), 'bg-dark': (row.state_document_id === 6)}">
+                            <span class="badge bg-secondary text-white" :class="{'bg-secondary': (row.state_document_id === 1), 'bg-success': (row.state_document_id === 5), 'bg-danger': (row.state_document_id === 6)}">
                                 {{ row.state_document_name }}
                             </span>
                         </td>
@@ -91,13 +92,19 @@
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickOptions(row.id)">Opciones</button>
 
-                            <template v-if="row.type_document_name=='Factura de Venta Nacional' || row.type_document_name=='Factura de Exportación' || row.type_document_name=='Factura de Contingencia' || row.type_document_name=='Factura electrónica de Venta - tipo 04'">
+                            <template v-if="(row.type_document_name=='Factura de Venta Nacional' || row.type_document_name=='Factura de Exportación' || row.type_document_name=='Factura de Contingencia' || row.type_document_name=='Factura electrónica de Venta - tipo 04') && row.state_document_id!=6">
                                 <a :href="`/${resource}/duplicate-invoice/${row.id}`" class="btn waves-effect waves-light btn-xs btn-info m-1__2">Duplicar</a>
+                            </template>
+
+                            <template v-if="row.state_document_id==6">
+                                <a :href="`/${resource}/edit-invoice/${row.id}`" class="btn waves-effect waves-light btn-xs btn-info m-1__2">Editar</a>
                             </template>
                         </td>
                     </tr>
                 </data-table>
             </div>
+
+            <document-import :showDialog.sync="showImportDialog"></document-import>
 
             <document-payments :showDialog.sync="showDialogPayments"
                                :documentId="recordId"></document-payments>
@@ -115,9 +122,10 @@
     import DataTable from '@components/DataTable.vue'
     import DocumentOptions from './partials/options.vue'
     import DocumentPayments from './partials/payments.vue'
+    import DocumentImport from './partials/import.vue'
 
     export default {
-        components: {DataTable, DocumentOptions, DocumentPayments},
+        components: {DataTable, DocumentOptions, DocumentPayments, DocumentImport},
         data() {
             return {
                 showDialogReportPayment:false,
@@ -166,6 +174,9 @@
                 }).then(() => {
                     this.loading = false
                 })
+            },
+            clickImport() {
+                this.showImportDialog = true;
             },
             clickPayment(recordId) {
                 this.recordId = recordId;

@@ -444,8 +444,8 @@ export default {
     },
     toBill(quotation) {
       //console.log(quotation)
-     
-     
+
+
       this.loadDataTable = true;
       quotation.toBill = true;
 
@@ -454,7 +454,7 @@ export default {
       axios
         .post(`${this.route}/${quotation.id}/to-bill`, { service_invoice : invoice })
         .then(response => {
-            
+
           this.$setLaravelMessage(response.data);
 
           if (response.data.success) {
@@ -558,7 +558,7 @@ export default {
       return data;
     },
     createInvoideService(dato) {
-      
+
       let resol = this.resolution.resolution;
       const invoice = {
         number: 0,

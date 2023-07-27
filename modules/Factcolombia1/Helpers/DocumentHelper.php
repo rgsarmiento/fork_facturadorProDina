@@ -18,20 +18,17 @@ use Exception;
 
 class DocumentHelper
 {
-
     use FinanceTrait;
 
     protected $apply_change;
 
-
     public static function createDocument($request, $nextConsecutive, $correlative_api, $company, $response, $response_status, $type_environment_id)
     {
-
         $establishment = EstablishmentInput::set(auth()->user()->establishment_id);
         $shipping_two_steps = ($type_environment_id == 2);
-
-        $document = Document::create([
-            'user_id' => auth()->id(),
+        $document = Document::updateOrCreate(
+           ['prefix' => $nextConsecutive->prefix, 'number' => $correlative_api],
+           ['user_id' => auth()->id(),
             'external_id' => Str::uuid()->toString(),
             'establishment_id' => auth()->user()->establishment_id,
             'establishment' => $establishment,
@@ -40,8 +37,8 @@ class DocumentHelper
             'type_environment_id' => $type_environment_id,
             'shipping_two_steps' => $shipping_two_steps,
             'type_document_id' => $request->type_document_id,
-            'prefix' => $nextConsecutive->prefix,
-            'number' => $correlative_api,
+//            'prefix' => $nextConsecutive->prefix,
+//            'number' => $correlative_api,
             'type_invoice_id' => $request->type_invoice_id,
             'customer_id' => $request->customer_id,
             'customer' => Person::with('typePerson', 'typeRegime', 'identity_document_type', 'country', 'department', 'city')->findOrFail($request->customer_id),
@@ -73,23 +70,23 @@ class DocumentHelper
             'health_fields' => self::getHealthfields($request),
         ]);
 
+        $existen_items = $document->items;
+        $existen_items->each->delete();
+
         foreach ($request->items as $item) {
-
             $record_item = Item::find($item['item_id']);
-
             $json_item = [
                 'name' => $record_item->name,
                 'description' => $record_item->description,
                 'internal_id' => $record_item->internal_id,
-                'unit_type' => (key_exists('item', $item))?$item['item']['unit_type']:$record_item->unit_type,
-                'unit_type_id' => (key_exists('item', $item))?$item['item']['unit_type_id']:$record_item->unit_type_id,
-                'presentation' => (key_exists('item', $item)) ? (isset($item['item']['presentation']) ? $item['item']['presentation']:[]):[],
-                'amount_plastic_bag_taxes' => $record_item->amount_plastic_bag_taxes,
+                'unit_type' => (key_exists('item', $item)) ? $item['item']['unit_type'] : $record_item->unit_type,
+                'unit_type_id' => (key_exists('item', $item)) ? $item['item']['unit_type_id'] : $record_item->unit_type_id,
+                'presentation' => (key_exists('item', $item)) ? (isset($item['item']['presentation']) ? $item['item']['presentation'] : []) : [],
+                'amount_plastic_bag_taxes' => $record_item->amount_plastic_bag_taxes ? $record_item->amount_plastic_bag_taxes : 0,
                 'is_set' => $record_item->is_set,
-                'lots' => (isset($item['item']['lots'])) ? $item['item']['lots']:[],
-                'IdLoteSelected' => ( isset($item['IdLoteSelected']) ? $item['IdLoteSelected'] : null )
+                'lots' => (isset($item['item']['lots'])) ? $item['item']['lots'] : [],
+                'IdLoteSelected' => (isset($item['IdLoteSelected']) ? $item['IdLoteSelected'] : null)
             ];
-
             $document->items()->create([
                 'item_id' => $item['item_id'],
                 'item' => array_merge($item, $json_item),
@@ -103,13 +100,9 @@ class DocumentHelper
                 'discount' => $item['discount'],
                 'total' => $item['total']
             ]);
-
         }
-
         return $document;
-
     }
-
 
     public function savePayments($document, $payments){
 
@@ -308,7 +301,6 @@ class DocumentHelper
     {
         throw new Exception($message);
     }
-
 
     /**
      *

@@ -39,7 +39,6 @@
                     <el-button slot="append" icon="el-icon-plus" @click.prevent="showDialogNewItem = true"></el-button>
                 </el-input>
             </template>
-
             <template v-else>
                 <el-input v-show="place  == 'prod' || place == 'cat2'" placeholder="Buscar productos" size="medium" v-model="input_item" @change="searchItemsBarcode" autofocus class="m-bottom">
                     <el-button slot="append" icon="el-icon-plus" @click.prevent="showDialogNewItem = true"></el-button>

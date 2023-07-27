@@ -145,7 +145,7 @@ class PersonController extends Controller
 
     }
 
-    
+
     /**
      * Eliminar todos los registros que no tienen transacciones asociadas
      *
@@ -161,13 +161,13 @@ class PersonController extends Controller
 
             // si tienen registros asociados no se eliminan
             try {
-    
+
                 $person->delete();
                 $quantity_deleted++;
-    
+
             } catch (Exception $e){
             }
-            
+
         }
 
         return [
@@ -176,7 +176,6 @@ class PersonController extends Controller
         ];
 
     }
-
 
     public function import(Request $request)
     {
@@ -292,10 +291,10 @@ class PersonController extends Controller
         ];
     }
 
-        
+
     /**
      * Busqueda de cliente por id
-     *  
+     *
      * @param  int $id
      * @return array
      */
@@ -318,7 +317,7 @@ class PersonController extends Controller
      *
      * Usado en:
      * RemissionController
-     *  
+     *
      * @param  Request $request
      * @return array
      */
@@ -342,14 +341,14 @@ class PersonController extends Controller
 
     }
 
-    
+
     /**
      * Busqueda de proveedores
      * Si no ingresan datos para búsqueda, retorna los 10 primeros (usar en método tables)
      *
      * Usado en:
      * RemissionController
-     *  
+     *
      * @param  Request $request
      * @return array
      */
@@ -367,7 +366,7 @@ class PersonController extends Controller
 
     /**
      * Busqueda de registro por id
-     *  
+     *
      * @param  int $id
      * @return array
      */

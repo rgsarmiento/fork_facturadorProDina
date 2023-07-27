@@ -37,6 +37,13 @@
             }
         },
 
+        watch: {
+            'form.id_order'(newVal) {
+                if(this.form.id_order)
+                    this.form.id_order = newVal.toUpperCase();
+            },
+        },
+
         async created() {
             if(this.order_reference !== null && this.order_reference !== 'undefined'){
                 this.form = this.order_reference
@@ -54,6 +61,16 @@
             },
 
             validate(){
+                let isValidText = false
+                const alpha_num_dash = /^[A-Za-z0-9-;]*$/; // Letras numeros y guiones, opcional
+
+                isValidText = alpha_num_dash.test(this.form.id_order);
+                if(!isValidText)
+                    return {
+                        success: false,
+                        message: 'El campo id_order solo debe admite letras, numeros y guiones'
+                    }
+
                 if(!this.form.issue_date_order)
                     return {
                         success: false,

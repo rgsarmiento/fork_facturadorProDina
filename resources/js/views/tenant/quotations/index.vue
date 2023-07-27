@@ -3,7 +3,7 @@
         <div class="page-header pr-0">
             <h2><a href="/dashboard"><i class="fas fa-tachometer-alt"></i></a></h2>
             <ol class="breadcrumbs">
-                <li class="active"><span>Cotizaciones {{soapCompany}}</span></li>
+                <li class="active"><span>Cotizaciones</span></li>
             </ol>
             <div class="right-wrapper pull-right">
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
@@ -119,7 +119,7 @@
             <quotation-options-pdf :showDialog.sync="showDialogOptionsPdf"
                               :recordId="recordId"
                               :showClose="true"></quotation-options-pdf>
-                              
+
             <quotation-generate-remission :showDialog.sync="showDialogGenerateRemission"
                               :recordId="recordId"></quotation-generate-remission>
         </div>

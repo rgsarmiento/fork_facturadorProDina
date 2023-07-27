@@ -1,3 +1,4 @@
+
 <template>
     <div class="card mb-0 pt-2 pt-md-0">
         <div class="tab-content" v-if="loading_form">
@@ -7,17 +8,6 @@
                         <div class="row">
                         </div>
                         <div class="row mt-4">
-
-                            <!-- <div class="col-lg-6 pb-2">
-                                <div class="form-group" :class="{'has-danger': errors.customer_id}">
-                                    <label class="control-label">Cliente</label>
-                                    <el-select v-model="form.customer_id" filterable @change="changeCustomer" popper-class="el-select-document_type" dusk="customer_id" class="border-left rounded-left border-info">
-                                        <el-option v-for="option in customers" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                                    </el-select>
-                                    <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
-                                </div>
-                            </div> -->
-
                             <div class="col-lg-6 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.customer_id}">
                                     <label class="control-label font-weight-bold text-info">
@@ -31,9 +21,7 @@
                                         @keyup.enter.native="keyupCustomer"
                                         :loading="loading_search"
                                         @change="changeCustomer">
-
                                         <el-option v-for="option in customers" :key="option.id" :value="option.id" :label="option.description"></el-option>
-
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
                                 </div>
@@ -42,7 +30,7 @@
                             <div class="col-lg-3 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.type_invoice_id}">
                                     <label class="control-label">Tipo de factura</label>
-                                    <el-select v-model="form.type_invoice_id"  popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info">
+                                    <el-select v-model="form.type_invoice_id"  popper-class="el-select-document_type" dusk="type_invoice_id" class="border-left rounded-left border-info" :disabled="true">
                                         <el-option v-for="option in type_invoices" :key="option.id" :value="option.id" :label="option.name"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.type_invoice_id" v-text="errors.type_invoice_id[0]"></small>
@@ -110,6 +98,14 @@
                                     <small class="form-control-feedback" v-if="errors.payment_form_id" v-text="errors.payment_form_id[0]"></small>
                                 </div>
                             </div>
+                            <template v-if="is_edit">
+                                <div class="col-lg-2">
+                                    <div class="form-group">
+                                        <label class="control-label">Editando factura</label>
+                                        <el-input v-model="form.number" :disabled="true"></el-input>
+                                    </div>
+                                </div>
+                            </template>
                             <div class="col-lg-4">
                                 <div class="form-group" :class="{'has-danger': errors.payment_method_id}">
                                     <label class="control-label">Medio de pago</label>
@@ -137,8 +133,6 @@
 
                         <div class="row mt-4">
                             <div class="col-md-12">
-
-
                                 <template v-if="health_sector">
                                     <div>
                                         <p class="text-center"><strong>INFORMACION DE USUARIOS DEL SECTOR SALUD</strong></p>
@@ -389,7 +383,7 @@
     import DocumentHealthUser from './partials/health_users.vue'
 
     export default {
-        props: ['typeUser', 'configuration', 'invoice', 'is_health'],
+        props: ['typeUser', 'configuration', 'invoice', 'is_health', 'is_edit'],
         components: {PersonForm, DocumentFormItem, DocumentFormRetention, DocumentOptions, DocumentOrderReference, DocumentHealthData, DocumentHealthUser},
         mixins: [functions, exchangeRate],
         data() {
@@ -568,8 +562,8 @@
                     this.form.resolution_id = this.invoice.type_document_id;
                 }
                 const resol = this.resolutions.find(x => x.id == this.form.resolution_id)
-                console.log(this.form.resolution_id)
-                console.log(resol)
+//                console.log(this.form.resolution_id)
+//                console.log(resol)
                 if(resol)
                 {
                     this.form.resolution_number = resol.resolution_number
@@ -662,7 +656,7 @@
                     this.form.date_expiration = this.invoice ? moment(this.invoice.date_expiration, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD') : null;
                     this.form.type_invoice_id = this.invoice ? this.invoice.type_invoice_id : 1;
                     this.form.total_discount = this.invoice ? this.invoice.total_discount : 0;
-                    this.form.total_tax = this.invoice ? this.invoice.total_tax : 0;
+                    this.form.total_tax = this.invoice ? (this.invoice.total_tax < 0 ? 0 : this.invoice.total_tax) : 0;
                     this.form.customer_id = this.invoice ? this.invoice.customer_id : null,
                     this.form.subtotal = this.invoice ? this.invoice.subtotal : 0;
                     this.form.items = this.invoice ? this.prepareItems(this.invoice.items) : [];
@@ -681,10 +675,15 @@
                     this.form.health_fields = this.health_sector ? this.duplicated_health_fields : {};
                     this.form.health_users = this.health_sector ? this.duplicated_health_users: [];
                     this.changeResolution();
+                    if(this.is_edit){
+                        this.form.number = this.invoice.number
+                        this.calculateTotal()
+                    }
                 }
             },
 
             initForm() {
+//                console.log(JSON.stringify(this.invoice))
                 if (this.is_health)
                     this.health_sector = true
                 else
@@ -697,7 +696,7 @@
                     date_expiration: this.invoice ? moment(this.invoice.date_expiration, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD') : null,
                     type_invoice_id: this.invoice ? this.invoice.type_invoice_id : 1,
                     total_discount: this.invoice ? this.invoice.total_discount : 0,
-                    total_tax: this.invoice ? this.invoice.total_tax : 0,
+                    total_tax: this.invoice ? (this.invoice.total_tax < 0 ? 0 : this.invoice.total_tax) : 0,
                     customer_id: this.invoice ? this.invoice.customer_id : null,
                     watch: false,
                     subtotal: this.invoice ? this.invoice.subtotal : 0,
@@ -718,9 +717,12 @@
                     health_fields: {},
                     health_users: []
                 }
+                if(this.is_edit)
+                    this.form.number = this.invoice ? this.invoice.number : null
                 this.errors = {}
                 this.$eventHub.$emit('eventInitForm')
                 this.initInputPerson()
+
             },
 
             initInputPerson(){
@@ -883,7 +885,6 @@
 
             },
             setDataTotals() {
-
                 // console.log(val)
                 let val = this.form
                 val.taxes = JSON.parse(JSON.stringify(this.taxes));
@@ -1057,14 +1058,42 @@
                 // return
 
                 this.loading_submit = true
-                console.log(this.form)
+//                console.log(JSON.stringify(this.form))
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
+//                    console.log(response)
                     if (response.data.success) {
-                        this.resetForm();
-                        // console.log(response)
-                        this.documentNewId = response.data.data.id;
-                        // this.$message.success(response.data.message);
-                        this.showDialogOptions = true;
+                        if(response.data.validation_errors === false){
+                          this.resetForm();
+                          // console.log(response)
+                          this.documentNewId = response.data.data.id;
+                          // this.$message.success(response.data.message);
+                          this.showDialogOptions = true;
+                        }
+                        else{
+                            if(response.data.errors){
+                                const mhtl = this.parseMesaageError(response.data.errors)
+                                this.$message({
+                                    duration: 6000,
+                                    type: 'error',
+                                    dangerouslyUseHTMLString: true,
+                                    message: mhtl
+                                });
+                            }
+                            else
+                                if(response.data.error){
+                                    const ht = `<strong>${response.data.message}</strong> <br> <strong>${response.data.error.string} </strong> `
+                                    this.$message({
+                                        duration: 6000,
+                                        type: 'error',
+                                        dangerouslyUseHTMLString: true,
+                                        message: ht
+                                    });
+                                }
+                                else{
+                                    this.$message.error(response.data.message);
+                                }
+                                setTimeout(this.close(), 5000)
+                        }
                     }
                     else {
                         if(response.data.errors){

@@ -61,7 +61,7 @@
             },
             create() {
                 if(this.type === 'customers') {
-                    this.titleDialog = 'Importar Clientes'
+                    this.titleDialog = 'Importar Clientes XXX'
                 }
                 if(this.type === 'suppliers') {
                     this.titleDialog = 'Importar Proveedores'

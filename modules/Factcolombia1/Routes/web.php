@@ -16,7 +16,8 @@ if($current_hostname) {
                 Route::get('', 'Tenant\DocumentController@index')->name('tenant.co-documents.index');
                 Route::get('records', 'Tenant\DocumentController@records');
                 Route::get('note/{id}', 'Tenant\DocumentController@note');
-                Route::get('duplicate-invoice/{id}', 'Tenant\DocumentController@duplicate');
+                Route::get('duplicate-invoice/{id}', 'Tenant\DocumentController@duplicate_invoice');
+                Route::get('edit-invoice/{id}', 'Tenant\DocumentController@edit_invoice');
                 Route::get('record/{id}', 'Tenant\DocumentController@record');
                 Route::get('columns', 'Tenant\DocumentController@columns');
                 Route::get('create', 'Tenant\DocumentController@create')->name('tenant.co-documents.create');
@@ -37,6 +38,7 @@ if($current_hostname) {
                 Route::post('store_aiu', 'Tenant\DocumentController@store_aiu');
                 Route::get('downloadFile/{filename}', 'Tenant\DocumentController@downloadFile');
                 Route::post('query-zipkey', 'Tenant\DocumentController@queryZipkey');
+                Route::post('import', 'Tenant\DocumentController@co_import');
             });
 
             Route::prefix('co-documents-aiu')->group(function () {

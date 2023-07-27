@@ -398,7 +398,6 @@ class DocumentController extends Controller
             'data' => [
                 'id' => $document->id,
                 'response' =>$response
-
             ],
         ];
     }
