@@ -680,6 +680,162 @@ class DocumentController extends Controller
         }
     }
 
+    public function preeliminarview(DocumentRequest $request){
+//        \Log::debug($invoice_json);
+        try {
+            if(!$request->customer_id){
+                $customer = (object)$request->service_invoice['customer'];
+                $person = Person::updateOrCreate([
+                    'type' => 'customers',
+                    'identity_document_type_id' => $customer->identity_document_type_id,
+                    'number' => $customer->identification_number,
+                ], [
+                    'code' => random_int(1000, 9999),
+                    'name' => $customer->name,
+                    'country_id' => 47,
+                    'department_id' => 779,
+                    'city_id' => 12688,
+                    'address' => $customer->address,
+                    'email' => $customer->email,
+                    'telephone' => $customer->phone,
+                ]);
+                $request['customer_id'] = $person->id;
+            }
+
+            $response = null;
+            $this->company = Company::query()->with('country', 'version_ubl', 'type_identity_document')->firstOrFail();
+
+            $company = ServiceTenantCompany::firstOrFail();
+
+            // si la empresa esta en habilitacion, envio el parametro ignore_state_document_id en true
+            // para buscar el correlativo en api sin filtrar por el campo state_document_id=1
+
+            $ignore_state_document_id = ($company->type_environment_id === 2 || $invoice_json !== NULL);
+            $ignore_state_document_id = true;
+            $correlative_api = $this->getCorrelativeInvoice(1, $request->prefix, $ignore_state_document_id);
+
+//            \Log::debug($correlative_api);
+
+            if(!is_numeric($correlative_api)){
+                return [
+                    'success' => false,
+                    'message' => 'Error al obtener correlativo Api.'
+                ];
+            }
+//            \Log::debug($invoice_json_decoded);
+
+            $service_invoice = $request->service_invoice;
+
+            $service_invoice['number'] = $correlative_api;
+            $service_invoice['prefix'] = $request->prefix;
+            $service_invoice['resolution_number'] = $request->resolution_number;
+            $service_invoice['head_note'] = "V I S T A   P R E E L I M I N A R  --  V I S T A   P R E E L I M I N A R  --  V I S T A   P R E E L I M I N A R  --  V I S T A   P R E E L I M I N A R";
+            $service_invoice['foot_note'] = "Modo de operación: Software Propio - by ".env('APP_NAME', 'FACTURALATAM');
+//\Log::debug(json_encode($service_invoice));
+            $service_invoice['web_site'] = env('APP_NAME', 'FACTURALATAM');
+//\Log::debug(json_encode($service_invoice));
+            if(!is_null($this->company['jpg_firma_facturas']))
+              if(file_exists(public_path('storage/uploads/logos/'.$this->company['jpg_firma_facturas']))){
+                  $firma_facturacion = base64_encode(file_get_contents(public_path('storage/uploads/logos/'.$this->company['jpg_firma_facturas'])));
+                  $service_invoice['firma_facturacion'] = $firma_facturacion;
+              }
+
+            if ($request->order_reference)
+            {
+                if (isset($request['order_reference']['issue_date_order']) && isset($request['order_reference']['id_order']))
+                {
+                    $service_invoice['order_reference']['id_order'] = $request['order_reference']['id_order'];
+                    $service_invoice['order_reference']['issue_date_order'] = $request['order_reference']['issue_date_order'];
+                }
+            }
+            if ($request->health_fields){
+                if (isset($request['health_fields']['invoice_period_start_date']) && isset($request['health_fields']['invoice_period_end_date']))
+                {
+                    $service_invoice['health_fields']['invoice_period_start_date'] = $request['health_fields']['invoice_period_start_date'];
+                    $service_invoice['health_fields']['invoice_period_end_date'] = $request['health_fields']['invoice_period_end_date'];
+                    $service_invoice['health_fields']['health_type_operation_id'] = 1;
+                    $service_invoice['health_fields']['users_info'] = $request->health_users;
+                }
+            }
+
+            $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
+            if(file_exists(storage_path('template.api'))){
+                $service_invoice['invoice_template'] = "one";
+                $service_invoice['template_token'] = password_hash($company->identification_number, PASSWORD_DEFAULT);
+            }
+
+            $sucursal = \App\Models\Tenant\Establishment::where('id', auth()->user()->establishment_id)->first();
+
+            if(file_exists(storage_path('sendmail.api')))
+                $service_invoice['sendmail'] = true;
+            $service_invoice['ivaresponsable'] = $datoscompany->type_regime->name;
+            $service_invoice['establishment_name'] = $sucursal->descriptioN;
+            if($sucursal->address != '-')
+                $service_invoice['establishment_address'] = $sucursal->address;
+            if($sucursal->telephone != '-')
+                $service_invoice['establishment_phone'] = $sucursal->telephone;
+            if(!is_null($sucursal->establishment_logo))
+                if(file_exists(public_path('storage/uploads/logos/'.$sucursal->id."_".$sucursal->establishment_logo))){
+                    $establishment_logo = base64_encode(file_get_contents(public_path('storage/uploads/logos/'.$sucursal->id."_".$sucursal->establishment_logo)));
+                    $service_invoice['establishment_logo'] = $establishment_logo;
+                }
+            if(!is_null($sucursal->email))
+                $service_invoice['establishment_email'] = $sucursal->email;
+            $service_invoice['nombretipodocid'] = $datoscompany->type_identity_document->name;
+            $service_invoice['tarifaica'] = $datoscompany->ica_rate;
+            $service_invoice['actividadeconomica'] = $datoscompany->economic_activity_code;
+            $service_invoice['notes'] = $request->observation;
+            $service_invoice['date'] = date('Y-m-d', strtotime($request->date_issue));
+            $service_invoice['time'] = date('H:i:s');
+            $service_invoice['payment_form']['payment_form_id'] = $request->payment_form_id;
+            $service_invoice['payment_form']['payment_method_id'] = $request->payment_method_id;
+            if($request->payment_form_id == '1')
+                $service_invoice['payment_form']['payment_due_date'] = date('Y-m-d');
+            else
+                $service_invoice['payment_form']['payment_due_date'] = date('Y-m-d', strtotime($request->date_expiration));
+            $service_invoice['payment_form']['duration_measure'] = $request->time_days_credit;
+            $service_invoice['customer']['dv'] = $this->validarDigVerifDIAN($service_invoice['customer']['identification_number']);
+
+            $base_url = config('tenant.service_fact');
+
+            $ch = curl_init("{$base_url}ubl2.1/invoice/preeliminar-view");
+            $data_document = json_encode($service_invoice);
+//\Log::debug("{$base_url}ubl2.1/invoice");
+//\Log::debug($company->api_token);
+//\Log::debug($correlative_api);
+//\Log::debug($data_document);
+//            return $data_document;
+//return "";
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_POSTFIELDS,($data_document));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Accept: application/json',
+                "Authorization: Bearer {$company->api_token}"
+            ));
+            $response = curl_exec($ch);
+//\Log::debug($response);
+            curl_close($ch);
+            $response_model = json_decode($response);
+            // dd($response_model);
+            return [
+                'success' => true,
+                'message' => $response_model->message,
+                'base64invoicepdf' => $response_model->base64invoicepdf,
+            ];
+
+        }
+        catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace(),
+            ];
+        }
+    }
+
     public function storeNote(DocumentRequest $request) {
         DB::connection('tenant')->beginTransaction();
 

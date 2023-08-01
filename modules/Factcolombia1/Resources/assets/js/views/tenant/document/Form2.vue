@@ -302,6 +302,7 @@
 
 
                     <div class="form-actions text-right mt-4">
+                        <el-button @click.prevent="preeliminarview()" :loading="loading_preeliminar_view" v-if="form.items.length > 0">Vista Preeliminar</el-button>
                         <el-button @click.prevent="close()">Cancelar</el-button>
                         <el-button class="submit" type="primary" native-type="submit" :loading="loading_submit" v-if="form.items.length > 0">Generar</el-button>
                     </div>
@@ -409,6 +410,7 @@
                 showDialogNewPerson: false,
                 showDialogOptions: false,
                 loading_submit: false,
+                loading_preeliminar_view: false,
                 loading_form: false,
                 errors: {},
                 form: {},
@@ -1005,6 +1007,56 @@
                 val.total = Number(total).toFixed(2)
 
             },
+
+            async preeliminarview() {
+                if(!this.form.resolution_number || !this.form.prefix)
+                {
+                    return this.$message.error('Debe seleccionar una Resolución')
+                }
+
+                if(!this.form.customer_id){
+                    return this.$message.error('Debe seleccionar un cliente')
+                }
+
+                if(this.health_sector){
+                    if(this.form.health_users.length == 0)
+                        return this.$message.error('Para facturas del sector salud se debe incluir los datos de al menos un usuario del servicio')
+                    if(!this.form.health_fields.invoice_period_start_date || !this.form.health_fields.invoice_period_end_date)
+                        return this.$message.error('Para facturas del sector salud debe incluir los datos del periodo de facturacion')
+                }
+
+                this.form.service_invoice = await this.createInvoiceService();
+
+                this.loading_preeliminar_view = true
+                this.$http.post(`/${this.resource}/preeliminar-view`, this.form).then(response => {
+                    console.log(response)
+                    if (response.data.success) {
+                        var byteCharacters = atob(response.data.base64invoicepdf);
+                        var byteNumbers = new Array(byteCharacters.length);
+                        for (var i = 0; i < byteCharacters.length; i++) {
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                        }
+                        var byteArray = new Uint8Array(byteNumbers);
+                        var file = new Blob([byteArray], { type: 'application/pdf;base64' });
+                        var fileURL = URL.createObjectURL(file);
+                        window.open(fileURL, '_blank');
+                    }
+                    else{
+                        this.$message.error(response.data.message);
+                    }
+                    this.loading_preeliminar_view = false;
+                }).catch(error => {
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data;
+                    }
+                    else {
+                        this.$message.error(error.response.data.message);
+                    }
+                }).then(() => {
+                    this.loading_preeliminar_view = false;
+                });
+            },
+
             close() {
                 location.href = (this.is_contingency) ? `/contingencies` : `/${this.resource}`
             },
