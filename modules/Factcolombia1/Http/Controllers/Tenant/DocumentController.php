@@ -305,7 +305,8 @@ class DocumentController extends Controller
      * @param  App\Http\Controllers\Tenant\DocumentRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(DocumentRequest $request, $invoice_json = NULL) {
+    public function store(DocumentRequest $request, $invoice_json = NULL){
+//        \Log::debug($invoice_json);
         DB::connection('tenant')->beginTransaction();
         try {
             if($invoice_json !== NULL)
@@ -392,16 +393,29 @@ class DocumentController extends Controller
                     $service_invoice['order_reference']['issue_date_order'] = $request['order_reference']['issue_date_order'];
                 }
             }
-            if ($request->health_fields)
-            {
-                if (isset($request['health_fields']['invoice_period_start_date']) && isset($request['health_fields']['invoice_period_end_date']))
-                {
-                    $service_invoice['health_fields']['invoice_period_start_date'] = $request['health_fields']['invoice_period_start_date'];
-                    $service_invoice['health_fields']['invoice_period_end_date'] = $request['health_fields']['invoice_period_end_date'];
-                    $service_invoice['health_fields']['health_type_operation_id'] = 1;
-                    $service_invoice['health_fields']['users_info'] = $request->health_users;
+            if($invoice_json === NULL){
+                if ($request->health_fields){
+                    if (isset($request['health_fields']['invoice_period_start_date']) && isset($request['health_fields']['invoice_period_end_date']))
+                    {
+                        $service_invoice['health_fields']['invoice_period_start_date'] = $request['health_fields']['invoice_period_start_date'];
+                        $service_invoice['health_fields']['invoice_period_end_date'] = $request['health_fields']['invoice_period_end_date'];
+                        $service_invoice['health_fields']['health_type_operation_id'] = 1;
+                        $service_invoice['health_fields']['users_info'] = $request->health_users;
+                    }
                 }
             }
+            else{
+                if (isset($invoice_json_decoded['health_fields'])){
+                    if (isset($invoice_json_decoded['health_fields']['invoice_period_start_date']) && isset($invoice_json_decoded['health_fields']['invoice_period_end_date']))
+                    {
+                        $service_invoice['health_fields']['invoice_period_start_date'] = $invoice_json_decoded['health_fields']['invoice_period_start_date'];
+                        $service_invoice['health_fields']['invoice_period_end_date'] = $invoice_json_decoded['health_fields']['invoice_period_end_date'];
+                        $service_invoice['health_fields']['health_type_operation_id'] = 1;
+                        $service_invoice['health_fields']['users_info'] = $invoice_json_decoded['users_info'];
+                    }
+                }
+            }
+
             $datoscompany = Company::with('type_regime', 'type_identity_document')->firstOrFail();
             if(file_exists(storage_path('template.api'))){
                 $service_invoice['invoice_template'] = "one";
@@ -611,8 +625,14 @@ class DocumentController extends Controller
                 $request->payment_method_id = $service_invoice['payment_form']['payment_method_id'];
                 $request->time_days_credit = $service_invoice['payment_form']['duration_measure'];
                 $request->order_reference = [];
-                $request->health_fields = [];
-                $request->health_users = [];
+                if(isset($service_invoice['health_fields'])){
+                    $request->health_fields = $service_invoice['health_fields'];
+                    $request->health_users = $service_invoice['health_fields']['users_info'];
+                }
+                else{
+                    $request->health_fields = [];
+                    $request->health_users = [];
+                }
                 $request->items = $service_invoice['invoice_lines'];
             }
             $this->document = DocumentHelper::createDocument($request, $nextConsecutive, $correlative_api, $this->company, $response, $response_status, $company->type_environment_id);

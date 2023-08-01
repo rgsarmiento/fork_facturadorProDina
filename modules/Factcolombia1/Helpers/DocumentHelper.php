@@ -186,16 +186,15 @@ class DocumentHelper
     public static function getHealthFields($request)
     {
         $health_fields = null;
-
         if ($request->health_fields)
         {
-            if (isset($request['health_fields']['invoice_period_start_date']) && isset($request['health_fields']['invoice_period_end_date']))
+            if (isset($request->health_fields['invoice_period_start_date']) && isset($request->health_fields['invoice_period_end_date']))
             {
                 $health_fields = [
-                    'invoice_period_start_date' => $request['health_fields']['invoice_period_start_date'],
-                    'invoice_period_end_date' => $request['health_fields']['invoice_period_end_date'],
+                    'invoice_period_start_date' => $request->health_fields['invoice_period_start_date'],
+                    'invoice_period_end_date' => $request->health_fields['invoice_period_end_date'],
                     'health_type_operation_id' => 1,
-                    'users_info' => $request['health_users'],
+                    'users_info' => $request->health_users,
                 ];
             }
         }

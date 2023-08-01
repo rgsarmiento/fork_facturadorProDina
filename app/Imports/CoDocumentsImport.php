@@ -72,8 +72,11 @@ class CoDocumentsImport implements ToCollection
         $this->validate($rows);
         foreach ($rows as $row){
             if($row[4].$row[0] != $previos_prefix_number){
-                if($previos_prefix_number != "")
+                if($previos_prefix_number != ""){
+                    \Log::debug(json_encode($json));
                     $send->store($request, json_encode($json));
+                    sleep(5);
+                }
                 $previos_prefix_number = $row[4].$row[0];
                 $number = $row[0];
                 $date = $this->ExcelDateToPHP($row[1]);
@@ -118,6 +121,40 @@ class CoDocumentsImport implements ToCollection
                     'charge_total_amount' => $row[19],
                     'payable_amount' => $row[20],
                 ];
+                if($row[28] != '' && $row[29] != '' && $row[30] != ''){
+                    $health_fields = [
+                        'invoice_period_start_date' => $this->ExcelDateToPHP($row[28]),
+                        'invoice_period_end_date' => $this->ExcelDateToPHP($row[29]),
+                    ];
+
+                    $us_i = explode("%", $row[30]);
+                    $users_info = [];
+                    foreach($us_i as $u){
+                        $u_i = explode(",", $u);
+                        $arr_u_i = [
+                            'provider_code' => $u_i[0],
+                            'health_type_document_identification_id' => $u_i[1],
+                            'identification_number' => $u_i[2],
+                            'surname' => $u_i[3],
+                            'second_surname' => $u_i[4],
+                            'first_name' => $u_i[5],
+                            'middle_name' => $u_i[6],
+                            'health_type_user_id' => $u_i[7],
+                            'health_contracting_payment_method_id' => $u_i[8],
+                            'health_coverage_id' => $u_i[9],
+                            'autorization_numbers' => $u_i[10],
+                            'mipres' => $u_i[11],
+                            'mipres_delivery' => $u_i[12],
+                            'contract_number' => $u_i[13],
+                            'policy_number' => $u_i[14],
+                            'co_payment' => $u_i[15],
+                            'moderating_fee' => $u_i[16],
+                            'recovery_fee' => $u_i[17],
+                            'shared_payment' => $u_i[18],
+                        ];
+                        $users_info[] = $arr_u_i;
+                    }
+                }
                 $invoice_lines = [];
             }
             $item = Item::where('internal_id', $row[23])->firstOrFail();
@@ -166,8 +203,16 @@ class CoDocumentsImport implements ToCollection
             );
             $registered += 1;
             $this->data = compact('total', 'registered');
-            sleep(5);
+            if($row[28] != '' && $row[29] != '' && $row[30] != ''){
+                $json['health_fields'] = $health_fields;
+                $json['users_info'] = $users_info;
+            }
         }
+        if($row[28] != '' && $row[29] != '' && $row[30] != ''){
+            $json['health_fields'] = $health_fields;
+            $json['users_info'] = $users_info;
+        }
+        \Log::debug(json_encode($json));
         $send->store($request, json_encode($json));
         $this->data = compact('total', 'registered');
     }

@@ -85,7 +85,7 @@
                                 </el-tooltip>
                             </template>
 
-                            <template v-if="row.type_document_name=='Factura de Venta Nacional' || row.type_document_name=='Factura de Exportación' || row.type_document_name=='Factura de Contingencia' || row.type_document_name=='Factura electrónica de Venta - tipo 04'">
+                            <template v-if="(row.type_document_name=='Factura de Venta Nacional' || row.type_document_name=='Factura de Exportación' || row.type_document_name=='Factura de Contingencia' || row.type_document_name=='Factura electrónica de Venta - tipo 04') && row.state_document_id==5">
                                 <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2">Nota</a>
                             </template>
 
