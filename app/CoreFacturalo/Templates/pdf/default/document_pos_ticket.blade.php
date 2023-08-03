@@ -14,11 +14,18 @@
     //                     ->first();
 
     // $resolution = $cash->resolution;
-    
+
     $resolution = $document->getCashResolution();
 
     $sucursal = \App\Models\Tenant\Establishment::where('id', $document->establishment_id)->first();
-
+    if(!is_null($sucursal->establishment_logo)){
+        if(file_exists(public_path('storage/uploads/logos/'.$sucursal->id."_".$sucursal->establishment_logo)))
+            $filename_logo = public_path('storage/uploads/logos/'.$sucursal->id."_".$sucursal->establishment_logo);
+        else
+            $filename_logo = public_path("storage/uploads/logos/{$company->logo}");
+    }
+    else
+        $filename_logo = public_path("storage/uploads/logos/{$company->logo}");
 @endphp
 <html>
 <head>
@@ -26,11 +33,16 @@
 </head>
 <body>
 
-@if($company->logo)
+@if($filename_logo != "")
+    <div class="text-center company_logo_box pt-5">
+        <img src="data:{{mime_content_type($filename_logo)}};base64, {{base64_encode(file_get_contents($filename_logo))}}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;">
+    </div>
+@endif
+{{--@if($company->logo)
     <div class="text-center company_logo_box pt-5">
         <img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo_ticket contain">
     </div>
-@endif
+@endif--}}
 <table class="full-width">
     <tr>
         <td class="text-center"><h4>{{ $company->name }}</h4></td>

@@ -5,8 +5,16 @@
     //$path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
     $accounts = \App\Models\Tenant\BankAccount::all();
     $tittle = $document->prefix.'-'.str_pad($document->id, 8, '0', STR_PAD_LEFT);
-
-
+    $sucursal = \App\Models\Tenant\Establishment::where('id', auth()->user()->establishment_id)->first();
+    $filename_logo = "";
+    if(!is_null($sucursal->establishment_logo)){
+        if(file_exists(public_path('storage/uploads/logos/'.$sucursal->id."_".$sucursal->establishment_logo)))
+            $filename_logo = public_path('storage/uploads/logos/'.$sucursal->id."_".$sucursal->establishment_logo);
+        else
+            $filename_logo = public_path("storage/uploads/logos/{$company->logo}");
+    }
+    else
+        $filename_logo = public_path("storage/uploads/logos/{$company->logo}");
 @endphp
 <html>
 <head>
@@ -15,15 +23,20 @@
 </head>
 <body>
 
-@if($company->logo)
+@if($filename_logo != "")
+    <div class="text-center company_logo_box pt-5">
+        <img src="data:{{mime_content_type($filename_logo)}};base64, {{base64_encode(file_get_contents($filename_logo))}}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;">
+    </div>
+@endif
+{{--@if($company->logo)
     <div class="text-center company_logo_box pt-5">
         <img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo_ticket contain">
     </div>
-{{--@else--}}
+@else--}}
     {{--<div class="text-center company_logo_box pt-5">--}}
         {{--<img src="{{ asset('logo/logo.jpg') }}" class="company_logo_ticket contain">--}}
-    {{--</div>--}}
-@endif
+    {{--</div>
+@endif--}}
 <table class="full-width">
     <tr>
         <td class="text-center"><h5>{{ $company->name }}</h5></td>
@@ -37,7 +50,7 @@
             {{ ($establishment->city_id !== '-')? ', '.$establishment->city->name : '' }}
             {{ ($establishment->department_id !== '-')? '- '.$establishment->department->name : '' }}
             {{ ($establishment->country_id !== '-')? ', '.$establishment->country->name : '' }}
-            
+
             @isset($establishment->trade_address)
                 <h6>{{ ($establishment->trade_address !== '-')? 'D. Comercial: '.$establishment->trade_address : '' }}</h6>
             @endisset
@@ -72,15 +85,15 @@
         <td width="" class="pt-3"><p class="desc">F. Emisión:</p></td>
         <td width="" class="pt-3"><p class="desc">{{ $document->date_of_issue->format('Y-m-d') }}</p></td>
     </tr>
- 
-    @if($document->date_of_due) 
+
+    @if($document->date_of_due)
     <tr>
         <td width="" class=""><p class="desc">F. Vencimiento:</p></td>
         <td width="" class=""><p class="desc">{{ $document->date_of_due->format('Y-m-d') }}</p></td>
     </tr>
     @endif
 
-    @if($document->delivery_date) 
+    @if($document->delivery_date)
     <tr>
         <td width="" class=""><p class="desc">F. Entrega:</p></td>
         <td width="" class=""><p class="desc">{{ $document->delivery_date->format('Y-m-d') }}</p></td>
@@ -113,18 +126,18 @@
         <td class="align-top"><p class="desc">Dir. Envío:</p></td>
         <td colspan="3">
             <p class="desc">
-                {{ $document->shipping_address }} 
+                {{ $document->shipping_address }}
             </p>
         </td>
     </tr>
     @endif
-    
+
     @if ($customer->telephone)
     <tr>
         <td class="align-top"><p class="desc">Teléfono:</p></td>
         <td >
-            <p class="desc">            
-                {{ $customer->telephone }} 
+            <p class="desc">
+                {{ $customer->telephone }}
             </p>
         </td>
     </tr>
@@ -133,38 +146,38 @@
     <tr>
         <td class="align-top"><p class="desc">T. Pago:</p></td>
         <td >
-            <p class="desc">            
-                {{ $document->payment_method_type->description }} 
+            <p class="desc">
+                {{ $document->payment_method_type->description }}
             </p>
         </td>
     </tr>
     @endif
-    
+
     @if ($document->account_number)
     <tr>
         <td class="align-top"><p class="desc">N° Cuenta:</p></td>
         <td colspan="">
-            <p class="desc">            
-                {{ $document->account_number }} 
+            <p class="desc">
+                {{ $document->account_number }}
             </p>
-        </td> 
+        </td>
     </tr>
     @endif
     @if ($document->sale_opportunity)
     <tr>
         <td class="align-top"><p class="desc">O. Venta:</p></td>
         <td >
-            <p class="desc">            
-                {{ $document->sale_opportunity->number_full }} 
+            <p class="desc">
+                {{ $document->sale_opportunity->number_full }}
             </p>
         </td>
     </tr>
     @endif
-    <tr> 
+    <tr>
         <td class="align-top"><p class="desc">Vendedor:</p></td>
         <td>
-            <p class="desc">            
-                {{ $document->user->name }} 
+            <p class="desc">
+                {{ $document->user->name }}
 
             </p>
         </td>
@@ -188,7 +201,7 @@
         </tr>
     @endif
 </table>
- 
+
 <table class="full-width mt-10 mb-10">
     <thead class="">
     <tr>
@@ -229,7 +242,7 @@
             <td colspan="5" class="border-bottom"></td>
         </tr>
     @endforeach
-    
+
         <tr>
             <td colspan="4" class="text-right font-bold desc">TOTAL VENTA: {{ $document->currency->symbol }}</td>
             <td class="text-right font-bold desc">{{ $document->sale }}</td>
@@ -270,21 +283,21 @@
                     <td class="desc pt-3">Son: <span class="font-bold">{{ $row->value }} {{ $document->currency->description }}</span></td>
                     @if (count((array) $document->legends)>1)
                     <tr><td class="desc pt-3"><span class="font-bold">Leyendas</span></td></tr>
-                    @endif 
+                    @endif
                 @else
-                    <td class="desc pt-3">{{$row->code}}: {{ $row->value }}</td>                                                  
+                    <td class="desc pt-3">{{$row->code}}: {{ $row->value }}</td>
                 @endif
             </tr>
         @endforeach
     </tr>
 
     {{-- <tr>
-        <td class="desc pt-3"> 
+        <td class="desc pt-3">
             <br>
             @foreach($accounts as $account)
-                <span class="font-bold">{{$account->bank->description}}</span> {{$account->currency->description}} 
+                <span class="font-bold">{{$account->bank->description}}</span> {{$account->currency->description}}
                 <br>
-                <span class="font-bold">N°:</span> {{$account->number}} 
+                <span class="font-bold">N°:</span> {{$account->number}}
                 @if($account->cci)
                 - <span class="font-bold">CCI:</span> {{$account->cci}}
                 @endif
@@ -293,7 +306,7 @@
 
         </td>
     </tr> --}}
- 
+
 </table>
 <br>
 <table class="full-width">

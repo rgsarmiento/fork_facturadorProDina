@@ -11,7 +11,6 @@ class Template
         }
 
         $path_template =  $this->validate_template($base_template, $template, $format_pdf);
-
         return self::render($path_template, $company, $document);
     }
 
@@ -23,7 +22,7 @@ class Template
     private function render($view, $company, $document)
     {
         view()->addLocation(__DIR__.'/Templates');
-
+\Log::debug($view);
         return view($view, compact('company', 'document'))->render();
     }
 
