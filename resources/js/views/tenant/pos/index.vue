@@ -1084,6 +1084,9 @@ export default {
 
             let val = this.form
             val.taxes = this.taxes;
+            val.taxes.forEach(tax => {
+                tax.total = 0
+            });
 
             val.items.forEach(item => {
                 item.tax = this.taxes.find(tax => tax.id == item.tax_id);
@@ -1099,7 +1102,7 @@ export default {
                 if (item.tax != null) {
 
                     let tax = val.taxes.find(tax => tax.id == item.tax.id);
-                    tax.total = 0
+//                    tax.total = 0
 
                     if (item.tax.is_fixed_value)
                         item.total_tax = (
@@ -1107,9 +1110,9 @@ export default {
                             (item.discount < item.unit_price * item.quantity ? item.discount : 0)
                         ).toFixed(2);
 
-                    console.log(item)
+//                    console.log(item)
                     if (item.tax.is_percentage) {
-                        if(!item.edited_price)
+                        if(!item.edited_price){
                             item.total_tax = (
                                 (item.unit_price * item.quantity -
                                     (item.discount < item.unit_price * item.quantity ?
@@ -1117,20 +1120,27 @@ export default {
                                         0)) *
                                 (item.tax.rate / item.tax.conversion)
                             ).toFixed(2);
-                        else
+                        }
+                        else{
+//                            console.log("Aquui 2");
+//                            console.log(item)
                             item.total_tax = (
-                                (item.sale_unit_price_with_tax * item.quantity -
+                                (item.unit_price * item.quantity -
                                     (item.discount < item.sale_unit_price_with_tax * item.quantity ?
                                         item.discount :
                                         0)) *
                                 (item.tax.rate / item.tax.conversion)
                             ).toFixed(2);
+                        }
                     }
 
                     if (!tax.hasOwnProperty("total")) {
                         tax.total = Number(0).toFixed(2);
                     }
+//                    console.log(tax.total)
+//                    console.log(item.total_tax)
                     tax.total = (Number(tax.total) + Number(item.total_tax)).toFixed(2);
+//                    console.log(tax.total)
                 }
                 if(!item.edited_price){
                     item.subtotal = (
@@ -1203,14 +1213,16 @@ export default {
             const subtotal_refund = this.items_refund.reduce((p, c) => Number(p) + (Number(c.subtotal) - Number(c.discount)), 0);
 
             val.subtotal = (subtotal - subtotal_refund).toFixed(2)
-            const sale = !val.items.edited_price ? val.items.reduce((p, c) => Number(p) + Number((c.sale_unit_price_with_tax - c.total_tax)* c.quantity) - Number(c.discount), 0) : val.items.reduce((p, c) => Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount), 0);
-            const sale_refund = !val.items.edited_price ? this.items_refund.reduce((p, c) => Number(p) + Number((c.sale_unit_price_with_tax - c.total_tax) * c.quantity) - Number(c.discount), 0) : this.items_refund.reduce((p, c) => Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount), 0);
+//            console.log(val.items)
+//            console.log(val.items.reduce((p, c) => Number(p) + ((Number(c.sale_unit_price_with_tax) *  Number(c.quantity))) - Number(c.total_tax) - Number(c.discount), 0))
+            const sale = !val.items.edited_price ? val.items.reduce((p, c) => Number(p) + Number((c.sale_unit_price_with_tax * c.quantity) - c.total_tax) - Number(c.discount), 0) : val.items.reduce((p, c) => Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount), 0);
+            const sale_refund = !val.items.edited_price ? this.items_refund.reduce((p, c) => Number(p) + Number((c.sale_unit_price_with_tax  * c.quantity) - c.total_tax) - Number(c.discount), 0) : this.items_refund.reduce((p, c) => Number(p) + Number(c.unit_price * c.quantity) - Number(c.discount), 0);
 
             val.sale = (sale - sale_refund).toFixed(2)
-
             val.total_discount = val.items
                 .reduce((p, c) => Number(p) + Number(c.discount), 0)
                 .toFixed(2);
+//            console.log(val.items.reduce((p, c) => Number(p) + Number(c.total_tax), 0))
             val.total_tax = val.items
                 .reduce((p, c) => Number(p) + Number(c.total_tax), 0)
                 .toFixed(2);
