@@ -42,23 +42,23 @@
 
                         <td>
                             <template v-if="row.aceptacion == 1">
-                                <i class="fa fa-circle" style="color: green"></i>
+                                <i class="fa fa-circle" style="color:  rgb(40, 200, 40)"></i>
                             </template>
                             <template v-else>
                                 <template v-if="row.rechazo == 1">
-                                    <i class="fa fa-circle" style="color: red"></i>
+                                    <i class="fa fa-circle" style="color:  red"></i>
                                 </template>
                                 <template v-else>
                                     
                                     <template v-if="row.rec_bienes == 1">
-                                        <i class="fa fa-circle" style="color: yellow"></i>
+                                        <i class="fa fa-circle" style="color:  yellow"></i>
                                     </template>
                                     <template v-else>
                                         <template v-if="row.acu_recibo == 1">
-                                            <i class="fa fa-circle" style="color: blue"></i>
+                                            <i class="fa fa-circle" style="color:  rgb(19, 19, 201)"></i>
                                         </template>
                                         <template v-else>
-                                            <i class="fa fa-circle" style="color: black"></i>
+                                            <i class="fa fa-circle" style="color:  black"></i>
                                         </template>
                                     </template>
                                 </template>
@@ -71,16 +71,16 @@
                         <td>{{ row.identification_number }}</td>
                         <td>{{ row.name_seller }}</td>
                         <td>{{ row.prefix }}</td>
-                        <td>{{ row.number }}</td>
+                        <td><a class="btn btn-info" :href="'https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey=' + row.cufe" role="button" target="_blank">{{ row.number }}</a></td>
                         <td>{{ row.total_tax }}</td>
                         <td>{{ row.total }}</td>
                         <td>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-success" @click.prevent="clickDownload(row.xml)">
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-secondary"   @click.prevent="clickDownload(row.xml)">
                                 <i class="fas fa-download"></i>
                             </button>
                         </td>
                         <td>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDownload(row.pdf)">
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-secondary"  @click.prevent="clickDownload(row.pdf)">
                                 <i class="fas fa-download"></i>
                             </button>
                         </td>
@@ -89,7 +89,7 @@
                             <!-- Acuse Recibo -->
 
                             <el-tooltip class="item" effect="dark" content="Documento electrónico por el cual el Adquiriente manifiesta que ha recibido la factura electrónica, de conformidad con el artículo 774 del Código de Comercio." placement="bottom-end">
-                                <button type="button" class="btn waves-effect waves-light btn-xs btn-primary" @click.prevent="clickSendEvent(row.id, '1')">
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-primary"  @click.prevent="clickSendEvent(row.id, '1')">
                                     <i class="fas fa-file-import"></i>
                                 </button>
                             </el-tooltip>
@@ -102,7 +102,7 @@
                             <!-- Recepcion Bienes -->
 
                             <el-tooltip class="item" effect="dark" content="Documento electrónico por el cual el Adquiriente informa del recibo de los bienes o servicios adquiridos, de conformidad con el artículo 773 del Código de Comercio y en concordancia con el parágrafo 1 del artículo 2.2.2.53.4. del Decreto 1074 de 2015 Único Reglamentario del Sector Comercio, Industria y Turismo." placement="bottom-end">
-                                <button type="button" class="btn waves-effect waves-light btn-xs btn-primary" @click.prevent="clickSendEvent(row.id, '3')">
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-warning"   @click.prevent="clickSendEvent(row.id, '3')">
                                     <i class="fas fa-file-import"></i>
                                 </button>
                             </el-tooltip>
@@ -114,7 +114,7 @@
                             <!-- Aceptacion Expresa -->
 
                             <el-tooltip class="item" effect="dark" content="Documento electrónico por el cual el Adquiriente informa al Emisor que acepta expresamente el Documento Electrónico que origina este tipo de ApplicationResponse de conformidad con el artículo 773 del Código de Comercio y en concordancia con el numeral 1 del artículo 2.2.2.53.4. del Decreto 1074 de 2015, Único Reglamentario del Sector Comercio, Industria y Turismo." placement="bottom-end">
-                                <button type="button" class="btn waves-effect waves-light btn-xs btn-primary" @click.prevent="clickSendEvent(row.id, '4')">
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-success"  @click.prevent="clickSendEvent(row.id, '4')">
                                     <i class="fas fa-file-import"></i>
                                 </button>
                             </el-tooltip>
@@ -125,7 +125,7 @@
                             <!-- Rechazo -->
                             
                             <el-tooltip class="item" effect="dark" content="Documento electrónico mediante el cual el Adquiriente manifiesta que no acepta el documento de conformidad con el artículo 773 del Código de Comercio y en concordancia con el artículo 2.2.2.53.4. del Decreto 1074 de 2015, Único Reglamentario del Sector Comercio, Industria y Turismo. Este documento es para desaveniencias de tipo comercial, dado que el documento sobre el cual manifiesta el desacuerdo fue efectivamente Validado por la DIAN, en el sistema de Validación Previa, Nota: Se debe solicitar una nota contable al emisor." placement="bottom-end">
-                                <button type="button" class="btn waves-effect waves-light btn-xs btn-primary" @click.prevent="clickRejected(row)">
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-danger"  @click.prevent="clickRejected(row)">
                                     <i class="fas fa-file-import"></i>
                                 </button>
                             </el-tooltip>

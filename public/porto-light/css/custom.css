@@ -4,7 +4,7 @@ ul.nav-main > li.nav-active > a {
 }
 
 .bg-info {
-    background: #0088cc !important;
+    background: linear-gradient(90deg, rgba(133,207,189,1) 0%, rgba(110,129,210,1) 62%, rgba(81,109,217,1) 100%) !important;
 }
 
 .btn-custom {
