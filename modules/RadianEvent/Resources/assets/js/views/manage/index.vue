@@ -42,23 +42,27 @@
 
                         <td>
                             <template v-if="row.aceptacion == 1">
-                                <i class="fa fa-circle" style="color: rgb(40, 200, 40)"></i>
+                                <span class="badge badge-success">Aceptado</span>
+                                <!-- <i class="fa fa-circle" style="color: rgb(40, 200, 40)"></i> -->
                             </template>
                             <template v-else>
                                 <template v-if="row.rechazo == 1">
-                                    <i class="fa fa-circle" style="color: red"></i>
+                                    <span class="badge badge-danger">Rechazado</span>
+                                    <!-- <i class="fa fa-circle" style="color: red"></i> -->
                                 </template>
-                                <template v-else>
-                                    
+                                <template v-else>                                    
                                     <template v-if="row.rec_bienes == 1">
-                                        <i class="fa fa-circle" style="color: yellow"></i>
+                                        <span class="badge badge-warning">Recepcion</span>
+                                        <!-- <i class="fa fa-circle" style="color: yellow"></i> -->
                                     </template>
                                     <template v-else>
                                         <template v-if="row.acu_recibo == 1">
-                                            <i class="fa fa-circle" style="color: rgb(19, 19, 201)"></i>
+                                            <span class="badge badge-info">Recibido</span>
+                                            <!-- <i class="fa fa-circle" style="color: rgb(19, 19, 201)"></i> -->
                                         </template>
                                         <template v-else>
-                                            <i class="fa fa-circle" style="color: black"></i>
+                                            <span class="badge badge-dark">Pendiente</span>
+                                            <!-- <i class="fa fa-circle" style="color: black"></i> -->
                                         </template>
                                     </template>
                                 </template>
