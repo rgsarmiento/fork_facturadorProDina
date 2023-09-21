@@ -1889,7 +1889,7 @@
                         total_base_salary: 0, //salario base del empleado (equivalente a 30 dias), no se afecta por los dias trabajados
                         salary: 0, 
                         accrued_total: 0,
-                        transportation_allowance: undefined, //se usa undefined ya que el componente input-number le asigna 0 al valor null
+                        transportation_allowance: 0, //se usa undefined ya que el componente input-number le asigna 0 al valor null
                         telecommuting: undefined,
                         endowment: undefined,
                         sustenance_support: undefined,
