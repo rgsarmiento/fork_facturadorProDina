@@ -185,7 +185,7 @@ class DocumentPayrollHelper
         $data_api = $this->getEndpointDataApi($document, $inputs);
         $params = $data_api['params'];
         $url = $data_api['url'];
-        // dd($url, $params);
+        //dd($url, $params);
         
         $send_request_to_api = $connection_api->sendRequestToApi($url, $params, 'POST');
 

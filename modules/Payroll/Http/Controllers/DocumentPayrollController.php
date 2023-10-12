@@ -138,7 +138,6 @@ class DocumentPayrollController extends Controller
                 // inputs
                 $helper = new DocumentPayrollHelper();
                 $inputs = $helper->getInputs($request);
-                
                 // registrar nomina en bd
                 $document = DocumentPayroll::create($inputs);
                 $document->accrued()->create($inputs['accrued']);

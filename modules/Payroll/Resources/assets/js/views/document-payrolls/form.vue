@@ -492,7 +492,7 @@
                                                                 </div>
 
                                                                 <div class="form-group mb-2 mr-2"  >
-                                                                    <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
+                                                                    <el-input-number v-model="row.payment" :min="0" controls-position="right"></el-input-number>
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -500,7 +500,7 @@
                                                                     <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.percentage`][0]"></small>
                                                                 </div>
                                                                 <div class="form-group mb-2 mr-2"  >
-                                                                    <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
+                                                                    <el-input-number v-model="row.percentage" :min="0" controls-position="right" ></el-input-number>
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -508,7 +508,7 @@
                                                                     <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.interest_payment`][0]"></small>
                                                                 </div>
                                                                 <div class="form-group mb-2 mr-2"  >
-                                                                    <el-input-number v-model="row.interest_payment" :min="0" controls-position="right" disabled></el-input-number>
+                                                                    <el-input-number v-model="row.interest_payment" :min="0" controls-position="right"></el-input-number>
                                                                 </div>
                                                             </td>
 
@@ -2567,7 +2567,7 @@
                 this.loading_submit = true
 
                 await this.$http.post(`/${(this.isAdjustNote) ? this.resource_adjust_note : this.resource}`, this.form).then(response => {
-                    // console.log(response)
+                    console.log(response)
                     if (response.data.success) {
                         this.resetForm()
                         this.recordId = response.data.data.id
