@@ -66,7 +66,7 @@ export const documentPayrollMixin = {
         },
         calculateInterestPayment(index){
             //this.form.accrued.severance[index].interest_payment = this.roundNumber(this.form.accrued.severance[index].payment * this.percentageToFactor(this.form.accrued.severance[index].percentage))
-            //this.calculateTotal()
+            this.calculateTotal()
         },
         // cesantias
 

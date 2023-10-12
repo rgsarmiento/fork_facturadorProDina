@@ -492,7 +492,7 @@
                                                                 </div>
 
                                                                 <div class="form-group mb-2 mr-2"  >
-                                                                    <el-input-number v-model="row.payment" :min="0" controls-position="right"></el-input-number>
+                                                                    <el-input-number v-model="row.payment" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -500,7 +500,7 @@
                                                                     <small class="form-control-feedback"  v-text="errors[`accrued.severance.${index}.percentage`][0]"></small>
                                                                 </div>
                                                                 <div class="form-group mb-2 mr-2"  >
-                                                                    <el-input-number v-model="row.percentage" :min="0" controls-position="right" ></el-input-number>
+                                                                    <el-input-number v-model="row.percentage" :min="0" controls-position="right" @change="calculateInterestPayment(index)"></el-input-number>
                                                                 </div>
                                                             </td>
                                                             <td>
