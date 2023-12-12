@@ -333,29 +333,36 @@ class SearchEmailController extends Controller
         $parse_subject = explode(';',  $subject);
         $quantity_items = count($parse_subject);
 
-        $email_reading_detail = EmailReadingDetail::where('email_user', $email_reading->email_user)
-                                                    ->where('email_id', $mail->id)
-                                                    ->select('id')
-                                                    ->first();
 
-        // validar si es que no existe el email registrado
-        if($quantity_items > 0 && !$email_reading_detail)
-        {
-            if(isset($parse_subject[3]))
+        $type_document_code_ = trim($parse_subject[3]);
+
+        if($type_document_code_=='01'){
+
+            $email_reading_detail = EmailReadingDetail::where('email_user', $email_reading->email_user)
+                                                        ->where('email_id', $mail->id)
+                                                        ->select('id')
+                                                        ->first();
+
+            // validar si es que no existe el email registrado
+            if($quantity_items > 0 && !$email_reading_detail)
             {
-                $type_document_code = trim($parse_subject[3]);
-                $exist_type_document = TypeDocument::where('code', $type_document_code)->select('id')->first();
-
-                dd($subject);
-                if($quantity_items >= 4 && is_numeric($parse_subject[0]) && $exist_type_document && $mail->hasAttachments())
+                if(isset($parse_subject[3]))
                 {
-                    if(count($mail->getAttachments()) === 1)
+                    $type_document_code = trim($parse_subject[3]);
+                    $exist_type_document = TypeDocument::where('code', $type_document_code)->select('id')->first();
+                    
+                    if($quantity_items >= 3 && is_numeric($parse_subject[0]) && $exist_type_document && $mail->hasAttachments())
                     {
-                        return true;
+                        if(count($mail->getAttachments()) === 1)
+                        {
+                            return true;
+                        }
                     }
                 }
-            }
+            } 
+            
         }
+
 
         return false;
     }
