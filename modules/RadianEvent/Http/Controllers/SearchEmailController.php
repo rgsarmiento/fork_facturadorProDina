@@ -346,13 +346,14 @@ class SearchEmailController extends Controller
                 $type_document_code = trim($parse_subject[3]);
                 $exist_type_document = TypeDocument::where('code', $type_document_code)->select('id')->first();
 
-                //if($quantity_items >= 4 && is_numeric($parse_subject[0]) && $exist_type_document && $mail->hasAttachments())
-                //{
+                dd($subject);
+                if($quantity_items >= 4 && is_numeric($parse_subject[0]) && $exist_type_document && $mail->hasAttachments())
+                {
                     if(count($mail->getAttachments()) === 1)
                     {
                         return true;
                     }
-                //}
+                }
             }
         }
 
