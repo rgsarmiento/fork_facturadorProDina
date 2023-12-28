@@ -22,6 +22,7 @@
                         <th class="text-left">Tipo nómina</th>
                         <th class="text-center">Nómina</th>
                         <th class="text-center">Estado</th>
+                        <th class="text-center">Fecha Pago</th>
                         <th class="text-left">Nóminas relacionadas</th>
                         <th class="text-center">Salario</th>
                         <th class="text-center">T. Devengados</th>
@@ -40,7 +41,8 @@
                                     {{ row.state_document_name }}
                                 </span>
                             </template>
-                        </td>  
+                        </td>
+                        <td>{{ row.payment_date }}</td>                        
                         <td>
                             <template v-for="(item, index) in row.affected_adjust_notes">
                                 <span class="ml-1" :key="index">
