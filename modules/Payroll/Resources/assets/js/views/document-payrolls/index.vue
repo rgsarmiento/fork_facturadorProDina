@@ -42,7 +42,7 @@
                                 </span>
                             </template>
                         </td>
-                        <td>{{ row.payment_date }}</td>                        
+                        <td>{{ row.payment_dates }}</td>                        
                         <td>
                             <template v-for="(item, index) in row.affected_adjust_notes">
                                 <span class="ml-1" :key="index">
