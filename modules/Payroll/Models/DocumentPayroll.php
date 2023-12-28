@@ -321,6 +321,7 @@ class DocumentPayroll extends PayrollBaseModel
             'state_document_id' => $this->state_document_id,
             'state_document_name' => optional($this->state_document)->name,
             'btn_query' => $btn_query,
+            'response_api' => $this->response_api,
             'response_message_query_zipkey' => $this->response_message_query_zipkey,
             'payroll_type_environment_id' => $this->payroll_type_environment_id,
             'type_payroll_description' => $this->type_payroll_description,
