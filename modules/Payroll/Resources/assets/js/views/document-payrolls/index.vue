@@ -22,7 +22,7 @@
                         <th class="text-left">Tipo nómina</th>
                         <th class="text-center">Nómina</th>
                         <th class="text-center">Estado</th>
-                        <th class="text-center">Fecha Pago</th>
+                        <th class="text-center">Periodo</th>
                         <th class="text-left">Nóminas relacionadas</th>
                         <th class="text-center">Salario</th>
                         <th class="text-center">T. Devengados</th>
@@ -42,8 +42,7 @@
                                 </span>
                             </template>
                         </td>
-                        <td>{{ row.payment_dates }}</td>
-                        <td>{{ getMonthName(row.payment_dates[0].payment_date) }}</td>                        
+                        <td><span class="badge bg-secondary text-white bg-secondary">{{ getMonthName(row.payment_dates[0].payment_date) }} </span></td>                        
                         <td>
                             <template v-for="(item, index) in row.affected_adjust_notes">
                                 <span class="ml-1" :key="index">
