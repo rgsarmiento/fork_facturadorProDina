@@ -42,7 +42,8 @@
                                 </span>
                             </template>
                         </td>
-                        <td>{{ row.payment_dates }}</td>                        
+                        <td>{{ row.payment_dates }}</td>
+                        <td>{{ getMonthName(row.payment_dates[0].payment_date) }}</td>                        
                         <td>
                             <template v-for="(item, index) in row.affected_adjust_notes">
                                 <span class="ml-1" :key="index">
@@ -164,7 +165,18 @@
             clickOptions(recordId = null) {
                 this.recordId = recordId
                 this.showDialogDocumentPayrollOptions = true
-            },  
+            },
+            
+            getMonthName(paymentDate) {
+                try {
+                const dateObject = new Date(paymentDate);
+                const monthName = new Intl.DateTimeFormat('es', { month: 'long' }).format(dateObject);
+                return monthName;
+                } catch (error) {
+                console.error('Error al procesar la fecha:', error);
+                return 'Error';
+                }
+            },
         }
     }
 </script>
