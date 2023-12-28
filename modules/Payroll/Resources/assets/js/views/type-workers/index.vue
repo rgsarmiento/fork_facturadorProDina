@@ -15,12 +15,12 @@
             </div>
             <div class="card-body">
                 <data-table :resource="resource">
-                    <tr slot="heading" width="100%">
+                    <data-table slot="heading" width="100%">
                         <th>#</th>
                         <th>Código</th>
                         <th>Nombre</th>
                         <th class="text-right">Acciones</th>
-                    <tr>
+                    </data-table>tr>
                     <tr slot-scope="{ index, row }">
                         <td>{{ index }}</td>
                         <td>{{ row.code }}</td>
