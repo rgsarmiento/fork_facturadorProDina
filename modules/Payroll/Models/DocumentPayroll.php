@@ -403,7 +403,7 @@ class DocumentPayroll extends PayrollBaseModel
             'payment' => $this->payment,
             'payment_dates' => $this->payment_dates,
             'response_api_message' => $response_api_message,
-
+            'response_api' => $this->response_api,
             'salary' => optional($this->accrued)->salary,
             'accrued_total' => optional($this->accrued)->accrued_total,
             'deductions_total' => optional($this->deduction)->deductions_total,
