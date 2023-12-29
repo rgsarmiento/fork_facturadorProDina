@@ -34,11 +34,8 @@
                         <td>{{ row.date_of_issue }}</td>
                         <td>{{ row.worker_full_name }}</td>  
                         <td class="text-left">{{ row.type_payroll_description }}</td>  
-                        <td class="text-center">{{ row.number_full }}</td>
-                        
                         <td> <a class="btn btn-info" :href="'https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey=' + cuneValue(row.response_api)" role="button" target="_blank">{{ row.number_full }}</a></td>
                         
-
                         <td class="text-center">
                             <template v-if="row.state_document_id">
                                 <span class="badge bg-secondary text-white" :class="{'bg-secondary': (row.state_document_id === 1), 'bg-success': (row.state_document_id === 5), 'bg-dark': (row.state_document_id === 6)}">
@@ -183,9 +180,7 @@
 
             cuneValue(jsonString) {
                 try {
-                    // Parsear el string JSON a un objeto JavaScript
-                    //const jsonObject = JSON.parse(jsonString);
-
+                    
                      // Acceder al valor de la propiedad "XmlDocumentKey"
                 return jsonString.cune;
                 } catch (error) {
