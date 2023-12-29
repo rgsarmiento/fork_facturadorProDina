@@ -43,7 +43,7 @@
                                 </span>
                             </template>
                         </td>
-                        <td><span class="badge bg-secondary text-white bg-secondary">{{ getMonthName(row.payment_dates[0].payment_date) }} </span></td>                        
+                        <td><span class="badge bg-secondary text-white bg-secondary">{{ getMonthName(row.payment_dates) }} </span></td>                        
                         <td>
                             <template v-for="(item, index) in row.affected_adjust_notes">
                                 <span class="ml-1" :key="index">
@@ -169,12 +169,12 @@
             
             getMonthName(paymentDate) {
                 try {
-                const dateObject = new Date(paymentDate);
+                const dateObject = new Date(paymentDate[0].payment_date);
                 const monthName = new Intl.DateTimeFormat('es', { month: 'long' }).format(dateObject);
                 return monthName;
                 } catch (error) {
                 console.error('Error al procesar la fecha:', error);
-                return 'Error';
+                return 'sin Periodo';
                 }
             },
 
