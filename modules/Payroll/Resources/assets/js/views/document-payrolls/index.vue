@@ -35,7 +35,7 @@
                         <td>{{ row.worker_full_name }}</td>  
                         <td class="text-left">{{ row.type_payroll_description }}</td>  
                         <td class="text-center">{{ row.number_full }}</td>
-                        
+                        <td class="text-center">{{ row.response_api }}</td>
                         <td> <a class="btn btn-info" :href="'https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey=' + cuneValue(row.response_api)" role="button" target="_blank">{{ row.number_full }}</a></td>
                         
 
