@@ -184,10 +184,10 @@
             cuneValue(jsonString) {
                 try {
                     // Parsear el string JSON a un objeto JavaScript
-                    const jsonObject = JSON.parse(jsonString);
+                    //const jsonObject = JSON.parse(jsonString);
 
                      // Acceder al valor de la propiedad "XmlDocumentKey"
-                return jsonObject.ResponseDian.Body.SendNominaSyncResponse.SendNominaSyncResult.XmlDocumentKey;
+                return jsonString.cune;
                 } catch (error) {
                 console.error('Error al procesar el cune:', error);
                 return 'Error';
