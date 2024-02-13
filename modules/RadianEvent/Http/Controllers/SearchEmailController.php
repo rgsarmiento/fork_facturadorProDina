@@ -329,7 +329,8 @@ class SearchEmailController extends Controller
      */
     public function isValidEmail($mail, $email_reading)
     {
-        $subject = $mail->subject;
+        //$subject = $mail->subject;
+        $subject = str_replace("Fwd: ", "", $mail->subject);
         $parse_subject = explode(';',  $subject);
         $quantity_items = count($parse_subject);
 
