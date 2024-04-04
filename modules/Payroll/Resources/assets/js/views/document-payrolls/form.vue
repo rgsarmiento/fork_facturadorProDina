@@ -3,7 +3,7 @@
 
         <div class="tab-content" v-if="loading_form">
             <div class="invoice">
-                <form autocomplete="off" @submit.prevent="submit">
+                <form autocomplete="off" @submit.prevent="confirmSubmit">
                     <div class="form-body">
                         <div class="row">
                         </div>
@@ -2591,6 +2591,24 @@
                     this.loading_submit = false;
                 });
             }, 
+
+            confirmSubmit() {
+            // Mostrar mensaje de confirmación
+            this.$confirm('¿Estás seguro de que deseas generar la Nomina Electronica?', 'Confirmar', {
+                confirmButtonText: 'Sí',
+                cancelButtonText: 'Cancelar',
+                type: 'warning'
+            }).then(() => {
+                submit()
+                // Usuario confirmó, no es necesario hacer nada adicional
+            }).catch(() => {
+                // Usuario canceló, detener el envío del formulario
+                return false;
+            });
+            },
+
+
+            
         }
     }
 </script>
