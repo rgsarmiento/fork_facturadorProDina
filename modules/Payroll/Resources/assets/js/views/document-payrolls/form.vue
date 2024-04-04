@@ -3,7 +3,9 @@
 
         <div class="tab-content" v-if="loading_form">
             <div class="invoice">
-                <form autocomplete="off" @submit.prevent="confirmSubmit">
+                <form autocomplete="off" ref="myForm">
+                    <!-- <form autocomplete="off" @submit.prevent="submit"> -->
+                    
                     <div class="form-body">
                         <div class="row">
                         </div>
@@ -1504,7 +1506,8 @@
 
                     <div class="form-actions text-right mt-4">
                         <el-button @click.prevent="close()">Cancelar</el-button>
-                        <el-button class="submit" type="primary" native-type="submit" :loading="loading_submit" >Generar</el-button>
+                        <el-button class="submit" type="primary" @click.prevent="confirmSubmit" :loading="loading_submit">Generar</el-button>
+                        <!-- <el-button class="submit" type="primary" native-type="submit" :loading="loading_submit" >Generar</el-button> -->
                     </div>
                 </form>
             </div>
@@ -2599,11 +2602,10 @@
                 cancelButtonText: 'Cancelar',
                 type: 'warning'
             }).then(() => {
-                submit()
-                // Usuario confirmó, no es necesario hacer nada adicional
+                // Usuario confirmó, enviar formulario
+                this.$refs.myForm.submit()
             }).catch(() => {
-                // Usuario canceló, detener el envío del formulario
-                return false;
+                
             });
             },
 
