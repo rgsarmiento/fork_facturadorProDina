@@ -86,6 +86,20 @@
                             </div>
                         </div>
 
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">Observaciones</label>
+                                    <el-input
+                                            type="textarea"
+                                            autosize
+                                            :rows="1"
+                                            v-model="form.observation">
+                                    </el-input>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div class="row mt-4">
                             <div class="col-md-12">
