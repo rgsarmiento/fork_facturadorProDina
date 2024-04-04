@@ -2595,18 +2595,20 @@
                 });
             }, 
 
-            confirmSubmit() {
+            async confirmSubmit() {
             // Mostrar mensaje de confirmación
-            this.$confirm('¿Estás seguro de que deseas generar la Nomina Electronica?', 'Confirmar', {
-                confirmButtonText: 'Sí',
-                cancelButtonText: 'Cancelar',
-                type: 'warning'
-            }).then(() => {
-                // Usuario confirmó, enviar formulario
-                this.$refs.myForm.submit()
-            }).catch(() => {
-                
-            });
+                try {
+                    await this.$confirm('¿Estás seguro de que deseas generar la Nomina Electronica?', 'Confirmar', {
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'Cancelar',
+                    type: 'warning'
+                    });
+
+                    // Usuario confirmó, llamar a la función submit()
+                    await this.submit();
+                } catch (error) {
+                    // Usuario canceló, no hacer nada
+                }
             },
 
 
