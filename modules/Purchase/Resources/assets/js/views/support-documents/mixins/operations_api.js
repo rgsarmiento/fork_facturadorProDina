@@ -16,6 +16,7 @@ export const operations_api = {
                 resolution_number: this.form.resolution_number,
                 date: this.form.date_of_issue,
                 time: this.form.time_of_issue,
+                notes: this.form.notes,
                 sendmail: false,
                 seller: {},
                 payment_form: {},

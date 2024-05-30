@@ -45,6 +45,7 @@ class SupportDocument extends ModelTenant
         'type_document_id',
         'prefix',
         'number',
+        'notes',
 
         'payment_form_id',
         'payment_method_id',
@@ -60,7 +61,6 @@ class SupportDocument extends ModelTenant
         'cufe',
         'xml',
         'date_expiration',
-        'observation',
         'taxes',
         'response_api',
          

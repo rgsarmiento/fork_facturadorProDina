@@ -94,7 +94,7 @@
                                             type="textarea"
                                             autosize
                                             :rows="1"
-                                            v-model="form.observation">
+                                            v-model="form.notes">
                                     </el-input>
                                 </div>
                             </div>
